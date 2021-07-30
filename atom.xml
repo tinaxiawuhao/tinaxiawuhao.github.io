@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
-    <title>WuHao</title>
+    <title>TianXia</title>
     <updated>2021-04-01T12:07:02.852Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
@@ -9,7 +9,7 @@
     <subtitle>&lt;p class=&quot;text-gray-500 mt-3&quot;&gt;温故而知新&lt;/p&gt;</subtitle>
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, WuHao</rights>
+    <rights>All rights reserved 2021, TianXia</rights>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
         <id>https://tinaxiawuhao.github.io/post/hello-gridea/</id>
