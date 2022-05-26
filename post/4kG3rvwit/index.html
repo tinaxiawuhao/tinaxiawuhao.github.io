@@ -10,10 +10,10 @@
 <meta name="keywords" content="">
 <meta name="description" content="欢迎访问[tianxia]的个人博客">
 <meta name="author" content="kveln">
-<title>Redis的缓存淘汰策略LRU | tianxia</title>
+<title>centos7安装Docker详细步骤 | tianxia</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
-<link rel="alternate" type="application/rss+xml" title="Redis的缓存淘汰策略LRU | tianxia » Feed"
+<link rel="alternate" type="application/rss+xml" title="centos7安装Docker详细步骤 | tianxia » Feed"
   href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
@@ -26,8 +26,8 @@
 
 <script>hljs.initHighlightingOnLoad();</script>
 
-  <meta property="og:description" content="Redis的缓存淘汰策略LRU" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/bGEB86JC1/" />
+  <meta property="og:description" content="centos7安装Docker详细步骤" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/4kG3rvwit/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -147,13 +147,13 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/nWrs6l_iw/" class="tag">redis</a>
+                <a href="https://tinaxiawuhao.github.io/tag/axbwTxyHw/" class="tag">docker</a>
                 
               </span>
-              <h1>Redis的缓存淘汰策略LRU</h1>
+              <h1>centos7安装Docker详细步骤</h1>
               <span class="meta">
                 Posted on
-                2021-09-03，4 min read
+                2022-05-26，2 min read
               </span>
             </div>
           
@@ -168,192 +168,70 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/bGEB86JC1.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/4kG3rvwit.png" alt="封面图">
           </img>
           
-          <p>redis缓存淘汰策略与Redis键的过期删除策略并不完全相同，前者是在Redis内存使用超过一定值的时候（一般这个值可以配置）使用的淘汰策略；而后者是通过定期删除+惰性删除两者结合的方式进行内存淘汰的。</p>
-<h3 id="redis内存不足的缓存淘汰策略">Redis内存不足的缓存淘汰策略</h3>
-<ul>
-<li>noeviction：当内存使用超过配置的时候会返回错误，不会驱逐任何键</li>
-<li>allkeys-lru：加入键的时候，如果过限，首先通过LRU算法驱逐最久没有使用的键</li>
-<li>volatile-lru：加入键的时候如果过限，首先从设置了过期时间的键集合中驱逐最久没有使用的键</li>
-<li>allkeys-random：加入键的时候如果过限，从所有key随机删除</li>
-<li>volatile-random：加入键的时候如果过限，从过期键的集合中随机驱逐</li>
-<li>volatile-ttl：从配置了过期时间的键中驱逐马上就要过期的键</li>
-<li>volatile-lfu：从所有配置了过期时间的键中驱逐使用频率最少的键</li>
-<li>allkeys-lfu：从所有键中驱逐使用频率最少的键</li>
-</ul>
-<h3 id="lru算法实现">lru算法实现</h3>
-<h4 id="取巧算法">取巧算法</h4>
-<pre><code class="language-java">
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-class LRUCache&lt;K,V&gt; extends LinkedHashMap&lt;K,V&gt; {
-
-    private int capacity;
-
-    /**
-     * the ordering mode
-     * - &lt;tt&gt;true&lt;/tt&gt; for access-order,
-     * - &lt;tt&gt;false&lt;/tt&gt; for insertion-order
-     * @param capacity
-     */
-    public LRUCache(int capacity) {
-        super(capacity, 0.75F, true);
-        this.capacity = capacity;
-    }
-
-    //数据超过容量大小删除
-    @Override
-    protected boolean removeEldestEntry(Map.Entry&lt;K,V&gt; eldest) {
-        return super.size()&gt;capacity;
-    }
-
-}
+          <h2 id="一-安装前必读">一、安装前必读</h2>
+<p>在安装 Docker 之前，先说一下配置，我这里是Centos7  Linux 内核：官方建议 3.10 以上，3.8以上貌似也可。</p>
+<p>注意：本文的命令使用的是 root 用户登录执行，不是 root 的话所有命令前面要加 <code>sudo</code></p>
+<p><strong>1.查看当前的内核版本</strong></p>
+<pre><code class="language-javascript">uname -r
 </code></pre>
-<h4 id="数据结构实现">数据结构实现</h4>
-<pre><code class="language-java">
-import java.util.HashMap;
-import java.util.Map;
+<p><strong>2.使用 root 权限更新 yum 包（生产环境中此步操作需慎重，看自己情况，学习的话随便搞）</strong></p>
+<pre><code class="language-javascript">yum -y update
+</code></pre>
+<p>这个命令不是必须执行的，看个人情况，后面出现不兼容的情况的话就必须update了</p>
+<pre><code class="language-javascript">注意 
+yum -y update：升级所有包同时也升级软件和系统内核； 
+yum -y upgrade：只升级所有包，不升级软件和系统内核
+</code></pre>
+<p><strong>3.卸载旧版本（如果之前安装过的话）</strong></p>
+<pre><code class="language-javascript">yum remove docker  docker-common docker-selinux docker-engine
+</code></pre>
+<h2 id="二-安装docker的详细步骤">二、安装Docker的详细步骤</h2>
+<p><strong>1.安装需要的软件包， yum-util 提供yum-config-manager功能，另两个是devicemapper驱动依赖</strong></p>
+<pre><code class="language-javascript">yum install -y yum-utils device-mapper-persistent-data lvm2
+</code></pre>
+<p><strong>2.设置 yum 源</strong></p>
+<p>设置一个yum源，下面两个都可用</p>
+<pre><code class="language-javascript">yum-config-manager --add-repo http://download.docker.com/linux/centos/docker-ce.repo（中央仓库）
 
-class LRUCacheDemo {
-
-    //构建承载体node
-    class Node&lt;K, V&gt; {
-        K key;
-        V value;
-        Node&lt;K, V&gt; prev;
-        Node&lt;K, V&gt; next;
-
-        public Node() {
-            this.prev = this.next = null;
-        }
-
-        public Node(K key, V value) {
-            this.key = key;
-            this.value = value;
-            this.prev = this.next = null;
-        }
-    }
-
-    //构建双向队列
-    class DoubleLinkedList&lt;K, V&gt; {
-        Node&lt;K, V&gt; head;
-        Node&lt;K, V&gt; tail;
-
-        public DoubleLinkedList() {
-            head = new Node&lt;&gt;();
-            tail = new Node&lt;&gt;();
-            head.next = tail;
-            tail.prev = head;
-        }
-
-        //添加头节点
-        public void addHead(Node&lt;K, V&gt; node) {
-            node.next = head.next;
-            node.prev = head;
-            head.next.prev = node;
-            head.next = node;
-        }
-
-        //删除节点
-        public void removeNode(Node&lt;K, V&gt; node) {
-            node.next.prev = node.prev;
-            node.prev.next = node.next;
-            node.prev = null;
-            node.next = null;
-        }
-
-        //获取最后一个节点
-        public Node getLast() {
-            return tail.prev;
-        }
-    }
-
-    private int cacheSize;
-    Map&lt;Object, Node&lt;Object, Object&gt;&gt; map;
-    DoubleLinkedList&lt;Object, Object&gt; doubleLinkedList;
-
-    public LRUCacheDemo(int cacheSize) {
-        this.cacheSize = cacheSize;
-        this.map = new HashMap&lt;&gt;();
-        this.doubleLinkedList = new DoubleLinkedList&lt;&gt;();
-    }
-
-    public Object get(Object key) {
-        if (!map.containsKey(key)) {
-            return -1;
-        }
-        final Node&lt;Object, Object&gt; node = map.get(key);
-        this.doubleLinkedList.removeNode(node);
-        this.doubleLinkedList.addHead(node);
-        return node.value;
-    }
-
-    public void put(Object key, Object value) {
-        if (map.containsKey(key)) {
-            final Node&lt;Object, Object&gt; node = map.get(key);
-            node.value = value;
-            map.put(key, node);
-            this.doubleLinkedList.removeNode(node);
-            this.doubleLinkedList.addHead(node);
-        }else{
-            if(map.size()==this.cacheSize){
-                final Node last = this.doubleLinkedList.getLast();
-                map.remove(last.key);
-                doubleLinkedList.removeNode(last);
-            }
-            //新增
-            Node&lt;Object,Object&gt; newNode=new Node&lt;&gt;(key,value);
-            map.put(key, newNode);
-            this.doubleLinkedList.addHead(newNode);
-        }
-    }
-
-}
+yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo（阿里仓库）
+</code></pre>
+<p>3.选择docker版本并安装</p>
+<p>（1）查看可用版本有哪些</p>
+<pre><code class="language-javascript">yum list docker-ce --showduplicates | sort -r
+</code></pre>
+<p>（2）选择一个版本并安装：<code>yum install docker-ce-版本号</code></p>
+<pre><code class="language-javascript">yum -y install docker-ce-18.03.1.ce
+</code></pre>
+<p>4.启动 Docker 并设置开机自启</p>
+<pre><code class="language-javascript">systemctl start docker
+systemctl enable docker
 </code></pre>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li>
-<ul>
-<li><a href="#redis%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%E7%9A%84%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5">Redis内存不足的缓存淘汰策略</a></li>
-<li><a href="#lru%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0">lru算法实现</a>
-<ul>
-<li><a href="#%E5%8F%96%E5%B7%A7%E7%AE%97%E6%B3%95">取巧算法</a></li>
-<li><a href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%9E%E7%8E%B0">数据结构实现</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a href="#%E4%B8%80-%E5%AE%89%E8%A3%85%E5%89%8D%E5%BF%85%E8%AF%BB">一、安装前必读</a></li>
+<li><a href="#%E4%BA%8C-%E5%AE%89%E8%A3%85docker%E7%9A%84%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4">二、安装Docker的详细步骤</a></li>
 </ul>
 </li>
 </ul>
 </div>
           
-              <hr />
-            
           
             
+                <hr />
+              
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/GALzQf_b-/">
+                <a href="https://tinaxiawuhao.github.io/post/MKTk7DnaM/">
                   <span class="post-title">
-                    list、set、map等集合类线程不安全的问题及解决方法&rarr;
+                    ES6新语法&rarr;
                   </span>
                 </a>
               </p>
             
-          
-            
-           <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/volSqv4Kf/">
-                   <span class="post-title">
-                     阻塞队列BlockingQueue&rarr;
-                   </span>
-                 </a>
-               </p>
           
           <div class="comment" style="text-align: center;">
             
