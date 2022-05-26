@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>mybatis级联查询 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="mybatis级联查询 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="mybatis级联查询" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/hIydIZSN1/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/sSYudwLzE/" class="tag">mybatis</a>
+                
+              </span>
+              <h1>mybatis级联查询</h1>
+              <span class="meta">
+                Posted on
+                2021-12-27，6 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/hIydIZSN1.png" alt="封面图">
+          </img>
+          
+          <h2 id="modelmapperxml">ModelMapper.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;com.haier.biz.mapper.ModelMapper&quot;&gt;
+    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;com.haier.biz.entity.Model&quot;&gt;
+        &lt;id column=&quot;model_id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;modelId&quot;/&gt;
+        &lt;result column=&quot;equipment_model_mark&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;equipmentModelMark&quot;/&gt;
+        &lt;result column=&quot;equipment_name&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;equipmentName&quot;/&gt;
+        &lt;result column=&quot;specification_model&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;specificationModel&quot;/&gt;
+        &lt;result column=&quot;model_description&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;modelDescription&quot;/&gt;
+        &lt;result column=&quot;model_sort_key&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;modelSortKey&quot;/&gt;
+        &lt;result column=&quot;model_classification_label&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;modelClassificationLabel&quot;/&gt;
+        &lt;result column=&quot;tenant_product_id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;tenantProductId&quot;/&gt;
+        &lt;result column=&quot;tenant_product_name&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;tenantProductName&quot;/&gt;
+        &lt;result column=&quot;manufacturer&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;manufacturer&quot;/&gt;
+        &lt;result column=&quot;create_by&quot; jdbcType=&quot;BIGINT&quot; property=&quot;createBy&quot;/&gt;
+        &lt;result column=&quot;create_time&quot; jdbcType=&quot;TIMESTAMP&quot; property=&quot;createTime&quot;/&gt;
+        &lt;result column=&quot;update_by&quot; jdbcType=&quot;BIGINT&quot; property=&quot;updateBy&quot;/&gt;
+        &lt;result column=&quot;update_time&quot; jdbcType=&quot;TIMESTAMP&quot; property=&quot;updateTime&quot;/&gt;
+    &lt;/resultMap&gt;
+    &lt;!--级联查询--&gt;
+    &lt;resultMap id=&quot;BaseResultInstanceMap&quot; type=&quot;com.haier.biz.entity.DTO.ModelDTO&quot; extends=&quot;BaseResultMap&quot;&gt;
+        &lt;result column=&quot;publishNumber&quot; jdbcType=&quot;BIGINT&quot; property=&quot;publishNumber&quot;/&gt;
+        &lt;result column=&quot;customer_id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;customerId&quot;/&gt;
+        &lt;result column=&quot;topic&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;topic&quot;/&gt;
+        &lt;!--property来源ModelDTO属性，column来源于selectInstancelList查询--&gt;
+        &lt;!--查询单条--&gt;
+        &lt;association property=&quot;equipmentPicture&quot; column=&quot;equipment_model_mark&quot;
+                     select=&quot;getEquipmentPicture&quot;&gt;&lt;/association&gt;
+        &lt;association property=&quot;instanceNumber&quot; column=&quot;{equipmentModelMark=equipment_model_mark,customerId=customer_id}&quot;
+                     select=&quot;getCustomerInstanceNumber&quot;&gt;&lt;/association&gt;
+        &lt;!--查询列表--&gt;
+        &lt;collection property=&quot;equipmentPictures&quot; column=&quot;equipment_model_mark&quot;
+                    select=&quot;getEquipmentPictures&quot;&gt;&lt;/collection&gt;
+    &lt;/resultMap&gt;
+    &lt;select id=&quot;selectInstancelList&quot; parameterType=&quot;com.haier.biz.entity.VO.InstanceSelectVo&quot;
+            resultMap=&quot;BaseResultInstanceMap&quot;&gt;
+        SELECT
+        distinct model.model_id,
+        equipment_model_mark,
+        equipment_name,
+        specification_model,
+        model_description,
+        model_sort_key,
+        model_classification_label,
+        tenant_product_id,
+        tenant_product_name,
+        manufacturer,
+        model.create_by,
+        model.create_time,
+        model.update_by,
+        model.update_time,
+        0 as publishNumber,
+        relation_model_customer.customer_id,
+        relation_model_customer.topic
+        FROM
+        model
+        LEFT JOIN relation_model_customer on relation_model_customer.model_id=model.model_id
+        &lt;where&gt;
+            &lt;if test=&quot;customerId != null&quot;&gt;
+                and relation_model_customer.customer_id = #{customerId}
+            &lt;/if&gt;
+            &lt;if test=&quot;modelSortKey != null and modelSortKey!=''&quot;&gt;
+                and `model`.model_sort_key = #{modelSortKey}
+            &lt;/if&gt;
+            &lt;if test=&quot;equipmentName != null and equipmentName!=''&quot;&gt;
+                and `model`.equipment_name like CONCAT('%', #{equipmentName,jdbcType=VARCHAR},'%')
+            &lt;/if&gt;
+        &lt;/where&gt;
+    &lt;/select&gt;
+    &lt;select id=&quot;getEquipmentPicture&quot; parameterType=&quot;java.lang.String&quot; resultType=&quot;java.lang.String&quot;&gt;
+        SELECT model_instance_file_associate.file_object_key as equipmentPicture
+        from model_instance_file_associate
+        where model_instance_file_associate.file_type=4
+            and model_instance_file_associate.type=0
+            and model_instance_file_associate.del_flag=0
+            and model_instance_file_associate.model_or_instance_mark = #{equipmentModelMark,jdbcType=VARCHAR}
+        limit 1
+    &lt;/select&gt;
+    &lt;select id=&quot;getCustomerInstanceNumber&quot; parameterType=&quot;java.util.Map&quot; resultType=&quot;java.lang.Long&quot;&gt;
+        SELECT count(*)
+        from model_instance_associate
+        left join `instance` on model_instance_associate.instance_mark=`instance`.instance_mark
+        where model_instance_associate.equipment_model_mark = #{equipmentModelMark,jdbcType=VARCHAR}
+            and `instance`.customer_id=#{customerId}
+    &lt;/select&gt;
+    &lt;select id=&quot;getEquipmentPictures&quot; parameterType=&quot;java.lang.String&quot; resultType=&quot;java.lang.String&quot;&gt;
+       SELECT model_instance_file_associate.file_object_key as equipmentPictures
+        from model_instance_file_associate
+        where model_instance_file_associate.file_type=4
+            and model_instance_file_associate.type=0
+            and model_instance_file_associate.del_flag=0
+            and model_instance_file_associate.model_or_instance_mark = #{equipmentModelMark,jdbcType=VARCHAR}
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<h2 id="modelmapper">ModelMapper</h2>
+<pre><code class="language-java">@Repository
+public interface ModelMapper extends BaseMapper&lt;Model&gt; {
+
+    List&lt;ModelDTO&gt; selectInstancelList(InstanceSelectVo instanceSelectVo);
+
+    List&lt;String&gt; getEquipmentPictures(@Param(&quot;equipmentModelMark&quot;) String equipmentModelMark);
+
+}
+</code></pre>
+<h2 id="modeldto">ModelDTO</h2>
+<pre><code class="language-java">@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public class ModelDTO extends Model {
+
+    @ApiModelProperty(value = &quot;产品(模型)图片(取第一张)&quot;)
+    private String equipmentPicture;
+
+    @ApiModelProperty(value = &quot;产品(模型)图片&quot;)
+    private List&lt;String&gt; equipmentPictures;
+
+    @ApiModelProperty(value = &quot;发布客户数&quot;)
+    private Long publishNumber;
+
+    @ApiModelProperty(value = &quot;实例设备数&quot;)
+    private Long instanceNumber;
+
+    @ApiModelProperty(value = &quot;使用方Id&quot;)
+    private Long customerId;
+
+    @ApiModelProperty(value = &quot;实例设备运行情况&quot;)
+    private List&lt;NumberDTO&gt; equipmentList;
+
+    @ApiModelProperty(value = &quot;kafka实时推送的topic&quot;)
+    private String topic;
+}
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#modelmapperxml">ModelMapper.xml</a></li>
+<li><a href="#modelmapper">ModelMapper</a></li>
+<li><a href="#modeldto">ModelDTO</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/hle1ZXFqv/">
+                  <span class="post-title">
+                    clickhouse数据分区&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/E2kaihQ5a/">
+                   <span class="post-title">
+                     jar包内类动态加载&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

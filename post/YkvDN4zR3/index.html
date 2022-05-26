@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>SpringBoot自动装配原理 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="SpringBoot自动装配原理 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="SpringBoot自动装配原理" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/YkvDN4zR3/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/9FPu79Spt/" class="tag">springBoot</a>
+                
+              </span>
+              <h1>SpringBoot自动装配原理</h1>
+              <span class="meta">
+                Posted on
+                2021-05-24，11 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/YkvDN4zR3.png" alt="封面图">
+          </img>
+          
+          <h3 id="springboot自动配置">SpringBoot自动配置</h3>
+<p>从代码里看项目SpringBoot的项目启动类只有一个注解@SpringBootApplication和一个run方法。</p>
+<pre><code class="language-java">@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+</code></pre>
+<p>直接看<code>@SpringBootApplication</code>的代码：</p>
+<pre><code class="language-java">@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(
+    excludeFilters = {@Filter(
+    type = FilterType.CUSTOM,
+    classes = {TypeExcludeFilter.class}
+), @Filter(
+    type = FilterType.CUSTOM,
+    classes = {AutoConfigurationExcludeFilter.class}
+)}
+)
+public @interface SpringBootApplication {
+    @AliasFor(
+        annotation = EnableAutoConfiguration.class,
+        attribute = &quot;exclude&quot;
+    )
+    Class&lt;?&gt;[] exclude() default {};
+
+    @AliasFor(
+        annotation = EnableAutoConfiguration.class,
+        attribute = &quot;excludeName&quot;
+    )
+    String[] excludeName() default {};
+
+    @AliasFor(
+        annotation = ComponentScan.class,
+        attribute = &quot;basePackages&quot;
+    )
+    String[] scanBasePackages() default {};
+
+    @AliasFor(
+        annotation = ComponentScan.class,
+        attribute = &quot;basePackageClasses&quot;
+    )
+    Class&lt;?&gt;[] scanBasePackageClasses() default {};
+}
+</code></pre>
+<p><code>@SpringBootApplication</code>：包含了<code>@SpringBootConfiguration</code>（打开是<code>@Configuration</code>），<code>@EnableAutoConfiguration</code>，<code>@ComponentScan</code>注解。<br>
+<strong>@Configuration</strong><br>
+JavaConfig形式的Spring Ioc容器的配置类使用的那个<code>@Configuration</code>，SpringBoot社区推荐使用基于JavaConfig的配置形式，所以，这里的启动类标注了@Configuration之后，本身其实也是一个IoC容器的配置类。<br>
+对比一下传统XML方式和config配置方式的区别：<br>
+XML声明和定义配置方式：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+	xmlns:context=&quot;http://www.springframework.org/schema/context&quot; xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+	xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-3.0.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	&quot;&gt;
+	&lt;bean id=&quot;app&quot; class=&quot;com...&quot; /&gt;
+</code></pre>
+<p>用一个过滤器举例，JavaConfig的配置方式是这样：</p>
+<pre><code class="language-java">@Configuration
+public class DruidConfiguration {    
+    @Bean
+    public FilterRegistrationBean statFilter(){
+        //创建过滤器
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
+        //设置过滤器过滤路径
+        filterRegistrationBean.addUrlPatterns(&quot;/*&quot;);
+        //忽略过滤的形式
+        filterRegistrationBean.addInitParameter(&quot;exclusions&quot;,&quot;*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*&quot;);
+        return filterRegistrationBean;
+    }
+}
+</code></pre>
+<p>任何一个标注了<code>@Configuration</code>的Java类定义都是一个JavaConfig配置类。<br>
+任何一个标注了<code>@Bean</code>的方法，其返回值将作为一个bean定义注册到Spring的IoC容器，方法名将默认成该bean定义的id。<br>
+<strong>@ComponentScan</strong><br>
+<code>@ComponentScan</code>对应XML配置中的元素，<code>@ComponentScan</code>的功能其实就是自动扫描并加载符合条件的组件（比如<code>@Component</code>和<code>@Repository</code>等）或者bean定义，最终将这些bean定义加载到IoC容器中。<br>
+我们可以通过basePackages等属性来细粒度的定制<code>@ComponentScan</code>自动扫描的范围，如果不指定，则默认Spring框架实现会从声明@ComponentScan所在类的package进行扫描。<br>
+注：所以SpringBoot的启动类最好是放在root package下，因为默认不指定basePackages。<br>
+<strong>@EnableAutoConfiguration</strong><br>
+（核心内容）看英文意思就是自动配置，概括一下就是，借助@Import的帮助，将所有符合自动配置条件的bean定义加载到IoC容器。</p>
+<pre><code class="language-java">@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@AutoConfigurationPackage
+@Import({EnableAutoConfigurationImportSelector.class})
+public @interface EnableAutoConfiguration {
+    String ENABLED_OVERRIDE_PROPERTY = &quot;spring.boot.enableautoconfiguration&quot;;
+
+    Class&lt;?&gt;[] exclude() default {};
+
+    String[] excludeName() default {};
+}
+</code></pre>
+<p>里面最关键的是<code>@Import(EnableAutoConfigurationImportSelector.class)</code>，借助EnableAutoConfigurationImportSelector，<code>@EnableAutoConfiguration</code>可以帮助SpringBoot应用将所有符合条件的<code>@Configuration</code>配置都加载到当前SpringBoot创建并使用的IoC容器。该配置模块的主要使用到了SpringFactoriesLoader。</p>
+<h4 id="springfactoriesloader详解">SpringFactoriesLoader详解</h4>
+<p>SpringFactoriesLoader为Spring工厂加载器，该对象提供了loadFactoryNames方法，入参为factoryClass和classLoader即需要传入工厂类名称和对应的类加载器，方法会根据指定的classLoader，加载该类加器搜索路径下的指定文件，即spring.factories文件，传入的工厂类为接口，而文件中对应的类则是接口的实现类，或最终作为实现类。</p>
+<pre><code class="language-java">public abstract class SpringFactoriesLoader {
+    private static final Log logger = LogFactory.getLog(SpringFactoriesLoader.class);
+    public static final String FACTORIES_RESOURCE_LOCATION = &quot;META-INF/spring.factories&quot;;
+
+    public SpringFactoriesLoader() {
+    }
+
+    public static &lt;T&gt; List&lt;T&gt; loadFactories(Class&lt;T&gt; factoryClass, ClassLoader classLoader) {
+        Assert.notNull(factoryClass, &quot;'factoryClass' must not be null&quot;);
+        ClassLoader classLoaderToUse = classLoader;
+        if (classLoader == null) {
+            classLoaderToUse = SpringFactoriesLoader.class.getClassLoader();
+        }
+
+        List&lt;String&gt; factoryNames = loadFactoryNames(factoryClass, classLoaderToUse);
+        if (logger.isTraceEnabled()) {
+            logger.trace(&quot;Loaded [&quot; + factoryClass.getName() + &quot;] names: &quot; + factoryNames);
+        }
+
+        List&lt;T&gt; result = new ArrayList(factoryNames.size());
+        Iterator var5 = factoryNames.iterator();
+
+        while(var5.hasNext()) {
+            String factoryName = (String)var5.next();
+            result.add(instantiateFactory(factoryName, factoryClass, classLoaderToUse));
+        }
+
+        AnnotationAwareOrderComparator.sort(result);
+        return result;
+    }
+
+    public static List&lt;String&gt; loadFactoryNames(Class&lt;?&gt; factoryClass, ClassLoader classLoader) {
+        String factoryClassName = factoryClass.getName();
+
+        try {
+            Enumeration&lt;URL&gt; urls = classLoader != null ? classLoader.getResources(&quot;META-INF/spring.factories&quot;) : ClassLoader.getSystemResources(&quot;META-INF/spring.factories&quot;);
+            ArrayList result = new ArrayList();
+
+            while(urls.hasMoreElements()) {
+                URL url = (URL)urls.nextElement();
+                Properties properties = PropertiesLoaderUtils.loadProperties(new UrlResource(url));
+                String factoryClassNames = properties.getProperty(factoryClassName);
+                result.addAll(Arrays.asList(StringUtils.commaDelimitedListToStringArray(factoryClassNames)));
+            }
+
+            return result;
+        } catch (IOException var8) {
+            throw new IllegalArgumentException(&quot;Unable to load [&quot; + factoryClass.getName() + &quot;] factories from location [&quot; + &quot;META-INF/spring.factories&quot; + &quot;]&quot;, var8);
+        }
+    }
+
+    private static &lt;T&gt; T instantiateFactory(String instanceClassName, Class&lt;T&gt; factoryClass, ClassLoader classLoader) {
+        try {
+            Class&lt;?&gt; instanceClass = ClassUtils.forName(instanceClassName, classLoader);
+            if (!factoryClass.isAssignableFrom(instanceClass)) {
+                throw new IllegalArgumentException(&quot;Class [&quot; + instanceClassName + &quot;] is not assignable to [&quot; + factoryClass.getName() + &quot;]&quot;);
+            } else {
+                Constructor&lt;?&gt; constructor = instanceClass.getDeclaredConstructor();
+                ReflectionUtils.makeAccessible(constructor);
+                return constructor.newInstance();
+            }
+        } catch (Throwable var5) {
+            throw new IllegalArgumentException(&quot;Unable to instantiate factory class: &quot; + factoryClass.getName(), var5);
+        }
+    }
+}
+</code></pre>
+<p>所以文件中一般为如下图这种一对多的类名集合，获取到这些实现类的类名后，loadFactoryNames方法返回类名集合，方法调用方得到这些集合后，再通过反射获取这些类的类对象、构造方法，最终生成实例。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1621306254228.webp" alt="" loading="lazy"></figure>
+<p>下图有助于我们形象理解自动配置流程（盗个图）</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1621306269634.webp" alt="" loading="lazy"></figure>
+<h4 id="autoconfigurationimportselector">AutoConfigurationImportSelector</h4>
+<p>继续上面讲的AutoConfigurationImportSelector.class。该类主要关注selectImports方法</p>
+<pre><code class="language-java">public String[] selectImports(AnnotationMetadata annotationMetadata) {
+    if (!this.isEnabled(annotationMetadata)) {
+        return NO_IMPORTS;
+    } else {
+        try {
+            AutoConfigurationMetadata autoConfigurationMetadata = AutoConfigurationMetadataLoader.loadMetadata(this.beanClassLoader);
+            AnnotationAttributes attributes = this.getAttributes(annotationMetadata);
+            List&lt;String&gt; configurations = this.getCandidateConfigurations(annotationMetadata, attributes);
+            configurations = this.removeDuplicates(configurations);
+            configurations = this.sort(configurations, autoConfigurationMetadata);
+            Set&lt;String&gt; exclusions = this.getExclusions(annotationMetadata, attributes);
+            this.checkExcludedClasses(configurations, exclusions);
+            configurations.removeAll(exclusions);
+            configurations = this.filter(configurations, autoConfigurationMetadata);
+            this.fireAutoConfigurationImportEvents(configurations, exclusions);
+            return (String[])configurations.toArray(new String[configurations.size()]);
+        } catch (IOException var6) {
+            throw new IllegalStateException(var6);
+        }
+    }
+}
+</code></pre>
+<p>该方法在springboot启动流程——bean实例化前被执行，返回要实例化的类信息列表。如果获取到类信息，spring可以通过类加载器将类加载到jvm中，现在我们已经通过spring-boot的starter依赖方式依赖了我们需要的组件，那么这些组件的类信息在select方法中就可以被获取到。</p>
+<pre><code class="language-java">protected List&lt;String&gt; getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
+    List&lt;String&gt; configurations = SpringFactoriesLoader.loadFactoryNames(this.getSpringFactoriesLoaderFactoryClass(), this.getBeanClassLoader());
+    Assert.notEmpty(configurations, &quot;No auto configuration classes found in META-INF/spring.factories. If you are using a custom packaging, make sure that file is correct.&quot;);
+    return configurations;
+}
+</code></pre>
+<p>方法中的getCandidateConfigurations方法，其返回一个自动配置类的类名列表，方法调用了loadFactoryNames方法，查看该方法</p>
+<pre><code class="language-java">public static List&lt;String&gt; loadFactoryNames(Class&lt;?&gt; factoryClass, ClassLoader classLoader) {
+    String factoryClassName = factoryClass.getName();
+
+    try {
+        Enumeration&lt;URL&gt; urls = classLoader != null ? classLoader.getResources(&quot;META-INF/spring.factories&quot;) : ClassLoader.getSystemResources(&quot;META-INF/spring.factories&quot;);
+        ArrayList result = new ArrayList();
+
+        while(urls.hasMoreElements()) {
+            URL url = (URL)urls.nextElement();
+            Properties properties = PropertiesLoaderUtils.loadProperties(new UrlResource(url));
+            String factoryClassNames = properties.getProperty(factoryClassName);
+            result.addAll(Arrays.asList(StringUtils.commaDelimitedListToStringArray(factoryClassNames)));
+        }
+
+        return result;
+    } catch (IOException var8) {
+        throw new IllegalArgumentException(&quot;Unable to load [&quot; + factoryClass.getName() + &quot;] factories from location [&quot; + &quot;META-INF/spring.factories&quot; + &quot;]&quot;, var8);
+    }
+}
+</code></pre>
+<p>自动配置器会跟根据传入的factoryClass.getName()到项目系统路径下所有的spring.factories文件中找到相应的key，从而加载里面的类。我们就选取这个mybatis-spring-boot-autoconfigure下的spring.factories文件</p>
+<h4 id="auto-configure">Auto Configure</h4>
+<p>org.springframework.boot.autoconfigure.EnableAutoConfiguration=<br>
+org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration<br>
+进入org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration中，又是一堆注解</p>
+<pre><code class="language-java">@org.springframework.context.annotation.Configuration
+@ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
+@ConditionalOnBean({DataSource.class})
+@EnableConfigurationProperties({MybatisProperties.class})
+@AutoConfigureAfter({DataSourceAutoConfiguration.class})
+public class MybatisAutoConfiguration
+{
+  private static final Logger logger = LoggerFactory.getLogger(MybatisAutoConfiguration.class);
+  private final MybatisProperties properties;
+  private final Interceptor[] interceptors;
+  private final ResourceLoader resourceLoader;
+  private final DatabaseIdProvider databaseIdProvider;
+  private final List&lt;ConfigurationCustomizer&gt; configurationCustomizers;
+</code></pre>
+<ol>
+<li><code>@Configuration</code>是一个通过注解标注的springBean，</li>
+<li><code>@ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class})</code>这个注解的意思是：当存在SqlSessionFactory.class, SqlSessionFactoryBean.class这两个类时才解析MybatisAutoConfiguration配置类,否则不解析这一个配置类。我们需要mybatis为我们返回会话对象，就必须有会话工厂相关类</li>
+<li><code>@CondtionalOnBean(DataSource.class)</code>只处理已经被声明为bean的dataSource</li>
+<li><code>@ConditionalOnMissingBean(MapperFactoryBean.class)</code>这个注解的意思是如果容器中不存在name指定的bean则创建bean注入，否则不执行以上配置可以保证sqlSessionFactory、sqlSessionTemplate、dataSource等mybatis所需的组件均可被自动配置，<code>@Configuration</code>注解已经提供了Spring的上下文环境，所以以上组件的配置方式与Spring启动时通过mybatis.xml文件进行配置起到一个效果。</li>
+</ol>
+<p>只要一个基于SpringBoot项目的类路径下存在SqlSessionFactory.class, SqlSessionFactoryBean.class，并且容器中已经注册了dataSourceBean，就可以触发自动化配置，意思说我们只要在maven的项目中加入了mybatis所需要的若干依赖，就可以触发自动配置，但引入mybatis原生依赖的话，每集成一个功能都要去修改其自动化配置类，那就得不到开箱即用的效果了。所以Spring-boot为我们提供了统一的starter可以直接配置好相关的类，触发自动配置所需的依赖(mybatis)如下：</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>因为maven依赖的传递性，我们只要依赖starter就可以依赖到所有需要自动配置的类，实现开箱即用的功能。也体现出Springboot简化了Spring框架带来的大量XML配置以及复杂的依赖管理，让开发人员可以更加关注业务逻辑的开发。<br>
+再贴个盗的图SpringBoot的启动结构图</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1621306299869.webp" alt="" loading="lazy"></figure>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#springboot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE">SpringBoot自动配置</a>
+<ul>
+<li><a href="#springfactoriesloader%E8%AF%A6%E8%A7%A3">SpringFactoriesLoader详解</a></li>
+<li><a href="#autoconfigurationimportselector">AutoConfigurationImportSelector</a></li>
+<li><a href="#auto-configure">Auto Configure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/jytwMqgV3/">
+                  <span class="post-title">
+                    mysql概述六&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/RosSxJXYD/">
+                   <span class="post-title">
+                     SpringBoot基础&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

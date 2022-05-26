@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Java内存结构JVM | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Java内存结构JVM | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Java内存结构JVM" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/nxmi3zjCk/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>Java内存结构JVM</h1>
+              <span class="meta">
+                Posted on
+                2021-04-26，10 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/nxmi3zjCk.png" alt="封面图">
+          </img>
+          
+          <h2 id="jvm内存模型">JVM内存模型</h2>
+<p><code>内存空间(Runtime Data Area)</code>中可以按照是否线程共享分为两块，线程共享的是<code>方法区(Method Area)</code>和<code>堆(Heap)</code>，线程独享的是<code>Java虚拟机栈(Java Stack)</code>，<code>本地方法栈(Native Method Stack)</code>和<code>PC寄存器(Program Counter Register)</code>。具体参见下图：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619319113675.png" alt="" loading="lazy"></figure>
+<h3 id="虚拟机栈">虚拟机栈：</h3>
+<p>每个线程有一个私有的栈，随着线程的创建而创建。栈里面存放着一种叫做“栈帧”的东西，每个方法会创建一个栈帧，栈帧中存放了局部变量表(基本数据类型和对象引用)、操作数栈、方法出口等信息。栈的大小可以固定也可以动态扩展。当栈调用深度大于<code>JVM</code>所允许的范围，会抛出<code>StackOverflowError</code>的错误，不过这个深度范围不是一个恒定的值，我们通过下面这段程序可以测试一下这个结果：</p>
+<pre><code class="language-java">// 栈溢出测试源码
+ackage com.paddx.test.memory;
+ 
+/**
+ * Created by root on 2/28/17.
+ */
+public class StackErrorMock {
+    private static int index = 1;
+ 
+    public void call() {
+        index++;
+        call();
+    }
+ 
+    public static void main(String[] args) {
+        StackErrorMock mock = new StackErrorMock();
+        try {
+            mock.call();
+        } catch(Throwable e) {
+            System.out.println(&quot;Stack deep: &quot; + index);
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p>运行三次，可以看出每次栈的深度都是不一样的，输出结果如下：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619327479989.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619327486623.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619319135044.png" alt="" loading="lazy"></p>
+<p>查看三张结果图，可以看出每次的Stack deep值都有所不同。究其原因，就需要深入到<code>JVM</code>的源码中才能探讨，这里不作赘述。</p>
+<p>虚拟机栈除了上述错误外，还有另一种错误，那就是当申请不到空间时，会抛出<code>OutOfMemoryError</code>。这里有一个小细节需要注意，catch捕获的是Throwable，而不是Exception，这是因为<code>StackOverflowError</code>和<code>OutOfMemoryError</code>都不属于Exception的子类。</p>
+<h3 id="本地方法栈">本地方法栈：</h3>
+<p>这部分主要与虚拟机用到的Native方法相关，一般情况下，Java应用程序员并不需要关系这部分内容。</p>
+<h3 id="pc寄存器">PC寄存器：</h3>
+<p>PC寄存器，也叫程序计数器。<code>JVM</code>支持多个线程同时运行，每个线程都有自己的程序计数器。倘若当前执行的是<code>JVM</code>方法，则该寄存器中保存当前执行指令的地址；倘若执行的是native方法，则PC寄存器为空。</p>
+<h3 id="堆">堆 ：</h3>
+<p>堆内存是<code>JVM</code>所有线程共享的部分，在虚拟机启动的时候就已经创建。所有的对象和数组都在堆上进行分配。这部分空间可通过<code>GC</code>进行回收。当申请不到空间时，会抛出<code>OutOfMemoryError</code>。下面我们简单的模拟一个堆内存溢出的情况：</p>
+<pre><code class="language-java">package com.paddx.test.memory;
+ 
+import java.util.ArrayList;
+import java.util.List;
+ 
+/**
+ * Created by root on 2/28/17.
+ */
+public class HeapOomMock {
+    public static void main(String[] args) {
+        List&lt;byte[]&gt; list = new ArrayList&lt;byte[]&gt;();
+        int i = 0;
+        boolean flag = true;
+        while(flag) {
+            try {
+                i++;
+                list.add(new byte[1024 * 1024]); // 每次增加1M大小的数组对象
+            }catch(Throwable e) {
+                e.printStackTrace();
+                flag = false;
+                System.out.println(&quot;Count = &quot; + i); // 记录运行的次数
+            }
+        }
+    }
+}
+</code></pre>
+<p>首先配置运行时虚拟机的启动参数：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619319145433.png" alt="" loading="lazy"></p>
+<p>然后运行代码，输出结果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619319151622.png" alt="" loading="lazy"></figure>
+<p>注意，这里我们指定了堆内存的大小为16M，所以这个地方显示的Count=13(这个数字不是固定的)，至于为什么会是13或其他数字，需要根据GC日志来判断。</p>
+<h3 id="方法区">方法区：</h3>
+<p>方法区也是所有线程共享的。主要用于存储类的信息、常量池、方法数据、方法代码等。方法区逻辑上属于堆的一部分，但是为了与堆进行区分，通常又叫“非堆”。关于方法区的内存溢出问题会在下文中详细讨论。</p>
+<h2 id="permgen永久代">PermGen(永久代)</h2>
+<p>绝大部分Java程序员应该都见过<code>“java.lang.OutOfMemoryError: PremGen space”</code>异常。这里的<code>“PermGen space”</code>其实指的就是方法区。不过方法区和<code>“PermGen space”</code>又有着本质的区别。前者是<code>JVM</code>的规范，而后者则是<code>JVM</code>规范的一种实现，并且只有<code>HotSpot</code>才有<code>“PermGen space”</code>，而对于其他类型的虚拟机，如<code>JRockit(Oracle)</code>、<code>J9(IBM)</code>并没有<code>“PermGen space”</code>。由于方法区主要存储类的相关信息，所以对于动态生成类的情况比较容易出现永久代的内存溢出。最典型的场景就是，在<code>JSP</code>页面比较多的情况，容易出现永久代内存溢出。我们现在通过动态生成类来模拟<code>“PermGen space”</code>的内存溢出：</p>
+<pre><code class="language-java">package com.paddx.test.memory;
+ 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
+ 
+public class PermGenOomMock {
+	public static void main(String[] args) {
+		URL url = null;
+		List&lt;ClassLoader&gt; classLoaderList = new ArrayList&lt;ClassLoader&gt;();
+		try {
+			url = new File(&quot;/tmp&quot;).toURI().toURL();
+			URL[] urls = {url};
+			while(true) {
+				ClassLoader loader = new URLClassLoader(urls);
+				classLoaderList.add(loader);
+				loader.loadClass(&quot;com.paddx.test.memory.Test&quot;);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+</code></pre>
+<pre><code class="language-java">package com.paddx.test.memory;
+ 
+public class Test {}
+</code></pre>
+<p>运行结果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619319159980.png" alt="" loading="lazy"></figure>
+<p>本例中使用的<code>JDK</code>版本是1.7，指定的<code>PermGen</code>区的大小为<code>8M</code>。通过每次生成不同<code>URLClassLoader</code>对象加载Test类，从而生成不同的类对象，这样就能看到我们熟悉的<code>“java.lang.OutOfMemoryError: PermGen space”</code>异常了。这里之所以采用<code>JDK 1.7</code>，是因为在<code>JDK 1.8</code>中，<code>HotSpot</code>已经没有<code>“PermGen space”</code>这个区间了，取而代之是一个叫做<code>Metaspace(元空间)</code>的东西。下面我们就来看看<code>Metaspace</code>与<code>PermGen space</code>的区别。</p>
+<h3 id="metaspace元空间">Metaspace(元空间)</h3>
+<p>其实，移除永久代的工作从<code>JDK 1.7</code>就开始了。<code>JDK 1.7</code>中，存储在永久代的部分数据就已经转移到<code>Java Heap</code>或者<code>Native Heap</code>。但永久代仍存在于<code>JDK 1.7</code>中，并没有完全移除，譬如符号引用(Symbols)转移到了native heap；字面量(interned strings)转移到了Java heap；类的静态变量(class statics)转移到了Java heap。我们可以通过一段程序来比较<code>JDK 1.6</code>、<code>JDK 1.7</code>与<code>JDK 1.8</code>的区别，以字符串常量为例：</p>
+<pre><code class="language-java">package com.paddx.test.memory;
+ 
+import java.util.ArrayList;
+import java.util.List;
+ 
+public class StringOomMock {
+	static String base = &quot;string&quot;;
+	public static void main(String[] args) {
+		List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+		for (int i = 0; i &lt; Integer.MAX_VALUE; i++) {
+			String str = base + base;
+			base = str;
+			list.add(str.intern());
+		}
+	}
+}
+</code></pre>
+<p>这段程序以2的指数级不断的生成新的字符串，这样可以比较快速的消耗内存。我们通过<code>JDK 1.6</code>、<code>JDK 1.7</code>和<code>JDK 1.8</code>分别运行：</p>
+<p><code>JDK 1.6</code>的运行结果：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1619319168920.png" alt="" loading="lazy"></figure>
+<p><code>JDK 1.7</code>的运行结果：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1619319175662.png" alt="" loading="lazy"></figure>
+<p><code>JDK 1.8</code>的运行结果：</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1619319183606.png" alt="" loading="lazy"></figure>
+<p>从上述结果可以看出，<code>JDK 1.6</code>下，会出现<code>“PermGen space”</code>的内存溢出，而在<code>JDK 1.7</code>和<code>JDK 1.8</code>中，会出现堆内存溢出，并且<code>JDK 1.8</code>中参数<code>PermSize</code>和<code>MaxPermSize</code>已经失效。因此，可以大致验证<code>JDK 1.7</code>和<code>JDK 1.8</code>中将字符串常量由永久代转移到堆中，并且<code>JDK 1.8</code>中已经不存在永久代的结论。现在我们来看一看元空间到底是一个什么东西？</p>
+<p><code>JDK1.8</code>对<code>JVM</code>架构的改造将类元数据放到本地内存中，另外，将常量池和静态变量放到Java堆里。<code>HotSpot VM</code>将会为类的元数据明确分配和释放本地内存。在这种架构下，类元信息就突破了原来<code>-XX:MaxPermSize</code>的限制，现在可以使用更多的本地内存。这样就从一定程度上解决了原来在运行时生成大量类造成经常<code>Full GC</code>问题，如运行时使用反射、代理等。所以升级以后Java堆空间可能会增加。</p>
+<p>元空间的本质和永久代类似，都是对<code>JVM</code>规范中方法区的实现。不过元空间与永久代之间的最大区别在于：元空间并不在虚拟机中，而是使用本地内存。因此，默认情况下，元空间的大小仅受本地内存限制，但可以通过以下参数指定元空间的大小：</p>
+<p><code>-XX:MetaspaceSize</code>，初始空间大小，达到该值就会触发垃圾收集进行类型卸载，同时GC会对改值进行调整：如果释放了大量的空间，就适当降低该值；如果释放了很少的空间，那么在不超过<code>MaxMetaspaceSize</code>时，适当提高该值。</p>
+<p><code>-XX:MaxMetaspaceSize</code>，最大空间，默认是没有限制的。</p>
+<p>除了上面的两个指定大小的选项外，还有两个与<code>GC</code>相关的属性：</p>
+<p><code>-XX:MinMetaspaceFreeRatio</code>，在<code>GC</code>之后，最小的<code>Metaspace</code>剩余空间容量的百分比，减少为分配空间所导致的垃圾收集。</p>
+<p><code>-XX:MaxMetaspaceFreeRatio</code>，在<code>GC</code>之后，最大的<code>Metaspace</code>剩余空间容量的百分比，减少为释放空间所导致的垃圾收集。</p>
+<p>现在我们在<code>JDK 1.8</code>重新运行一下上面第二部分<code>(PermGen(永久代))</code>的代码，不过这次不再指定<code>PermSize</code>和<code>MaxPermSize</code>。而是制定<code>MetaspaceSize</code>和<code>MaxMetaspaceSize</code>的大小。输出结果如下：</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1619319190434.png" alt="" loading="lazy"></figure>
+<p>从输出结果，我们可以看出，这次不再出现永久代溢出，而是出现元空间的溢出。</p>
+<p><strong>四、总结</strong></p>
+<p>通过上面的分析，大家应该大致了解了<code>JVM</code>的内存划分，也清楚了<code>JDK 1.8</code>中永久代向元空间的转换。不过大家应该有一个疑问，就是为什么要做这个转换？以下为大家总结几点原因：</p>
+<ol>
+<li>字符串在永久代中，容易出现性能问题和内存溢出。</li>
+<li>类及方法的信息等比较难确定大小，因此对于永久代的大小指定比较困难，太小容易出现永久代溢出，太大则容易出现老年代溢出。</li>
+<li>永久代会为<code>GC</code>带来不必要的复杂度，并且回收效率偏低。</li>
+<li>Oracle可能会将<code>HotSpot</code>与<code>JRockit</code>合二为一。</li>
+</ol>
+<blockquote>
+<p>作者：liuxiaopeng<br>
+博客地址：https://www.cnblogs.com/paddix/p/5309550.html</p>
+</blockquote>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#jvm%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B">JVM内存模型</a>
+<ul>
+<li><a href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88">虚拟机栈：</a></li>
+<li><a href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88">本地方法栈：</a></li>
+<li><a href="#pc%E5%AF%84%E5%AD%98%E5%99%A8">PC寄存器：</a></li>
+<li><a href="#%E5%A0%86">堆 ：</a></li>
+<li><a href="#%E6%96%B9%E6%B3%95%E5%8C%BA">方法区：</a></li>
+</ul>
+</li>
+<li><a href="#permgen%E6%B0%B8%E4%B9%85%E4%BB%A3">PermGen(永久代)</a>
+<ul>
+<li><a href="#metaspace%E5%85%83%E7%A9%BA%E9%97%B4">Metaspace(元空间)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/jVTlR3ljT/">
+                  <span class="post-title">
+                     漫画：什么是B+树？&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/8iu5aa5DN/">
+                   <span class="post-title">
+                      JVM 的核心知识梳理&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

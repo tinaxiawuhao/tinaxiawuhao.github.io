@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>阻塞队列BlockingQueue | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="阻塞队列BlockingQueue | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="阻塞队列BlockingQueue" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/volSqv4Kf/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>阻塞队列BlockingQueue</h1>
+              <span class="meta">
+                Posted on
+                2021-09-08，9 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/volSqv4Kf.png" alt="封面图">
+          </img>
+          
+          <h2 id="为什么要使用阻塞队列">为什么要使用阻塞队列</h2>
+<p>之前，介绍了一下 ThreadPoolExecutor 的各参数的含义（<a href="https://tianxiawuhao.github.io/post/y8VkHlUlp">线程池ThreadPoolExecutor</a>），其中有一个 BlockingQueue，它是一个阻塞队列。那么，小伙伴们有没有想过，为什么此处的线程池要用阻塞队列呢？</p>
+<p>我们知道队列是先进先出的。当放入一个元素的时候，会放在队列的末尾，取出元素的时候，会从队头取。那么，当队列为空或者队列满的时候怎么办呢。</p>
+<p>这时，阻塞队列，会自动帮我们处理这种情况。</p>
+<p>当阻塞队列为空的时候，从队列中取元素的操作就会被阻塞。当阻塞队列满的时候，往队列中放入元素的操作就会被阻塞。</p>
+<p>而后，一旦空队列有数据了，或者满队列有空余位置时，被阻塞的线程就会被自动唤醒。</p>
+<p>这就是阻塞队列的好处，你不需要关心线程何时被阻塞，也不需要关心线程何时被唤醒，一切都由阻塞队列自动帮我们完成。我们只需要关注具体的业务逻辑就可以了。</p>
+<p>而这种阻塞队列经常用在生产者消费者模式中。（可参看：<a href="https://tianxiawuhao.github.io/post/5QxJ3UtmK">手写一个生产者消费者模式</a>）</p>
+<h2 id="常用的阻塞队列">常用的阻塞队列</h2>
+<p>那么，一般我们用到的阻塞队列有哪些呢。下面，通过idea的类图，列出来常用的阻塞队列，然后一个一个讲解（不懂怎么用的，可以参考这篇文章：<a href="https://blog.csdn.net/qq_26542493/article/details/104512954">怎么用IDEA快速查看类图关系</a>）。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1631086948386.jpg" alt="" loading="lazy"></figure>
+<p>阻塞队列中，所有常用的方法都在 BlockingQueue 接口中定义。如</p>
+<p>插入元素的方法： put，offer，add。移除元素的方法： remove，poll，take。</p>
+<p>它们有四种不同的处理方式，第一种是在失败时抛出异常，第二种是在失败时返回特殊值，第三种是一直阻塞当前线程，最后一种是在指定时间内阻塞，否则返回特殊值。（以上特殊值，是指在插入元素时，失败返回false，在取出元素时，失败返回null）</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>抛异常</th>
+<th>特殊值</th>
+<th>阻塞</th>
+<th>超时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>插入</td>
+<td>add(e)</td>
+<td>offer(e)</td>
+<td>put(e)</td>
+<td>offer(e,time,unit)</td>
+</tr>
+<tr>
+<td>移除</td>
+<td>remove()</td>
+<td>poll()</td>
+<td>take()</td>
+<td>poll(time,unit)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>1） ArrayBlockingQueue</strong></p>
+<p>这是一个由数组结构组成的有界阻塞队列。首先看下它的构造方法，有三个。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1631086962267.jpg" alt="" loading="lazy"></figure>
+<p>第一个可以指定队列的大小，第二个还可以指定队列是否公平，不指定的话，默认是非公平。它是使用 ReentrantLock 的公平锁和非公平锁实现的（后续讲解AQS时，会详细说明）。</p>
+<p>简单理解就是，ReentrantLock 内部会维护一个有先后顺序的等待队列，假如有五个任务一起过来，都被阻塞了。如果是公平的，则等待队列中等待最久的任务就会先进入阻塞队列。如果是非公平的，那么这五个线程就需要抢锁，谁先抢到，谁就先进入阻塞队列。</p>
+<p>第三个构造方法，是把一个集合的元素初始化到阻塞队列中。</p>
+<p>另外，ArrayBlockingQueue 没有实现读写分离，也就是说，读和写是不能同时进行的。因为，它读写时用的是同一把锁，如下图所示：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1631086978381.jpg" alt="" loading="lazy"></figure>
+<p><strong>2) LinkedBlockingQueue</strong></p>
+<p>这是一个由链表结构组成的有界阻塞队列。它的构造方法有三个。</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1631086987611.jpg" alt="" loading="lazy"></figure>
+<p>可以看到和 ArrayBlockingQueue 的构造方法大同小异，不过是，LinkedBlockingQueue 可以不指定队列的大小，默认值是 Integer.MAX_VALUE 。</p>
+<p>但是，最好不要这样做，建议指定一个固定大小。因为，如果生产者的速度比消费者的速度大的多的情况下，这会导致阻塞队列一直膨胀，直到系统内存被耗尽（此时，还没达到队列容量的最大值）。</p>
+<p>此外，LinkedBlockingQueue 实现了读写分离，可以实现数据的读和写互不影响，这在高并发的场景下，对于效率的提高无疑是非常巨大的。</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1631086997560.jpg" alt="" loading="lazy"></figure>
+<p><strong>3） SynchronousQueue</strong></p>
+<p>这是一个没有缓冲的无界队列。什么意思，看一下它的 size 方法：</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1631087010961.jpg" alt="" loading="lazy"></figure>
+<p>总是返回 0 ，因为它是一个没有容量的队列。</p>
+<p>当执行插入元素的操作时，必须等待一个取出操作。也就是说，put元素的时候，必须等待 take 操作。</p>
+<p>那么，有的同学就好奇了，这没有容量，还叫什么队列啊，这有什么意义呢。</p>
+<p>我的理解是，这适用于并发任务不大，而且生产者和消费者的速度相差不多的场景下，直接把生产者和消费者对接，不用经过队列的入队出队这一系列操作。所以，效率上会高一些。</p>
+<p>可以去查看一下 Excutors.newCachedThreadPool 方法用的就是这种队列。</p>
+<p>这个队列有两个构造方法，用于传入是公平还是非公平，默认是非公平。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1631087023429.jpg" alt="" loading="lazy"></figure>
+<p><strong>4）PriorityBlockingQueue</strong></p>
+<p>这是一个支持优先级排序的无界队列。有四个构造方法：</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1631087030940.jpg" alt="" loading="lazy"></figure>
+<p>可以指定初始容量大小（注意初始容量并不代表最大容量），或者不指定，默认大小为 11。也可以传入一个比较器，把元素按一定的规则排序，不指定比较器的话，默认是自然顺序。</p>
+<p>PriorityBlockingQueue 是基于二叉树最小堆实现的，每当取元素的时候，就会把优先级最高的元素取出来。我们测试一下：</p>
+<pre><code class="language-java">public class Person {
+    private int id;
+    private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Person{&quot; +
+                &quot;id=&quot; + id +
+                &quot;, name='&quot; + name + '\'' +
+                '}';
+    }
+
+    public Person(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Person() {
+    }
+}
+
+public class QueueTest {
+    public static void main(String[] args) throws InterruptedException {
+
+        PriorityBlockingQueue&lt;Person&gt; priorityBlockingQueue = new PriorityBlockingQueue&lt;&gt;(1, new Comparator&lt;Person&gt;() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return o1.getId() - o2.getId();
+            }
+        });
+
+        Person p2 = new Person(7, &quot;李四&quot;);
+        Person p1 = new Person(9, &quot;张三&quot;);
+        Person p3 = new Person(6, &quot;王五&quot;);
+        Person p4 = new Person(2, &quot;赵六&quot;);
+        priorityBlockingQueue.add(p1);
+        priorityBlockingQueue.add(p2);
+        priorityBlockingQueue.add(p3);
+        priorityBlockingQueue.add(p4);
+
+		//由于二叉树最小堆实现，用这种方式直接打印元素，不能保证有序
+        System.out.println(priorityBlockingQueue);
+        System.out.println(priorityBlockingQueue.take());
+        System.out.println(priorityBlockingQueue);
+        System.out.println(priorityBlockingQueue.take());
+        System.out.println(priorityBlockingQueue);
+
+    }
+}
+</code></pre>
+<p>打印结果：</p>
+<pre><code class="language-json">[Person{id=2, name='赵六'}, Person{id=6, name='王五'}, Person{id=7, name='李四'}, Person{id=9, name='张三'}]
+Person{id=2, name='赵六'}
+[Person{id=6, name='王五'}, Person{id=9, name='张三'}, Person{id=7, name='李四'}]
+Person{id=6, name='王五'}
+[Person{id=7, name='李四'}, Person{id=9, name='张三'}]
+</code></pre>
+<p>可以看到，第一次取出的是 id 最小值 2， 第二次取出的是 6 。</p>
+<p><strong>5）DelayQueue</strong></p>
+<p>这是一个带有延迟时间的无界阻塞队列。队列中的元素，只有等延时时间到了，才能取出来。此队列一般用于过期数据的删除，或任务调度。以下，模拟一下定长时间的数据删除。</p>
+<p>首先定义数据元素，需要实现 Delayed 接口，实现 getDelay 方法用于计算剩余时间，和 CompareTo方法用于优先级排序。</p>
+<pre><code class="language-java">public class DelayData implements Delayed {
+
+    private int id;
+    private String name;
+    //数据到期时间
+    private long endTime;
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public DelayData(int id, String name, long endTime) {
+        this.id = id;
+        this.name = name;
+        //需要把传入的时间endTime 加上当前系统时间，作为数据的到期时间
+        this.endTime = endTime + System.currentTimeMillis();
+    }
+
+    public DelayData() {
+    }
+
+    @Override
+    public long getDelay(TimeUnit unit) {
+        return this.endTime - System.currentTimeMillis();
+    }
+
+    @Override
+    public int compareTo(Delayed o) {
+        return o.getDelay(this.timeUnit) - this.getDelay(this.timeUnit) &lt; 0 ? 1: -1;
+    }
+
+}
+</code></pre>
+<p>模拟三条数据，分别设置不同的过期时间：</p>
+<pre><code class="language-java">public class ProcessData {
+    public static void main(String[] args) throws InterruptedException {
+        DelayQueue&lt;DelayData&gt; delayQueue = new DelayQueue&lt;&gt;();
+
+        DelayData a = new DelayData(5, &quot;A&quot;, 5000);
+        DelayData b = new DelayData(8, &quot;B&quot;, 8000);
+        DelayData c = new DelayData(2, &quot;C&quot;, 2000);
+
+        delayQueue.add(a);
+        delayQueue.add(b);
+        delayQueue.add(c);
+
+        System.out.println(&quot;开始计时时间:&quot; + System.currentTimeMillis());
+        for (int i = 0; i &lt; 3; i++) {
+            DelayData data = delayQueue.take();
+            System.out.println(&quot;id:&quot;+data.getId()+&quot;，数据:&quot;+data.getName()+&quot;被移除，当前时间:&quot;+System.currentTimeMillis());
+        }
+    }
+}
+</code></pre>
+<p>最后结果：</p>
+<pre><code class="language-json">开始计时时间:1583333583216
+id:2，数据:C被移除，当前时间:1583333585216
+id:5，数据:A被移除，当前时间:1583333588216
+id:8，数据:B被移除，当前时间:1583333591216
+</code></pre>
+<p>可以看到，数据是按过期时间长短，按顺序移除的。C的时间最短 2 秒，然后过了 3 秒 A 也过期，再过 3 秒，B 过期。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97">为什么要使用阻塞队列</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97">常用的阻塞队列</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/bGEB86JC1/">
+                  <span class="post-title">
+                    Redis的缓存淘汰策略LRU&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/5QxJ3UtmK/">
+                   <span class="post-title">
+                     手写一个生产者消费者模式&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

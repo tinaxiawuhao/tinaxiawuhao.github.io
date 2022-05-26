@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>从零构建第一个 Flink 应用 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="从零构建第一个 Flink 应用 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="从零构建第一个 Flink 应用" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/build-first-flink-application/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
+                
+              </span>
+              <h1>从零构建第一个 Flink 应用</h1>
+              <span class="meta">
+                Posted on
+                2021-04-05，8 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/build-first-flink-application.png" alt="封面图">
+          </img>
+          
+          <!-- more -->
+<blockquote>
+<p>原文：http://wuchong.me/blog/2018/11/07/5-minutes-build-first-flink-application/<br>
+作者：云邪（Jark）</p>
+</blockquote>
+<p>在本文中，我们将从零开始，教您如何构建第一个 Flink 应用程序。</p>
+<h2 id="开发环境准备">开发环境准备</h2>
+<p>Flink 可以运行在 Linux, Max OS X, 或者是 Windows 上。为了开发 Flink 应用程序，在本地机器上需要有 Java 8.x 和 maven 环境。</p>
+<p>如果有 Java 8 环境，运行下面的命令会输出如下版本信息：</p>
+<pre><code class="language-sh">$ java -version
+java version &quot;1.8.0_65&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_65-b17)
+Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)
+</code></pre>
+<p>如果有 maven 环境，运行下面的命令会输出如下版本信息：</p>
+<pre><code class="language-sh">$ mvn -version
+Apache Maven 3.5.4 (1edded0938998edf8bf061f1ceb3cfdeccf443fe; 2018-06-18T02:33:14+08:00)
+Maven home: /Users/wuchong/dev/maven
+Java version: 1.8.0_65, vendor: Oracle Corporation, runtime: /Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home/jre
+Default locale: zh_CN, platform encoding: UTF-8
+OS name: &quot;mac os x&quot;, version: &quot;10.13.6&quot;, arch: &quot;x86_64&quot;, family: &quot;mac&quot;
+</code></pre>
+<p>另外我们推荐使用 ItelliJ IDEA （社区免费版已够用）作为 Flink 应用程序的开发 IDE。Eclipse 虽然也可以，但是 Eclipse 在 Scala 和 Java 混合型项目下会有些已知问题，所以不太推荐 Eclipse。下一章节，我们会介绍如何创建一个 Flink 工程并将其导入 ItelliJ IDEA。</p>
+<p>创建 Maven 项目<br>
+我们将使用 Flink Maven Archetype 来创建我们的项目结构和一些初始的默认依赖。在你的工作目录下，运行如下命令来创建项目：</p>
+<pre><code class="language-sh">mvn archetype:generate \
+    -DarchetypeGroupId=org.apache.flink \
+    -DarchetypeArtifactId=flink-quickstart-java \
+    -DarchetypeVersion=1.6.1 \
+    -DgroupId=my-flink-project \
+    -DartifactId=my-flink-project \
+    -Dversion=0.1 \
+    -Dpackage=myflink \
+    -DinteractiveMode=false
+</code></pre>
+<p>你可以编辑上面的 groupId, artifactId, package 成你喜欢的路径。使用上面的参数，Maven 将自动为你创建如下所示的项目结构：</p>
+<pre><code>$ tree my-flink-project
+my-flink-project
+├── pom.xml
+└── src
+    └── main
+        ├── java
+        │   └── myflink
+        │       ├── BatchJob.java
+        │       └── StreamingJob.java
+        └── resources
+            └── log4j.properties
+</code></pre>
+<p>我们的 pom.xml 文件已经包含了所需的 Flink 依赖，并且在 src/main/java 下有几个示例程序框架。接下来我们将开始编写第一个 Flink 程序。</p>
+<h2 id="编写-flink-程序">编写 Flink 程序</h2>
+<p>启动 IntelliJ IDEA，选择 “Import Project”（导入项目），选择 my-flink-project 根目录下的 pom.xml。根据引导，完成项目导入。</p>
+<p>在 src/main/java/myflink 下创建 <code>SocketWindowWordCount.java</code> 文件：</p>
+<pre><code class="language-java">package myflink;
+
+public class SocketWindowWordCount {
+
+  public static void main(String[] args) throws Exception {
+
+  }
+}
+</code></pre>
+<p>现在这程序还很基础，我们会一步步往里面填代码。注意下文中我们不会将 import 语句也写出来，因为 IDE 会自动将他们添加上去。在本节末尾，我会将完整的代码展示出来，如果你想跳过下面的步骤，可以直接将最后的完整代码粘到编辑器中。</p>
+<p>Flink 程序的第一步是创建一个 <code>StreamExecutionEnvironment</code>。这是一个入口类，可以用来设置参数和创建数据源以及提交任务。所以让我们把它添加到 main 函数中：</p>
+<pre><code class="language-java">StreamExecutionEnvironment see = StreamExecutionEnvironment.getExecutionEnvironment();
+</code></pre>
+<p>下一步我们将创建一个从本地端口号 9000 的 socket 中读取数据的数据源：</p>
+<pre><code class="language-java">DataStream&lt;String&gt; text = env.socketTextStream(&quot;localhost&quot;, 9000, &quot;\n&quot;);
+</code></pre>
+<p>这创建了一个字符串类型的 DataStream。DataStream 是 Flink 中做流处理的核心 API，上面定义了非常多常见的操作（如，过滤、转换、聚合、窗口、关联等）。在本示例中，我们感兴趣的是每个单词在特定时间窗口中出现的次数，比如说5秒窗口。为此，我们首先要将字符串数据解析成单词和次数（使用<code>Tuple2&lt;String, Integer&gt;</code>表示），第一个字段是单词，第二个字段是次数，次数初始值都设置成了1。我们实现了一个 flatmap 来做解析的工作，因为一行数据中可能有多个单词。</p>
+<pre><code class="language-java">DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; wordCounts = text
+        .flatMap(new FlatMapFunction&lt;String, Tuple2&lt;String, Integer&gt;&gt;() {
+          @Override
+          public void flatMap(String value, Collector&lt;Tuple2&lt;String, Integer&gt;&gt; out) {
+            for (String word : value.split(&quot;\\s&quot;)) {
+              out.collect(Tuple2.of(word, 1));
+            }
+          }
+        });
+</code></pre>
+<p>接着我们将数据流按照单词字段（即0号索引字段）做分组，这里可以简单地使用 <code>keyBy(int index)</code> 方法，得到一个以单词为 key 的<code>Tuple2&lt;String, Integer&gt;</code>数据流。然后我们可以在流上指定想要的窗口，并根据窗口中的数据计算结果。在我们的例子中，我们想要每5秒聚合一次单词数，每个窗口都是从零开始统计的：。</p>
+<pre><code class="language-java">DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; windowCounts = wordCounts
+        .keyBy(0)
+        .timeWindow(Time.seconds(5))
+        .sum(1);
+</code></pre>
+<p>第二个调用的<code>.timeWindow()</code>指定我们想要5秒的翻滚窗口（Tumble）。第三个调用为每个key每个窗口指定了sum聚合函数，在我们的例子中是按照次数字段（即1号索引字段）相加。得到的结果数据流，将每5秒输出一次这5秒内每个单词出现的次数。</p>
+<p>最后一件事就是将数据流打印到控制台，并开始执行：</p>
+<pre><code class="language-java">windowCounts.print().setParallelism(1);
+env.execute(&quot;Socket Window WordCount&quot;);
+</code></pre>
+<p>最后的 <code>env.execute</code> 调用是启动实际Flink作业所必需的。所有算子操作（例如创建源、聚合、打印）只是构建了内部算子操作的图形。只有在execute()被调用时才会在提交到集群上或本地计算机上执行。</p>
+<p>下面是完整的代码，部分代码经过简化（代码在 GitHub 上也能访问到）：</p>
+<pre><code class="language-java">package myflink;
+
+import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.util.Collector;
+
+public class SocketWindowWordCount {
+
+  public static void main(String[] args) throws Exception {
+
+    // 创建 execution environment
+    final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+    // 通过连接 socket 获取输入数据，这里连接到本地9000端口，如果9000端口已被占用，请换一个端口
+    DataStream&lt;String&gt; text = env.socketTextStream(&quot;localhost&quot;, 9000, &quot;\n&quot;);
+
+    // 解析数据，按 word 分组，开窗，聚合
+    DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; windowCounts = text
+        .flatMap(new FlatMapFunction&lt;String, Tuple2&lt;String, Integer&gt;&gt;() {
+          @Override
+          public void flatMap(String value, Collector&lt;Tuple2&lt;String, Integer&gt;&gt; out) {
+            for (String word : value.split(&quot;\\s&quot;)) {
+              out.collect(Tuple2.of(word, 1));
+            }
+          }
+        })
+        .keyBy(0)
+        .timeWindow(Time.seconds(5))
+        .sum(1);
+
+    // 将结果打印到控制台，注意这里使用的是单线程打印，而非多线程
+    windowCounts.print().setParallelism(1);
+
+    env.execute(&quot;Socket Window WordCount&quot;);
+  }
+}
+</code></pre>
+<h2 id="运行程序">运行程序</h2>
+<p>要运行示例程序，首先我们在终端启动 netcat 获得输入流：</p>
+<pre><code class="language-sh">nc -lk 9000
+</code></pre>
+<p>如果是 Windows 平台，可以通过 <u>https://nmap.org/ncat/ </u>安装 ncat 然后运行：</p>
+<pre><code class="language-sh">ncat -lk 9000
+</code></pre>
+<p>然后直接运行<code>SocketWindowWordCount</code>的 main 方法。</p>
+<p>只需要在 netcat 控制台输入单词，就能在 <code>SocketWindowWordCount</code> 的输出控制台看到每个单词的词频统计。如果想看到大于1的计数，请在5秒内反复键入相同的单词。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1617955861093.png" alt="" loading="lazy"></figure>
+<p>Cheers! 🎉</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">开发环境准备</a></li>
+<li><a href="#%E7%BC%96%E5%86%99-flink-%E7%A8%8B%E5%BA%8F">编写 Flink 程序</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F">运行程序</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+          
+            
+               <hr />
+           
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/use-flink-calculate-hot-items/">
+                   <span class="post-title">
+                     Flink 零基础实战教程：如何计算实时热门商品&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

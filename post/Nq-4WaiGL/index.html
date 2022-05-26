@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>mysql概述一 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="mysql概述一 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="mysql概述一" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/Nq-4WaiGL/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/8_sUkscaB/" class="tag">mysql</a>
+                
+              </span>
+              <h1>mysql概述一</h1>
+              <span class="meta">
+                Posted on
+                2021-05-18，24 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/Nq-4WaiGL.png" alt="封面图">
+          </img>
+          
+          <h3 id="为什么要使用数据库">为什么要使用数据库</h3>
+<ol>
+<li>
+<p><strong>数据保存在内存</strong></p>
+<p>优点： 存取速度快</p>
+<p>缺点： 数据不能永久保存</p>
+</li>
+<li>
+<p><strong>数据保存在文件</strong></p>
+<p>优点： 数据永久保存</p>
+<p>缺点：1）速度比内存操作慢，频繁的IO操作。</p>
+<p>​			2）查询数据不方便</p>
+</li>
+<li>
+<p><strong>数据保存在数据库</strong></p>
+<p>1）数据永久保存</p>
+<p>2）使用SQL语句，查询方便效率高。</p>
+<p>3）管理数据方便</p>
+</li>
+</ol>
+<h3 id="sql">SQL</h3>
+<blockquote>
+<p>结构化查询语言(Structured Query Language)简称SQL，是一种数据库查询语言。</p>
+</blockquote>
+<p>作用：用于存取数据、查询、更新和管理关系数据库系统。</p>
+<h3 id="mysql">MySQL</h3>
+<blockquote>
+<p>MySQL是一个关系型数据库管理系统，由瑞典MySQL AB 公司开发，属于 Oracle 旗下产品。MySQL 是最流行的关系型数据库管理系统之一，在 WEB 应用方面，MySQL是最好的 RDBMS (Relational Database Management System，关系数据库管理系统) 应用软件之一。在Java企业级开发中非常常用，因为 MySQL 是开源免费的，并且方便扩展。</p>
+</blockquote>
+<h3 id="数据库三大范式是什么">数据库三大范式是什么</h3>
+<ol>
+<li>
+<p>第一范式：每个列都不可以再拆分。</p>
+</li>
+<li>
+<p>第二范式：在第一范式的基础上，非主键列完全依赖于主键，而不能是依赖于主键的一部分。</p>
+</li>
+<li>
+<p>第三范式：在第二范式的基础上，非主键列只依赖于主键，不依赖于其他非主键。</p>
+</li>
+</ol>
+<p>在设计数据库结构的时候，要尽量遵守三范式，如果不遵守，必须有足够的理由。比如性能。事实上我们经常会为了性能而妥协数据库的设计。</p>
+<h3 id="mysql有关权限的表">mysql有关权限的表</h3>
+<p>MySQL服务器通过权限表来控制用户对数据库的访问，权限表存放在mysql数据库里，由mysql_install_db脚本初始化。这些权限表分别user，db，table_priv，columns_priv和host。下面分别介绍一下这些表的结构和内容：</p>
+<ul>
+<li>user权限表：记录允许连接到服务器的用户帐号信息，里面的权限是全局级的。</li>
+<li>db权限表：记录各个帐号在各个数据库上的操作权限。</li>
+<li>table_priv权限表：记录数据表级的操作权限。</li>
+<li>columns_priv权限表：记录数据列级的操作权限。</li>
+<li>host权限表：配合db权限表对给定主机上数据库级操作权限作更细致的控制。这个权限表不受GRANT和REVOKE语句的影响。</li>
+</ul>
+<h3 id="mysql的binlog有几种录入格式分别有什么区别">MySQL的binlog有几种录入格式？分别有什么区别？</h3>
+<p>有三种格式，statement，row和mixed。</p>
+<ul>
+<li>statement模式下，每一条会修改数据的sql都会记录在binlog中。不需要记录每一行的变化，减少了binlog日志量，节约了IO，提高性能。由于sql的执行是有上下文的，因此在保存的时候需要保存相关的信息，同时还有一些使用了函数之类的语句无法被记录复制。</li>
+<li>row级别下，不记录sql语句上下文相关信息，仅保存哪条记录被修改。记录单元为每一行的改动，基本是可以全部记下来但是由于很多操作，会导致大量行的改动(比如alter table)，因此这种模式的文件保存的信息太多，日志量太大。</li>
+<li>mixed，一种折中的方案，普通操作使用statement记录，当无法使用statement的时候使用row。</li>
+</ul>
+<p>此外，新版的MySQL中对row级别也做了一些优化，当表结构发生变化的时候，会记录语句而不是逐行记录。</p>
+<h3 id="数据类型">数据类型</h3>
+<table>
+<thead>
+<tr>
+<th><strong>分类</strong></th>
+<th><strong>类型名称</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>整数类型</strong></td>
+<td>tinyInt</td>
+<td>很小的整数(8位二进制)</td>
+</tr>
+<tr>
+<td></td>
+<td>smallint</td>
+<td>小的整数(16位二进制)</td>
+</tr>
+<tr>
+<td></td>
+<td>mediumint</td>
+<td>中等大小的整数(24位二进制)</td>
+</tr>
+<tr>
+<td></td>
+<td>int(integer)</td>
+<td>普通大小的整数(32位二进制)</td>
+</tr>
+<tr>
+<td><strong>小数类型</strong></td>
+<td>float</td>
+<td>单精度浮点数</td>
+</tr>
+<tr>
+<td></td>
+<td>double</td>
+<td>双精度浮点数</td>
+</tr>
+<tr>
+<td></td>
+<td>decimal(m,d)</td>
+<td>压缩严格的定点数</td>
+</tr>
+<tr>
+<td><strong>日期类型</strong></td>
+<td>year</td>
+<td>YYYY 1901~2155</td>
+</tr>
+<tr>
+<td></td>
+<td>time</td>
+<td>HH:MM:SS -838:59:59~838:59:59</td>
+</tr>
+<tr>
+<td></td>
+<td>date</td>
+<td>YYYY-MM-DD 1000-01-01~9999-12-3</td>
+</tr>
+<tr>
+<td></td>
+<td>datetime</td>
+<td>YYYY-MM-DD HH:MM:SS 1000-01-01 00:00:00~ 9999-12-31 23:59:59</td>
+</tr>
+<tr>
+<td></td>
+<td>timestamp</td>
+<td>YYYY-MM-DD HH:MM:SS 19700101 00:00:01 UTC~2038-01-19 03:14:07UTC</td>
+</tr>
+<tr>
+<td><strong>文本、二进制类型</strong></td>
+<td>CHAR(M)</td>
+<td>M为0~255之间的整数</td>
+</tr>
+<tr>
+<td></td>
+<td>VARCHAR(M)</td>
+<td>M为0~65535之间的整数</td>
+</tr>
+<tr>
+<td></td>
+<td>TINYBLOB</td>
+<td>允许长度0~255字节</td>
+</tr>
+<tr>
+<td></td>
+<td>BLOB</td>
+<td>允许长度0~65535字节</td>
+</tr>
+<tr>
+<td></td>
+<td>MEDIUMBLOB</td>
+<td>允许长度0~167772150字节</td>
+</tr>
+<tr>
+<td></td>
+<td>LONGBLOB</td>
+<td>允许长度0~4294967295字节</td>
+</tr>
+<tr>
+<td></td>
+<td>TINYTEXT</td>
+<td>允许长度0~255字节</td>
+</tr>
+<tr>
+<td></td>
+<td>TEXT</td>
+<td>允许长度0~65535字节</td>
+</tr>
+<tr>
+<td></td>
+<td>MEDIUMTEXT</td>
+<td>允许长度0~167772150字节</td>
+</tr>
+<tr>
+<td></td>
+<td>LONGTEXT</td>
+<td>允许长度0~4294967295字节</td>
+</tr>
+<tr>
+<td></td>
+<td>VARBINARY(M)</td>
+<td>允许长度0~M个字节的变长字节字符串</td>
+</tr>
+<tr>
+<td></td>
+<td>BINARY(M)</td>
+<td>允许长度0~M个字节的定长字节字符串</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>1、整数类型，包括TINYINT、SMALLINT、MEDIUMINT、INT、BIGINT，分别表示1字节、2字节、3字节、4字节、8字节整数。任何整数类型都可以加上UNSIGNED属性，表示数据是无符号的，即非负整数。</p>
+<p>长度：整数类型可以被指定长度，例如：INT(11)表示长度为11的INT类型。长度在大多数场景是没有意义的，它不会限制值的合法范围，只会影响显示字符的个数，而且需要和UNSIGNED ZEROFILL属性配合使用才有意义。</p>
+<p>例子，假定类型设定为INT(5)，属性为UNSIGNED ZEROFILL，如果用户插入的数据为12的话，那么数据库实际存储数据为00012。</p>
+</li>
+<li>
+<p>2、实数类型，包括FLOAT、DOUBLE、DECIMAL。</p>
+<p>DECIMAL可以用于存储比BIGINT还大的整型，能存储精确的小数。</p>
+<p>而FLOAT和DOUBLE是有取值范围的，并支持使用标准的浮点进行近似计算。</p>
+<p>计算时FLOAT和DOUBLE相比DECIMAL效率更高一些，DECIMAL你可以理解成是用字符串进行处理。</p>
+</li>
+<li>
+<p>3、字符串类型，包括VARCHAR、CHAR、TEXT、BLOB</p>
+<p>VARCHAR用于存储可变长字符串，它比定长类型更节省空间。</p>
+<p>VARCHAR使用额外1或2个字节存储字符串长度。列长度小于255字节时，使用1字节表示，否则使用2字节表示。</p>
+<p>VARCHAR存储的内容超出设置的长度时，内容会被截断。</p>
+<p>CHAR是定长的，根据定义的字符串长度分配足够的空间。</p>
+<p>CHAR会根据需要使用空格进行填充方便比较。</p>
+<p>CHAR适合存储很短的字符串，或者所有值都接近同一个长度。</p>
+<p>CHAR存储的内容超出设置的长度时，内容同样会被截断。</p>
+<p><strong>使用策略：</strong></p>
+<p>对于经常变更的数据来说，CHAR比VARCHAR更好，因为CHAR不容易产生碎片。</p>
+<p>对于非常短的列，CHAR比VARCHAR在存储空间上更有效率。</p>
+<p>使用时要注意只分配需要的空间，更长的列排序时会消耗更多内存。</p>
+<p>尽量避免使用TEXT/BLOB类型，查询时会使用临时表，导致严重的性能开销。</p>
+</li>
+<li>
+<p>4、枚举类型（ENUM），把不重复的数据存储为一个预定义的集合。</p>
+<p>有时可以使用ENUM代替常用的字符串类型。</p>
+<p>ENUM存储非常紧凑，会把列表值压缩到一个或两个字节。</p>
+<p>ENUM在内部存储时，其实存的是整数。</p>
+<p>尽量避免使用数字作为ENUM枚举的常量，因为容易混乱。</p>
+<p>排序是按照内部存储的整数</p>
+</li>
+<li>
+<p>5、日期和时间类型，尽量使用timestamp，空间效率高于datetime，</p>
+<p>用整数保存时间戳通常不方便处理。</p>
+<p>如果需要存储微妙，可以使用bigint存储。</p>
+</li>
+</ul>
+<h3 id="mysql存储引擎">MySQL存储引擎</h3>
+<blockquote>
+<p>存储引擎Storage engine：MySQL中的数据、索引以及其他对象是如何存储的，是一套文件系统的实现。</p>
+</blockquote>
+<p>常用的存储引擎有以下：</p>
+<ul>
+<li><strong>Innodb引擎</strong>：Innodb引擎提供了对数据库ACID事务的支持。并且还提供了行级锁和外键的约束。它的设计的目标就是处理大数据容量的数据库系统。</li>
+<li><strong>MyIASM引擎</strong>(原本Mysql的默认引擎)：不提供事务的支持，也不支持行级锁和外键。</li>
+<li><strong>MEMORY引擎</strong>：所有的数据都在内存中，数据的处理速度快，但是安全性不高。</li>
+</ul>
+<h4 id="myisam与innodb区别">MyISAM与InnoDB区别</h4>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>MyISAM</th>
+<th>Innodb</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存储结构</td>
+<td>每张表被存放在三个文件：frm-表格定义、MYD(MYData)-数据文件、MYI(MYIndex)-索引文件</td>
+<td>所有的表都保存在同一个数据文件中（也可能是多个文件，或者是独立的表空间文件），InnoDB表的大小只受限于操作系统文件的大小，一般为2GB</td>
+</tr>
+<tr>
+<td>存储空间</td>
+<td>MyISAM可被压缩，存储空间较小</td>
+<td>InnoDB的表需要更多的内存和存储，它会在主内存中建立其专用的缓冲池用于高速缓冲数据和索引</td>
+</tr>
+<tr>
+<td>可移植性、备份及恢复</td>
+<td>由于MyISAM的数据是以文件的形式存储，所以在跨平台的数据转移中会很方便。在备份和恢复时可单独针对某个表进行操作</td>
+<td>免费的方案可以是拷贝数据文件、备份 binlog，或者用 mysqldump，在数据量达到几十G的时候就相对痛苦了</td>
+</tr>
+<tr>
+<td>文件格式</td>
+<td>数据和索引是分别存储的，数据.MYD，索引.MYI</td>
+<td>数据和索引是集中存储的，.ibd</td>
+</tr>
+<tr>
+<td>记录存储顺序</td>
+<td>按记录插入顺序保存</td>
+<td>按主键大小有序插入</td>
+</tr>
+<tr>
+<td>外键</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>事务</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>锁支持（锁是避免资源争用的一个机制，MySQL锁对用户几乎是透明的）</td>
+<td>表级锁定</td>
+<td>行级锁定、表级锁定，锁定力度小并发能力高</td>
+</tr>
+<tr>
+<td>SELECT</td>
+<td>MyISAM更优</td>
+<td></td>
+</tr>
+<tr>
+<td>INSERT、UPDATE、DELETE</td>
+<td></td>
+<td>InnoDB更优</td>
+</tr>
+<tr>
+<td>select count(*)</td>
+<td>myisam更快，因为myisam内部维护了一个计数器，可以直接调取。</td>
+<td></td>
+</tr>
+<tr>
+<td>索引的实现方式</td>
+<td>B+树索引，myisam 是堆表</td>
+<td>B+树索引，Innodb 是索引组织表</td>
+</tr>
+<tr>
+<td>哈希索引</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>全文索引</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+</tbody>
+</table>
+<h4 id="myisam索引与innodb索引的区别">MyISAM索引与InnoDB索引的区别？</h4>
+<ul>
+<li>InnoDB索引是聚簇索引，MyISAM索引是非聚簇索引。</li>
+<li>InnoDB的主键索引的叶子节点存储着行数据，因此主键索引非常高效。</li>
+<li>MyISAM索引的叶子节点存储的是行数据地址，需要再寻址一次才能得到数据。</li>
+<li>InnoDB非主键索引的叶子节点存储的是主键和其他带索引的列数据，因此查询时做到覆盖索引会非常高效。</li>
+</ul>
+<h4 id="innodb引擎的4大特性">InnoDB引擎的4大特性</h4>
+<ul>
+<li>
+<p>插入缓冲（Insert Buffer/Change Buffer)</p>
+<p>提升插入性能，change buffering是insert buffer的加强，insert buffer只针对insert有效，change buffering对insert、delete、update(delete+insert)、purge都有效</p>
+<p>只对于非聚集索引（非唯一）的插入和更新有效，对于每一次的插入不是写到索引页中，而是先判断插入的非聚集索引页是否在缓冲池中，如果在则直接插入；若不在，则先放到Insert Buffer 中，再按照一定的频率进行合并操作，再写回disk。这样通常能将多个插入合并到一个操作中，目的还是为了减少随机IO带来性能损耗。</p>
+<p>使用插入缓冲的条件：<br>
+* 非聚集索引<br>
+* 非唯一索引</p>
+<p>Change buffer是作为buffer pool中的一部分存在。<em>Innodb_change_buffering参数缓存所对应的操作：(update会被认为是delete+insert)</em></p>
+<p>innodb_change_buffering，设置的值有：inserts、deletes、purges、changes（inserts和deletes）、all（默认）、none。</p>
+<ul>
+<li>all: 默认值，缓存insert, delete, purges操作</li>
+<li>none: 不缓存</li>
+<li>inserts: 缓存insert操作</li>
+<li>deletes: 缓存delete操作</li>
+<li>changes: 缓存insert和delete操作</li>
+<li>purges: 缓存后台执行的物理删除操作</li>
+</ul>
+<p>可以通过参数控制其使用的大小：<br>
+innodb_change_buffer_max_size，默认是25%，即缓冲池的1/4。最大可设置为50%。<em>当MySQL实例中有大量的修改操作时，要考虑增大</em><strong>innodb_change_buffer_max_size</strong></p>
+<p>上面提过在一定频率下进行合并，那所谓的频率是什么条件？</p>
+<ul>
+<li>1）辅助索引页被读取到缓冲池中。正常的select先检查Insert Buffer是否有该非聚集索引页存在，若有则合并插入。</li>
+<li>2）辅助索引页没有可用空间。空间小于1/32页的大小，则会强制合并操作。</li>
+<li>3）Master Thread 每秒和每10秒的合并操作。</li>
+</ul>
+</li>
+<li>
+<p>二次写(double write)</p>
+<p>Doublewrite缓存是位于系统表空间的存储区域，用来缓存InnoDB的数据页从innodb buffer pool中flush之后并写入到数据文件之前，所以当操作系统或者数据库进程在数据页写磁盘的过程中崩溃，Innodb可以在doublewrite缓存中找到数据页的备份而用来执行crash恢复。数据页写入到doublewrite缓存的动作所需要的IO消耗要小于写入到数据文件的消耗，因为此写入操作会以一次大的连续块的方式写入</p>
+<p>在应用（apply）重做日志前，用户需要一个页的副本，当写入失效发生时，先通过页的副本来还原该页，再进行重做，这就是double write</p>
+<p><strong>doublewrite组成：</strong><br>
+内存中的doublewrite buffer,大小2M。<br>
+物理磁盘上共享表空间中连续的128个页，即2个区（extend），大小同样为2M。</p>
+<p>对缓冲池的脏页进行刷新时，不是直接写磁盘，而是会通过memcpy()函数将脏页先复制到内存中的doublewrite buffer，之后通过doublewrite 再分两次，每次1M顺序地写入共享表空间的物理磁盘上，在这个过程中，因为doublewrite页是连续的，因此这个过程是顺序写的，开销并不是很大。在完成doublewrite页的写入后，再将doublewrite buffer 中的页写入各个 表空间文件中，此时的写入则是离散的。如果操作系统在将页写入磁盘的过程中发生了崩溃，在恢复过程中，innodb可以从共享表空间中的doublewrite中找到该页的一个副本，将其复制到表空间文件，再应用重做日志。</p>
+<figure data-type="image" tabindex="1"><img src="https://img2018.cnblogs.com/blog/1626822/201903/1626822-20190314095034387-1992982436.png" alt="img" loading="lazy"></figure>
+</li>
+<li>
+<p>自适应哈希索引(ahi)</p>
+<p>Adaptive Hash index属性使得InnoDB更像是内存数据库。该属性通过innodb_adapitve_hash_index开启，也可以通过—skip-innodb_adaptive_hash_index参数</p>
+<p>Innodb存储引擎会监控对表上二级索引的查找，如果发现某二级索引被频繁访问，二级索引成为热数据，建立哈希索引可以带来速度的提升</p>
+<p>经常访问的二级索引数据会自动被生成到hash索引里面去(最近连续被访问三次的数据)，自适应哈希索引通过缓冲池的B+树构造而来，因此建立的速度很快。<br>
+哈希（hash）是一种非常快的等值查找方法，在一般情况下这种查找的时间复杂度为O(1),即一般仅需要一次查找就能定位数据。而B+树的查找次数，取决于B+树的高度，在生产环境中，B+树的高度一般3-4层，故需要3-4次的查询。</p>
+<p>innodb会监控对表上个索引页的查询。如果观察到建立哈希索引可以带来速度提升，则自动建立哈希索引，称之为自适应哈希索引（Adaptive Hash Index，AHI）。<br>
+AHI有一个要求，就是对这个页的连续访问模式必须是一样的。<br>
+例如对于（a,b）访问模式情况：</p>
+<pre><code class="language-sh">where a = xxx
+where a = xxx and b = xxx
+</code></pre>
+<p><strong>特点</strong><br>
+　　1、无序，没有树高<br>
+　　2、降低对二级索引树的频繁访问资源，索引树高&lt;=4，访问索引：访问树、根节点、叶子节点<br>
+　　3、自适应<br>
+<strong>缺陷</strong><br>
+　　1、hash自适应索引会占用innodb buffer pool；<br>
+　   2、自适应hash索引只适合搜索等值的查询，如select * from table where index_col='xxx'，而对于其他查找类型，如范围查找，是不能使用的；<br>
+　　3、极端情况下，自适应hash索引才有比较大的意义，可以降低逻辑读。</p>
+</li>
+<li>
+<p>预读(read ahead)</p>
+<p>InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）<br>
+为了区分这两种预读的方式，我们可以把线性预读放到以extent为单位，而随机预读放到以extent中的page为单位。线性预读着眼于将下一个extent提前读取到buffer pool中，而随机预读着眼于将当前extent中的剩余的page提前读取到buffer pool中。</p>
+<p><strong>线性预读（linear read-ahead）</strong></p>
+<p>线性预读方式有一个很重要的变量控制是否将下一个extent预读到buffer pool中，通过使用配置参数innodb_read_ahead_threshold，可以控制Innodb执行预读操作的时间。如果一个extent中的被顺序读取的page超过或者等于该参数变量时，Innodb将会异步的将下一个extent读取到buffer pool中，innodb_read_ahead_threshold可以设置为0-64的任何值，默认值为56，值越高，访问模式检查越严格<br>
+例如，如果将值设置为48，则InnoDB只有在顺序访问当前extent中的48个pages时才触发线性预读请求，将下一个extent读到内存中。如果值为8，InnoDB触发异步预读，即使程序段中只有8页被顺序访问。你可以在MySQL配置文件中设置此参数的值，或者使用SET GLOBAL需要该SUPER权限的命令动态更改该参数。<br>
+在没有该变量之前，当访问到extent的最后一个page的时候，Innodb会决定是否将下一个extent放入到buffer pool中。</p>
+<p><strong>随机预读（randomread-ahead）</strong></p>
+<p>随机预读方式则是表示当同一个extent中的一些page在buffer pool中发现时，Innodb会将该extent中的剩余page一并读到buffer pool中，由于随机预读方式给Innodb code带来了一些不必要的复杂性，同时在性能也存在不稳定性，在5.5中已经将这种预读方式废弃。要启用此功能，请将配置变量设置innodb_random_read_ahead为ON。</p>
+</li>
+</ul>
+<h4 id="存储引擎选择">存储引擎选择</h4>
+<p>如果没有特别的需求，使用默认的Innodb即可。</p>
+<p>MyISAM：以读写插入为主的应用程序，比如博客系统、新闻门户网站。</p>
+<p>Innodb：更新（删除）操作频率也高，或者要保证数据的完整性；并发量高，支持事务和外键。比如OA自动化办公系统。</p>
+<h3 id="mysql查询过程">MySQL查询过程</h3>
+<p>​       MySQL查询优化实质说白了就是遵循一些原则让MySQL的优化器能够按照预想的合理方式运行，从而达到不同的业务目标需要实现的效果。下图展示了MySQL的查询过程。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1636082387664.png" alt="" loading="lazy"></p>
+<h4 id="客户端服务端通信协议">客户端/服务端通信协议</h4>
+<p>MySQL客户端/服务端通信协议是&quot;半双工&quot;的：在任意时刻，要么是服务器向客户端发送数据，要么是客户端向服务器发送数据，这两个动作不能同时发生。一旦一端开始发送消息，另一端要接收完整个消息才能响应它，所以我们无法也无须将一个消息切成小块独立发送，也没有办法进行流量控制。</p>
+<p>客户端用一个单独的数据包将查询请求发送给服务器，所以当查询语句很长的时候，需要设置max_allowed_packet参数。但是需要注意的是，如果查询实在是太大，服务端会拒绝接收更多数据并抛出异常。</p>
+<p>与之相反的是，服务器响应给用户的数据通常会很多，由多个数据包组成。但是当服务器响应客户端请求时，客户端必须完整的接收整个返回结果，而不能简单的只取前面几条结果，然后让服务器停止发送。因而在实际开发中，尽量保持查询简单且只返回必需的数据，减小通信间数据包的大小和数量是一个非常好的习惯，这也是查询中尽量避免使用SELECT *以及加上LIMIT限制的原因之一。</p>
+<h4 id="查询缓存">查询缓存</h4>
+<p>在解析一个查询语句前，如果查询缓存是打开的，那么MySQL会检查这个查询语句是否命中查询缓存中的数据。如果当前查询恰好命中查询缓存，在检查一次用户权限后直接返回缓存中的结果。这种情况下，查询不会被解析，也不会生成执行计划，更不会执行。</p>
+<p>MySQL将缓存存放在一个引用表（类似于HashMap的数据结构）中，通过哈希值索引，这个哈希值通过查询本身、当前要查询的数据库、客户端协议版本号等一些可能影响结果的信息计算得来。所以两个查询在任何字符上的不同（例如：空格、注释），都会导致缓存不会命中。</p>
+<p>如果查询中包含任何用户自定义函数、存储函数、用户变量、临时表、mysql库中的系统表，其查询结果都不会被缓存。比如函数NOW()或者CURRENT_DATE()会因为不同的查询时间，返回不同的查询结果，再比如包含CURRENT_USER或者CONNECION_ID()的查询语句会因为不同的用户而返回不同的结果，将这样的查询结果缓存起来没有任何的意义。</p>
+<p>MySQL的查询缓存系统会跟踪查询中涉及的每个表，如果这些表（数据或结构）发生变化，那么和这张表相关的所有缓存数据都将失效。正因为如此，在任何的写操作时，MySQL必须将对应表的所有缓存都设置为失效。如果查询缓存非常大或者碎片很多，这个操作就可能带来很大的系统消耗，甚至导致系统僵死一会儿。而且查询缓存对系统的额外消耗也不仅仅在写操作，读操作也不例外。如果查询结果被缓存，那么执行完成后，会将结果存入缓存，也会带来额外的系统消耗。基于此，我们知道并不是什么情况下查询缓存都会提高系统性能，缓存和失效都会带来额外消耗，只有当缓存带来的资源节约大于其本身消耗的资源时，才会给系统带来性能提升。如果系统确实存在一些性能问题，可以尝试打开查询缓存，并在数据库设计上做一些优化，比如：</p>
+<p>1）多个小表代替一个大表（注意不要过度设计）</p>
+<p>2）批量插入代替循环单条插入，降低磁盘IO次数</p>
+<p>3）合理控制缓存空间大小，一般来说其大小设置为几十兆比较合适</p>
+<p>4）可以通过SQL_CACHE和SQL_NO_CACHE来控制某个查询语句是否需要进行缓存</p>
+<h4 id="语法解析和预处理">语法解析和预处理</h4>
+<p>MySQL通过关键字将SQL语句进行解析并生成一颗对应的解析树。这个过程解析器主要通过语法规则来验证和解析，比如SQL中是否使用了错误的关键字或者关键字的顺序是否正确等等。预处理则会根据MySQL规则进一步检查解析树是否合法，比如检查要查询的数据表和数据列是否存在等等。</p>
+<h4 id="查询优化">查询优化</h4>
+<p>经过前面的步骤生成的语法树被认为是合法的了，并且由优化器将其转化成查询计划。多数情况下一条查询可以有很多种执行方式，最后都返回相应的结果。优化器的作用就是找到这其中最好的执行计划。MySQL使用基于成本的优化器，它尝试预测一个查询使用某种执行计划时的成本，并选择其中成本最小的一个。在MySQL可以通过查询当前会话的last_query_cost的值来得到其计算当前查询的成本。 有非常多的原因会导致MySQL选择错误的执行计划，比如统计信息不准确、不会考虑不受其控制的操作成本（用户自定义函数、存储过程）、MySQL认为的最优跟我们想的不一样，我们希望执行时间尽可能短，但MySQL只选择它认为成本小的，但成本小有的时候并不是我们的预期。</p>
+<h4 id="查询执行引擎">查询执行引擎</h4>
+<p>在完成解析和优化阶段以后，MySQL会生成对应的执行计划，查询执行引擎根据执行计划给出的指令逐步执行得出结果。整个执行过程的大部分操作均是通过调用存储引擎实现的接口来完成，这些接口被称为handler API。查询过程中的每一张表由一个handler实例表示。实际上，MySQL在查询优化阶段就为每一张表创建了一个handler实例，优化器可以根据这些实例的接口来获取表的相关信息，包括表的所有列名、索引统计信息等。存储引擎接口提供了非常丰富的功能，但其底层仅有几十个接口，这些接口像搭积木一样完成了一次查询的大部分操作。</p>
+<h4 id="返回结果给客户端">返回结果给客户端</h4>
+<p>查询执行的最后一个阶段就是将结果返回给客户端。即使查询不到数据，MySQL仍然会返回这个查询的相关信息，比如该查询影响到的行数以及执行时间等等。如果查询缓存被打开且这个查询可以被缓存，MySQL也会将结果存放到缓存中。结果集返回客户端是一个增量且逐步返回的过程。有可能MySQL在生成第一条结果时，就开始向客户端逐步返回结果集了。这样服务端就无须存储太多结果而消耗过多内存，也可以让客户端第一时间获得返回结果。需要注意的是，结果集中的每一行都会以一个满足客户端/服务器通信协议的数据包发送，再通过TCP协议进行传输，在传输过程中，可能对MySQL的数据包进行缓存然后批量发送。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93">为什么要使用数据库</a></li>
+<li><a href="#sql">SQL</a></li>
+<li><a href="#mysql">MySQL</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%89%E5%A4%A7%E8%8C%83%E5%BC%8F%E6%98%AF%E4%BB%80%E4%B9%88">数据库三大范式是什么</a></li>
+<li><a href="#mysql%E6%9C%89%E5%85%B3%E6%9D%83%E9%99%90%E7%9A%84%E8%A1%A8">mysql有关权限的表</a></li>
+<li><a href="#mysql%E7%9A%84binlog%E6%9C%89%E5%87%A0%E7%A7%8D%E5%BD%95%E5%85%A5%E6%A0%BC%E5%BC%8F%E5%88%86%E5%88%AB%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">MySQL的binlog有几种录入格式？分别有什么区别？</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">数据类型</a></li>
+<li><a href="#mysql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">MySQL存储引擎</a>
+<ul>
+<li><a href="#myisam%E4%B8%8Einnodb%E5%8C%BA%E5%88%AB">MyISAM与InnoDB区别</a></li>
+<li><a href="#myisam%E7%B4%A2%E5%BC%95%E4%B8%8Einnodb%E7%B4%A2%E5%BC%95%E7%9A%84%E5%8C%BA%E5%88%AB">MyISAM索引与InnoDB索引的区别？</a></li>
+<li><a href="#innodb%E5%BC%95%E6%93%8E%E7%9A%844%E5%A4%A7%E7%89%B9%E6%80%A7">InnoDB引擎的4大特性</a></li>
+<li><a href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E9%80%89%E6%8B%A9">存储引擎选择</a></li>
+</ul>
+</li>
+<li><a href="#mysql%E6%9F%A5%E8%AF%A2%E8%BF%87%E7%A8%8B">MySQL查询过程</a>
+<ul>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE">客户端/服务端通信协议</a></li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98">查询缓存</a></li>
+<li><a href="#%E8%AF%AD%E6%B3%95%E8%A7%A3%E6%9E%90%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86">语法解析和预处理</a></li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">查询优化</a></li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E">查询执行引擎</a></li>
+<li><a href="#%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E7%BB%99%E5%AE%A2%E6%88%B7%E7%AB%AF">返回结果给客户端</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/Sjb64Uy0k/">
+                  <span class="post-title">
+                    redis概述五&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/QzFPAEzVT/">
+                   <span class="post-title">
+                     mysql概述二&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

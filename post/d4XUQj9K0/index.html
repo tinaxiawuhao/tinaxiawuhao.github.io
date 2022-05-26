@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>springBoot参数和业务校验 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="springBoot参数和业务校验 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="springBoot参数和业务校验" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/d4XUQj9K0/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/9FPu79Spt/" class="tag">springBoot</a>
+                
+              </span>
+              <h1>springBoot参数和业务校验</h1>
+              <span class="meta">
+                Posted on
+                2022-02-25，18 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/d4XUQj9K0.png" alt="封面图">
+          </img>
+          
+          <h2 id="为什么需要参数校验">为什么需要参数校验</h2>
+<p>在日常的接口开发中，为了防止非法参数对业务造成影响，经常需要对接口的参数做校验，例如登录的时候需要校验用户名密码是否为空，创建用户的时候需要校验邮件、手机号码格式是否准确。靠代码对接口参数一个个校验的话就太繁琐了，代码可读性极差。</p>
+<p>Validator框架就是为了解决开发人员在开发的时候少写代码，提升开发效率</p>
+<blockquote>
+<p>Validator校验框架遵循了JSR-303验证规范（参数校验规范）, JSR是<code>Java Specification Requests</code>的缩写。</p>
+</blockquote>
+<p>接下来我们看看在SpringbBoot中如何集成参数校验框架。</p>
+<h2 id="springboot中集成参数校验">SpringBoot中集成参数校验</h2>
+<h3 id="第一步引入依赖">第一步，引入依赖</h3>
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-validation&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<blockquote>
+<p>注：从<code>springboot-2.3</code>开始，校验包被独立成了一个<code>starter</code>组件，所以需要引入validation和web，而<code>springboot-2.3</code>之前的版本只需要引入 web 依赖就可以了。</p>
+</blockquote>
+<h3 id="第二步定义要参数校验的实体类">第二步，定义要参数校验的实体类</h3>
+<pre><code>@Data
+public class ValidVO {
+    private String id;
+
+    @Length(min = 6,max = 12,message = &quot;appId长度必须位于6到12之间&quot;)
+    private String appId;
+
+    @NotBlank(message = &quot;名字为必填项&quot;)
+    private String name;
+
+    @Email(message = &quot;请填写正确的邮箱地址&quot;)
+    private String email;
+
+    private String sex;
+
+    @NotEmpty(message = &quot;级别不能为空&quot;)
+    private String level;
+}
+</code></pre>
+<p>在实际开发中对于需要校验的字段都需要设置对应的业务提示，即message属性。</p>
+<p>常见的约束注解如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">注解</th>
+<th style="text-align:left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">@AssertFalse</td>
+<td style="text-align:left">可以为null,如果不为null的话必须为false</td>
+</tr>
+<tr>
+<td style="text-align:left">@AssertTrue</td>
+<td style="text-align:left">可以为null,如果不为null的话必须为true</td>
+</tr>
+<tr>
+<td style="text-align:left">@DecimalMax</td>
+<td style="text-align:left">设置不能超过最大值</td>
+</tr>
+<tr>
+<td style="text-align:left">@DecimalMin</td>
+<td style="text-align:left">设置不能超过最小值</td>
+</tr>
+<tr>
+<td style="text-align:left">@Digits</td>
+<td style="text-align:left">设置必须是数字且数字整数的位数和小数的位数必须在指定范围内</td>
+</tr>
+<tr>
+<td style="text-align:left">@Future</td>
+<td style="text-align:left">日期必须在当前日期的未来</td>
+</tr>
+<tr>
+<td style="text-align:left">@Past</td>
+<td style="text-align:left">日期必须在当前日期的过去</td>
+</tr>
+<tr>
+<td style="text-align:left">@Max</td>
+<td style="text-align:left">最大不得超过此最大值</td>
+</tr>
+<tr>
+<td style="text-align:left">@Min</td>
+<td style="text-align:left">最大不得小于此最小值</td>
+</tr>
+<tr>
+<td style="text-align:left">@NotNull</td>
+<td style="text-align:left">不能为null，可以是空</td>
+</tr>
+<tr>
+<td style="text-align:left">@Null</td>
+<td style="text-align:left">必须为null</td>
+</tr>
+<tr>
+<td style="text-align:left">@Pattern</td>
+<td style="text-align:left">必须满足指定的正则表达式</td>
+</tr>
+<tr>
+<td style="text-align:left">@Size</td>
+<td style="text-align:left">集合、数组、map等的size()值必须在指定范围内</td>
+</tr>
+<tr>
+<td style="text-align:left">@Email</td>
+<td style="text-align:left">必须是email格式</td>
+</tr>
+<tr>
+<td style="text-align:left">@Length</td>
+<td style="text-align:left">长度必须在指定范围内</td>
+</tr>
+<tr>
+<td style="text-align:left">@NotBlank</td>
+<td style="text-align:left">字符串不能为null,字符串trim()后也不能等于“”</td>
+</tr>
+<tr>
+<td style="text-align:left">@NotEmpty</td>
+<td style="text-align:left">不能为null，集合、数组、map等size()不能为0；字符串trim()后可以等于“”</td>
+</tr>
+<tr>
+<td style="text-align:left">@Range</td>
+<td style="text-align:left">值必须在指定范围内</td>
+</tr>
+<tr>
+<td style="text-align:left">@URL</td>
+<td style="text-align:left">必须是一个URL</td>
+</tr>
+</tbody>
+</table>
+<p>注：此表格只是简单的对注解功能的说明，并没有对每一个注解的属性进行说明；可详见源码。</p>
+<h3 id="第三步定义校验类进行测试">第三步，定义校验类进行测试</h3>
+<pre><code>@RestController
+@Slf4j
+@Validated
+public class ValidController {
+
+    @ApiOperation(&quot;RequestBody校验&quot;)
+    @PostMapping(&quot;/valid/test1&quot;)   
+    public String test1(@Validated @RequestBody ValidVO validVO){
+        log.info(&quot;validEntity is {}&quot;, validVO);
+        return &quot;test1 valid success&quot;;
+    }
+
+    @ApiOperation(&quot;Form校验&quot;)
+    @PostMapping(value = &quot;/valid/test2&quot;)
+    public String test2(@Validated ValidVO validVO){
+        log.info(&quot;validEntity is {}&quot;, validVO);
+        return &quot;test2 valid success&quot;;
+    }
+  
+   @ApiOperation(&quot;单参数校验&quot;)
+    @PostMapping(value = &quot;/valid/test3&quot;)
+    public String test3(@Email String email){
+        log.info(&quot;email is {}&quot;, email);
+        return &quot;email valid success&quot;;
+    }
+}
+</code></pre>
+<p>这里我们先定义三个方法test1，test2，test3，test1使用了<code>@RequestBody</code>注解，用于接受前端发送的json数据，test2模拟表单提交，test3模拟单参数提交。<strong>注意，当使用单参数校验时需要在Controller上加上@Validated注解，否则不生效</strong>。</p>
+<h3 id="第四步体验效果">第四步，体验效果</h3>
+<ol>
+<li>调用test1方法，提示的是<code>org.springframework.web.bind.MethodArgumentNotValidException</code>异常</li>
+</ol>
+<pre><code>POST http://localhost:8080/valid/test1
+Content-Type: application/json
+
+{
+  &quot;id&quot;: 1,
+  &quot;level&quot;: &quot;12&quot;,
+  &quot;email&quot;: &quot;47693899&quot;,
+  &quot;appId&quot;: &quot;ab1c&quot;
+}
+{
+  &quot;status&quot;: 500,
+  &quot;message&quot;: &quot;Validation failed for argument [0] in public java.lang.String com.jianzh5.blog.valid.ValidController.test1(com.jianzh5.blog.valid.ValidVO) with 3 errors: [Field error in object 'validVO' on field 'email': rejected value [47693899]; codes [Email.validVO.email,Email.email,Email.java.lang.String,Email]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [validVO.email,email]; arguments []; default message [email],[Ljavax.validation.constraints.Pattern$Flag;@26139123,.*]; default message [不是一个合法的电子邮件地址]]...&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1628239624332
+}
+</code></pre>
+<ol>
+<li>调用test2方法，提示的是<code>org.springframework.validation.BindException</code>异常</li>
+</ol>
+<pre><code>POST http://localhost:8080/valid/test2
+Content-Type: application/x-www-form-urlencoded
+
+id=1&amp;level=12&amp;email=476938977&amp;appId=ab1c
+{
+  &quot;status&quot;: 500,
+  &quot;message&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 3 errors\nField error in object 'validVO' on field 'name': rejected value [null]; codes [NotBlank.validVO.name,NotBlank.name,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [validVO.name,name]; arguments []; default message [name]]; default message [名字为必填项]...&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1628239301951
+}
+</code></pre>
+<ol>
+<li>调用test3方法，提示的是<code>javax.validation.ConstraintViolationException</code>异常</li>
+</ol>
+<pre><code>POST http://localhost:8080/valid/test3
+Content-Type: application/x-www-form-urlencoded
+
+email=476938977
+{
+  &quot;status&quot;: 500,
+  &quot;message&quot;: &quot;test3.email: 不是一个合法的电子邮件地址&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1628239281022
+}
+</code></pre>
+<p>通过加入<code>Validator</code>校验框架可以帮助我们自动实现参数的校验。</p>
+<h2 id="参数异常加入全局异常处理器">参数异常加入全局异常处理器</h2>
+<p><code>Validator</code>校验框架返回的错误提示太臃肿了，不便于阅读，为了方便前端提示，我们需要将其简化一下。</p>
+<p>创建RestExceptionHandler<code>，单独拦截参数校验的三个异常：</code>javax.validation.ConstraintViolationException<code>，</code>org.springframework.validation.BindException<code>，</code>org.springframework.web.bind.MethodArgumentNotValidException`，代码如下：</p>
+<pre><code>@ExceptionHandler(value = {BindException.class, ValidationException.class, MethodArgumentNotValidException.class})
+public ResponseEntity&lt;ResultData&lt;String&gt;&gt; handleValidatedException(Exception e) {
+  ResultData&lt;String&gt; resp = null;
+
+  if (e instanceof MethodArgumentNotValidException) {
+    // BeanValidation exception
+    MethodArgumentNotValidException ex = (MethodArgumentNotValidException) e;
+    resp = ResultData.fail(HttpStatus.BAD_REQUEST.value(),
+                           ex.getBindingResult().getAllErrors().stream()
+                           .map(ObjectError::getDefaultMessage)
+                           .collect(Collectors.joining(&quot;; &quot;))
+                          );
+  } else if (e instanceof ConstraintViolationException) {
+    // BeanValidation GET simple param
+    ConstraintViolationException ex = (ConstraintViolationException) e;
+    resp = ResultData.fail(HttpStatus.BAD_REQUEST.value(),
+                           ex.getConstraintViolations().stream()
+                           .map(ConstraintViolation::getMessage)
+                           .collect(Collectors.joining(&quot;; &quot;))
+                          );
+  } else if (e instanceof BindException) {
+    // BeanValidation GET object param
+    BindException ex = (BindException) e;
+    resp = ResultData.fail(HttpStatus.BAD_REQUEST.value(),
+                           ex.getAllErrors().stream()
+                           .map(ObjectError::getDefaultMessage)
+                           .collect(Collectors.joining(&quot;; &quot;))
+                          );
+  }
+
+  return new ResponseEntity&lt;&gt;(resp,HttpStatus.BAD_REQUEST);
+}
+</code></pre>
+<h3 id="体验效果">体验效果</h3>
+<pre><code>POST http://localhost:8080/valid/test1
+Content-Type: application/json
+
+{
+  &quot;id&quot;: 1,
+  &quot;level&quot;: &quot;12&quot;,
+  &quot;email&quot;: &quot;47693899&quot;,
+  &quot;appId&quot;: &quot;ab1c&quot;
+}
+{
+  &quot;status&quot;: 400,
+  &quot;message&quot;: &quot;名字为必填项; 不是一个合法的电子邮件地址; appId长度必须位于6到12之间&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1628435116680
+}
+</code></pre>
+<p>是不是感觉清爽多了？</p>
+<h2 id="自定义参数校验">自定义参数校验</h2>
+<p>虽然Spring Validation 提供的注解基本上够用，但是面对复杂的定义，我们还是需要自己定义相关注解来实现自动校验。</p>
+<p>比如上面实体类中的sex性别属性，只允许前端传递传 M，F 这2个枚举值，如何实现呢？</p>
+<h3 id="第一步创建自定义注解">第一步，创建自定义注解</h3>
+<pre><code>@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
+@Retention(RUNTIME)
+@Repeatable(EnumString.List.class)
+@Documented
+@Constraint(validatedBy = EnumStringValidator.class)//标明由哪个类执行校验逻辑
+public @interface EnumString {
+    String message() default &quot;value not in enum values.&quot;;
+
+    Class&lt;?&gt;[] groups() default {};
+
+    Class&lt;? extends Payload&gt;[] payload() default {};
+
+    /**
+     * @return date must in this value array
+     */
+    String[] value();
+
+    /**
+     * Defines several {@link EnumString} annotations on the same element.
+     *
+     * @see EnumString
+     */
+    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
+    @Retention(RUNTIME)
+    @Documented
+    @interface List {
+
+        EnumString[] value();
+    }
+}
+</code></pre>
+<h3 id="第二步自定义校验逻辑">第二步，自定义校验逻辑</h3>
+<pre><code>public class EnumStringValidator implements ConstraintValidator&lt;EnumString, String&gt; {
+    private List&lt;String&gt; enumStringList;
+
+    @Override
+    public void initialize(EnumString constraintAnnotation) {
+        enumStringList = Arrays.asList(constraintAnnotation.value());
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        if(value == null){
+            return true;
+        }
+        return enumStringList.contains(value);
+    }
+}
+</code></pre>
+<h3 id="第三步在字段上增加注解">第三步，在字段上增加注解</h3>
+<pre><code>@ApiModelProperty(value = &quot;性别&quot;)
+@EnumString(value = {&quot;F&quot;,&quot;M&quot;}, message=&quot;性别只允许为F或M&quot;)
+private String sex;
+</code></pre>
+<h3 id="第四步体验效果-2">第四步，体验效果</h3>
+<pre><code>POST http://localhost:8080/valid/test2
+Content-Type: application/x-www-form-urlencoded
+
+id=1&amp;name=javadaily&amp;level=12&amp;email=476938977@qq.com&amp;appId=ab1cdddd&amp;sex=N
+{
+  &quot;status&quot;: 400,
+  &quot;message&quot;: &quot;性别只允许为F或M&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1628435243723
+}
+</code></pre>
+<h2 id="分组校验">分组校验</h2>
+<p>一个VO对象在新增的时候某些字段为必填，在更新的时候又非必填。如上面的<code>ValidVO</code>中 id 和 appId 属性在新增操作时都是<strong>非必填</strong>，而在编辑操作时都为<strong>必填</strong>，name在新增操作时为<strong>必填</strong>，面对这种场景你会怎么处理呢？</p>
+<p>在实际开发中我见到很多同学都是建立两个VO对象，<code>ValidCreateVO</code>，<code>ValidEditVO</code>来处理这种场景，这样确实也能实现效果，但是会造成类膨胀，而且极其容易被开发老鸟们嘲笑。</p>
+<p>其实<code>Validator</code>校验框架已经考虑到了这种场景并且提供了解决方案，就是<strong>分组校验</strong>，只不过很多同学不知道而已。要使用分组校验，只需要三个步骤：</p>
+<h3 id="第一步定义分组接口">第一步：定义分组接口</h3>
+<pre><code>public interface ValidGroup extends Default {
+  
+    interface Crud extends ValidGroup{
+        interface Create extends Crud{
+
+        }
+
+        interface Update extends Crud{
+
+        }
+
+        interface Query extends Crud{
+
+        }
+
+        interface Delete extends Crud{
+
+        }
+    }
+}
+</code></pre>
+<p>这里我们定义一个分组接口ValidGroup让其继承<code>javax.validation.groups.Default</code>，再在分组接口中定义出多个不同的操作类型，Create，Update，Query，Delete。至于为什么需要继承Default我们稍后再说。</p>
+<h3 id="第二步在模型中给参数分配分组">第二步，在模型中给参数分配分组</h3>
+<pre><code>@Data
+@ApiModel(value = &quot;参数校验类&quot;)
+public class ValidVO {
+    @ApiModelProperty(&quot;ID&quot;)
+    @Null(groups = ValidGroup.Crud.Create.class)
+    @NotNull(groups = ValidGroup.Crud.Update.class, message = &quot;应用ID不能为空&quot;)
+    private String id;
+
+    @Null(groups = ValidGroup.Crud.Create.class)
+    @NotNull(groups = ValidGroup.Crud.Update.class, message = &quot;应用ID不能为空&quot;)
+    @ApiModelProperty(value = &quot;应用ID&quot;,example = &quot;cloud&quot;)
+    private String appId;
+
+    @ApiModelProperty(value = &quot;名字&quot;)
+    @NotBlank(groups = ValidGroup.Crud.Create.class,message = &quot;名字为必填项&quot;)
+    private String name;
+  
+   @ApiModelProperty(value = &quot;邮箱&quot;)
+    @Email(message = &quot;请填写正取的邮箱地址&quot;)
+    privte String email;
+
+    ...
+
+}
+</code></pre>
+<p>给参数指定分组，对于未指定分组的则使用的是默认分组。</p>
+<h3 id="第三步给需要参数校验的方法指定分组">第三步，给需要参数校验的方法指定分组</h3>
+<pre><code>@RestController
+@Api(&quot;参数校验&quot;)
+@Slf4j
+@Validated
+public class ValidController {
+
+    @ApiOperation(&quot;新增&quot;)
+    @PostMapping(value = &quot;/valid/add&quot;)
+    public String add(@Validated(value = ValidGroup.Crud.Create.class) ValidVO validVO){
+        log.info(&quot;validEntity is {}&quot;, validVO);
+        return &quot;test3 valid success&quot;;
+    }
+
+
+    @ApiOperation(&quot;更新&quot;)
+    @PostMapping(value = &quot;/valid/update&quot;)
+    public String update(@Validated(value = ValidGroup.Crud.Update.class) ValidVO validVO){
+        log.info(&quot;validEntity is {}&quot;, validVO);
+        return &quot;test4 valid success&quot;;
+    }
+}
+</code></pre>
+<p>这里我们通过<code>value</code>属性给<code>add()</code>和<code>update()</code>方法分别指定Create和Update分组。</p>
+<h3 id="第四步体验效果-3">第四步，体验效果</h3>
+<pre><code>POST http://localhost:8080/valid/add
+Content-Type: application/x-www-form-urlencoded
+
+name=javadaily&amp;level=12&amp;email=476938977@qq.com&amp;sex=F
+</code></pre>
+<p>在Create时我们没有传递id和appId参数，校验通过。</p>
+<p>当我们使用同样的参数调用update方法时则提示参数校验错误。</p>
+<pre><code>{
+  &quot;status&quot;: 400,
+  &quot;message&quot;: &quot;ID不能为空; 应用ID不能为空&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1628492514313
+}
+</code></pre>
+<p>由于email属于默认分组，而我们的分组接口<code>ValidGroup</code>已经继承了<code>Default</code>分组，所以也是可以对email字段作参数校验的。如：</p>
+<pre><code>POST http://localhost:8080/valid/add
+Content-Type: application/x-www-form-urlencoded
+
+name=javadaily&amp;level=12&amp;email=476938977&amp;sex=F
+{
+  &quot;status&quot;: 400,
+  &quot;message&quot;: &quot;请填写正取的邮箱地址&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1628492637305
+}
+</code></pre>
+<p>当然如果你的ValidGroup没有继承Default分组，那在代码属性上就需要加上<code>@Validated(value = {ValidGroup.Crud.Create.class, Default.class}</code>才能让<code>email</code>字段的校验生效。</p>
+<h2 id="业务规则校验">业务规则校验</h2>
+<p>业务规则校验指接口需要满足某些特定的业务规则，举个例子：业务系统的用户需要保证其唯一性，用户属性不能与其他用户产生冲突，不允许与数据库中任何已有用户的用户名称、手机号码、邮箱产生重复。</p>
+<p>这就要求在<strong>创建用户时需要校验用户名称、手机号码、邮箱是否被注册</strong>；<strong>编辑用户时不能将信息修改成已有用户的属性</strong>。</p>
+<p>95%的程序员当面对这种业务规则校验时往往选择写在service逻辑中，常见的代码逻辑如下：</p>
+<pre><code>public void create(User user) {
+    Account account = accountDao.queryByUserNameOrPhoneOrEmail(user.getName(),user.getPhone(),user.getEmail());
+    if (account != null) {
+        throw new IllegalArgumentException(&quot;用户已存在，请重新输入&quot;);
+    }
+}
+</code></pre>
+<p><strong>最优雅的实现方法应该是参考 Bean Validation 的标准方式，借助自定义校验注解完成业务规则校验。</strong></p>
+<p>接下来我们通过上面提到的用户接口案例，通过自定义注解完成业务规则校验。</p>
+<h2 id="代码实战">代码实战</h2>
+<p>需求很容易理解，注册新用户时，应约束不与任何已有用户的关键信息重复；而修改自己的信息时，只能与自己的信息重复，不允许修改成已有用户的信息。</p>
+<p>这些约束规则不仅仅为这两个方法服务，它们可能会在用户资源中的其他入口被使用到，乃至在其他分层的代码中被使用到，在 Bean 上做校验就能全部覆盖上述这些使用场景。</p>
+<h3 id="自定义注解">自定义注解</h3>
+<p>首先我们需要创建两个自定义注解，用于业务规则校验：</p>
+<ul>
+<li><code>UniqueUser</code>:表示一个用户是唯一的，唯一性包含：用户名，手机号码、邮箱</li>
+</ul>
+<pre><code>@Documented
+@Retention(RUNTIME)
+@Target({FIELD, METHOD, PARAMETER, TYPE})
+@Constraint(validatedBy = UserValidation.UniqueUserValidator.class)
+public @interface UniqueUser {
+
+    String message() default &quot;用户名、手机号码、邮箱不允许与现存用户重复&quot;;
+
+    Class&lt;?&gt;[] groups() default {};
+
+    Class&lt;? extends Payload&gt;[] payload() default {};
+}
+</code></pre>
+<ul>
+<li><code>NotConflictUser</code>:表示一个用户的信息是无冲突的，无冲突是指该用户的敏感信息与其他用户不重合</li>
+</ul>
+<pre><code>@Documented
+@Retention(RUNTIME)
+@Target({FIELD, METHOD, PARAMETER, TYPE})
+@Constraint(validatedBy = UserValidation.NotConflictUserValidator.class)
+public @interface NotConflictUser {
+    String message() default &quot;用户名称、邮箱、手机号码与现存用户产生重复&quot;;
+
+    Class&lt;?&gt;[] groups() default {};
+
+    Class&lt;? extends Payload&gt;[] payload() default {};
+}
+</code></pre>
+<h3 id="实现业务校验规则">实现业务校验规则</h3>
+<p>想让自定义验证注解生效，需要实现 <code>ConstraintValidator</code> 接口。接口的第一个参数是 <strong>自定义注解类型</strong>，第二个参数是 <strong>被注解字段的类</strong>，因为需要校验多个参数，我们直接传入用户对象。需要提到的一点是 <code>ConstraintValidator</code> 接口的实现类无需添加 <code>@Component</code> 它在启动的时候就已经被加载到容器中了。</p>
+<pre><code>@Slf4j
+public class UserValidation&lt;T extends Annotation&gt; implements ConstraintValidator&lt;T, User&gt; {
+
+    protected Predicate&lt;User&gt; predicate = c -&gt; true;
+
+    @Resource
+    protected UserRepository userRepository;
+
+    @Override
+    public boolean isValid(User user, ConstraintValidatorContext constraintValidatorContext) {
+        return userRepository == null || predicate.test(user);
+    }
+
+    /**
+     * 校验用户是否唯一
+     * 即判断数据库是否存在当前新用户的信息，如用户名，手机，邮箱
+     */
+    public static class UniqueUserValidator extends UserValidation&lt;UniqueUser&gt;{
+        @Override
+        public void initialize(UniqueUser uniqueUser) {
+            predicate = c -&gt; !userRepository.existsByUserNameOrEmailOrTelphone(c.getUserName(),c.getEmail(),c.getTelphone());
+        }
+    }
+
+    /**
+     * 校验是否与其他用户冲突
+     * 将用户名、邮件、电话改成与现有完全不重复的，或者只与自己重复的，就不算冲突
+     */
+    public static class NotConflictUserValidator extends UserValidation&lt;NotConflictUser&gt;{
+        @Override
+        public void initialize(NotConflictUser notConflictUser) {
+            predicate = c -&gt; {
+                log.info(&quot;user detail is {}&quot;,c);
+                Collection&lt;User&gt; collection = userRepository.findByUserNameOrEmailOrTelphone(c.getUserName(), c.getEmail(), c.getTelphone());
+                // 将用户名、邮件、电话改成与现有完全不重复的，或者只与自己重复的，就不算冲突
+                return collection.isEmpty() || (collection.size() == 1 &amp;&amp; collection.iterator().next().getId().equals(c.getId()));
+            };
+        }
+    }
+
+}
+</code></pre>
+<p>这里使用Predicate函数式接口对业务规则进行判断。</p>
+<h3 id="使用">使用</h3>
+<pre><code>@RestController
+@RequestMapping(&quot;/senior/user&quot;)
+@Slf4j
+@Validated
+public class UserController {
+    @Autowired
+    private UserRepository userRepository;
+    
+
+    @PostMapping
+    public User createUser(@UniqueUser @Valid User user){
+        User savedUser = userRepository.save(user);
+        log.info(&quot;save user id is {}&quot;,savedUser.getId());
+        return savedUser;
+    }
+
+    @SneakyThrows
+    @PutMapping
+    public User updateUser(@NotConflictUser @Valid @RequestBody User user){
+        User editUser = userRepository.save(user);
+        log.info(&quot;update user is {}&quot;,editUser);
+        return editUser;
+    }
+}
+</code></pre>
+<p>使用很简单，只需要在方法上加入自定义注解即可，业务逻辑中不需要添加任何业务规则的代码。</p>
+<h3 id="测试">测试</h3>
+<p>调用接口后出现如下错误，说明业务规则校验生效。</p>
+<pre><code>{
+  &quot;status&quot;: 400,
+  &quot;message&quot;: &quot;用户名、手机号码、邮箱不允许与现存用户重复&quot;,
+  &quot;data&quot;: null,
+  &quot;timestamp&quot;: 1644309081037
+}
+</code></pre>
+<h3 id="小结">小结</h3>
+<p>通过上面几步操作，业务校验便和业务逻辑就完全分离开来，在需要校验时用<code>@Validated</code>注解自动触发，或者通过代码手动触发执行，可根据你们项目的要求，将这些注解应用于控制器、服务层、持久层等任何层次的代码之中。</p>
+<p>这种方式比任何业务规则校验的方法都优雅，推荐大家在项目中使用。在开发时可以将不带业务含义的格式校验注解放到 Bean 的类定义之上，将带业务逻辑的校验放到 Bean 的类定义的外面。<strong>这两者的区别是放在类定义中的注解能够自动运行，而放到类外面则需要像前面代码那样，明确标出注解时才会运行。</strong></p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C">为什么需要参数校验</a></li>
+<li><a href="#springboot%E4%B8%AD%E9%9B%86%E6%88%90%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C">SpringBoot中集成参数校验</a>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96">第一步，引入依赖</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%AE%9A%E4%B9%89%E8%A6%81%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C%E7%9A%84%E5%AE%9E%E4%BD%93%E7%B1%BB">第二步，定义要参数校验的实体类</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E7%B1%BB%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95">第三步，定义校验类进行测试</a></li>
+<li><a href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E4%BD%93%E9%AA%8C%E6%95%88%E6%9E%9C">第四步，体验效果</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E6%95%B0%E5%BC%82%E5%B8%B8%E5%8A%A0%E5%85%A5%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E5%99%A8">参数异常加入全局异常处理器</a>
+<ul>
+<li><a href="#%E4%BD%93%E9%AA%8C%E6%95%88%E6%9E%9C">体验效果</a></li>
+</ul>
+</li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C">自定义参数校验</a>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3">第一步，创建自定义注解</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E9%80%BB%E8%BE%91">第二步，自定义校验逻辑</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%9C%A8%E5%AD%97%E6%AE%B5%E4%B8%8A%E5%A2%9E%E5%8A%A0%E6%B3%A8%E8%A7%A3">第三步，在字段上增加注解</a></li>
+<li><a href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E4%BD%93%E9%AA%8C%E6%95%88%E6%9E%9C-2">第四步，体验效果</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C">分组校验</a>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%AE%9A%E4%B9%89%E5%88%86%E7%BB%84%E6%8E%A5%E5%8F%A3">第一步：定义分组接口</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%9C%A8%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%BB%99%E5%8F%82%E6%95%B0%E5%88%86%E9%85%8D%E5%88%86%E7%BB%84">第二步，在模型中给参数分配分组</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E7%BB%99%E9%9C%80%E8%A6%81%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C%E7%9A%84%E6%96%B9%E6%B3%95%E6%8C%87%E5%AE%9A%E5%88%86%E7%BB%84">第三步，给需要参数校验的方法指定分组</a></li>
+<li><a href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E4%BD%93%E9%AA%8C%E6%95%88%E6%9E%9C-3">第四步，体验效果</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%9A%E5%8A%A1%E8%A7%84%E5%88%99%E6%A0%A1%E9%AA%8C">业务规则校验</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98">代码实战</a>
+<ul>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3">自定义注解</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E4%B8%9A%E5%8A%A1%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99">实现业务校验规则</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li>
+<li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/OoSJ8O7Jf/">
+                  <span class="post-title">
+                    WebFlux与WebMVC区别&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/MKTk7DnaM/">
+                   <span class="post-title">
+                     ES6新语法&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

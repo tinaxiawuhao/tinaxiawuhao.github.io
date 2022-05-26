@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>redis概述四 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="redis概述四 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="redis概述四" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/FWuQD6Kxu/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/nWrs6l_iw/" class="tag">redis</a>
+                
+              </span>
+              <h1>redis概述四</h1>
+              <span class="meta">
+                Posted on
+                2021-05-16，22 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/FWuQD6Kxu.png" alt="封面图">
+          </img>
+          
+          <h3 id="集群方案">集群方案</h3>
+<h4 id="1redis-主从架构">1，Redis 主从架构</h4>
+<p>单机的 redis，能够承载的 QPS 大概就在上万到几万不等。对于缓存来说，一般都是用来支撑<strong>读高并发</strong>的。因此架构做成主从(master-slave)架构，一主多从，主负责写，并且将数据复制到其它的 slave 节点，从节点负责读。所有的<strong>读请求全部走从节点</strong>。这样也可以很轻松实现水平扩容，<strong>支撑读高并发</strong>。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620717339756.png" alt="" loading="lazy"></figure>
+<p>redis replication -&gt; 主从架构 -&gt; 读写分离 -&gt; 水平扩容支撑读高并发</p>
+<p><strong>redis replication 的核心机制</strong></p>
+<ul>
+<li>redis 采用<strong>异步方式</strong>复制数据到 slave 节点，不过 redis2.8 开始，slave node 会周期性地确认自己每次复制的数据量；</li>
+<li>一个 master node 是可以配置多个 slave node 的；</li>
+<li>slave node 也可以连接其他的 slave node；</li>
+<li>slave node 做复制的时候，不会 block master node 的正常工作；</li>
+<li>slave node 在做复制的时候，也不会 block 对自己的查询操作，它会用旧的数据集来提供服务；但是复制完成的时候，需要删除旧数据集，加载新数据集，这个时候就会暂停对外服务了；</li>
+<li>slave node 主要用来进行横向扩容，做读写分离，扩容的 slave node 可以提高读的吞吐量。</li>
+</ul>
+<p>注意，如果采用了主从架构，那么建议必须<strong>开启</strong> master node 的持久化，不建议用 slave node 作为 master node 的数据热备，因为那样的话，如果你关掉 master 的持久化，可能在 master 宕机重启的时候数据是空的，然后可能一经过复制， slave node 的数据也丢了。</p>
+<p>另外，master 的各种备份方案，也需要做。万一本地的所有文件丢失了，从备份中挑选一份 rdb 去恢复 master，这样才能<strong>确保启动的时候，是有数据的</strong>，即使采用了后续讲解的高可用机制，slave node 可以自动接管 master node，但也可能 sentinel 还没检测到 master failure，master node 就自动重启了，还是可能导致上面所有的 slave node 数据被清空。</p>
+<p><strong>redis 主从复制的核心原理</strong></p>
+<p>当启动一个 slave node 的时候，它会发送一个 PSYNC 命令给 master node。</p>
+<p>如果这是 slave node 初次连接到 master node，那么会触发一次 full resynchronization 全量复制。此时 master 会启动一个后台线程，开始生成一份 RDB 快照文件，</p>
+<p>同时还会将从客户端 client 新收到的所有写命令缓存在内存中。RDB 文件生成完毕后， master 会将这个 RDB 发送给 slave，slave 会先<strong>写入本地磁盘，然后再从本地磁盘加载到内存</strong>中，</p>
+<p>接着 master 会将内存中缓存的写命令发送到 slave，slave 也会同步这些数据。</p>
+<p>slave node 如果跟 master node 有网络故障，断开了连接，会自动重连，连接之后 master node 仅会复制给 slave 部分缺少的数据。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620717355448.png" alt="" loading="lazy"></figure>
+<p><strong>过程原理</strong></p>
+<ol>
+<li>当从库和主库建立MS关系后，会向主数据库发送SYNC命令</li>
+<li>主库接收到SYNC命令后会开始在后台保存快照(RDB持久化过程)，并将期间接收到的写命令缓存起来</li>
+<li>当快照完成后，主Redis会将快照文件和所有缓存的写命令发送给从Redis</li>
+<li>从Redis接收到后，会载入快照文件并且执行收到的缓存的命令</li>
+<li>之后，主Redis每当接收到写命令时就会将命令发送从Redis，从而保证数据的一致</li>
+</ol>
+<p><strong>缺点</strong></p>
+<p>所有的slave节点数据的复制和同步都由master节点来处理，会照成master节点压力太大，使用主从从结构来解决</p>
+<h4 id="2哨兵模式">2，哨兵模式</h4>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1620716695309.png" alt="" loading="lazy"></figure>
+<p><strong>哨兵的介绍</strong></p>
+<p>sentinel，中文名是哨兵。哨兵是 redis 集群机构中非常重要的一个组件，主要有以下功能：</p>
+<ul>
+<li>集群监控：负责监控 redis master 和 slave 进程是否正常工作。</li>
+<li>消息通知：如果某个 redis 实例有故障，那么哨兵负责发送消息作为报警通知给管理员。</li>
+<li>故障转移：如果 master node 挂掉了，会自动转移到 slave node 上。</li>
+<li>配置中心：如果故障转移发生了，通知 client 客户端新的 master 地址。</li>
+</ul>
+<p><strong>哨兵用于实现 redis 集群的高可用</strong>，本身也是分布式的，作为一个哨兵集群去运行，互相协同工作。</p>
+<ul>
+<li>故障转移时，判断一个 master node 是否宕机了，需要大部分的哨兵都同意才行，涉及到了分布式选举的问题。</li>
+<li>即使部分哨兵节点挂掉了，哨兵集群还是能正常工作的，因为如果一个作为高可用机制重要组成部分的故障转移系统本身是单点的，那就很坑爹了。</li>
+</ul>
+<p><strong>哨兵的核心知识</strong></p>
+<ul>
+<li>哨兵至少需要 3 个实例，来保证自己的健壮性。</li>
+<li>哨兵 + redis 主从的部署架构，是<strong>不保证数据零丢失</strong>的，只能保证 redis 集群的高可用性。</li>
+<li>对于哨兵 + redis 主从这种复杂的部署架构，尽量在测试环境和生产环境，都进行充足的测试和演练。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717166180.png" alt="" loading="lazy"></li>
+</ul>
+<h4 id="分布式和哨兵">分布式和哨兵</h4>
+<p>Redis主从复制模式下， 一旦主节点出现了故障不可达， 需要人工干预进行故障转移， 无论对于Redis的应用方还是运维方都带来了很大的不便。对于应用方来说无法及时感知到主节点的变化， 必然会造成一定的写数据丢失和读数据错误， 甚至可能造成应用方服务不可用。 对于Redis的运维方来说， 整个故障转移的过程是需要人工来介入的， 故障转移实时性和准确性上都无法得到保障。考虑到这点， 有些公司把上述流程自动化了， 但是仍然存在如下问题： 第一， 判断节点不可达的机制是否健全和标准。 第二， 如果有多个从节点， 怎样保证只有一个被晋升为主节点。 第三，通知客户端新的主节点机制是否足够健壮。 Redis Sentinel正是用于解决这些问题<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620716970068.png" alt="" loading="lazy"><br>
+Redis Sentinel是一个分布式架构， 其中包含若干个Sentinel节点和Redis数据节点， 每个Sentinel节点会对数据节点和其余Sentinel节点进行监控， 当它发现节点不可达时， 会对节点做下线标识。 如果被标识的是主节点， 它还会和其他Sentinel节点进行“协商”， 当大多数Sentinel节点都认为主节点不可达时， 它们会选举出一个Sentinel节点来完成自动故障转移的工作， 同时会将这个变化实时通知给Redis应用方。 整个过程完全是自动的， 不需要人工来介入， 所以这套方案很有效地解决了Redis的高可用问题<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620716982305.png" alt="" loading="lazy"></p>
+<h4 id="哨兵的监控与选举">哨兵的监控与选举</h4>
+<h5 id="哨兵的定时监控">哨兵的定时监控</h5>
+<p>任务1：每个哨兵节点每10秒会向主节点和从节点发送info命令获取最拓扑结构图，哨兵配置时只要配置对主节点的监控即可，通过向主节点发送info，获取从节点的信息，并当有新的从节点加入时可以马上感知到</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1634888807687.png" alt="" loading="lazy"></figure>
+<p>任务2：每个哨兵节点每隔2秒会向redis数据节点的指定频道上发送该哨兵节点对于主节点的判断以及当前哨兵节点的信息，同时每个哨兵节点也会订阅该频道，来了解其它哨兵节点的信息及对主节点的判断，其实就是通过消息publish和subscribe来完成的</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1634888824561.png" alt="" loading="lazy"></figure>
+<p>任务3：每隔1秒每个哨兵会向主节点、从节点及其余哨兵节点发送一次ping命令做一次心跳检测，这个也是哨兵用来判断节点是否正常的重要依据</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1634888834049.png" alt="" loading="lazy"></figure>
+<p><strong>主观下线</strong>：所谓主观下线，就是单个sentinel认为某个服务下线（有可能是接收不到订阅，之间的网络不通等等原因）。</p>
+<p>sentinel会以每秒一次的频率向所有与其建立了命令连接的实例（master，从服务，其他sentinel）发ping命令，通过判断ping回复是有效回复，还是无效回复来判断实例时候在线（对该sentinel来说是“主观在线”）。</p>
+<p>sentinel配置文件中的down-after-milliseconds设置了判断主观下线的时间长度，如果实例在down-after-milliseconds毫秒内，返回的都是无效回复，那么sentinel回认为该实例已（主观）下线，修改其flags状态为SRI_S_DOWN。如果多个sentinel监视一个服务，有可能存在多个sentinel的down-after-milliseconds配置不同，这个在实际生产中要注意。</p>
+<p><strong>客观下线</strong>：当主观下线的节点是主节点时，此时该哨兵3节点会通过指令sentinel is-masterdown-by-addr寻求其它哨兵节点对主节点的判断，如果其他的哨兵也认为主节点主观线下了，则当认为主观下线的票数超过了quorum（选举）个数，此时哨兵节点则认为该主节点确实有问题，这样就客观下线了，大部分哨兵节点都同意下线操作，也就说是客观下线</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1634888843652.png" alt="" loading="lazy"></figure>
+<h5 id="哨兵lerder选举流程">哨兵lerder选举流程</h5>
+<p>如果主节点被判定为客观下线之后，就要选取一个哨兵节点来完成后面的故障转移工作，选举出一个leader的流程如下:</p>
+<p>a)每个在线的哨兵节点都可以成为领导者，当它确认（比如哨兵3）主节点下线时，会向其它哨兵发is-master-down-by-addr命令，征求判断并要求将自己设置为领导者，由领导者处理故障转移；<br>
+b)当其它哨兵收到此命令时，可以同意或者拒绝它成为领导者；<br>
+c)如果哨兵3发现自己在选举的票数大于等于num(sentinels)/2+1时，将成为领导者，如果没有超过，继续选举…………</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1634888851210.png" alt="" loading="lazy"></figure>
+<h5 id="自动故障转移机制">自动故障转移机制</h5>
+<h6 id="在从节点中选择新的主节点">在从节点中选择新的主节点</h6>
+<p>sentinel状态数据结构中保存了主服务的所有从服务信息，领头sentinel按照如下的规则从从服务列表中挑选出新的主服务</p>
+<ol>
+<li>过滤掉主观下线的节点</li>
+<li>选择slave-priority最高的节点，如果由则返回没有就继续选择</li>
+<li>选择出复制偏移量最大的系节点，因为复制便宜量越大则数据复制的越完整，如果由就返回了，没有就继续</li>
+<li>选择run_id最小的节点</li>
+</ol>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1634889047008.png" alt="" loading="lazy"></figure>
+<h6 id="更新主从状态">更新主从状态</h6>
+<p>通过slaveof no one命令，让选出来的从节点成为主节点；并通过slaveof命令让其他节点成为其从节点。</p>
+<p><strong>将已下线的主节点设置成新的主节点的从节点，当其回复正常时，复制新的主节点，变成新的主节点的从节点</strong></p>
+<p>同理，当已下线的服务重新上线时，sentinel会向其发送slaveof命令，让其成为新主的从</p>
+<h4 id="3官方redis-cluster-方案服务端路由查询">3，官方Redis Cluster 方案(服务端路由查询)</h4>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1620717452848.png" alt="" loading="lazy"></figure>
+<p><strong>简介</strong></p>
+<p>Redis Cluster是一种服务端Sharding技术，3.0版本开始正式提供。Redis Cluster并没有使用一致性hash，而是采用slot(槽)的概念，一共分成16384个槽。将请求发送到任意节点，接收到请求的节点会将查询请求发送到正确的节点上执行</p>
+<p><strong>方案说明</strong></p>
+<ol>
+<li>通过哈希的方式，将数据分片，每个节点均分存储一定哈希槽(哈希值)区间的数据，默认分配了16384 个槽位</li>
+<li>每份数据分片会存储在多个互为主从的多节点上</li>
+<li>数据写入先写主节点，再同步到从节点(支持配置为阻塞同步)</li>
+<li>同一分片多个节点间的数据不保持一致性</li>
+<li>读取数据时，当客户端操作的key没有分配在该节点上时，redis会返回转向指令，指向正确的节点</li>
+<li>扩容时时需要需要把旧节点的数据迁移一部分到新节点</li>
+</ol>
+<p>在 redis cluster 架构下，每个 redis 要放开两个端口号，比如一个是 6379，另外一个就是 加1w 的端口号，比如 16379。</p>
+<p>16379 端口号是用来进行节点间通信的，也就是 cluster bus 的东西，cluster bus 的通信，用来进行故障检测、配置更新、故障转移授权。cluster bus 用了另外一种二进制的协议，gossip 协议，用于节点间进行高效的数据交换，占用更少的网络带宽和处理时间。</p>
+<p><strong>节点间的内部通信机制</strong></p>
+<p>基本通信原理</p>
+<p>集群元数据的维护有两种方式：集中式、Gossip 协议。redis cluster 节点间采用 gossip 协议进行通信。</p>
+<h5 id="分布式寻址算法">分布式寻址算法</h5>
+<ul>
+<li>
+<p>hash 算法（大量缓存重建）</p>
+<p>使用特定的数据， 如Redis的键或用户ID， 再根据节点数量N使用公式：hash（key） %N计算出哈希值， 用来决定数据映射到哪一个节点上。 这种方案存在一个问题： 当节点数量变化时， 如扩容或收缩节点， 数据节点映射关系需要重新计算， 会导致数据的重新迁移。<br>
+这种方式的突出优点是简单性， 常用于数据库的分库分表规则， 一般采用预分区的方式， 提前根据数据量规划好分区数， 比如划分为512或1024张表， 保证可支撑未来一段时间的数据量， 再根据负载情况将表迁移到其他数据库中。 扩容时通常采用翻倍扩容， 避免数据映射全部被打乱导致全量迁移的情况， 如图所示。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717081847.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>一致性 hash 算法（自动缓存迁移）+ 虚拟节点（自动负载均衡）</p>
+<p>一致性哈希分区（Distributed Hash Table） 实现思路是为系统中每个节点分配一个token， 范围一般在0~232， 这些token构成一个哈希环。 数据读写执行节点查找操作时， 先根据key计算hash值， 然后顺时针找到第一个大于等于该哈希值的token节点， 如图所示。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717088124.png" alt="" loading="lazy"><br>
+这种方式相比节点取余最大的好处在于加入和删除节点只影响哈希环中相邻的节点， 对其他节点无影响。 但一致性哈希分区存在几个问题：</p>
+<ol>
+<li>
+<p>加减节点会造成哈希环中部分数据无法命中， 需要手动处理或者忽略这部分数据， 因此一致性哈希常用于缓存场景。</p>
+</li>
+<li>
+<p>当使用少量节点时， 节点变化将大范围影响哈希环中数据映射， 因此这种方式不适合少量数据节点的分布式方案。</p>
+</li>
+<li>
+<p>普通的一致性哈希分区在增减节点时需要增加一倍或减去一半节点才能保证数据和负载的均衡。</p>
+</li>
+</ol>
+</li>
+<li>
+<p>redis cluster 的 hash slot 算法</p>
+<p>虚拟槽分区巧妙地使用了哈希空间， 使用分散度良好的哈希函数把所有数据映射到一个固定范围的整数集合中， 整数定义为槽（slot）。 这个范围一般远远大于节点数， 比如Redis Cluster槽范围是0~16383。 槽是集群内数据管理和迁移的基本单位。 采用大范围槽的主要目的是为了方便数据拆分和集群扩展。 每个节点会负责一定数量的槽， 如图所示。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717095963.png" alt="" loading="lazy"><br>
+Redis Cluser采用虚拟槽分区， 所有的键根据哈希函数映射到0~16383整数槽内， 计算公式： slot=CRC16（key） &amp;16383。 每一个节点负责维护一部分槽以及槽所映射的键值数据， 如图所示<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717101176.png" alt="" loading="lazy"><br>
+Redis虚拟槽分区的特点：</p>
+<ol>
+<li>
+<p>解耦数据和节点之间的关系， 简化了节点扩容和收缩难度。</p>
+</li>
+<li>
+<p>节点自身维护槽的映射关系， 不需要客户端或者代理服务维护槽分区元数据。</p>
+</li>
+<li>
+<p>支持节点、 槽、 键之间的映射查询， 用于数据路由、 在线伸缩等场景</p>
+</li>
+</ol>
+</li>
+</ul>
+<p><strong>优点</strong></p>
+<ul>
+<li>无中心架构，支持动态扩容，对业务透明</li>
+<li>具备Sentinel的监控和自动Failover(故障转移)能力</li>
+<li>客户端不需要连接集群所有节点，连接集群中任何一个可用节点即可</li>
+<li>高性能，客户端直连redis服务，免去了proxy代理的损耗</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>运维也很复杂，数据迁移需要人工干预</li>
+<li>只能使用0号数据库</li>
+<li>不支持批量操作(pipeline管道操作)</li>
+<li>分布式逻辑和存储模块耦合等</li>
+</ul>
+<h3 id="集群相关提问">集群相关提问</h3>
+<h4 id="redis集群的主从复制模型是怎样的">Redis集群的主从复制模型是怎样的？</h4>
+<p>为了使在部分节点失败或者大部分节点无法通信的情况下集群仍然可用，所以集群使用了主从复制模型，每个节点都会有N-1个复制品</p>
+<h4 id="生产环境中的-redis-是怎么部署的">生产环境中的 redis 是怎么部署的？</h4>
+<p>redis cluster，10 台机器，5 台机器部署了 redis 主实例，另外 5 台机器部署了 redis 的从实例，每个主实例挂了一个从实例，5 个节点对外提供读写服务，每个节点的读写高峰qps可能可以达到每秒 5 万，5 台机器最多是 25 万读写请求/s。</p>
+<p>机器是什么配置？32G 内存+ 8 核 CPU + 1T 磁盘，但是分配给 redis 进程的是10g内存，一般线上生产环境，redis 的内存尽量不要超过 10g，超过 10g 可能会有问题。</p>
+<p>5 台机器对外提供读写，一共有 50g 内存。</p>
+<p>因为每个主实例都挂了一个从实例，所以是高可用的，任何一个主实例宕机，都会自动故障迁移，redis 从实例会自动变成主实例继续提供读写服务。</p>
+<p>你往内存里写的是什么数据？每条数据的大小是多少？商品数据，每条数据是 10kb。100 条数据是 1mb，10 万条数据是 1g。常驻内存的是 200 万条商品数据，占用内存是 20g，仅仅不到总内存的 50%。目前高峰期每秒就是 3500 左右的请求量。</p>
+<p>其实大型的公司，会有基础架构的 team 负责缓存集群的运维。</p>
+<h4 id="说说redis哈希槽的概念">说说Redis哈希槽的概念？</h4>
+<p>Redis集群没有使用一致性hash,而是引入了哈希槽的概念，Redis集群有16384个哈希槽，每个key通过CRC16校验后对16384取模来决定放置哪个槽，slot=CRC16（key） &amp;16383，集群的每个节点负责一部分hash槽。</p>
+<h4 id="redis集群会有写操作丢失吗为什么">Redis集群会有写操作丢失吗？为什么？</h4>
+<p>Redis并不能保证数据的强一致性，这意味这在实际中集群在特定的条件下可能会丢失写操作。</p>
+<p>以下情况可能导致写操作丢失：</p>
+<ul>
+<li>过期 key 被清理</li>
+<li>最大内存不足，导致 Redis 自动清理部分 key 以节省空间</li>
+<li>主库故障后自动重启，从库自动同步</li>
+<li>单独的主备方案，网络不稳定触发哨兵的自动切换主从节点，切换期间会有数据丢失</li>
+</ul>
+<h4 id="redis集群之间是如何复制的">Redis集群之间是如何复制的？</h4>
+<p>在从节点执行slaveof命令后， 复制过程便开始运作， 下面详细介绍建立复制的完整流程， 如图所示。<br>
+从图中可以看出复制过程大致分为6个过程：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717243838.png" alt="" loading="lazy"></p>
+<ol>
+<li>
+<p>保存主节点（master） 信息。执行slaveof后从节点只保存主节点的地址信息便直接返回， 这时建立复制流程还没有开始， 在从节点6380执行info replication可以看到如下信息：</p>
+<pre><code class="language-sh">master_host:127.0.0.1
+master_port:6379
+master_link_status:down
+</code></pre>
+<p>从统计信息可以看出， 主节点的ip和port被保存下来， 但是主节点的连接状态（master_link_status） 是下线状态。 执行slaveof后Redis会打印如下日志：</p>
+<pre><code class="language-sh">SLAVE OF 127.0.0.1:6379 enabled (user request from 'id=65 addr=127.0.0.1:58090 fd=5 name= age=11 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=32768 obl=0 oll=0 omem=0 events=r cmd=slaveof')
+</code></pre>
+<p>通过该日志可以帮助运维人员定位发送slaveof命令的客户端， 方便追踪和发现问题。</p>
+</li>
+<li>
+<p>从节点（slave） 内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后， 会尝试与该节点建立网络连接， 如图所示。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717266049.png" alt="" loading="lazy"><br>
+从节点会建立一个socket套接字， 例如图6-8中从节点建立了一个端口为24555的套接字， 专门用于接受主节点发送的复制命令。 从节点连接成功后<br>
+打印如下日志：</p>
+<pre><code class="language-sh">\* Connecting to MASTER 127.0.0.1:6379
+\* MASTER &lt;-&gt; SLAVE sync started
+</code></pre>
+<p>如果从节点无法建立连接， 定时任务会无限重试直到连接成功或者执行slaveof no one取消复制， 如图所示。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717276476.png" alt="" loading="lazy"><br>
+关于连接失败， 可以在从节点执行info replication查看master_link_down_since_seconds指标， 它会记录与主节点连接失败的系统时<br>
+间。 从节点连接主节点失败时也会每秒打印如下日志， 方便运维人员发现问题：</p>
+<pre><code class="language-sh">\# Error condition on socket for SYNC: {socket_error_reason}
+</code></pre>
+</li>
+<li>
+<p>发送ping命令。<br>
+连接建立成功后从节点发送ping请求进行首次通信， ping请求主要目的如下：<br>
+·检测主从之间网络套接字是否可用。<br>
+·检测主节点当前是否可接受处理命令。<br>
+如果发送ping命令后， 从节点没有收到主节点的pong回复或者超时， 比如网络超时或者主节点正在阻塞无法响应命令， 从节点会断开复制连接， 下<br>
+次定时任务会发起重连， 如图所示。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717286026.png" alt="" loading="lazy"><br>
+从节点发送的ping命令成功返回， Redis打印如下日志， 并继续后续复制流程：</p>
+<pre><code class="language-sh">Master replied to PING, replication can continue...
+</code></pre>
+</li>
+<li>
+<p>权限验证。 如果主节点设置了requirepass参数， 则需要密码验证，从节点必须配置masterauth参数保证与主节点相同的密码才能通过验证； 如果验证失败复制将终止， 从节点重新发起复制流程。</p>
+</li>
+<li>
+<p>同步数据集。 主从复制连接正常通信后， 对于首次建立复制的场景， 主节点会把持有的数据全部发送给从节点， 这部分操作是耗时最长的步骤。 Redis在2.8版本以后采用新复制命令psync进行数据同步， 原来的sync命令依然支持， 保证新旧版本的兼容性。 新版同步划分两种情况： 全量同步和部分同步.</p>
+</li>
+<li>
+<p>命令持续复制。 当主节点把当前的数据同步给从节点后， 便完成了复制的建立流程。 接下来主节点会持续地把写命令发送给从节点， 保证主从数据一致性。</p>
+</li>
+</ol>
+<h4 id="redis集群最大节点个数是多少">Redis集群最大节点个数是多少？</h4>
+<p>16384个</p>
+<h4 id="redis集群如何选择数据库">Redis集群如何选择数据库？</h4>
+<p>Redis集群目前无法做数据库选择，默认在0数据库。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">集群方案</a>
+<ul>
+<li><a href="#1redis-%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84">1，Redis 主从架构</a></li>
+<li><a href="#2%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F">2，哨兵模式</a></li>
+<li><a href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%92%8C%E5%93%A8%E5%85%B5">分布式和哨兵</a></li>
+<li><a href="#%E5%93%A8%E5%85%B5%E7%9A%84%E7%9B%91%E6%8E%A7%E4%B8%8E%E9%80%89%E4%B8%BE">哨兵的监控与选举</a>
+<ul>
+<li><a href="#%E5%93%A8%E5%85%B5%E7%9A%84%E5%AE%9A%E6%97%B6%E7%9B%91%E6%8E%A7">哨兵的定时监控</a></li>
+<li><a href="#%E5%93%A8%E5%85%B5lerder%E9%80%89%E4%B8%BE%E6%B5%81%E7%A8%8B">哨兵lerder选举流程</a></li>
+<li><a href="#%E8%87%AA%E5%8A%A8%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E6%9C%BA%E5%88%B6">自动故障转移机制</a>
+<ul>
+<li><a href="#%E5%9C%A8%E4%BB%8E%E8%8A%82%E7%82%B9%E4%B8%AD%E9%80%89%E6%8B%A9%E6%96%B0%E7%9A%84%E4%B8%BB%E8%8A%82%E7%82%B9">在从节点中选择新的主节点</a></li>
+<li><a href="#%E6%9B%B4%E6%96%B0%E4%B8%BB%E4%BB%8E%E7%8A%B6%E6%80%81">更新主从状态</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3%E5%AE%98%E6%96%B9redis-cluster-%E6%96%B9%E6%A1%88%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%B7%AF%E7%94%B1%E6%9F%A5%E8%AF%A2">3，官方Redis Cluster 方案(服务端路由查询)</a>
+<ul>
+<li><a href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%AF%BB%E5%9D%80%E7%AE%97%E6%B3%95">分布式寻址算法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E9%9B%86%E7%BE%A4%E7%9B%B8%E5%85%B3%E6%8F%90%E9%97%AE">集群相关提问</a>
+<ul>
+<li><a href="#redis%E9%9B%86%E7%BE%A4%E7%9A%84%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84">Redis集群的主从复制模型是怎样的？</a></li>
+<li><a href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E4%B8%AD%E7%9A%84-redis-%E6%98%AF%E6%80%8E%E4%B9%88%E9%83%A8%E7%BD%B2%E7%9A%84">生产环境中的 redis 是怎么部署的？</a></li>
+<li><a href="#%E8%AF%B4%E8%AF%B4redis%E5%93%88%E5%B8%8C%E6%A7%BD%E7%9A%84%E6%A6%82%E5%BF%B5">说说Redis哈希槽的概念？</a></li>
+<li><a href="#redis%E9%9B%86%E7%BE%A4%E4%BC%9A%E6%9C%89%E5%86%99%E6%93%8D%E4%BD%9C%E4%B8%A2%E5%A4%B1%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88">Redis集群会有写操作丢失吗？为什么？</a></li>
+<li><a href="#redis%E9%9B%86%E7%BE%A4%E4%B9%8B%E9%97%B4%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%8D%E5%88%B6%E7%9A%84">Redis集群之间是如何复制的？</a></li>
+<li><a href="#redis%E9%9B%86%E7%BE%A4%E6%9C%80%E5%A4%A7%E8%8A%82%E7%82%B9%E4%B8%AA%E6%95%B0%E6%98%AF%E5%A4%9A%E5%B0%91">Redis集群最大节点个数是多少？</a></li>
+<li><a href="#redis%E9%9B%86%E7%BE%A4%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E6%95%B0%E6%8D%AE%E5%BA%93">Redis集群如何选择数据库？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/WAG-fYk_l/">
+                  <span class="post-title">
+                    redis概述三&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/Sjb64Uy0k/">
+                   <span class="post-title">
+                     redis概述五&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>elasticSearch基础概念汇总 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="elasticSearch基础概念汇总 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="elasticSearch基础概念汇总" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/w_tIMVx00/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/4iaIun1eax/" class="tag">ELK</a>
+                
+              </span>
+              <h1>elasticSearch基础概念汇总</h1>
+              <span class="meta">
+                Posted on
+                2021-05-29，19 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/w_tIMVx00.png" alt="封面图">
+          </img>
+          
+          <h3 id="1什么是elasticsearch">1.什么是ElasticSearch？</h3>
+<p>Elasticsearch是一个基于Lucene的搜索引擎。它提供了具有HTTP Web界面和无架构JSON文档的分布式，多租户能力的全文搜索引擎。Elasticsearch是用Java开发的，根据Apache许可条款作为开源发布。它可以用于全文搜索，结构化搜索以及分析，当然你也可以将这三者进行组合。</p>
+<h3 id="2为什么要使用elasticsearch">2.为什么要使用Elasticsearch?</h3>
+<p>用数据库，也可以实现搜索的功能，为什么还需要搜索引擎呢？</p>
+<p>就像 <a href="https://link.zhihu.com/?target=https%3A//stackoverflow.com/questions/51639166/elasticsearch-vs-relational-database">Stackoverflow</a> 的网友说的：</p>
+<blockquote>
+<p>A relational database can store data and also index it. A search engine can index data but also store it.</p>
+</blockquote>
+<p>数据库（理论上来讲，ES 也是数据库，这里的数据库，指的是关系型数据库），首先是存储，搜索只是顺便提供的功能，</p>
+<p>而搜索引擎，首先是搜索，但是不把数据存下来就搜不了，所以只好存一存。</p>
+<p>术业有专攻，专攻搜索的搜索引擎，自然会提供更强大的搜索能力。。</p>
+<ol>
+<li>Elasticsearch是分布式的。不需要其他组件，分发是实时的，被叫做”Push replication”。</li>
+<li>Elasticsearch 完全支持 Apache Lucene 的接近实时的搜索。</li>
+<li>处理多租户（<a href="http://en.wikipedia.org/wiki/Multitenancy">multitenancy</a>）不需要特殊配置，而Solr则需要更多的高级设置。</li>
+<li>Elasticsearch 采用 Gateway 的概念，使得完备份更加简单。</li>
+<li>各节点组成对等的网络结构，某些节点出现故障时会自动分配其他节点代替其进行工作。</li>
+</ol>
+<h3 id="3elasticsearch是如何实现master选举的">3.Elasticsearch是如何实现Master选举的？</h3>
+<ul>
+<li>Elasticsearch的选主是ZenDiscovery模块负责的，主要包含Ping（节点之间通过这个RPC来发现彼此）和Unicast（单播模块包含一个主机列表以控制哪些节点需要ping通）这两部分；</li>
+<li>对所有可以成为master的节点（<strong>node.master: true</strong>）根据nodeId字典排序，每次选举每个节点都把自己所知道节点排一次序，然后选出第一个（第0位）节点，暂且认为它是master节点。</li>
+<li>如果对某个节点的投票数达到一定的值（可以成为master节点数n/2+1）并且该节点自己也选举自己，那这个节点就是master。否则重新选举一直到满足上述条件。</li>
+<li><em>补充：master节点的职责主要包括集群、节点和索引的管理，不负责文档级别的管理；data节点可以关闭http功能</em>。</li>
+</ul>
+<h3 id="4elasticsearch中如何避免脑裂">4.Elasticsearch中如何避免脑裂？</h3>
+<p>为了避免产生脑裂，ES采用了常见的分布式系统思路，保证选举出的master被多数派(quorum)的master-eligible node认可，以此来保证只有一个master。这个quorum通过以下配置进行配置：</p>
+<pre><code class="language-java">conf/elasticsearch.yml:
+    discovery.zen.minimum_master_nodes: 2
+</code></pre>
+<h3 id="5elasticsearch中的倒排索引">5.Elasticsearch中的倒排索引</h3>
+<h4 id="为什么叫倒排索引">为什么叫倒排索引</h4>
+<p>在没有搜索引擎时，我们是直接输入一个网址，然后获取网站内容，这时我们的行为是：<code>document -&gt; to -&gt; words</code> 通过文章，获取里面的单词，此谓「正向索引」，forward index.后来，我们希望能够输入一个单词，找到含有这个单词，或者和这个单词有关系的文章：<code>word -&gt; to -&gt; documents</code>于是我们把这种索引，成为inverted index，直译过来，应该叫「反向索引」，国内翻译成「倒排索引」。</p>
+<h4 id="倒排索引的内部结构">倒排索引的内部结构</h4>
+<p>首先，在数据生成的时候，比如爬虫爬到一篇文章，这时我们需要对这篇文章进行分析，将文本拆解成一个个单词。</p>
+<p>这个过程很复杂，比如“生存还是死亡”，你要如何让分词器自动将它分解为“生存”、“还是”、“死亡”三个词语，然后把“还是”这个无意义的词语干掉。这里不展开，感兴趣的同学可以查看关于「分析器」的内容。</p>
+<p>接着，把这两个词语以及它对应的文档id存下来：</p>
+<table>
+<thead>
+<tr>
+<th>word</th>
+<th>documentId</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生存</td>
+<td>1</td>
+</tr>
+<tr>
+<td>死亡</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>接着爬虫继续爬，又爬到一个含有“生存”的文档，于是索引变成：</p>
+<table>
+<thead>
+<tr>
+<th>word</th>
+<th>documentId</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生存</td>
+<td>1，2</td>
+</tr>
+<tr>
+<td>死亡</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>下次搜索“生存”，就会返回文档ID是 1、2两份文档。然而上面这套索引的实现，给小孩子当玩具玩还行，要上生产环境，那还远着。想想看，这个世界上那么多单词，中文、英文、日文、韩文 … 你每次搜索一个单词，我都要全局遍历一遍，很明显不行。于是有了排序，我们需要对单词进行排序，像 B+ 树一样，可以在页里实现二分查找。光排序还不行，你单词都放在磁盘呢，磁盘 IO 慢的不得了，所以 Mysql 特意把索引缓存到了内存。你说好，我也学 Mysql 的，放内存，3，2，1，放，哐当，内存爆了。哪本字典，会把所有单词都贴在目录里的？</p>
+<p>所以，上图：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622014331550.png" alt="" loading="lazy"></figure>
+<p>Lucene 的倒排索，增加了最左边的一层「字典树」<code>term index</code>，它不存储所有的单词，只存储单词前缀，通过字典树找到单词所在的块，也就是单词的大概位置，再在块里二分查找，找到对应的单词，再找到单词对应的文档列表。</p>
+<p>当然，内存寸土寸金，能省则省，所以 Lucene 还用了 <code>FST（Finite State Transducers）</code>对它进一步压缩。</p>
+<p>最右边的 Posting List ，别看它只是存一个文档 ID 数组，但是它在设计时，遇到的问题可不少。</p>
+<p><strong>Frame Of Reference</strong></p>
+<p>原生的 Posting List 有两个痛点：</p>
+<ul>
+<li><strong>如何压缩以节省磁盘空间</strong></li>
+<li><strong>如何快速求交并集（intersections and unions）</strong></li>
+</ul>
+<p>先来聊聊压缩。我们来简化下 Lucene 要面对的问题，假设有这样一个数组：<strong>[73, 300, 302, 332, 343, 372]</strong></p>
+<p>Lucene 里，数据是按 Segment 存储的，每个 Segment 最多存 65536 个文档 ID， 所以文档 ID 的范围，从 0 到 2^16-1，所以如果不进行任何处理，那么每个元素都会占用 2 bytes ，对应上面的数组，就是 6 * 2 = 12 bytes.</p>
+<p>怎么压缩呢？</p>
+<p><strong>压缩，就是尽可能降低每个数据占用的空间，同时又能让信息不失真，能够还原回来。</strong></p>
+<p><strong>Step 1：Delta-encode —— 增量编码</strong></p>
+<p>我们只记录元素与元素之间的增量，于是数组变成了：[73, 227, 2, 30, 11, 29]</p>
+<p><strong>Step 2：Split into blocks —— 分割成块</strong></p>
+<p>Lucene里每个块是 256 个文档 ID，这样可以保证每个块，增量编码后，每个元素都不会超过 256（1 byte）.为了方便演示，我们假设每个块是 3 个文档 ID：</p>
+<p><strong>[73, 227, 2], [30, 11, 29]</strong></p>
+<p><strong>Step 3：Bit packing —— 按需分配空间</strong></p>
+<p>对于第一个块，[73, 227, 2]，最大元素是227，需要 8 bits，好，那我给你这个块的每个元素，都分配 8 bits的空间。但是对于第二个块，[30, 11, 29]，最大的元素才30，只需要 5 bits，那我就给你每个元素，只分配 5 bits 的空间，足矣。这一步，可以说是把吝啬发挥到极致，精打细算，按需分配。</p>
+<p>以上三个步骤，共同组成了一项编码技术，Frame Of Reference（FOR）：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622014347604.png" alt="" loading="lazy"></figure>
+<p><strong>Roaring bitmaps</strong></p>
+<p>接着来聊聊 Posting List 的第二个痛点 —— 如何快速求交并集（intersections and unions）。</p>
+<p>在 Lucene 中查询，通常不只有一个查询条件，比如我们想搜索：</p>
+<ul>
+<li>含有“生存”相关词语的文档</li>
+<li>文档发布时间在最近一个月</li>
+<li>文档发布者是平台的特约作者</li>
+</ul>
+<p>这样就需要根据三个字段，去三棵倒排索引里去查，当然，磁盘里的数据，上一节提到过，用了 FOR 进行压缩，所以我们要把数据进行反向处理，即解压，才能还原成原始的文档 ID，然后把这三个文档 ID 数组在内存中做一个交集。</p>
+<blockquote>
+<p>即使没有多条件查询， Lucene 也需要频繁求并集，因为 Lucene 是分片存储的。</p>
+</blockquote>
+<p>同样，我们把 Lucene 遇到的问题，简化成一道算法题。</p>
+<p>假设有下面三个数组：</p>
+<pre><code class="language-java">[64, 300, 303, 343]
+
+[73, 300, 302, 303, 343, 372]
+
+[303, 311, 333, 343]
+</code></pre>
+<p>求它们的交集。</p>
+<p><strong>Option 1: Integer 数组</strong></p>
+<p>直接用原始的文档 ID ，可能你会说，那就逐个数组遍历一遍吧，遍历完就知道交集是什么了。</p>
+<p>其实对于有序的数组，用跳表（skip table）可以更高效，这里就不展开了，因为不管是从性能，还是空间上考虑，Integer 数组都不靠谱，假设有100M 个文档 ID，每个文档 ID 占 2 bytes，那已经是 200 MB，而这些数据是要放到内存中进行处理的，把这么大量的数据，从磁盘解压后丢到内存，内存肯定撑不住。</p>
+<p><strong>Option 2: Bitmap</strong></p>
+<p>假设有这样一个数组：<strong>[3,6,7,10]</strong> 那么我们可以这样来表示：<strong>[0,0,1,0,0,1,1,0,0,1]</strong> 看出来了么，对，<strong>我们用 0 表示角标对应的数字不存在，用 1 表示存在。</strong></p>
+<p>这样带来了两个好处：</p>
+<ul>
+<li>节省空间：既然我们只需要0和1，那每个文档 ID 就只需要 1 bit，还是假设有 100M 个文档，那只需要 100M bits = 100M * 1/8 bytes = 12.5 MB，比之前用 Integer 数组 的 200 MB，优秀太多</li>
+<li>运算更快：0 和 1，天然就适合进行位运算，求交集，「与」一下，求并集，「或」一下，一切都回归到计算机的起点</li>
+</ul>
+<p><strong>Option 3: Roaring Bitmaps</strong></p>
+<p>细心的你可能发现了，bitmap 有个硬伤，就是不管你有多少个文档，你占用的空间都是一样的，之前说过，Lucene Posting List 的每个 Segement 最多放 65536 个文档ID，举一个极端的例子，有一个数组，里面只有两个文档 ID：<strong>[0, 65535]<strong>用 Bitmap，要怎么表示？</strong>[1,0,0,0,….(超级多个0),…,0,0,1]</strong></p>
+<p>你需要 65536 个 bit，也就是 65536/8 = 8192 bytes，而用 Integer 数组，你只需要 2 * 2 bytes = 4 bytes</p>
+<p>呵呵，死板的 bitmap。可见在文档数量不多的时候，使用 Integer 数组更加节省内存。</p>
+<p>我们来算一下临界值，很简单，无论文档数量多少，bitmap都需要 8192 bytes，而 Integer 数组则和文档数量成线性相关，每个文档 ID 占 2 bytes，所以：<code>8192 / 2 = 4096</code>当文档数量少于 4096 时，用 Integer 数组，否则，用 bitmap.</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622014361997.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>这里补充一下 Roaring bitmaps 和 之前讲的 Frame Of Reference 的关系。<br>
+Frame Of Reference 是压缩数据，减少磁盘占用空间，所以当我们从磁盘取数据时，也需要一个反向的过程，即解压，解压后才有我们上面看到的这样子的文档ID数组：[73, 300, 302, 303, 343, 372] ，接着我们需要对数据进行处理，求交集或者并集，这时候数据是需要放到内存进行处理的，我们有三个这样的数组，这些数组可能很大，而内存空间比磁盘还宝贵，于是需要更强有力的压缩算法，同时还要有利于快速的求交并集，于是有了Roaring Bitmaps 算法。<br>
+另外，Lucene 还会把从磁盘取出来的数据，通过 Roaring bitmaps 处理后，缓存到内存中，Lucene 称之为 filter cache.</p>
+</blockquote>
+<h3 id="6elasticsearch中的集群-节点-索引-文档-类型是什么">6.ElasticSearch中的集群、节点、索引、文档、类型是什么？</h3>
+<p><strong><code>群集</code></strong> 是一个或多个节点（服务器）的集合，它们共同保存您的整个数据，并提供跨所有节点的联合索引和搜索功能。群集由唯一名称标识，默认情况下为“elasticsearch”。此名称很重要，因为如果节点设置为按名称加入群集，则该节点只能是群集的一部分。</p>
+<p><strong><code>节点</code></strong> 是属于集群一部分的单个服务器。它存储数据并参与群集索引和搜索功能。</p>
+<p><strong><code>索引</code></strong> 就像关系数据库中的“数据库”。它有一个定义多种类型的映射。索引是逻辑名称空间，映射到一个或多个主分片，并且可以有零个或多个副本分片。 MySQL =&gt;数据库 　　 ElasticSearch =&gt;索引</p>
+<p><strong><code>文档</code></strong> 类似于关系数据库中的一行。不同之处在于索引中的每个文档可以具有不同的结构（字段），但是对于通用字段应该具有相同的数据类型。 MySQL =&gt; Databases =&gt;Tables =&gt; Columns / Rows  ElasticSearch =&gt; Indices =&gt; Types =&gt;具有属性的文档</p>
+<p><strong><code>类型</code></strong> 是索引的逻辑类别/分区，其语义完全取决于用户。</p>
+<h3 id="7elasticsearch中的分片是什么">7.ElasticSearch中的分片是什么?</h3>
+<p>在大多数环境中，每个节点都在单独的盒子或虚拟机上运行。</p>
+<p><strong><code>索引</code></strong>  - 在Elasticsearch中，索引是文档的集合。</p>
+<p><strong><code>分片</code></strong>  -因为Elasticsearch是一个分布式搜索引擎，所以索引通常被分割成分布在多个节点上的被称为分片的元素。</p>
+<p><strong><code>Segment</code></strong> -每个shard（分片）包含多个segment（段），每一个segment都是一个倒排索引<br>
+在查询的时，会把所有的segment查询结果汇总归并后最为最终的分片查询结果返回<br>
+1.segment是不可变的，物理上你并不能从中删除信息，所以在删除文档的时候，是在文档上面打上一个删除的标记，然后在执行段合并的时候，进行删除<br>
+2.索引segment段的个数越多，搜索性能越低且消耗内存更多</p>
+<p>​		<strong><code>副本</code></strong>  -一个索引被分解成碎片以便于分发和扩展。副本是分片的副本。</p>
+<p>​		<strong><code>分析器</code></strong>  -在ElasticSearch中索引数据时，数据由为索引定义的Analyzer在内部进行转换。 分析器由一个Tokenizer和零个或多个TokenFilter组成。编译器可以在一个或多个CharFilter之前。分析模块允许您在逻辑名称下注册分析器，然后可以在映射定义或某些API中引用它们。Elasticsearch附带了许多可以随时使用的预建分析器。或者，您可以组合内置的字符过滤器，编译器和过滤器器来创建自定义分析器。</p>
+<p>​		<strong><code>编译器</code></strong>  -编译器用于将字符串分解为术语或标记流。一个简单的编译器可能会将字符串拆分为任何遇到空格或标点的地方。Elasticsearch有许多内置标记器，可用于构建自定义分析器。</p>
+<h3 id="8详细描述一下elasticsearch索引文档的过程">8.详细描述一下Elasticsearch索引文档的过程。</h3>
+<ul>
+<li>协调节点默认使用文档ID参与计算（也支持通过routing），以便为路由提供合适的分片。</li>
+</ul>
+<pre><code>shard = hash(document_id) % (num_of_primary_shards)
+</code></pre>
+<ul>
+<li>当分片所在的节点接收到来自协调节点的请求后，会将请求写入到Memory Buffer，然后定时（默认是每隔1秒）写入到Filesystem Cache，这个从Momery Buffer到Filesystem Cache的过程就叫做refresh；</li>
+<li>当然在某些情况下，存在Momery Buffer和Filesystem Cache的数据可能会丢失，ES是通过translog的机制来保证数据的可靠性的。其实现机制是接收到请求后，同时也会写入到translog中，当Filesystem cache中的数据写入到磁盘中时，才会清除掉，这个过程叫做flush；</li>
+<li>在flush过程中，内存中的缓冲将被清除，内容被写入一个新段，段的fsync将创建一个新的提交点，并将内容刷新到磁盘，旧的translog将被删除并开始一个新的translog。</li>
+<li>flush触发的时机是定时触发（默认30分钟）或者translog变得太大（默认为512M）时；</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1622018263120.jpeg" alt="" loading="lazy"></figure>
+<p><em>补充：关于Lucene的Segement：</em></p>
+<ul>
+<li>Lucene索引是由多个段组成，段本身是一个功能齐全的倒排索引。</li>
+<li>段是不可变的，允许Lucene将新的文档增量地添加到索引中，而不用从头重建索引。</li>
+<li>对于每一个搜索请求而言，索引中的所有段都会被搜索，并且每个段会消耗CPU的时钟周、文件句柄和内存。这意味着段的数量越多，搜索性能会越低。</li>
+<li>为了解决这个问题，Elasticsearch会合并小段到一个较大的段，提交新的合并段到磁盘，并删除那些旧的小段。</li>
+</ul>
+<h3 id="9详细描述一下elasticsearch更新和删除文档的过程">9.详细描述一下Elasticsearch更新和删除文档的过程</h3>
+<ul>
+<li>删除和更新也都是写操作，但是Elasticsearch中的文档是不可变的，因此不能被删除或者改动以展示其变更；</li>
+<li>磁盘上的每个段都有一个相应的.del文件。当删除请求发送后，文档并没有真的被删除，而是在.del文件中被标记为删除。该文档依然能匹配查询，但是会在结果中被过滤掉。当段合并时，在.del文件中被标记为删除的文档将不会被写入新段。</li>
+<li>在新的文档被创建时，Elasticsearch会为该文档指定一个版本号，当执行更新时，旧版本的文档在.del文件中被标记为删除，新版本的文档被索引到一个新段。旧版本的文档依然能匹配查询，但是会在结果中被过滤掉。</li>
+</ul>
+<h3 id="10详细描述一下elasticsearch搜索的过程">10.详细描述一下Elasticsearch搜索的过程</h3>
+<ul>
+<li>搜索被执行成一个两阶段过程，我们称之为 Query Then Fetch；</li>
+<li>在初始<em>查询阶段</em>时，查询会广播到索引中每一个分片拷贝（主分片或者副本分片）。 每个分片在本地执行搜索并构建一个匹配文档的大小为 from + size 的优先队列。<em>PS：在搜索的时候是会查询Filesystem Cache的，但是有部分数据还在Memory Buffer，所以搜索是近实时的。</em></li>
+<li>每个分片返回各自优先队列中 <strong>所有文档的 ID 和排序值</strong> 给协调节点，它合并这些值到自己的优先队列中来产生一个全局排序后的结果列表。</li>
+<li>接下来就是 <em>取回阶段</em>，协调节点辨别出哪些文档需要被取回并向相关的分片提交多个 GET 请求。每个分片加载并 <em>丰富</em> 文档，如果有需要的话，接着返回文档给协调节点。一旦所有的文档都被取回了，协调节点返回结果给客户端。</li>
+<li><em>补充：Query Then Fetch的搜索类型在文档相关性打分的时候参考的是本分片的数据，这样在文档数量较少的时候可能不够准确，DFS Query Then Fetch增加了一个预查询的处理，询问Term和Document frequency，这个评分更准确，但是性能会变差。</em></li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1622014432949.jpeg" alt="" loading="lazy"></figure>
+<h3 id="11elasticsearch对于大数据量上亿量级的聚合如何实现">11.Elasticsearch对于大数据量（上亿量级）的聚合如何实现？</h3>
+<ul>
+<li>Elasticsearch 提供的首个近似聚合是cardinality 度量。它提供一个字段的基数，即该字段的<em>distinct</em>或者<em>unique</em>值的数目。它是基于HLL算法的。HLL 会先对我们的输入作哈希运算，然后根据哈希运算的结果中的 bits 做概率估算从而得到基数。其特点是：可配置的精度，用来控制内存的使用（更精确 ＝ 更多内存）；小的数据集精度是非常高的；我们可以通过配置参数，来设置去重需要的固定内存使用量。无论数千还是数十亿的唯一值，内存使用量只与你配置的精确度相关。</li>
+</ul>
+<h3 id="12在并发情况下elasticsearch如果保证读写一致">12.在并发情况下，Elasticsearch如果保证读写一致？</h3>
+<ul>
+<li>可以通过版本号使用乐观并发控制，以确保新版本不会被旧版本覆盖，由应用层来处理具体的冲突；</li>
+<li>另外对于写操作，一致性级别支持quorum/one/all，默认为quorum，即只有当大多数分片可用时才允许写操作。但即使大多数可用，也可能存在因为网络等原因导致写入副本失败，这样该副本被认为故障，分片将会在一个不同的节点上重建。</li>
+<li>对于读操作，可以设置replication为sync(默认)，这使得操作在主分片和副本分片都完成后才会返回；如果设置replication为async时，也可以通过设置搜索请求参数_preference为primary来查询主分片，确保文档是最新版本。</li>
+</ul>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1%E4%BB%80%E4%B9%88%E6%98%AFelasticsearch">1.什么是ElasticSearch？</a></li>
+<li><a href="#2%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8elasticsearch">2.为什么要使用Elasticsearch?</a></li>
+<li><a href="#3elasticsearch%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0master%E9%80%89%E4%B8%BE%E7%9A%84">3.Elasticsearch是如何实现Master选举的？</a></li>
+<li><a href="#4elasticsearch%E4%B8%AD%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E8%84%91%E8%A3%82">4.Elasticsearch中如何避免脑裂？</a></li>
+<li><a href="#5elasticsearch%E4%B8%AD%E7%9A%84%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95">5.Elasticsearch中的倒排索引</a>
+<ul>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AB%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95">为什么叫倒排索引</a></li>
+<li><a href="#%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95%E7%9A%84%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84">倒排索引的内部结构</a></li>
+</ul>
+</li>
+<li><a href="#6elasticsearch%E4%B8%AD%E7%9A%84%E9%9B%86%E7%BE%A4-%E8%8A%82%E7%82%B9-%E7%B4%A2%E5%BC%95-%E6%96%87%E6%A1%A3-%E7%B1%BB%E5%9E%8B%E6%98%AF%E4%BB%80%E4%B9%88">6.ElasticSearch中的集群、节点、索引、文档、类型是什么？</a></li>
+<li><a href="#7elasticsearch%E4%B8%AD%E7%9A%84%E5%88%86%E7%89%87%E6%98%AF%E4%BB%80%E4%B9%88">7.ElasticSearch中的分片是什么?</a></li>
+<li><a href="#8%E8%AF%A6%E7%BB%86%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8Belasticsearch%E7%B4%A2%E5%BC%95%E6%96%87%E6%A1%A3%E7%9A%84%E8%BF%87%E7%A8%8B">8.详细描述一下Elasticsearch索引文档的过程。</a></li>
+<li><a href="#9%E8%AF%A6%E7%BB%86%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8Belasticsearch%E6%9B%B4%E6%96%B0%E5%92%8C%E5%88%A0%E9%99%A4%E6%96%87%E6%A1%A3%E7%9A%84%E8%BF%87%E7%A8%8B">9.详细描述一下Elasticsearch更新和删除文档的过程</a></li>
+<li><a href="#10%E8%AF%A6%E7%BB%86%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8Belasticsearch%E6%90%9C%E7%B4%A2%E7%9A%84%E8%BF%87%E7%A8%8B">10.详细描述一下Elasticsearch搜索的过程</a></li>
+<li><a href="#11elasticsearch%E5%AF%B9%E4%BA%8E%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%87%8F%E4%B8%8A%E4%BA%BF%E9%87%8F%E7%BA%A7%E7%9A%84%E8%81%9A%E5%90%88%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0">11.Elasticsearch对于大数据量（上亿量级）的聚合如何实现？</a></li>
+<li><a href="#12%E5%9C%A8%E5%B9%B6%E5%8F%91%E6%83%85%E5%86%B5%E4%B8%8Belasticsearch%E5%A6%82%E6%9E%9C%E4%BF%9D%E8%AF%81%E8%AF%BB%E5%86%99%E4%B8%80%E8%87%B4">12.在并发情况下，Elasticsearch如果保证读写一致？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/AdeCmc8BU/">
+                  <span class="post-title">
+                    elasticSearch查询语句&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/7cW_XVJ41/">
+                   <span class="post-title">
+                     SpringMVC工作原理&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

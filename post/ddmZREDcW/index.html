@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title> 多线程基础概念 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title=" 多线程基础概念 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content=" 多线程基础概念" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/ddmZREDcW/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1> 多线程基础概念</h1>
+              <span class="meta">
+                Posted on
+                2021-05-09，16 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/ddmZREDcW.png" alt="封面图">
+          </img>
+          
+          <h2 id="什么是线程">什么是线程</h2>
+<blockquote>
+<p>是操作系统能够进行运算调度的最小单位。它被包含在进程之中，是进程中的实际运作单位。</p>
+</blockquote>
+<h3 id="线程安全的问题">线程安全的问题</h3>
+<p><strong>并发编程三要素是什么？在 Java 程序中怎么保证多线程的运行安全？</strong></p>
+<p>并发编程三要素（线程的安全性问题体现在）：</p>
+<p>原子性：原子，即一个不可再被分割的颗粒。原子性指的是一个或多个操作要么全部执行成功要么全部执行失败。(<code>synchronized</code>,<code>lock</code>,<code>unlock</code>)</p>
+<p>可见性：一个线程对共享变量的修改,另一个线程能够立刻看到。（<code>synchronized</code>,<code>volatile</code>,<code>final</code>）</p>
+<p>有序性：程序执行的顺序按照代码的先后顺序执行。（处理器可能会对指令进行重排序）（<code>synchronized</code>,<code>volatile</code>）</p>
+<p>出现线程安全问题的原因：</p>
+<ul>
+<li>线程切换带来的原子性问题</li>
+<li>缓存导致的可见性问题</li>
+<li>编译优化带来的有序性问题</li>
+</ul>
+<p>解决办法：</p>
+<ul>
+<li>JDK Atomic开头的原子类、synchronized、LOCK，可以解决原子性问题</li>
+<li>synchronized、volatile、LOCK，可以解决可见性问题</li>
+<li>Happens-Before 规则可以解决有序性问题</li>
+</ul>
+<h3 id="并发与并行">并发与并行</h3>
+<ul>
+<li>并发：多个任务在同一个 CPU 核上，按细分的时间片轮流(交替)执行，从逻辑上来看那些任务是同时执行。</li>
+<li>并行：单位时间内，多个处理器或多核处理器同时处理多个任务，是真正意义上的“同时进行”。</li>
+<li>串行：有n个任务，由一个线程按顺序执行。由于任务、方法都在一个线程执行所以不存在线程不安全情况，也就不存在临界区的问题。</li>
+</ul>
+<h3 id="并发编程多线程的优点">并发编程（多线程）的优点</h3>
+<ol>
+<li>
+<p>早期的CPU是单核的，为了提升计算能力，将多个计算单元整合到一起。形成了多核CPU。<strong>多线程就是为了将多核CPU发挥到极致，一边提高性能</strong>。</p>
+</li>
+<li>
+<p>方便进行业务拆分，提升系统并发能力和性能：在特殊的业务场景下，先天的就适合于并发编程。现在的系统动不动就要求百万级甚至千万级的并发量，而多线程并发编程正是开发高并发系统的基础，利用好多线程机制可以大大提高系统整体的并发能力以及性能。面对复杂业务模型，并行程序会比串行程序更适应业务需求，而并发编程更能吻合这种业务拆分</p>
+</li>
+</ol>
+<h3 id="并发编程多线程的缺点">并发编程（多线程）的缺点</h3>
+<p>上面说了多线程的优点是：为了提高计算性能。那么一定会提高？答案是不一定的。有时候多线程不一定比单线程计算快</p>
+<p>多线程会带来额外的开销和复杂的问题</p>
+<ul>
+<li>上下文切换</li>
+<li>死锁</li>
+<li>内存泄漏</li>
+</ul>
+<h4 id="上下文切换">上下文切换</h4>
+<p>时间片是CPU分配给各个线程的时间，因为时间非常短，所以CPU不断通过切换线程，让我们觉得多个线程是同时执行的，时间片一般是几十毫秒。而每次切换时，需要保存当前的状态起来，以便能够进行恢复先前状态，而这个切换时非常损耗性能，过于频繁反而无法发挥出多线程编程的优势。<br>
+减少上下文切换可以采用无锁并发编程，CAS算法，使用最少的线程和使用协程。</p>
+<ul>
+<li>
+<p>无锁并发编程：可以参照concurrentHashMap锁分段的思想，不同的线程处理不同段的数据，这样在多线程竞争的条件下，可以减少上下文切换的时间。</p>
+</li>
+<li>
+<p>CAS算法，利用Atomic下使用CAS算法来更新数据，使用了乐观锁，可以有效的减少一部分不必要的锁竞争带来的上下文切换</p>
+</li>
+<li>
+<p>使用最少线程：避免创建不需要的线程，比如任务很少，但是创建了很多的线程，这样会造成大量的线程都处于等待状态</p>
+</li>
+<li>
+<p>协程：在单线程里实现多任务的调度，并在单线程里维持多个任务间的切换</p>
+</li>
+</ul>
+<h4 id="线程死锁">线程死锁</h4>
+<blockquote>
+<p>死锁是指两个或两个以上的进程（线程）在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程（线程）称为死锁进程（线程）。</p>
+</blockquote>
+<p>多个线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放。由于线程被无限期地阻塞，因此程序不可能正常终止。</p>
+<p>如下图所示，线程 A 持有资源 2，线程 B 持有资源 1，他们同时都想申请对方的资源，所以这两个线程就会互相等待而进入死锁状态。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620451228802.png" alt="" loading="lazy"></figure>
+<p>下面通过一个例子来说明线程死锁：</p>
+<pre><code class="language-java">public class DeadLockDemo {
+    private static Object resource1 = new Object();//资源 1
+    private static Object resource2 = new Object();//资源 2
+
+    public static void main(String[] args) {
+        new Thread(() -&gt; {
+            synchronized (resource1) {
+                System.out.println(Thread.currentThread() + &quot;get resource1&quot;);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread() + &quot;waiting get resource2&quot;);
+                synchronized (resource2) {
+                    System.out.println(Thread.currentThread() + &quot;get resource2&quot;);
+                }
+            }
+        }, &quot;线程 1&quot;).start();
+
+        new Thread(() -&gt; {
+            synchronized (resource2) {
+                System.out.println(Thread.currentThread() + &quot;get resource2&quot;);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread() + &quot;waiting get resource1&quot;);
+                synchronized (resource1) {
+                    System.out.println(Thread.currentThread() + &quot;get resource1&quot;);
+                }
+            }
+        }, &quot;线程 2&quot;).start();
+    }
+}
+</code></pre>
+<p>输出结果</p>
+<pre><code class="language-java">Thread[线程 1,5,main]get resource1
+Thread[线程 2,5,main]get resource2
+Thread[线程 1,5,main]waiting get resource2
+Thread[线程 2,5,main]waiting get resource1
+</code></pre>
+<p>线程 A 通过 synchronized (resource1) 获得 resource1 的监视器锁，然后通过Thread.sleep(1000)；让线程 A 休眠 1s 为的是让线程 B 得到CPU执行权，然后获取到 resource2 的监视器锁。线程 A 和线程 B 休眠结束了都开始企图请求获取对方的资源，然后这两个线程就会陷入互相等待的状态，这也就产生了死锁。上面的例子符合产生死锁的四个必要条件。</p>
+<p><strong>形成死锁的四个必要条件是什么</strong></p>
+<ol>
+<li>互斥条件：线程(进程)对于所分配到的资源具有排它性，即一个资源只能被一个线程(进程)占用，直到被该线程(进程)释放</li>
+<li>请求与保持条件：一个线程(进程)因请求被占用资源而发生阻塞时，对已获得的资源保持不放。</li>
+<li>不剥夺条件：线程(进程)已获得的资源在末使用完之前不能被其他线程强行剥夺，只有自己使用完毕后才释放资源。</li>
+<li>循环等待条件：当发生死锁时，所等待的线程(进程)必定会形成一个环路（类似于死循环），造成永久阻塞</li>
+</ol>
+<p><strong>如何避免线程死锁</strong></p>
+<p>我们只要破坏产生死锁的四个条件中的其中一个就可以了。</p>
+<ol>
+<li>
+<p><strong>破坏互斥条件</strong></p>
+<p>这个条件我们没有办法破坏，因为我们用锁本来就是想让他们互斥的（临界资源需要互斥访问）。</p>
+</li>
+<li>
+<p><strong>破坏请求与保持条件</strong></p>
+<p>一次性申请所有的资源。</p>
+</li>
+<li>
+<p><strong>破坏不剥夺条件</strong></p>
+<p>占用部分资源的线程进一步申请其他资源时，如果申请不到，可以主动释放它占有的资源。</p>
+</li>
+<li>
+<p><strong>破坏循环等待条件</strong></p>
+<p>靠按序申请资源来预防。按某一顺序申请资源，释放资源则反序释放。破坏循环等待条件。</p>
+</li>
+</ol>
+<h3 id="创建线程的四种方式">创建线程的四种方式</h3>
+<p>创建线程有四种方式：</p>
+<ul>
+<li>继承 Thread 类；</li>
+<li>实现 Runnable 接口；</li>
+<li>实现 Callable 接口；</li>
+<li>使用 Executors 工具类创建线程池</li>
+</ul>
+<h4 id="继承-thread-类">继承 Thread 类</h4>
+<p>步骤</p>
+<ol>
+<li>定义Thread 类的子类，并重写该类的run() 方法，该run() 方法的方法体就代表类线程需要完成的任务。因此把run() 方法称为线程执行体。</li>
+<li>创建 Thread 子类的实例，即创建线程对象</li>
+<li>调用子类实例的star()方法来启动线程</li>
+</ol>
+<pre><code class="language-java">/**
+   * 继承 thread 的内部类，以买票例子
+   */
+public class FirstThread extends Thread{
+    private int i;
+    private int ticket = 10;
+
+    @Override
+    public void run() {
+        for (;i&lt;20;i++) {
+			//当继承thread 时，直接使用this 可以获取当前的线程,getName()获取当前线程的名字
+            if(this.ticket&gt;0){
+               	Log.e(TAG, getName() + &quot;, 卖票：ticket=&quot; + ticket--);
+            }
+        }
+
+    }
+}
+
+private void starTicketThread(){
+    Log.d(TAG,&quot;starTicketThread, &quot;+Thread.currentThread().getName());
+
+    FirstThread thread1 = new FirstThread();
+    FirstThread thread2 = new FirstThread();
+    FirstThread thread3 = new FirstThread();
+
+    thread1.start();
+    thread2.start();
+    thread3.start();
+
+    //开启3个线程进行买票，每个线程都卖了10张，总共就30张票
+
+}
+</code></pre>
+<p>运行结果</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620451264035.png" alt="" loading="lazy"></figure>
+<p><strong>注意</strong> ：可以看到 3 个线程输入的 票数变量不连续，注意：ticket 是 FirstThread 的实例属性，而不是局部变量，但是因为程序每次创建线程对象都需要创建一个FirstThread 的对象，所有多个线程不共享该实例的属性。</p>
+<pre><code class="language-java">//使用Lambda表达式，实现多线程
+  new Thread(() -&gt; {
+    System.out.println(Thread.currentThread().getName() + &quot;新线程创建了！&quot;);
+  }
+  ).start();
+</code></pre>
+<h4 id="实现-runnable-接口">实现 Runnable 接口</h4>
+<p>步骤</p>
+<ol>
+<li>定义Runnable接口实现类SecondThread，并重写run()方法</li>
+<li>创建SecondThread实例secondThread，以secondThread作为target创建Thead对象，<strong>该Thread对象才是真正的线程对象</strong></li>
+<li>调用线程对象的start()方法</li>
+</ol>
+<pre><code class="language-java">/**
+   * 实现 runnable 接口，创建线程类
+   */
+public class SecondThread implements Runnable{
+
+    private int i;
+    private int ticket = 100;
+
+    @Override
+    public void run() {
+        for (;i&lt;20;i++) {
+            //如果线程类实现 runnable 接口
+            //获取当前的线程，只能用 Thread.currentThread() 获取当前的线程名
+            Log.d(TAG,Thread.currentThread().getName()+&quot; &quot;+i);
+
+            if(this.ticket&gt;0){
+                Log.e(TAG, Thread.currentThread().getName() + &quot;, 卖票：ticket=&quot; + ticket--);
+            }
+        }
+    }
+}
+
+
+private void starTicketThread2(){
+    Log.d(TAG,&quot;starTicketThread2, &quot;+Thread.currentThread().getName());
+
+    SecondThread secondThread = new SecondThread();
+
+    //通过new Thread(target,name)创建新的线程
+    new Thread(secondThread,&quot;买票人1&quot;).start();
+    new Thread(secondThread,&quot;买票人2&quot;).start();
+    new Thread(secondThread,&quot;买票人3&quot;).start();
+
+    //虽然是开启了3个线程，但是一共只买了100张票
+}
+</code></pre>
+<p>执行结果</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1620451273746.png" alt="" loading="lazy"></figure>
+<p><strong>注意</strong>：可以看到 3 个线程输入的 票数变量是连续的，采用 Runnable 接口的方式创建多个线程可以共享线程类的实例的属性。这是因为在这种方式下，程序所创建的Runnable 对象只是线程的 target ,而多个线程可以共享同一个 target,所以多个线程可以共享同一个线程类（实际上应该是该线程的target 类）的实例属性。</p>
+<pre><code class="language-java">//使用匿名内部类的方式，实现多线程
+  new Thread(new Runnable() {
+    @Override
+    public void run() {
+      System.out.println(Thread.currentThread().getName() + &quot;新线程创建了！&quot;);
+    }
+  }).start();
+</code></pre>
+<h4 id="实现-callable-接口">实现 Callable 接口</h4>
+<p>步骤</p>
+<ol>
+<li>创建callable接口的实现类，并实现call() 方法，该call() 方法将作为线程的执行体，且该call() 方法是有返回值的。</li>
+<li>创建 callable实现类的实例，使用 FutureTask 类来包装Callable对象，该FutureTask 对象封装 call() 方法的返回值。</li>
+<li>使用FutureTask 对象作为Thread对象的target创建并启动新线程。</li>
+<li>调用FutureTask对象的get()方法来获取子线程执行结束后的返回值。</li>
+</ol>
+<pre><code class="language-java">/**
+       * 使用callable 来实现线程类
+       */
+public class ThirdThread implements Callable&lt;Integer&gt;{
+
+    private int ticket = 20;
+
+    @Override
+    public Integer call(){
+
+        for ( int i = 0;i&lt;10;i++) {
+            //获取当前的线程，只能用 Thread.currentThread() 获取当前的线程名
+            //        Log.d(TAG,Thread.currentThread().getName()+&quot; &quot;+i);
+
+            if(this.ticket&gt;0){
+                Log.e(TAG, Thread.currentThread().getName() + &quot;, 卖票：ticket=&quot; + ticket--);
+            }
+        }
+
+
+        return ticket;
+    }
+}
+
+private void starCallableThread(){
+    ThirdThread thirdThread = new ThirdThread();
+    FutureTask&lt;Integer&gt; task = new FutureTask&lt;Integer&gt;(thirdThread);
+
+    new Thread(task,&quot;有返回值的线程&quot;).start();
+
+    try {
+        Integer integer = task.get();
+        Log.d(TAG,&quot;starCallableThread, 子线程的返回值=&quot;+integer);
+
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    } catch (ExecutionException e) {
+        e.printStackTrace();
+    }
+
+}
+</code></pre>
+<p>执行结果</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1620451283904.png" alt="" loading="lazy"></figure>
+<p><strong>注意</strong>：注意：Callable的call() 方法允许声明抛出异常，并且允许带有返回值。</p>
+<p>程序最后调用FutureTask 对象的get()方法来返回Call(）方法的返回值，导致主线程被阻塞，直到call()方法结束并返回为止。</p>
+<h4 id="使用-executors-工具类创建线程池">使用 Executors 工具类创建线程池</h4>
+<p>Executors提供了一系列工厂方法用于创先线程池，返回的线程池都实现了<code>ExecutorService</code>接口。</p>
+<p>主要有<code>newFixedThreadPool</code>，<code>newCachedThreadPool</code>，<code>newSingleThreadExecutor</code>，<code>newScheduledThreadPool</code>，后续详细介绍这四种线程池</p>
+<pre><code class="language-java">public class MyRunnable implements Runnable {
+
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + &quot; run()方法执行中...&quot;);
+    }
+
+}
+public class SingleThreadExecutorTest {
+    
+    public static void main(String[] args) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        MyRunnable runnableTest = new MyRunnable();
+        for (int i = 0; i &lt; 5; i++) {
+            executorService.execute(runnableTest);
+        }
+
+        System.out.println(&quot;线程任务开始执行&quot;);
+        executorService.shutdown();
+    }
+
+}
+</code></pre>
+<p>执行结果</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1620451292701.png" alt="" loading="lazy"></figure>
+<h4 id="说一下-runnable-和-callable-有什么区别">说一下 runnable 和 callable 有什么区别？</h4>
+<p>相同点</p>
+<ul>
+<li>都是接口</li>
+<li>都可以编写多线程程序</li>
+<li>都采用Thread.start()启动线程</li>
+</ul>
+<p>主要区别</p>
+<ul>
+<li>Runnable 接口 run 方法无返回值；Callable 接口 call 方法有返回值，是个泛型，和Future、FutureTask配合可以用来获取异步执行的结果</li>
+<li>Runnable 接口 run 方法只能抛出运行时异常，且无法捕获处理；Callable 接口 call 方法允许抛出异常，可以获取异常信息</li>
+</ul>
+<p><strong>注</strong>：Callalbe接口支持返回执行结果，需要调用FutureTask.get()得到，此方法会阻塞主进程的继续往下执行，如果不调用不会阻塞。</p>
+<h4 id="线程的-run和-start有什么区别">线程的 run()和 start()有什么区别？</h4>
+<p>每个线程都是通过某个特定Thread对象所对应的方法run()来完成其操作的，run()方法称为线程体。通过调用Thread类的start()方法来启动一个线程。</p>
+<p>start() 方法用于启动线程，run() 方法用于执行线程的运行时代码。run() 可以重复调用，而 start() 只能调用一次。</p>
+<h4 id="为什么我们调用-start-方法时会执行-run-方法为什么我们不能直接调用-run-方法">为什么我们调用 start() 方法时会执行 run() 方法，为什么我们不能直接调用 run() 方法？</h4>
+<p>new 一个 Thread，线程进入了新建状态。调用 start() 方法，会启动一个线程并使线程进入了就绪状态，当分配到时间片后就可以开始运行了。 start() 会执行线程的相应准备工作，然后自动执行 run() 方法的内容，这是真正的多线程工作。</p>
+<p>而直接执行 run() 方法，会把 run 方法当成一个 main 线程下的普通方法去执行，并不会在某个线程中执行它，所以这并不是多线程工作。</p>
+<p>总结： 调用 start 方法方可启动线程并使线程进入就绪状态，而 run 方法只是 thread 的一个普通方法调用，还是在主线程里执行。</p>
+<h4 id="什么是-callable-和-future">什么是 Callable 和 Future?</h4>
+<p>Callable 接口类似于 Runnable，从名字就可以看出来了，但是 Runnable 不会返回结果，并且无法抛出返回结果的异常，而 Callable 功能更强大一些，被线程执行后，可以返回值，这个返回值可以被 Future 拿到，也就是说，Future 可以拿到异步执行任务的返回值。</p>
+<p>Future 接口表示异步任务，是一个可能还没有完成的异步任务的结果。所以说 Callable用于产生结果，Future 用于获取结果。</p>
+<h4 id="什么是-futuretask">什么是 FutureTask</h4>
+<p>FutureTask 表示一个异步运算的任务。FutureTask 里面可以传入一个 Callable 的具体实现类，可以对这个异步运算的任务的结果进行等待获取、判断是否已经完成、取消任务等操作。只有当运算完成的时候结果才能取回，如果运算尚未完成 get 方法将会阻塞。一个 FutureTask 对象可以对调用了 Callable 和 Runnable 的对象进行包装，由于 FutureTask 也是Runnable 接口的实现类，所以 FutureTask 也可以放入线程池中。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B">什么是线程</a>
+<ul>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E9%97%AE%E9%A2%98">线程安全的问题</a></li>
+<li><a href="#%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%B9%B6%E8%A1%8C">并发与并行</a></li>
+<li><a href="#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%BC%98%E7%82%B9">并发编程（多线程）的优点</a></li>
+<li><a href="#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%BC%BA%E7%82%B9">并发编程（多线程）的缺点</a>
+<ul>
+<li><a href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2">上下文切换</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E6%AD%BB%E9%94%81">线程死锁</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%9B%9B%E7%A7%8D%E6%96%B9%E5%BC%8F">创建线程的四种方式</a>
+<ul>
+<li><a href="#%E7%BB%A7%E6%89%BF-thread-%E7%B1%BB">继承 Thread 类</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0-runnable-%E6%8E%A5%E5%8F%A3">实现 Runnable 接口</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0-callable-%E6%8E%A5%E5%8F%A3">实现 Callable 接口</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-executors-%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0">使用 Executors 工具类创建线程池</a></li>
+<li><a href="#%E8%AF%B4%E4%B8%80%E4%B8%8B-runnable-%E5%92%8C-callable-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">说一下 runnable 和 callable 有什么区别？</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E7%9A%84-run%E5%92%8C-start%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">线程的 run()和 start()有什么区别？</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E8%B0%83%E7%94%A8-start-%E6%96%B9%E6%B3%95%E6%97%B6%E4%BC%9A%E6%89%A7%E8%A1%8C-run-%E6%96%B9%E6%B3%95%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E4%B8%8D%E8%83%BD%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8-run-%E6%96%B9%E6%B3%95">为什么我们调用 start() 方法时会执行 run() 方法，为什么我们不能直接调用 run() 方法？</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF-callable-%E5%92%8C-future">什么是 Callable 和 Future?</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF-futuretask">什么是 FutureTask</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/FNm9kw7nn/">
+                  <span class="post-title">
+                    java基础之一文件操作&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/h9DSVN_A0/">
+                   <span class="post-title">
+                     多线程基础概念二&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

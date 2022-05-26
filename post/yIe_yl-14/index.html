@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>使用docker搭建FastDFS文件系统 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="使用docker搭建FastDFS文件系统 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="使用docker搭建FastDFS文件系统" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/yIe_yl-14/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/axbwTxyHw/" class="tag">docker</a>
+                
+              </span>
+              <h1>使用docker搭建FastDFS文件系统</h1>
+              <span class="meta">
+                Posted on
+                2022-01-15，3 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/yIe_yl-14.png" alt="封面图">
+          </img>
+          
+          <h3 id="1首先下载fastdfs文件系统的docker镜像">1.首先下载FastDFS文件系统的docker镜像</h3>
+<p>查询镜像</p>
+<pre><code class="language-shell">[root@localhost /]# docker search fastdfs
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1641957924999.png" alt="" loading="lazy"></figure>
+<p>安装镜像</p>
+<pre><code class="language-shell">[root@localhost ~]# docker pull season/fastdfs [root@localhost ~]# docker images
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1641957936532.png" alt="" loading="lazy"></figure>
+<h3 id="2使用docker镜像构建tracker容器跟踪服务器起到调度的作用">2.使用docker镜像构建tracker容器（跟踪服务器，起到调度的作用）：</h3>
+<p>创建tracker容器</p>
+<pre><code class="language-shell">[root@localhost /]# docker run -ti -d --name trakcer -v ~/tracker_data:/fastdfs/tracker/data --net=host season/fastdfs tracker
+</code></pre>
+<p>Tracker服务器的端口默认是22122，你可以查看是否启用端口</p>
+<pre><code class="language-shell">[root@localhost /]# netstat -aon | grep 22122
+</code></pre>
+<h3 id="3使用docker镜像构建storage容器存储服务器提供容量和备份服务">3.使用docker镜像构建storage容器（存储服务器，提供容量和备份服务）：</h3>
+<pre><code class="language-shell">docker run -tid --name storage -v ~/storage_data:/fastdfs/storage/data -v ~/store_path:/fastdfs/store_path --net=host -e TRACKER_SERVER:192.168.115.130:22122 -e GROUP_NAME=group1 season/fastdfs storage
+</code></pre>
+<h3 id="4此时两个服务都以启动进行服务的配置">4.此时两个服务都以启动，进行服务的配置。</h3>
+<p>进入storage容器，到storage的配置文件中配置http访问的端口，配置文件在<strong>fdfs_conf</strong>目录下的<strong>storage.conf。</strong></p>
+<pre><code class="language-shell">[root@localhost /]# docker exec -it storage bash root@localhost:/# cd fdfs_conf root@localhost:/fdfs_conf# more storage.conf
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1641957952610.png" alt="" loading="lazy"></figure>
+<p>往下拉，你会发现storage容器的ip不是你linux的ip，如下：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1641957960584.png" alt="" loading="lazy"></figure>
+<p>接下来，退出storage容器，并将配置文件拷贝一份出来：</p>
+<pre><code class="language-shell">[root@localhost ~]# docker cp storage:/fdfs_conf/storage.conf ~/ [root@localhost ~]# vi ~/storage.conf
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1641957970483.png" alt="" loading="lazy"></figure>
+<p>将修改后的配置文件拷贝到storagee的配置目录下：</p>
+<pre><code class="language-shell">[root@localhost ~]# docker cp ~/storage.conf storage:/fdfs_conf/
+</code></pre>
+<p>重新启动storage容器</p>
+<pre><code class="language-shell">[root@localhost ~]# docker stop storage [root@localhost ~]# docker start storage
+</code></pre>
+<p>查看tracker容器和storage容器的关联</p>
+<pre><code class="language-shell">[root@localhost ~]# docker exec -it storage bash root@localhost:/# cd fdfs_conf root@localhost:/fdfs_conf# fdfs_monitor storage.conf
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1641957980436.png" alt="" loading="lazy"></figure>
+<h3 id="5在docker模拟客户端上传文件到storage容器">5.在docker模拟客户端上传文件到storage容器</h3>
+<p>开启一个客户端</p>
+<pre><code class="language-shell">[root@localhost 00]# docker run -tid --name fdfs_sh --net=host season/fastdfs sh
+</code></pre>
+<p>更改配置文件，因为之前已经改过一次了，所以现在直接拷贝</p>
+<pre><code class="language-shell">[root@localhost 00]# docker cp ~/storage.conf  fdfs_sh:/fdfs_conf/
+</code></pre>
+<p>创建一个txt文件</p>
+<pre><code class="language-shell">[root@localhost 00]# docker exec -it fdfs_sh bash root@localhost:/# echo hello&gt;a.txt
+</code></pre>
+<p>进入<strong>fdfs_conf</strong>目录，并将文件上传到<strong>storage</strong>容器</p>
+<pre><code class="language-shell">root@localhost:/# cd fdfs_conf root@localhost:/fdfs_conf# fdfs_upload_file storage.conf /a.txt
+</code></pre>
+<p><strong>/a.txt</strong>：指要上传的文件</p>
+<p>上传之后，根据返回的路径去找<strong>a.txt</strong></p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1641957990375.png" alt="" loading="lazy"></figure>
+<p>退出去查看上传的txt文件</p>
+<p>[root@localhost ~]# cd ~/store_path/data/00/00 [root@localhost 00]# ls</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1641958001513.png" alt="" loading="lazy"></figure>
+<p>查看是否和输入的值是否相同</p>
+<pre><code class="language-shell">[root@localhost 00]# more wKhzg1wGsieAL-3RAAAABncc3SA337.txt
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1%E9%A6%96%E5%85%88%E4%B8%8B%E8%BD%BDfastdfs%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84docker%E9%95%9C%E5%83%8F">1.首先下载FastDFS文件系统的docker镜像</a></li>
+<li><a href="#2%E4%BD%BF%E7%94%A8docker%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BAtracker%E5%AE%B9%E5%99%A8%E8%B7%9F%E8%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B5%B7%E5%88%B0%E8%B0%83%E5%BA%A6%E7%9A%84%E4%BD%9C%E7%94%A8">2.使用docker镜像构建tracker容器（跟踪服务器，起到调度的作用）：</a></li>
+<li><a href="#3%E4%BD%BF%E7%94%A8docker%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BAstorage%E5%AE%B9%E5%99%A8%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8F%90%E4%BE%9B%E5%AE%B9%E9%87%8F%E5%92%8C%E5%A4%87%E4%BB%BD%E6%9C%8D%E5%8A%A1">3.使用docker镜像构建storage容器（存储服务器，提供容量和备份服务）：</a></li>
+<li><a href="#4%E6%AD%A4%E6%97%B6%E4%B8%A4%E4%B8%AA%E6%9C%8D%E5%8A%A1%E9%83%BD%E4%BB%A5%E5%90%AF%E5%8A%A8%E8%BF%9B%E8%A1%8C%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%85%8D%E7%BD%AE">4.此时两个服务都以启动，进行服务的配置。</a></li>
+<li><a href="#5%E5%9C%A8docker%E6%A8%A1%E6%8B%9F%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%88%B0storage%E5%AE%B9%E5%99%A8">5.在docker模拟客户端上传文件到storage容器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/jw7hb2R8R/">
+                  <span class="post-title">
+                    Dockerfile详解&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/2K9TL16e1/">
+                   <span class="post-title">
+                     docker安装elasticsearch&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

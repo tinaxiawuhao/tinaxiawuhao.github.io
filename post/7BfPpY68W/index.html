@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>java基础之一lambda | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="java基础之一lambda | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="java基础之一lambda" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/7BfPpY68W/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>java基础之一lambda</h1>
+              <span class="meta">
+                Posted on
+                2021-05-07，14 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/7BfPpY68W.png" alt="封面图">
+          </img>
+          
+          <h3 id="一-引言">一、引言</h3>
+<p>java8最大的特性就是引入Lambda表达式，即函数式编程，可以将行为进行传递。<strong>总结就是：使用不可变值与函数，函数对不可变值进行处理，映射成另一个值。</strong></p>
+<h3 id="二-java重要的函数式接口">二、java重要的函数式接口</h3>
+<h4 id="1-什么是函数式接口">1、什么是函数式接口</h4>
+<p><strong>函数接口是只有一个抽象方法的接口，用作 Lambda 表达式的类型。使用@FunctionalInterface注解修饰的类，编译器会检测该类是否只有一个抽象方法或接口，否则，会报错。可以有多个默认方法，静态方法。</strong></p>
+<h5 id="11-java8自带的常用函数式接口">1.1 java8自带的常用函数式接口。</h5>
+<table>
+<thead>
+<tr>
+<th>函数接口</th>
+<th>抽象方法</th>
+<th>功能</th>
+<th>参数</th>
+<th>返回类型</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Predicate</td>
+<td>test(T t)</td>
+<td>判断真假</td>
+<td>T</td>
+<td>boolean</td>
+<td>金刚的身高大于185cm吗？</td>
+</tr>
+<tr>
+<td>Consumer</td>
+<td>accept(T t)</td>
+<td>消费消息</td>
+<td>T</td>
+<td>void</td>
+<td>输出一个值</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>R apply(T t)</td>
+<td>将T映射为R（转换功能）</td>
+<td>T</td>
+<td>R</td>
+<td>获得student对象的名字</td>
+</tr>
+<tr>
+<td>Supplier</td>
+<td>T get()</td>
+<td>生产消息</td>
+<td>None</td>
+<td>T</td>
+<td>工厂方法</td>
+</tr>
+<tr>
+<td>UnaryOperator</td>
+<td>T apply(T t)</td>
+<td>一元操作</td>
+<td>T</td>
+<td>T</td>
+<td>逻辑非（!）</td>
+</tr>
+<tr>
+<td>BinaryOperator</td>
+<td>apply(T t, U u)</td>
+<td>二元操作</td>
+<td>(T，T)</td>
+<td>(T)</td>
+<td>求两个数的乘积（*）</td>
+</tr>
+</tbody>
+</table>
+<pre><code>public class Test {
+    public static void main(String[] args) {
+        Predicate&lt;Integer&gt; predicate = x -&gt; x &gt; 185;
+        Student student = new Student(&quot;金刚&quot;, 23, 175);
+        System.out.println(&quot;金刚的身高高于185吗？：&quot; + predicate.test(student.getStature()));
+
+        Consumer&lt;String&gt; consumer = System.out::println;
+        consumer.accept(&quot;消费消息，输出一个值&quot;);
+
+        Function&lt;Student, String&gt; function = Student::getName;
+        String name = function.apply(student);
+        System.out.println(name);
+
+        Supplier&lt;Integer&gt; supplier = () -&gt; Integer.valueOf(BigDecimal.TEN.toString());
+        System.out.println(supplier.get());
+
+        UnaryOperator&lt;Boolean&gt; unaryOperator = uglily -&gt; !uglily;
+        Boolean apply2 = unaryOperator.apply(true);
+        System.out.println(apply2);
+
+        BinaryOperator&lt;Integer&gt; operator = (x, y) -&gt; x * y;
+        Integer integer = operator.apply(2, 3);
+        System.out.println(integer);
+
+        test(() -&gt; &quot;我是一个演示的函数式接口&quot;);
+    }
+
+    /**
+     * 演示自定义函数式接口使用
+     *
+     * @param worker
+     */
+    public static void test(Worker worker) {
+        String work = worker.work();
+        System.out.println(work);
+    }
+
+    public interface Worker {
+        String work();
+    }
+}
+//金刚的身高高于185吗？：false
+//消费消息，输出一个值
+//金刚
+//10
+//false
+//6
+//我是一个演示的函数式接口
+</code></pre>
+<p>以上演示了lambda接口的使用及自定义一个函数式接口并使用。下面，我们看看java8将函数式接口封装到流中如何高效的帮助我们处理集合。</p>
+<p><strong>注意：Student::getName</strong>例子中这种编写lambda表达式的方式称为<strong>方法引用。<strong>格式为</strong>ClassName::methodName</strong>。</p>
+<p><strong>示例：本篇所有示例都基于以下三个类。OutstandingClass：班级；Student：学生；SpecialityEnum：特长。</strong></p>
+<figure data-type="image" tabindex="1"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638d420acd?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
+<h5 id="12-惰性求值与及早求值">1.2 惰性求值与及早求值</h5>
+<p><strong>惰性求值：只描述Stream，操作的结果也是Stream，这样的操作称为惰性求值</strong>。 惰性求值可以像建造者模式一样链式使用，最后再使用及早求值得到最终结果。</p>
+<p><strong>及早求值：得到最终的结果而不是Stream，这样的操作称为及早求值。</strong></p>
+<h4 id="2-常用的流">2、常用的流</h4>
+<h5 id="21-collectcollectorstolist">2.1 collect(Collectors.toList())</h5>
+<p><strong>将流转换为list。还有toSet()，toMap()等。及早求值</strong>。</p>
+<pre><code class="language-java">public class TestCase {
+    public static void main(String[] args) {
+        List&lt;Student&gt; studentList = Stream.of(new Student(&quot;路飞&quot;, 22, 175),
+                new Student(&quot;红发&quot;, 40, 180),
+                new Student(&quot;白胡子&quot;, 50, 185)).collect(Collectors.toList());
+        System.out.println(studentList);
+    }
+}
+//输出结果
+//[Student{name='路飞', age=22, stature=175, specialities=null}, 
+//Student{name='红发', age=40, stature=180, specialities=null}, 
+//Student{name='白胡子', age=50, stature=185, specialities=null}]
+</code></pre>
+<pre><code class="language-java">//转成map
+public Map&lt;Long, String&gt; getIdNameMap(List&lt;Account&gt; accounts) {
+    return accounts.stream().collect(Collectors.toMap(Account::getId, Account::getUsername));
+}
+//收集成实体本身map
+public Map&lt;Long, Account&gt; getIdAccountMap(List&lt;Account&gt; accounts) {
+    return accounts.stream().collect(Collectors.toMap(Account::getId, account -&gt; account));
+}
+//account -&gt; account是一个返回本身的lambda表达式，其实还可以使用Function接口中的一个默认方法代替，使整个方法更简洁优雅：
+public Map&lt;Long, Account&gt; getIdAccountMap(List&lt;Account&gt; accounts) {
+    return accounts.stream().collect(Collectors.toMap(Account::getId, Function.identity()));
+}
+//重复key的情况，下面name可能重复
+public Map&lt;String, Account&gt; getNameAccountMap(List&lt;Account&gt; accounts) {
+    return accounts.stream().collect(Collectors.toMap(Account::getUsername, Function.identity()));
+}
+//toMap有个重载方法，可以传入一个合并的函数来解决key冲突问题
+public Map&lt;String, Account&gt; getNameAccountMap(List&lt;Account&gt; accounts) {
+    return accounts.stream().collect(Collectors.toMap(Account::getUsername, Function.identity(), (key1, key2) -&gt; key2));
+}
+//按id分组
+Map&lt;Long, List&lt;Account&gt;&gt; map = accounts.stream().collect(Collectors.groupingBy(Account::getId));
+//指定具体收集的map
+public Map&lt;String, Account&gt; getNameAccountMap(List&lt;Account&gt; accounts) {
+    return accounts.stream().collect(Collectors.toMap(Account::getUsername, Function.identity(), (key1, key2) -&gt; key2, LinkedHashMap::new));
+}
+</code></pre>
+<h5 id="22-filter">2.2 filter</h5>
+<p>顾名思义，起<strong>过滤筛选</strong>的作用。<strong>内部就是Predicate接口。惰性求值。</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638d2c0a51?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
+<p>比如我们筛选出出身高小于180的同学。</p>
+<pre><code class="language-java">public class TestCase {
+    public static void main(String[] args) {
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
+        students.add(new Student(&quot;路飞&quot;, 22, 175));
+        students.add(new Student(&quot;红发&quot;, 40, 180));
+        students.add(new Student(&quot;白胡子&quot;, 50, 185));
+
+        List&lt;Student&gt; list = students.stream()
+            .filter(stu -&gt; stu.getStature() &lt; 180)
+            .collect(Collectors.toList());
+        System.out.println(list);
+    }
+}
+//输出结果
+//[Student{name='路飞', age=22, stature=175, specialities=null}]
+</code></pre>
+<h5 id="23-map">2.3 map</h5>
+<p><strong>转换功能，内部就是Function接口。惰性求值</strong></p>
+<figure data-type="image" tabindex="3"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638d1c6610?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
+<pre><code class="language-java">public class TestCase {
+    public static void main(String[] args) {
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
+        students.add(new Student(&quot;路飞&quot;, 22, 175));
+        students.add(new Student(&quot;红发&quot;, 40, 180));
+        students.add(new Student(&quot;白胡子&quot;, 50, 185));
+
+        List&lt;String&gt; names = students.stream().map(student -&gt; student.getName())
+                .collect(Collectors.toList());
+        System.out.println(names);
+    }
+}
+//输出结果
+//[路飞, 红发, 白胡子]
+</code></pre>
+<p>例子中将student对象转换为String对象，获取student的名字。</p>
+<h5 id="24-flatmap">2.4 flatMap</h5>
+<p><strong>将多个Stream合并为一个Stream。惰性求值</strong></p>
+<figure data-type="image" tabindex="4"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638c4cca86?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
+<pre><code class="language-java">public class TestCase {
+    public static void main(String[] args) {
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
+        students.add(new Student(&quot;路飞&quot;, 22, 175));
+        students.add(new Student(&quot;红发&quot;, 40, 180));
+        students.add(new Student(&quot;白胡子&quot;, 50, 185));
+
+        List&lt;Student&gt; studentList = Stream.of(students,
+                asList(new Student(&quot;艾斯&quot;, 25, 183),
+                        new Student(&quot;雷利&quot;, 48, 176)))
+                .flatMap(students1 -&gt; students1.stream()).collect(Collectors.toList());
+        System.out.println(studentList);
+    }
+}
+//输出结果
+//[Student{name='路飞', age=22, stature=175, specialities=null}, 
+//Student{name='红发', age=40, stature=180, specialities=null}, 
+//Student{name='白胡子', age=50, stature=185, specialities=null}, 
+//Student{name='艾斯', age=25, stature=183, specialities=null},
+//Student{name='雷利', age=48, stature=176, specialities=null}]
+</code></pre>
+<p>调用Stream.of的静态方法将两个list转换为Stream，再通过flatMap将两个流合并为一个。</p>
+<h5 id="25-max和min">2.5 max和min</h5>
+<p>我们经常会在集合中<strong>求最大或最小值</strong>，使用流就很方便。<strong>及早求值。</strong></p>
+<pre><code class="language-java">public class TestCase {
+    public static void main(String[] args) {
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
+        students.add(new Student(&quot;路飞&quot;, 22, 175));
+        students.add(new Student(&quot;红发&quot;, 40, 180));
+        students.add(new Student(&quot;白胡子&quot;, 50, 185));
+
+        Optional&lt;Student&gt; max = students.stream()
+            .max(Comparator.comparing(stu -&gt; stu.getAge()));
+        Optional&lt;Student&gt; min = students.stream()
+            .min(Comparator.comparing(stu -&gt; stu.getAge()));
+        //判断是否有值
+        if (max.isPresent()) {
+            System.out.println(max.get());
+        }
+        if (min.isPresent()) {
+            System.out.println(min.get());
+        }
+    }
+}
+//输出结果
+//Student{name='白胡子', age=50, stature=185, specialities=null}
+//Student{name='路飞', age=22, stature=175, specialities=null}
+</code></pre>
+<p><strong>max、min接收一个Comparator</strong>（例子中使用java8自带的静态函数，只需要传进需要比较值即可。）并且返回一个Optional对象，该对象是java8新增的类，专门为了防止null引发的空指针异常。可以使用max.isPresent()判断是否有值；可以使用max.orElse(new Student())，当值为null时就使用给定值；也可以使用max.orElseGet(() -&gt; new Student());这需要传入一个Supplier的lambda表达式。</p>
+<h5 id="26-count">2.6 count</h5>
+<p><strong>统计功能，一般都是结合filter使用，因为先筛选出我们需要的再统计即可。及早求值</strong></p>
+<pre><code class="language-java">public class TestCase {
+    public static void main(String[] args) {
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
+        students.add(new Student(&quot;路飞&quot;, 22, 175));
+        students.add(new Student(&quot;红发&quot;, 40, 180));
+        students.add(new Student(&quot;白胡子&quot;, 50, 185));
+
+        long count = students.stream().filter(s1 -&gt; s1.getAge() &lt; 45).count();
+        System.out.println(&quot;年龄小于45岁的人数是：&quot; + count);
+    }
+}
+//输出结果
+//年龄小于45岁的人数是：2
+</code></pre>
+<h5 id="27-reduce">2.7 reduce</h5>
+<p><strong>reduce 操作可以实现从一组值中生成一个值</strong>。在上述例子中用到的 count 、 min 和 max 方<br>
+法，因为常用而被纳入标准库中。事实上，这些方法都是 reduce 操作。<strong>及早求值。</strong></p>
+<figure data-type="image" tabindex="5"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638c52397b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
+<pre><code class="language-java">public class TestCase {
+    public static void main(String[] args) {
+        Integer reduce = Stream.of(1, 2, 3, 4).reduce(0, (acc, x) -&gt; acc+ x);
+        System.out.println(reduce);
+    }
+}
+//输出结果
+//10
+</code></pre>
+<p>我们看得reduce接收了一个初始值为0的累加器，依次取出值与累加器相加，最后累加器的值就是最终的结果。</p>
+<h3 id="三-高级集合类及收集器">三、高级集合类及收集器</h3>
+<h4 id="31-转换成值">3.1 转换成值</h4>
+<p>**收集器，一种通用的、从流生成复杂值的结构。**只要将它传给 collect 方法，所有<br>
+的流就都可以使用它了。标准类库已经提供了一些有用的收集器，<strong>以下示例代码中的收集器都是从 java.util.stream.Collectors 类中静态导入的。</strong></p>
+<pre><code class="language-java">public class CollectorsTest {
+    public static void main(String[] args) {
+        List&lt;Student&gt; students1 = new ArrayList&lt;&gt;(3);
+        students1.add(new Student(&quot;路飞&quot;, 23, 175));
+        students1.add(new Student(&quot;红发&quot;, 40, 180));
+        students1.add(new Student(&quot;白胡子&quot;, 50, 185));
+
+        OutstandingClass ostClass1 = new OutstandingClass(&quot;一班&quot;, students1);
+        //复制students1，并移除一个学生
+        List&lt;Student&gt; students2 = new ArrayList&lt;&gt;(students1);
+        students2.remove(1);
+        OutstandingClass ostClass2 = new OutstandingClass(&quot;二班&quot;, students2);
+        //将ostClass1、ostClass2转换为Stream
+        Stream&lt;OutstandingClass&gt; classStream = Stream.of(ostClass1, ostClass2);
+        OutstandingClass outstandingClass = biggestGroup(classStream);
+        System.out.println(&quot;人数最多的班级是：&quot; + outstandingClass.getName());
+
+        System.out.println(&quot;一班平均年龄是：&quot; + averageNumberOfStudent(students1));
+    }
+
+    /**
+     * 获取人数最多的班级
+     */
+    private static OutstandingClass biggestGroup(Stream&lt;OutstandingClass&gt; outstandingClasses) {
+        return outstandingClasses.collect(
+                maxBy(comparing(ostClass -&gt; ostClass.getStudents().size())))
+                .orElseGet(OutstandingClass::new);
+    }
+
+    /**
+     * 计算平均年龄
+     */
+    private static double averageNumberOfStudent(List&lt;Student&gt; students) {
+        return students.stream().collect(averagingInt(Student::getAge));
+    }
+}
+//输出结果
+//人数最多的班级是：一班
+//一班平均年龄是：37.666666666666664
+</code></pre>
+<p>maxBy或者minBy就是求最大值与最小值。</p>
+<h4 id="32-转换成块">3.2 转换成块</h4>
+<p><strong>常用的流操作是将其分解成两个集合，Collectors.partitioningBy帮我们实现了，接收一个Predicate函数式接口。</strong></p>
+<figure data-type="image" tabindex="6"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae4063943b9487?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
+<p>将示例学生分为会唱歌与不会唱歌的两个集合。</p>
+<pre><code class="language-java">public class PartitioningByTest {
+    public static void main(String[] args) {
+        //省略List&lt;student&gt; students的初始化
+        Map&lt;Boolean, List&lt;Student&gt;&gt; listMap = students.stream().collect(
+            Collectors.partitioningBy(student -&gt; student.getSpecialities().
+                                      contains(SpecialityEnum.SING)));
+    }
+}
+</code></pre>
+<h4 id="33-数据分组">3.3 数据分组</h4>
+<p>数据分组是一种更自然的分割数据操作，与将数据分成 ture 和 false 两部分不同，<strong>可以使</strong><br>
+<strong>用任意值对数据分组。Collectors.groupingBy接收一个Function做转换。</strong></p>
+<figure data-type="image" tabindex="7"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae4063f5d78c78?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
+<p><strong>如图，我们使用groupingBy将根据进行分组为圆形一组，三角形一组，正方形一组。</strong></p>
+<p>例子：根据学生第一个特长进行分组</p>
+<pre><code class="language-java">public class GroupingByTest {
+    public static void main(String[] args) {
+        //省略List&lt;student&gt; students的初始化
+         Map&lt;SpecialityEnum, List&lt;Student&gt;&gt; listMap = 
+             students.stream().collect(
+             Collectors.groupingBy(student -&gt; student.getSpecialities().get(0)));
+    }
+}
+</code></pre>
+<p><strong>Collectors.groupingBy与SQL 中的 group by 操作是一样的。</strong></p>
+<h4 id="34-字符串拼接">3.4 字符串拼接</h4>
+<p>如果将所有学生的名字拼接起来，怎么做呢？通常只能创建一个StringBuilder，循环拼接。使用Stream，使用Collectors.joining()简单容易。</p>
+<pre><code class="language-java">public class JoiningTest {
+    public static void main(String[] args) {
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
+        students.add(new Student(&quot;路飞&quot;, 22, 175));
+        students.add(new Student(&quot;红发&quot;, 40, 180));
+        students.add(new Student(&quot;白胡子&quot;, 50, 185));
+
+         String names = students.stream()
+             .map(Student::getName).collect(Collectors.joining(&quot;,&quot;,&quot;[&quot;,&quot;]&quot;));
+        System.out.println(names);
+    }
+}
+//输出结果
+//[路飞,红发,白胡子]
+</code></pre>
+<p><strong>joining接收三个参数，第一个是分界符，第二个是前缀符，第三个是结束符。也可以不传入参数Collectors.joining()，这样就是直接拼接。</strong></p>
+<blockquote>
+<p>原文地址：https://juejin.cn/post/6844903849753329678#hjava</p>
+</blockquote>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%BC%95%E8%A8%80">一、引言</a></li>
+<li><a href="#%E4%BA%8C-java%E9%87%8D%E8%A6%81%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3">二、java重要的函数式接口</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3">1、什么是函数式接口</a>
+<ul>
+<li><a href="#11-java8%E8%87%AA%E5%B8%A6%E7%9A%84%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3">1.1 java8自带的常用函数式接口。</a></li>
+<li><a href="#12-%E6%83%B0%E6%80%A7%E6%B1%82%E5%80%BC%E4%B8%8E%E5%8F%8A%E6%97%A9%E6%B1%82%E5%80%BC">1.2 惰性求值与及早求值</a></li>
+</ul>
+</li>
+<li><a href="#2-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%B5%81">2、常用的流</a>
+<ul>
+<li><a href="#21-collectcollectorstolist">2.1 collect(Collectors.toList())</a></li>
+<li><a href="#22-filter">2.2 filter</a></li>
+<li><a href="#23-map">2.3 map</a></li>
+<li><a href="#24-flatmap">2.4 flatMap</a></li>
+<li><a href="#25-max%E5%92%8Cmin">2.5 max和min</a></li>
+<li><a href="#26-count">2.6 count</a></li>
+<li><a href="#27-reduce">2.7 reduce</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E9%AB%98%E7%BA%A7%E9%9B%86%E5%90%88%E7%B1%BB%E5%8F%8A%E6%94%B6%E9%9B%86%E5%99%A8">三、高级集合类及收集器</a>
+<ul>
+<li><a href="#31-%E8%BD%AC%E6%8D%A2%E6%88%90%E5%80%BC">3.1 转换成值</a></li>
+<li><a href="#32-%E8%BD%AC%E6%8D%A2%E6%88%90%E5%9D%97">3.2 转换成块</a></li>
+<li><a href="#33-%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84">3.3 数据分组</a></li>
+<li><a href="#34-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5">3.4 字符串拼接</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/NjXzyw7sR/">
+                  <span class="post-title">
+                    Java基础之—反射&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/FNm9kw7nn/">
+                   <span class="post-title">
+                     java基础之一文件操作&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

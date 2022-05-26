@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>多线程基础概念三 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="多线程基础概念三 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="多线程基础概念三" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/c-lkdzfwM/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>多线程基础概念三</h1>
+              <span class="meta">
+                Posted on
+                2021-05-11，26 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/c-lkdzfwM.png" alt="封面图">
+          </img>
+          
+          <h3 id="java内存模型和线程相关">Java内存模型和线程相关</h3>
+<p><strong>Java中垃圾回收有什么目的？什么时候进行垃圾回收？</strong></p>
+<p>垃圾回收的目的是识别并且丢弃应用不再使用的对象来释放和重用资源。</p>
+<p><strong>如果对象的引用被置为null，垃圾收集器是否会立即释放对象占用的内存？</strong></p>
+<p>不会，在本次垃圾回收周期中，这个对象将被标记为可回收的。也就是说并不会立即被垃圾收集器立刻回收，而是在下一次垃圾回收时对象依旧不可达才会释放其占用的内存。</p>
+<p><strong>finalize()方法什么时候被调用？析构函数(finalization)的目的是什么？</strong></p>
+<p>1）垃圾回收器（garbage colector）决定回收某对象时，就会运行该对象的finalize()方法；</p>
+<p>finalize是Object类的一个方法，该方法在Object类中的声明<code>protected void finalize() throws Throwable { }</code></p>
+<p>在垃圾回收器执行时会调用被回收对象的finalize()方法，可以覆盖此方法来实现对其资源的回收。注意：一旦垃圾回收器准备释放对象占用的内存，将首先调用该对象的finalize()方法，并且下一次垃圾回收动作发生时，才真正回收对象占用的内存空间</p>
+<p>2）GC本来就是内存回收了，应用还需要在finalization做什么呢？ 答案是大部分时候，什么都不用做(也就是不需要重载)。只有在某些很特殊的情况下，比如你调用了一些native的方法(一般是C写的)，可以要在finaliztion里去调用C的释放函数。</p>
+<h4 id="重排序与数据依赖性">重排序与数据依赖性</h4>
+<h5 id="为什么代码会重排序">为什么代码会重排序？</h5>
+<p>在执行程序时，为了提供性能，处理器和编译器常常会对指令进行重排序，但是不能随意重排序，不是你想怎么排序就怎么排序，它需要满足以下两个条件：</p>
+<ul>
+<li>在单线程环境下不能改变程序运行的结果；</li>
+<li>存在数据依赖关系的不允许重排序</li>
+</ul>
+<p>需要注意的是：重排序不会影响单线程环境的执行结果，但是会破坏多线程的执行语义。</p>
+<h5 id="as-if-serial规则和happens-before规则的区别">as-if-serial规则和happens-before规则的区别</h5>
+<ul>
+<li>as-if-serial语义保证单线程内程序的执行结果不被改变，happens-before关系保证正确同步的多线程程序的执行结果不被改变。</li>
+<li>as-if-serial语义给编写单线程程序的程序员创造了一个幻境：单线程程序是按程序的顺序来执行的。happens-before关系给编写正确同步的多线程程序的程序员创造了一个幻境：正确同步的多线程程序是按happens-before指定的顺序来执行的。</li>
+<li>as-if-serial语义和happens-before这么做的目的，都是为了在不改变程序执行结果的前提下，尽可能地提高程序执行的并行度。</li>
+</ul>
+<h4 id="synchronized">synchronized</h4>
+<p>在 Java 中,synchronized 关键字是用来控制线程同步的,就是在多线程的环境下,控制synchronized 代码段不被多个线程同时执行。synchronized 可以修饰类、方法、变量。</p>
+<p>另外，在 Java 早期版本中，synchronized属于重量级锁，效率低下，因为监视器锁（monitor）是依赖于底层的操作系统的 Mutex Lock 来实现的，Java 的线程是映射到操作系统的原生线程之上的。如果要挂起或者唤醒一个线程，都需要操作系统帮忙完成，而操作系统实现线程之间的切换时需要从用户态转换到内核态，这个状态之间的转换需要相对比较长的时间，时间成本相对较高，这也是为什么早期的 synchronized 效率低的原因。庆幸的是在 Java 6 之后 Java 官方对从 JVM 层面对synchronized 较大优化，所以现在的 synchronized 锁效率也优化得很不错了。JDK1.6对锁的实现引入了大量的优化，如自旋锁、适应性自旋锁、锁消除、锁粗化、偏向锁、轻量级锁等技术来减少锁操作的开销。</p>
+<h5 id="synchronized关键字最主要的三种使用方式">synchronized关键字最主要的三种使用方式：</h5>
+<ul>
+<li><strong>修饰实例方法:</strong> 作用于当前对象实例加锁，进入同步代码前要获得当前对象实例的锁</li>
+<li><strong>修饰静态方法:</strong> 也就是给当前类加锁，会作用于类的所有对象实例，因为静态成员不属于任何一个实例对象，是类成员（ static 表明这是该类的一个静态资源，不管new了多少个对象，只有一份）。所以如果一个线程A调用一个实例对象的非静态 synchronized 方法，而线程B需要调用这个实例对象所属类的静态 synchronized 方法，是允许的，不会发生互斥现象，<strong>因为访问静态 synchronized 方法占用的锁是当前类的锁，而访问非静态 synchronized 方法占用的锁是当前实例对象锁</strong>。</li>
+<li><strong>修饰代码块:</strong> 指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。</li>
+</ul>
+<p><strong>总结：</strong> synchronized 关键字加到 static 静态方法和 synchronized(class)代码块上都是是给 Class 类上锁。synchronized 关键字加到实例方法上是给对象实例上锁。尽量不要使用 synchronized(String a) 因为JVM中，字符串常量池具有缓存功能！</p>
+<p>下面我以一个常见的面试题为例讲解一下 synchronized 关键字的具体使用。</p>
+<p>面试中面试官经常会说：“单例模式了解吗？来给我手写一下！给我解释一下双重检验锁方式实现单例模式的原理呗！”</p>
+<p><strong>双重校验锁实现对象单例（线程安全）</strong></p>
+<pre><code class="language-java">public class Singleton {
+
+    private volatile static Singleton uniqueInstance;
+
+    private Singleton() {
+    }
+
+    public static Singleton getUniqueInstance() {
+       //先判断对象是否已经实例过，没有实例化过才进入加锁代码
+        if (uniqueInstance == null) {
+            //类对象加锁
+            synchronized (Singleton.class) {
+                if (uniqueInstance == null) {
+                    uniqueInstance = new Singleton();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
+}
+</code></pre>
+<p>另外，需要注意<code>uniqueInstance</code> 采用 volatile 关键字修饰也是很有必要。</p>
+<p><code>uniqueInstance</code> 采用 volatile 关键字修饰也是很有必要的， <code>uniqueInstance = new Singleton();</code> 这段代码其实是分为三步执行：</p>
+<ol>
+<li>为 uniqueInstance 分配内存空间</li>
+<li>初始化 uniqueInstance</li>
+<li>将 uniqueInstance 指向分配的内存地址</li>
+</ol>
+<p>使用 volatile 可以禁止 JVM 的指令重排，保证在多线程环境下也能正常运行。</p>
+<h5 id="说一下-synchronized-底层实现原理">说一下 synchronized 底层实现原理？</h5>
+<p>synchronized是Java中的一个关键字，在使用的过程中并没有看到显示的加锁和解锁过程。因此有必要通过javap命令，查看相应的字节码文件。</p>
+<p>synchronized 同步语句块的情况</p>
+<pre><code class="language-java">public class SynchronizedDemo {
+    public void method() {
+        synchronized (this) {
+            System.out.println(&quot;synchronized 代码块&quot;);
+        }
+    }
+}
+</code></pre>
+<p>通过JDK 反汇编指令 javap -c -v SynchronizedDemo</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620456899828.png" alt="" loading="lazy"></figure>
+<p>可以看出在执行同步代码块之前之后都有一个monitor字样，其中前面的是<code>monitorenter</code>，后面的是离开<code>monitorexit</code>，不难想象一个线程也执行同步代码块，首先要获取锁，而获取锁的过程就是<code>monitorenter</code> ，在执行完代码块之后，要释放锁，释放锁就是执行<code>monitorexit</code>指令。</p>
+<p>为什么会有两个<code>monitorexit</code>呢？</p>
+<p>这个主要是防止在同步代码块中线程因异常退出，而锁没有得到释放，这必然会造成死锁（等待的线程永远获取不到锁）。因此最后一个<code>monitorexit</code>是保证在异常情况下，锁也可以得到释放，避免死锁。</p>
+<p>仅有ACC_SYNCHRONIZED这么一个标志，该标记表明线程进入该方法时，需要<code>monitorenter</code>，退出该方法时需要<code>monitorexit</code>。</p>
+<p>synchronized可重入的原理</p>
+<p>重入锁是指一个线程获取到该锁之后，该线程可以继续获得该锁。底层原理维护一个计数器，当线程获取该锁时，计数器加一，再次获得该锁时继续加一，释放锁时，计数器减一，当计数器值为0时，表明该锁未被任何线程所持有，其它线程可以竞争获取锁。</p>
+<h5 id="什么是自旋">什么是自旋</h5>
+<p>很多 synchronized 里面的代码只是一些很简单的代码，执行时间非常快，此时等待的线程都加锁可能是一种不太值得的操作，因为线程阻塞涉及到用户态和内核态切换的问题。既然 synchronized 里面的代码执行得非常快，不妨让等待锁的线程不要被阻塞，而是在 synchronized 的边界做忙循环，这就是自旋。如果做了多次循环发现还没有获得锁，再阻塞，这样可能是一种更好的策略。</p>
+<h5 id="锁状态">锁状态</h5>
+<p>锁的状态总共有四种：无锁状态、偏向锁、轻量级锁和重量级锁。随着锁的竞争，锁可以从偏向锁升级到轻量级锁，再升级的重量级锁（但是锁的升级是单向的，也就是说只能从低到高升级，不会出现锁的降级）。JDK 1.6中默认是开启偏向锁和轻量级锁的，我们也可以通过-XX:-UseBiasedLocking来禁用偏向锁。锁的状态保存在对象的头文件中，以32位的JDK为例：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620463288509.png" alt="" loading="lazy"></figure>
+<p>“轻量级”是相对于使用操作系统互斥量来实现的传统锁而言的。但是，首先需要强调一点的是，轻量级锁并不是用来代替重量级锁的，它的本意是在没有多线程竞争的前提下，减少传统的重量级锁使用产生的性能消耗。在解释轻量级锁的执行过程之前，先明白一点，轻量级锁所适应的场景是线程交替执行同步块的情况，如果存在同一时间访问同一锁的情况，就会导致轻量级锁膨胀为重量级锁。</p>
+<h5 id="多线程中-synchronized-锁升级的原理是什么">多线程中 synchronized 锁升级的原理是什么？</h5>
+<p>synchronized 锁升级原理：在锁对象的对象头里面有一个 <code>threadid</code> 字段，在第一次访问的时候<code>threadid</code> 为空，jvm 让其持有偏向锁，并将 <code>threadid</code> 设置为其线程 id，再次进入的时候会先判断 <code>threadid</code> 是否与其线程 id 一致，如果一致则可以直接使用此对象，如果不一致，则升级偏向锁为轻量级锁，通过自旋循环一定次数来获取锁，执行一定次数之后，如果还没有正常获取到要使用的对象，此时就会把锁从轻量级升级为重量级锁，此过程就构成了 synchronized 锁的升级。</p>
+<p>锁的升级的目的：锁升级是为了减低了锁带来的性能消耗。在 Java 6 之后优化 synchronized 的实现方式，使用了偏向锁升级为轻量级锁再升级到重量级锁的方式，从而减低了锁带来的性能消耗。</p>
+<figure data-type="image" tabindex="3"><img src="https://images2015.cnblogs.com/blog/820406/201604/820406-20160424163618101-624122079.png" alt="img" loading="lazy"></figure>
+<p>重量级锁、轻量级锁和偏向锁之间转换图</p>
+<h5 id="线程-b-怎么知道线程-a-修改了变量">线程 B 怎么知道线程 A 修改了变量</h5>
+<p>（1）volatile 修饰变量</p>
+<p>（2）synchronized 修饰修改变量的方法</p>
+<p>（3）wait/notify</p>
+<p>（4）while 轮询</p>
+<p><strong>当一个线程进入一个对象的 synchronized 方法 A 之后，其它线程是否可进入此对象的 synchronized 方法 B？</strong></p>
+<p>不能。其它线程只能访问该对象的非同步方法，同步方法则不能进入。因为非静态方法上的 synchronized 修饰符要求执行方法时要获得对象的锁，如果已经进入A 方法说明对象锁已经被取走，那么试图进入 B 方法的线程就只能在等锁池（注意不是等待池哦）中等待对象的锁。</p>
+<h5 id="synchronized-volatile-cas-比较">synchronized、volatile、CAS 比较</h5>
+<p>（1）synchronized 是悲观锁，属于抢占式，会引起其他线程阻塞。</p>
+<p>（2）volatile 提供多线程共享变量可见性和禁止指令重排序优化。</p>
+<p>（3）CAS 是基于冲突检测的乐观锁（非阻塞）</p>
+<h5 id="synchronized-和-lock-有什么区别">synchronized 和 Lock 有什么区别？</h5>
+<ul>
+<li>首先synchronized是Java内置关键字，在JVM层面，Lock是个Java类；</li>
+<li>synchronized 可以给类、方法、代码块加锁；而 lock 只能给代码块加锁。</li>
+<li>synchronized 不需要手动获取锁和释放锁，使用简单，发生异常会自动释放锁，不会造成死锁；而 lock 需要自己加锁和释放锁，如果使用不当没有 unLock()去释放锁就会造成死锁。</li>
+<li>通过 Lock 可以知道有没有成功获取锁，而 synchronized 却无法办到。</li>
+</ul>
+<h5 id="synchronized-和-reentrantlock-区别是什么">synchronized 和 ReentrantLock 区别是什么？</h5>
+<p>synchronized 是和 if、else、for、while 一样的关键字，ReentrantLock 是类，这是二者的本质区别。既然 ReentrantLock 是类，那么它就提供了比synchronized 更多更灵活的特性，可以被继承、可以有方法、可以有各种各样的类变量</p>
+<p>synchronized 早期的实现比较低效，对比 ReentrantLock，大多数场景性能都相差较大，但是在 Java 6 中对 synchronized 进行了非常多的改进。</p>
+<p>相同点：两者都是可重入锁</p>
+<p>两者都是可重入锁。“可重入锁”概念是：自己可以再次获取自己的内部锁。比如一个线程获得了某个对象的锁，此时这个对象锁还没有释放，当其再次想要获取这个对象的锁的时候还是可以获取的，如果不可锁重入的话，就会造成死锁。同一个线程每次获取锁，锁的计数器都自增1，所以要等到锁的计数器下降为0时才能释放锁。</p>
+<p>主要区别如下：</p>
+<ul>
+<li>ReentrantLock 使用起来比较灵活，但是必须有释放锁的配合动作；</li>
+<li>ReentrantLock 必须手动获取与释放锁，而 synchronized 不需要手动释放和开启锁；</li>
+<li>ReentrantLock 只适用于代码块锁，而 synchronized 可以修饰类、方法、变量等。</li>
+<li>二者的锁机制其实也是不一样的。ReentrantLock 底层调用的是 Unsafe 的park 方法加锁，synchronized 操作的应该是对象头中 mark word</li>
+</ul>
+<p>Java中每一个对象都可以作为锁，这是synchronized实现同步的基础：</p>
+<ul>
+<li>普通同步方法，锁是当前实例对象</li>
+<li>静态同步方法，锁是当前类的class对象</li>
+<li>同步方法块，锁是括号里面的对象</li>
+</ul>
+<h4 id="尽可能去使用synchronized而不要去使用lock">尽可能去使用synchronized而不要去使用LOCK</h4>
+<p>什么概念呢？我和大家打个比方：你叫jdk，你生了一个孩子叫synchronized，后来呢，你领养了一个孩子叫LOCK。起初，LOCK刚来到新家的时候，它很乖，很懂事，各个方面都表现的比synchronized好。你很开心，但是你内心深处又有一点淡淡的忧伤，你不希望你自己亲生的孩子竟然还不如一个领养的孩子乖巧。这个时候，你对亲生的孩子教育更加深刻了，你想证明，你的亲生孩子synchronized并不会比领养的孩子LOCK差。<br>
+那如何教育呢？<br>
+在jdk1.6~jdk1.7的时候，你作为爸爸，你给他优化了，具体优化在哪里呢：</p>
+<ol>
+<li>
+<p>线程自旋和适应性自旋<br>
+我们知道，java’线程其实是映射在内核之上的，线程的挂起和恢复会极大的影响开销。并且jdk官方人员发现，很多线程在等待锁的时候，在很短的一段时间就获得了锁，所以它们在线程等待的时候，并不需要把线程挂起，而是让他无目的的循环，一般设置10次。这样就避免了线程切换的开销，极大的提升了性能。<br>
+而适应性自旋，是赋予了自旋一种学习能力，它并不固定自旋10次一下。他可以根据它前面线程的自旋情况，从而调整它的自旋，甚至是不经过自旋而直接挂起。</p>
+</li>
+<li>
+<p>锁消除<br>
+什么叫锁消除呢？就是把不必要的同步在编译阶段进行移除。<br>
+那么有的小伙伴又迷糊了，我自己写的代码我会不知道这里要不要加锁？我加了锁就是表示这边会有同步呀？<br>
+并不是这样，这里所说的锁消除并不一定指代是你写的代码的锁消除，我打一个比方：<br>
+在jdk1.5以前，我们的String字符串拼接操作其实底层是StringBuffer来实现的（写一个简单的demo，然后查看class文件中的字节码指令就清楚了），而在jdk1.5之后，那么是用StringBuilder来拼接的。我们考虑前面的情况，比如如下代码：</p>
+<pre><code class="language-java">String str1=&quot;qwe&quot;;
+String str2=&quot;asd&quot;;
+String str3=str1+str2;
+</code></pre>
+<p>底层实现会变成这样：</p>
+<pre><code class="language-java">StringBuffer sb = new StringBuffer();
+sb.append(&quot;qwe&quot;);
+sb.append(&quot;asd&quot;);
+</code></pre>
+<p>我们知道，StringBuffer是一个线程安全的类，也就是说两个append方法都会同步，通过指针逃逸分析（就是变量不会外泄），我们发现在这段代码并不存在线程安全问题，这个时候就会把这个同步锁消除。</p>
+</li>
+<li>
+<p>锁粗化<br>
+在用synchronized的时候，我们都讲究为了避免大开销，尽量同步代码块要小。那么为什么还要加粗呢？<br>
+我们继续以上面的字符串拼接为例，我们知道在这一段代码中，每一个append都需要同步一次，那么我可以把锁粗化到第一个append和最后一个append（这里不要去纠结前面的锁消除，我只是打个比方）</p>
+</li>
+<li>
+<p>轻量级锁</p>
+<p><strong>轻量级锁的加锁过程</strong></p>
+<p>（1）在代码进入同步块的时候，如果同步对象锁状态为无锁状态（锁标志位为“01”状态，是否为偏向锁为“0”），虚拟机首先将在当前线程的栈帧中建立一个名为锁记录（Lock Record）的空间，用于存储锁对象目前的Mark Word的拷贝，官方称之为 Displaced Mark Word。这时候线程堆栈与对象头的状态如图2.1所示。</p>
+<p>（2）拷贝对象头中的Mark Word复制到锁记录中。</p>
+<p>（3）拷贝成功后，虚拟机将使用CAS操作尝试将对象的Mark Word更新为指向Lock Record的指针，并将Lock record里的owner指针指向object mark word。如果更新成功，则执行步骤（3），否则执行步骤（4）。</p>
+<p>（4）如果这个更新动作成功了，那么这个线程就拥有了该对象的锁，并且对象Mark Word的锁标志位设置为“00”，即表示此对象处于轻量级锁定状态，这时候线程堆栈与对象头的状态如图2.2所示。</p>
+<p>（5）如果这个更新操作失败了，虚拟机首先会检查对象的Mark Word是否指向当前线程的栈帧，如果是就说明当前线程已经拥有了这个对象的锁，那就可以直接进入同步块继续执行。否则说明多个线程竞争锁，轻量级锁就要膨胀为重量级锁，锁标志的状态值变为“10”，Mark Word中存储的就是指向重量级锁（互斥量）的指针，后面等待锁的线程也要进入阻塞状态。 而当前线程便尝试使用自旋来获取锁，自旋就是为了不让线程阻塞，而采用循环去获取锁的过程。</p>
+<figure data-type="image" tabindex="4"><img src="https://images2015.cnblogs.com/blog/820406/201604/820406-20160424105442866-2111954866.png" alt="img" loading="lazy"></figure>
+<p>​           图2.1 轻量级锁CAS操作之前堆栈与对象的状态</p>
+<figure data-type="image" tabindex="5"><img src="https://images2015.cnblogs.com/blog/820406/201604/820406-20160424105540163-1019388398.png" alt="img" loading="lazy"></figure>
+<p>​           图2.2 轻量级锁CAS操作之后堆栈与对象的状态</p>
+<p><strong>轻量级锁的解锁过程：</strong></p>
+<p>（1）通过CAS操作尝试把线程中复制的Displaced Mark Word对象替换当前的Mark Word。</p>
+<p>（2）如果替换成功，整个同步过程就完成了。</p>
+<p>（3）如果替换失败，说明有其他线程尝试过获取该锁（此时锁已膨胀），那就要在释放锁的同时，唤醒被挂起的线程。</p>
+</li>
+<li>
+<p>偏向锁</p>
+<p>引入偏向锁是为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖一次CAS原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗必须小于节省下来的CAS原子指令的性能消耗）。上面说过，轻量级锁是为了在线程交替执行同步块时提高性能，而偏向锁则是在只有一个线程执行同步块时进一步提高性能。</p>
+<p><strong>1、偏向锁获取过程：</strong></p>
+<p>（1）访问Mark Word中偏向锁的标识是否设置成1，锁标志位是否为01——确认为可偏向状态。</p>
+<p>（2）如果为可偏向状态，则测试线程ID是否指向当前线程，如果是，进入步骤（5），否则进入步骤（3）。</p>
+<p>（3）如果线程ID并未指向当前线程，则通过CAS操作竞争锁。如果竞争成功，则将Mark Word中线程ID设置为当前线程ID，然后执行（5）；如果竞争失败，执行（4）。</p>
+<p>（4）如果CAS获取偏向锁失败，则表示有竞争。当到达全局安全点（safepoint）时获得偏向锁的线程被挂起，偏向锁升级为轻量级锁，然后被阻塞在安全点的线程继续往下执行同步代码。</p>
+<p>（5）执行同步代码。</p>
+<p><strong>2、偏向锁的释放：</strong></p>
+<p>偏向锁的撤销在上述第四步骤中有提到**。**偏向锁只有遇到其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁，线程不会主动去释放偏向锁。偏向锁的撤销，需要等待全局安全点（在这个时间点上没有字节码正在执行），它会首先暂停拥有偏向锁的线程，判断锁对象是否处于被锁定状态，撤销偏向锁后恢复到未锁定（标志位为“01”）或轻量级锁（标志位为“00”）的状态。</p>
+</li>
+</ol>
+<h4 id="volatile">volatile</h4>
+<p>对于可见性，Java 提供了 volatile 关键字来保证可见性和禁止指令重排。 volatile 提供 happens-before 的保证，确保一个线程的修改能对其他线程是可见的。当一个共享变量被 volatile 修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值。</p>
+<p>从实践角度而言，volatile 的一个重要作用就是和 CAS 结合，保证了原子性，详细的可以参见 java.util.concurrent.atomic 包下的类，比如 AtomicInteger。</p>
+<p>volatile 常用于多线程环境下的单次操作(单次读或者单次写)。</p>
+<h5 id="java-中能创建-volatile-数组吗">Java 中能创建 volatile 数组吗？</h5>
+<p>能，Java 中可以创建 volatile 类型数组，不过只是一个指向数组的引用，而不是整个数组。意思是，如果改变引用指向的数组，将会受到 volatile 的保护，但是如果多个线程同时改变数组的元素，volatile 标示符就不能起到之前的保护作用了。</p>
+<h5 id="volatile-变量和-atomic-变量有什么不同">volatile 变量和 atomic 变量有什么不同？</h5>
+<p>volatile 变量可以确保先行关系，即写操作会发生在后续的读操作之前, 但它并不能保证原子性。例如用 volatile 修饰 count 变量，那么 count++ 操作就不是原子性的。</p>
+<p>而 AtomicInteger 类提供的 atomic 方法可以让这种操作具有原子性如getAndIncrement()方法会原子性的进行增量操作把当前值加一，其它数据类型和引用变量也可以进行相似操作。</p>
+<h5 id="volatile-能使得一个非原子操作变成原子操作吗">volatile 能使得一个非原子操作变成原子操作吗？</h5>
+<p>关键字volatile的主要作用是使变量在多个线程间可见，但无法保证原子性，对于多个线程访问同一个实例变量需要加锁进行同步。</p>
+<p>虽然volatile只能保证可见性不能保证原子性，但用volatile修饰long和double可以保证其操作原子性。</p>
+<p>所以从Oracle Java Spec里面可以看到：</p>
+<ul>
+<li>对于64位的long和double，如果没有被volatile修饰，那么对其操作可以不是原子的。在操作的时候，可以分成两步，每次对32位操作。</li>
+<li>如果使用volatile修饰long和double，那么其读写都是原子操作</li>
+<li>对于64位的引用地址的读写，都是原子操作</li>
+<li>在实现JVM时，可以自由选择是否把读写long和double作为原子操作</li>
+<li>推荐JVM实现为原子操作</li>
+</ul>
+<h5 id="volatile-修饰符的有过什么实践">volatile 修饰符的有过什么实践？</h5>
+<p>单例模式</p>
+<p>是否 Lazy 初始化：是</p>
+<p>是否多线程安全：是</p>
+<p>实现难度：较复杂</p>
+<p>描述：对于Double-Check这种可能出现的问题（当然这种概率已经非常小了，但毕竟还是有的嘛~），解决方案是：只需要给instance的声明加上volatile关键字即可volatile关键字的一个作用是禁止指令重排，把instance声明为volatile之后，对它的写操作就会有一个内存屏障（什么是内存屏障？），这样，在它的赋值完成之前，就不用会调用读操作。注意：volatile阻止的不是singleton = newSingleton()这句话内部[1-2-3]的指令重排，而是保证了在一个写操作（[1-2-3]）完成之前，不会调用读操作（if (instance == null)）。</p>
+<pre><code class="language-java">public class Singleton7 {
+
+    private static volatile Singleton7 instance = null;
+
+    private Singleton7() {}
+
+    public static Singleton7 getInstance() {
+        if (instance == null) {
+            synchronized (Singleton7.class) {
+                if (instance == null) {
+                    instance = new Singleton7();
+                }
+            }
+        }
+
+        return instance;
+    }
+
+}
+</code></pre>
+<h5 id="synchronized-和-volatile-的区别是什么">synchronized 和 volatile 的区别是什么？</h5>
+<p>synchronized 表示只有一个线程可以获取作用对象的锁，执行代码，阻塞其他线程。</p>
+<p>volatile 表示变量在 CPU 的寄存器中是不确定的，必须从主存中读取。保证多线程环境下变量的可见性；禁止指令重排序。</p>
+<p><strong>区别</strong></p>
+<ul>
+<li>volatile 是变量修饰符；synchronized 可以修饰类、方法、变量。</li>
+<li>volatile 仅能实现变量的修改可见性，不能保证原子性；而 synchronized 则可以保证变量的修改可见性和原子性。</li>
+<li>volatile 不会造成线程的阻塞；synchronized 可能会造成线程的阻塞。</li>
+<li>volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。</li>
+<li><strong>volatile关键字</strong>是线程同步的<strong>轻量级实现</strong>，所以<strong>volatile性能肯定比synchronized关键字要好</strong>。但是<strong>volatile关键字只能用于变量而synchronized关键字可以修饰方法以及代码块</strong>。synchronized关键字在JavaSE1.6之后进行了主要包括为了减少获得锁和释放锁带来的性能消耗而引入的偏向锁和轻量级锁以及其它各种优化之后执行效率有了显著提升，<strong>实际开发中使用 synchronized 关键字的场景还是更多一些</strong>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>synchronized</th>
+<th>Lock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存在层次</td>
+<td>Java的关键字，在jvm层面上</td>
+<td>是一个类</td>
+</tr>
+<tr>
+<td>锁的释放</td>
+<td>1、已获取锁的线程执行完同步代码，释放锁 2、线程执行发生异常，jvm会让线程释放锁</td>
+<td>在finally中必须释放锁，不然容易造成线程死锁</td>
+</tr>
+<tr>
+<td>锁的获取</td>
+<td>假设A线程获得锁，B线程等待。如果A线程阻塞，B线程会一直等待</td>
+<td>分情况而定，Lock有多个锁获取的方式，具体下面会说道，大致就是可以尝试获得锁，线程可以不用一直等待</td>
+</tr>
+<tr>
+<td>锁状态</td>
+<td>无法判断</td>
+<td>可以判断</td>
+</tr>
+<tr>
+<td>锁类型</td>
+<td>可重入 不可中断 非公平</td>
+<td>可重入 可判断 可公平（两者皆可）</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>少量同步</td>
+<td>大量同步</td>
+</tr>
+</tbody>
+</table>
+<h4 id="final">final</h4>
+<p>不可变对象(Immutable Objects)即对象一旦被创建它的状态（对象的数据，也即对象属性值）就不能改变，反之即为可变对象(Mutable Objects)。</p>
+<p>不可变对象的类即为不可变类(Immutable Class)。Java 平台类库中包含许多不可变类，如 String、基本类型的包装类、BigInteger 和 BigDecimal 等。</p>
+<p>只有满足如下状态，一个对象才是不可变的；</p>
+<ul>
+<li>它的状态不能在创建后再被修改；</li>
+<li>所有域都是 final 类型；并且，它被正确创建（创建期间没有发生 this 引用的逸出）。</li>
+</ul>
+<p>不可变对象保证了对象的内存可见性，对不可变对象的读取不需要进行额外的同步手段，提升了代码执行效率。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9B%B8%E5%85%B3">Java内存模型和线程相关</a>
+<ul>
+<li><a href="#%E9%87%8D%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%95%B0%E6%8D%AE%E4%BE%9D%E8%B5%96%E6%80%A7">重排序与数据依赖性</a>
+<ul>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A3%E7%A0%81%E4%BC%9A%E9%87%8D%E6%8E%92%E5%BA%8F">为什么代码会重排序？</a></li>
+<li><a href="#as-if-serial%E8%A7%84%E5%88%99%E5%92%8Chappens-before%E8%A7%84%E5%88%99%E7%9A%84%E5%8C%BA%E5%88%AB">as-if-serial规则和happens-before规则的区别</a></li>
+</ul>
+</li>
+<li><a href="#synchronized">synchronized</a>
+<ul>
+<li><a href="#synchronized%E5%85%B3%E9%94%AE%E5%AD%97%E6%9C%80%E4%B8%BB%E8%A6%81%E7%9A%84%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F">synchronized关键字最主要的三种使用方式：</a></li>
+<li><a href="#%E8%AF%B4%E4%B8%80%E4%B8%8B-synchronized-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">说一下 synchronized 底层实现原理？</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%87%AA%E6%97%8B">什么是自旋</a></li>
+<li><a href="#%E9%94%81%E7%8A%B6%E6%80%81">锁状态</a></li>
+<li><a href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD-synchronized-%E9%94%81%E5%8D%87%E7%BA%A7%E7%9A%84%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88">多线程中 synchronized 锁升级的原理是什么？</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B-b-%E6%80%8E%E4%B9%88%E7%9F%A5%E9%81%93%E7%BA%BF%E7%A8%8B-a-%E4%BF%AE%E6%94%B9%E4%BA%86%E5%8F%98%E9%87%8F">线程 B 怎么知道线程 A 修改了变量</a></li>
+<li><a href="#synchronized-volatile-cas-%E6%AF%94%E8%BE%83">synchronized、volatile、CAS 比较</a></li>
+<li><a href="#synchronized-%E5%92%8C-lock-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">synchronized 和 Lock 有什么区别？</a></li>
+<li><a href="#synchronized-%E5%92%8C-reentrantlock-%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">synchronized 和 ReentrantLock 区别是什么？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%8E%BB%E4%BD%BF%E7%94%A8synchronized%E8%80%8C%E4%B8%8D%E8%A6%81%E5%8E%BB%E4%BD%BF%E7%94%A8lock">尽可能去使用synchronized而不要去使用LOCK</a></li>
+<li><a href="#volatile">volatile</a>
+<ul>
+<li><a href="#java-%E4%B8%AD%E8%83%BD%E5%88%9B%E5%BB%BA-volatile-%E6%95%B0%E7%BB%84%E5%90%97">Java 中能创建 volatile 数组吗？</a></li>
+<li><a href="#volatile-%E5%8F%98%E9%87%8F%E5%92%8C-atomic-%E5%8F%98%E9%87%8F%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C">volatile 变量和 atomic 变量有什么不同？</a></li>
+<li><a href="#volatile-%E8%83%BD%E4%BD%BF%E5%BE%97%E4%B8%80%E4%B8%AA%E9%9D%9E%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C%E5%8F%98%E6%88%90%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C%E5%90%97">volatile 能使得一个非原子操作变成原子操作吗？</a></li>
+<li><a href="#volatile-%E4%BF%AE%E9%A5%B0%E7%AC%A6%E7%9A%84%E6%9C%89%E8%BF%87%E4%BB%80%E4%B9%88%E5%AE%9E%E8%B7%B5">volatile 修饰符的有过什么实践？</a></li>
+<li><a href="#synchronized-%E5%92%8C-volatile-%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">synchronized 和 volatile 的区别是什么？</a></li>
+</ul>
+</li>
+<li><a href="#final">final</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/h9DSVN_A0/">
+                  <span class="post-title">
+                    多线程基础概念二&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/b7Jq-wpXZ/">
+                   <span class="post-title">
+                     多线程基础概念四&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

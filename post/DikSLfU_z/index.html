@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>类加载 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="类加载 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="类加载" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/DikSLfU_z/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>类加载</h1>
+              <span class="meta">
+                Posted on
+                2021-09-09，14 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/DikSLfU_z.png" alt="封面图">
+          </img>
+          
+          <h2 id="类加载过程">类加载过程</h2>
+<p>在java中编译并不进行链接工作，类型的加载、链接和初始化工作都是在jvm执行过程中进行的。在Java程序启动时，jvm通过加载指定的类，然后调用该类的main方法而启动。在JVM启动过程中， 外部class字节码文件会经过一系列过程转化为JVM中执行的数据，这一系列过程我们称为类加载过程。</p>
+<h3 id="类加载整体流程">类加载整体流程</h3>
+<p>从类被JVM加载到内存开始到卸载出内存为止，整个生命周期包括：加载、链接、初始化、使用和卸载五个过程。其中链接又包括验证、准备和解析三个过程。如下图所示：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619321177632.png" alt="" loading="lazy"></figure>
+<h3 id="类加载时机">类加载时机</h3>
+<p>java虚拟机规范通过对初始化阶段进行严格规定，来保证初始化的完成，而作为其之前的必须启动的过程，加载、验证、准备也需要在此之前开始。</p>
+<p>Java虚拟机规定，以下五种情况必须对类进行初始化：</p>
+<ol>
+<li>
+<p>虚拟机在用户指定包含main方法的主类后启动时，必须先对主类进行初始化。</p>
+</li>
+<li>
+<p>当使用new关键字对类进行实例化时、读取或者写入类的静态字段时、调用类的静态方法时，必须先触发对该类的实例化。</p>
+</li>
+<li>
+<p>使用反射对类进行反射调用时，如果该类没有初始化先对其进行初始化。</p>
+</li>
+<li>
+<p>初始化一个类，而该类的父类还未初始化，需要先对其父类进行初始化。</p>
+</li>
+<li>
+<p>在JDK1.7之后的版本中使用动态语言支持，java.lang.invoke.MethodHandle实例解析的结果是REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄，而该句柄对应的类 还未初始化，必须先触发其实例化。</p>
+</li>
+</ol>
+<h3 id="加载">加载</h3>
+<p>在加载阶段，虚拟机需要完成三件事：</p>
+<ol>
+<li>
+<p>通过一个类的全限定名来获取此类的class字节码二进制流。</p>
+</li>
+<li>
+<p>将这个字节码二进制流中的静态存储结构转化为方法区中的运行时数据结构。</p>
+</li>
+<li>
+<p>在内存中生成一个代表该类的java.lang.Class对象，作为方法区中这个类的各种数据的访问入口。</p>
+</li>
+</ol>
+<p>对于Class对象，Java虚拟机规范并没有规定要存储在堆中，HotSpot虚拟机将其存放在方法区中。</p>
+<h3 id="验证">验证</h3>
+<p>验证作为链接的第一步，大致会完成四个阶段的检验：</p>
+<ol>
+<li>
+<p>文件格式验证：该阶段主要在字节流转化为方法区中的运行时数据时，负责检查字节流是否符合Class文件规范，保证其可以正确的被解析并存储在方法区中。后面的检查都是基于方法区的 存储结构进行检验，不会再直接操作字节流。</p>
+</li>
+<li>
+<p>元数据验证：该阶段负责分析存储于方法区的结构是否符合Java语言规范。此阶段进行数据类型的校验，保证符合不存在非法的元数据信息。</p>
+</li>
+<li>
+<p>字节码验证：元数据验证保证了字节码中的数据符合语言的规范，该阶段则负责分析数据流和控制流，确定方法体的合法性，保证被校验的方法在运行时不会危害虚拟机的运行。</p>
+</li>
+<li>
+<p>符号引用验证：在解析阶段会将虚拟机中的符号引用转化为直接引用，该阶段则负责对各种符号引用进行匹配性校验，保证外部依赖真实存在，并且符合外部依赖类、字段、方法的访问性。</p>
+</li>
+</ol>
+<h3 id="准备">准备</h3>
+<p>准备阶段正式为类的字段变量（被static修饰的类变量）分配内存并设置初始值。这些变量存储在方法区中。当类字段为常量类型（即被static final修饰），由于字段的值已经确定，并不会在后面修改，此时会直接赋值为指定的值。</p>
+<h3 id="解析">解析</h3>
+<p>解析阶段将常量池中的符号引用替换为直接引用。在字节码文件中，类、接口、字段、方法等类型都是由一组符号来表示。其形式由java虚拟机规范中的Class文件格式定义。在虚拟机执行 指定指令之前，需要将符号引用转化为目标的指针、相对偏移量或者句柄，这样可以通过此类直接引用在内存中定位调用的具体位置。</p>
+<h3 id="初始化">初始化</h3>
+<p>在类的class文件中。包含两个特殊的方法：clinit和init，这两方法由编译器自动生成，分别代表类构造器和构造函数，其中构造函数编程实现，初始化阶段就是负责调用类构造器，来初始化 变量和资源。</p>
+<p>clinit方法由编译器自动收集类的赋值动作和静态语句块（static）中的语句合并生成的，有以下特点：</p>
+<ol>
+<li>
+<p>编译器收集顺序又代码顺序决定，静态语句块只能访问它之前定义的变量，在它之后定义的变量只能进行赋值不能访问。</p>
+</li>
+<li>
+<p>虚拟机保证在子类的clinit方法执行前，父类的clinit已经执行完毕。</p>
+</li>
+<li>
+<p>clinit不是必须的，如果一个类或接口没有变量赋值和静态代码块，则编译器可以不生成clinit。</p>
+</li>
+<li>
+<p>虚拟机会保证clinit方法在多线程中被正确的加锁和同步。如果多个线程同时初始化一个类，那么只有一个线程执行clinit，其他线程会被阻塞。</p>
+</li>
+</ol>
+<h2 id="双亲委派模型">双亲委派模型</h2>
+<h3 id="类加载器">类加载器</h3>
+<ol>
+<li>
+<p>定义：实现类加载阶段的“通过一个里的全限定名来获取描述此类的二进制字节流”的动作的代码模块成为“类加载器”。对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。比较两个类是否“相等”，只有在这两个类是同一个类加载器加载的前提下才有意义。</p>
+</li>
+<li>
+<p>类加载器种类</p>
+<p>从Java虚拟机的角度只有两种类加载器：</p>
+<p>（1）启动类加载器（BootStrap ClassLoader），这个类加载器使用C++语言实现，是虚拟机自身的一部分。</p>
+<p>（2）另一种就是所有其他类的加载器，这些类加载器都是由Java语言实现，独立于虚拟机外部，并且都继承自抽象类java.lang.ClassLoader。</p>
+<p>从Java开发人员的角度，类加载器还可分为3种系统提供的类加载器和用户自定义的类加载器。</p>
+<p>（1）启动类加载器（BootStrap ClassLoader）：负责加载存放java_home\lib目录中的，或者被-Xbootclasspath参数所指定的路径中的类。</p>
+<p>（2）扩展类加载器（Extension ClassLoader）：这个加载器sun.misc.Launcher</p>
+<p>ExtClassLoader实现，它负责加载java_home\lib\ext目录中的，或者被java.ext.dirs系统变量所指定的路径中的所有类库，开发者可以直接使用扩展类加载器。 如果应用程序中没有自定义的类加载器，一般情况下 这个就是程序中默认的类加载器。</p>
+<p>（3）自定义类加载器（User ClassLoader）：用户自定义的类加载器。用户在编写自己定义的类加载器时，如果需要把请求委派给引导类加载器，那直接使用numm代替即可。要创建用户自己 的类加载器，只需要继承java.lang.ClassLoader，然后覆盖它的findClass(String name)方法即可。如果要符合双亲委派模型，则重写findClass()方法。如果要破坏的话，则重写 loadClass()方法。</p>
+</li>
+</ol>
+<p><strong>双亲委派模型</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619321193747.webp" alt="" loading="lazy"></figure>
+<p>上图展示的类加载器之间的这种层次关系称为类加载器的双亲委派模型。</p>
+<ol>
+<li>
+<p>双亲委派模型要求除了顶层的启动类加载器之外，其余的类加载器都应当有自己的父类加载器。</p>
+</li>
+<li>
+<p>类加载器的双亲委派模型在jdk1.2被引入，但它不是一个强制性的约束模型，而是Java设计者推荐给开发者的一种类加载器的实现方式。</p>
+</li>
+</ol>
+<p>双亲委派模型的工作过程如下：</p>
+<ol>
+<li>
+<p>如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成。</p>
+</li>
+<li>
+<p>每一层的类加载器都重复第一步，因此所有的类加载请求最终都传送到了顶层的类加载器中。</p>
+</li>
+<li>
+<p>只有父类加载器返回自己无法完成这个加载请求，子加载器才会尝试自己去加载。</p>
+</li>
+</ol>
+<h2 id="对象的创建-存储和访问">对象的创建、存储和访问</h2>
+<h3 id="对象的创建">对象的创建</h3>
+<ol>
+<li>
+<p>类加载检查：虚拟机遇到一条new指令，首先检查这个指令的参数是否能在常量池中（Class文件的静态常量池）定位到这个类的符号引用，并且检查这个符号引用代表的类是否 已经被加载、解析和初始化过。如果没有，那必须先执行相应的类加载过程。</p>
+</li>
+<li>
+<p>分配内存：对象所需内存大小在类加载完成后便可完全确定，为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来。但是不同垃圾回收器的算法会导致堆内存存在两种情况：绝对规整和相互交错。（比如标记清楚算法和标记整理算法）</p>
+<p>（1）指针碰撞：假设Java堆内存是绝对规整的，所有用过的内存都存放在一起，空闲的内存存放在另一边，中间放着一个指示器作为分界点的指示器，所分配的内存就仅仅是把那个指针向空闲空间那边挪动一段与对象大小相等的距离，这种分配方式成为”指针碰撞“。</p>
+<p>（2）空闲列表：如果是相互交错的，那么虚拟机会维护一个列表，记录哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划给对象实例，并更新列表上的记录。这种分配方式成为”空闲列表“。</p>
+</li>
+<li>
+<p>分配内存的并发问题：即使是仅仅修改一个指针所指向的位置，在并发情况下也不是线程安全的，可能出现正在给对象A分配内存，指针还没来得及修改，对象B又同时使用了原来的 指针来分配内存的情况。针对这个问题有两种解决方案：</p>
+<p>（1）失败重试：对分配内存空间的动作进行同步处理，虚拟机采用CAS和失败重试机制保证更新操作的原子性。</p>
+<p>（2）本地线程分配缓存：哪个线程要分配内存，就在哪个线程的TLAB（Thread Local Allocation Buffer）上分配，只有TLAB用完并分配新的TLAB时，才需要同步锁定。</p>
+</li>
+<li>
+<p>内存空间初始化零值：内存分配完成后，虚拟机需要将分配到的内存空间都初始化零值，这一步操作保证了对象的实例字段（成员变量）在Java代码中可以不赋值就直接使用，程序能够访问到这些字段的数据类型所对应的零值。</p>
+</li>
+<li>
+<p>对象设置：接下来虚拟机会对对象进行必要的设置，例如这个对象是哪个类的实例，如何才能找到类的元数据信息、对象的哈希吗、对象的GC分代年龄等信息。这些信息存放在对象头中。至此一个新的对象产生了。</p>
+</li>
+<li>
+<p>实例构造器的init方法：虽然对象产生了，但是init方法并没有执行，所欲字段还需要赋值（包括成员变量赋值，普通语句块执行，构造函数执行等。）</p>
+</li>
+</ol>
+<h3 id="clinit和init">Clinit和init</h3>
+<h4 id="clinit">Clinit</h4>
+<p>类构造器的方法，与类的初始化有关。例如静态变量（类变量）和静态对象赋值，静态语句块的执行。如果一个类中没有静态语句块，也没有静态变量或静态对象的赋值， 那么编译器可以不为这个类生成方法。</p>
+<h4 id="init">init</h4>
+<p>实例构造器（即成员变量，成员对象等），例如成员变量和成员对象的赋值，普通语句块的执行，构造函数的执行。</p>
+<h3 id="对象的内存布局">对象的内存布局</h3>
+<p>在HotSpot虚拟机中，对象在内存中存储的布局可以分为三个区域：对象头、实例数据和对齐填充。</p>
+<h4 id="对象头">对象头</h4>
+<p>对象头包括两部分信息：运行时数据和类型指针。</p>
+<h4 id="运行时数据">运行时数据</h4>
+<p>第一部分用于存储对象自身的运行时数据，如哈希吗（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619321205464.webp" alt="" loading="lazy"></p>
+<p>下面是HotSpot虚拟机对象头Mark Word：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619321212070.webp" alt="" loading="lazy"></figure>
+<h4 id="类型指针">类型指针</h4>
+<p>对象头的另一部分是类型指针，即对象指向他元数据的指针，虚拟机可以通过这个指针确定这个对象是哪个类的实例。但是如果对象是一个Java数组，那么在对象头中还必须有一块用于记录数据长度的数据。</p>
+<h4 id="对象的实例数据">对象的实例数据</h4>
+<p>接着数据头的是对象的实例数据，这部分是真正存储的有效信息。无论是从父类中继承下来的还是在子类中定义的，都需要记录下来。</p>
+<h4 id="对齐填充">对齐填充</h4>
+<p>最后一部分对齐填充并不是必然存在的，也没有特别的含义，仅仅起着占位符的作用。由于HotSpot虚拟机的自动内存管理系统要求对象的起始地址必须是8字节的整数倍，也就是 对象的大小必须是8字节的整数倍。而对象头部分是8字节的倍数，当实例数据没有对齐的时候，需要对齐填充凑够8字节的整数倍。</p>
+<h4 id="对象的访问定位">对象的访问定位</h4>
+<p>建立对象是为了使用对象，我们的Java程序需要通过栈上的引用数据来操作堆上的具体对象。对象的访问方式取决于虚拟机的实现，目前主流的访问方式有使用句柄和直接指针两种。</p>
+<p>句柄引用和直接引用不同在于：使用句柄引用的话，那么Java对堆中将会划分出一块内存来作为句柄池，引用中存储的就是对象的句柄地址，但是直接引用引用中存储的直接就是对象地址。Java使用的是直接指针访问对象的方式，因为它最大的好处就是速度更快，它节省了一次指针定位的时间开销，由于对象的访问在Java中非常频繁，因此这类开销积少成多后也是一项 非常可观的执行成本。</p>
+<p>下面是通过直接指针访问对象<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619321218990.png" alt="" loading="lazy"></p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B">类加载过程</a>
+<ul>
+<li><a href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B">类加载整体流程</a></li>
+<li><a href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%97%B6%E6%9C%BA">类加载时机</a></li>
+<li><a href="#%E5%8A%A0%E8%BD%BD">加载</a></li>
+<li><a href="#%E9%AA%8C%E8%AF%81">验证</a></li>
+<li><a href="#%E5%87%86%E5%A4%87">准备</a></li>
+<li><a href="#%E8%A7%A3%E6%9E%90">解析</a></li>
+<li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96">初始化</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B">双亲委派模型</a>
+<ul>
+<li><a href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8">类加载器</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA-%E5%AD%98%E5%82%A8%E5%92%8C%E8%AE%BF%E9%97%AE">对象的创建、存储和访问</a>
+<ul>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA">对象的创建</a></li>
+<li><a href="#clinit%E5%92%8Cinit">Clinit和init</a>
+<ul>
+<li><a href="#clinit">Clinit</a></li>
+<li><a href="#init">init</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80">对象的内存布局</a>
+<ul>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E5%A4%B4">对象头</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE">运行时数据</a></li>
+<li><a href="#%E7%B1%BB%E5%9E%8B%E6%8C%87%E9%92%88">类型指针</a></li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E6%95%B0%E6%8D%AE">对象的实例数据</a></li>
+<li><a href="#%E5%AF%B9%E9%BD%90%E5%A1%AB%E5%85%85">对齐填充</a></li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D">对象的访问定位</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/y8VkHlUlp/">
+                  <span class="post-title">
+                    线程池ThreadPoolExecutor&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/QvbaHSogu/">
+                   <span class="post-title">
+                     OOM&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

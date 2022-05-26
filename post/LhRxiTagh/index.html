@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>漫画：什么是B-树？ | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="漫画：什么是B-树？ | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="漫画：什么是B-树？" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/LhRxiTagh/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/3wn3aAbld/" class="tag">算法</a>
+                
+              </span>
+              <h1>漫画：什么是B-树？</h1>
+              <span class="meta">
+                Posted on
+                2021-04-25，2 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/LhRxiTagh.png" alt="封面图">
+          </img>
+          
+          <p>原创  [程序员小灰(公众号，强烈推荐)]</p>
+<figure data-type="image" tabindex="1"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omperuU9tXVmGtiaebVYhIH8LzNQ4SQ9gcmt8lFRmbVsote0EWZnYWkFQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omvE3DX4LSX7UibSEHDpZOf4OXTIkmqCKs1ib0kbiaiauTePPDaxIqwLyLeg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omELrLF4iagicxUdv5w5btvMcQQ1ohptiaaSwAia1Fkuch7G3fkknia7fNePg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omSKmWO5RhbfETA3zpFeHZ4cibNoIicvH53qDjqG8ACNCicNcWEfzw4XWAg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>————————————</p>
+<figure data-type="image" tabindex="5"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4om3Qb9JbdqRkZrupQiao3q5icrLj50oKiclmhqoQ7KYhrMw9U0RkccRn8LA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omZgqJwlvKKIEiboZYN1bj1ptC8JDBpSgMK5sGsXVbfvqLhmAsYnCwa1A/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4om164ApDQhpkSADVz47icNO3o935TepKIUW9xrsR2G3D5I1mXGBTEuHXg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omcoibibpZkKHvjlCKsltt6ibWFekKiaVmJhVolWSicZxNu7PdWF0gyoia1xuQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omicanwicic4BYm8mbD3Q8pke9DVg0PtxeURueV3GgANAejY08UFSsThehQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4om0W1TkatXcgYSTJ7oJ2LqfJmw3qQug4b9P3mUyTc0K0fzKj1EIBJynQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omBUWHsicmVibFZUZZReEcs6Zc3ib6QXLYK4ia47FTFicTMX0OUhdAph2v64Q/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omjicVxJO4kgHOBz8b22xEXHHzGr1pYlAibauqDbm2VA0MI1oITlpzZ5Yw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>————————————</p>
+<figure data-type="image" tabindex="14"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omdmtOGTVtHfdQf3LclwKpo1CKYmUfMR4l2QUksDsl1oX13yMBe9FD0Q/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omaDShib6S2yT1WpbviaA9LIUfkoiaGNh0l4CXvUm1ZJCrAhibqaZm06RgOQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4om6Hic9ucmUQKD1sOvC8y3JicHFGXEaOBl2MqpFsggOShs3g7BQzzPXicXA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="17"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4ommNia994ceJWX4EWfoMh1WX62ZaicIichj5saiaVpexWyKrLicubIjHckKrA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="18"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoX9aS1vS0cNOWWdNpKV4omSOUSOqWqT1nIZABVxuOOj73vcJwzWXnTdLpNTuGgib4MJnQoLTxaMdg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="19"><img src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="20"><img src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="21"><img src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="22"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsCoxqcduibyKDpCnAnmibnVNaqJV0YibhpYYp3gE65N1W771XqzzibZQelA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="23"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2Ecibs1G1ickrTiaqeCZU52j6ibcj17vYGUiccE8oALmTQXbiaeOKcc5ZibAwj966Q/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="24"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibscvQzdW5SqAhOjV8y1Q3XewCCkG8YbzlBFibQMMAeOJQLFgtiaqcJYnwA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="25"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsLu2WteEnEZdVUbm2XLh5rDfKcWeLYYbUkDl75lo24jib4CbWmGHCZug/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="26"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsoaByag5Eh52qcZNialGyVKHvcicQ9HFxrWTsvJ7Zeh02evJN2ufTZ5Rw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="27"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsKyTxsxAClzrIgScDUhDEhO1zTcncial0ZJwu3ZJQRwKRug9F1VlU9icQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>二叉查找树的结构：</p>
+<figure data-type="image" tabindex="28"><img src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片" loading="lazy"></figure>
+<p>第1次磁盘IO：</p>
+<figure data-type="image" tabindex="29"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsMKibN9giaNVMbFIlnvTkruWuatuQdvoN07INpbQMFfibtlamFibYTYZjTw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>第2次磁盘IO：</p>
+<figure data-type="image" tabindex="30"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsonW75DsA6sbibqEEDib8e127Bmlx1cjNiacNAtJRtHdgssedibHxWVz0Bg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>第3次磁盘IO：</p>
+<figure data-type="image" tabindex="31"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsnjKOKCu20S5b2apqe3RHqiaL5cRTPxicF2NQ4j4ic8dbvBwTGgdCLHbxg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>第4次磁盘IO：</p>
+<figure data-type="image" tabindex="32"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsqUOlpMg643uxxrb9ygP4Shq20MEicRsv5GqzxqImolibJOVf5Qn9ySgQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="33"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsRbGPSjia4RQWOVQ2DZVhYibibJasdg3v3QMNS0p4IJtDnAcOnVP4xYp8Q/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="34"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2Ecibsr6LX79azuhDhNsNibBibVanpqDbccbibgkFziaNHsTPQNsLPq8GSxgNQtQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="35"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsmRy2uqE5dPtRSbhIJ4ciaZTMGD3dzDYTAQETXGa3zxj0AdLfFphhCtA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="36"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsibqHeTIn9hibc3GJGiarSS9xH0SpPhaclQvKBYy5nbmTg1cYnJM3AFfpg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>下面来具体介绍一下B-树（Balance Tree），一个m阶的B树具有如下几个特征：</p>
+<p>1.根结点至少有两个子女。</p>
+<p>2.每个中间节点都包含k-1个元素和k个孩子，其中 m/2 &lt;= k &lt;= m</p>
+<p>3.每一个叶子节点都包含k-1个元素，其中 m/2 &lt;= k &lt;= m</p>
+<p>4.所有的叶子结点都位于同一层。</p>
+<p>5.每个节点中的元素从小到大排列，节点当中k-1个元素正好是k个孩子包含的元素的值域分划。</p>
+<figure data-type="image" tabindex="37"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsjkSxcKGRzGmJ3iaxkBAnc0vqOfTn2nMJWTQLICNFh8f4S8TeVpzeX6w/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="38"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2EcibsBx8AoeUa9IVbk2JbdsjMZ5p0tdicHkO6fN6dCIwdIojkxicK4GdAv7XQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="39"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGoBqEgxvibyZ3S2O8GG2Ecibs5LFXxLRhEVH55mqXMhGf9C2icZ4iaFcBhUhABThvG0hiaoD1z4icgQJbbA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="40"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRSQb6eDxZctbAxvNt5gYKPlFEiaNaPcqor2hJ6peyuxGQDmQ8Gaougibw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="41"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRictJGn6axEj3BMbc5RwBiaAPPC9mWxYl6yhQ8icB1YAnux37NmYiatKQXQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="42"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRwHXAS5B5icGP98ChYyCQ3jiaw7ickeibRBibZTtu5HwWM30R15VAbCh4tOQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="43"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRxZ6vZjclNWA40cibmZAic9ZZYeZT4aOibCZVTAc4CaauXJN76UvDb7m3Q/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>第1次磁盘IO：</p>
+<figure data-type="image" tabindex="44"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRCCdQPjxVB531QYltibYibYIo6ialib6bg8sXJOBOeicDvEUvniastwicibaeibg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>在内存中定位（和9比较）：</p>
+<figure data-type="image" tabindex="45"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRIiasUvxOs9ibvlu4PP4gtPZmAbhEVich1tpja1PDWeHyx5491J9bLE12A/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>第2次磁盘IO：</p>
+<figure data-type="image" tabindex="46"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqR4ccGREXzfjztA98p0b4dICrLAXrsibqYaQU5MRezYuAchHlpdl9MIzw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>在内存中定位（和2，6比较）：</p>
+<figure data-type="image" tabindex="47"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRKf8XQytR3X9B321Nkva8Fovzn9Fmn95HZP4oK1Il7aFFtCdyhHffUw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>第3次磁盘IO：</p>
+<figure data-type="image" tabindex="48"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRMqrICiaHEH2ucwtbSgh4AT3usOO98Axv3mwHGWOea2GkJQ77Svxfs5g/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>在内存中定位（和3，5比较）：</p>
+<figure data-type="image" tabindex="49"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRu8LjAqtagyeicY27yaUG0SmmLQLCOP3VQrQNIeMCaxfibY6PpicuF1tyg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="50"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqROjXMmxDcDp47DBcuORbpMnxg50rsBQ96CN1V8kxL2Z7KjsgJCl5diaw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="51"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRY7fntn7UFgicRUrjHaD0bdmWVYwVFHbcxYNVcibSeWIXbhiaAoVzccEiaQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="52"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRzlhRceia6QePPtGlxXchpFllA5Pj2uxicwJGQNLiaJQcicDNYQ3ptnqn2g/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="53"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRXpicfJ3TeTpKia3Q3O8g2GveeiadPpGQLU4LAt4hNCKra1fFSlHTvCWNw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="54"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRK4Kd1rCcGicTltzlzVFUWiblatibLy2rYfiaYrCKwv8IXb8egabgXJgWJg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>自顶向下查找4的节点位置，发现4应当插入到节点元素3，5之间。</p>
+<figure data-type="image" tabindex="55"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRYk5euDrbMgVubTR4gvIL3U4LdicK3Fu1f7ATq9tGChL9YLXibJeuCTCA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>节点3，5已经是两元素节点，无法再增加。父亲节点 2， 6 也是两元素节点，也无法再增加。根节点9是单元素节点，可以升级为两元素节点。于是<strong>拆分</strong>节点3，5与节点2，6，让根节点9升级为两元素节点4，9。节点6独立为根节点的第二个孩子。</p>
+<figure data-type="image" tabindex="56"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRSBqOKQc3NYe8HA7mX4QjSjUpfkWLqGBfWm8wHmic7qajFaickGSTX8NA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="57"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqR9v2h25hzn192XuqicoUVCWIBEt6gKRocujXzDJiamrgib1EV1ibSpxNQUA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="58"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRbtPeqBtFvXneXlicy7aPRWiaQ59goTjyCAmnX1tTQ0KlY24NbMxtfF0w/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="59"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRmC7NLG3HUZoqpvP30UDSMTj0WNwoUYhakYNibAQaUlKiclicvyMNt3bGA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>自顶向下查找元素11的节点位置。</p>
+<figure data-type="image" tabindex="60"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRfnGwPGrX4NhnkJfBuKqNdXAyHWJiaBd5b0ruibuhHJvUnmCYpt1eJxdg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>删除11后，节点12只有一个孩子，不符合B树规范。因此找出12,13,15三个节点的中位数13，取代节点12，而节点12自身下移成为第一个孩子。（这个过程称为<strong>左旋</strong>）</p>
+<figure data-type="image" tabindex="61"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRta9bOwANA1gjzduWKKAhl5N9IkFgZPNYNNzzdByY7LYiautLXVNnJ4w/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="62"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRbDOA2SYhksUO3BlibgZciauxcTZFfXobCnFwPegUjLHYqwq4CW7gTYGg/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="63"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRJL3EcNOic0fHafn4ltyInugPY8jtiaUkfQWMYOia3zcsqEmibZ7xszsvvw/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="64"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRdkMYKpR4OMWfwLVEjyVTFvN247FyLu2xh6tiaAaZHLq3CdtbpHJNCicQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="65"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqRDNv7EqMgsEBvBibODkjW2iaO8ib2pOvBlarsmXK3bVPTJcqCV6qS9yTqA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<figure data-type="image" tabindex="66"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NtO5sialJZGrbI83f8meYn1UlzibHGBcqR9e717QtA8PSsFvkWnwjs9HuI28mbpmvaLFFfSiakAlfnotvdZ0gibApA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></figure>
+<p>—————END—————</p>
+
+          <div class="toc-container"></div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/0BBhLzjWl/">
+                  <span class="post-title">
+                    数据结构常见的八大排序算法&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/jVTlR3ljT/">
+                   <span class="post-title">
+                      漫画：什么是B+树？&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>docker安装ELK | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="docker安装ELK | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="docker安装ELK" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/3D5Sr6L0c/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/axbwTxyHw/" class="tag">docker</a>
+                
+                <a href="https://tinaxiawuhao.github.io/tag/4iaIun1eax/" class="tag">ELK</a>
+                
+              </span>
+              <h1>docker安装ELK</h1>
+              <span class="meta">
+                Posted on
+                2021-05-27，11 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/3D5Sr6L0c.png" alt="封面图">
+          </img>
+          
+          <h2 id="docker部署elasticsearch">Docker部署ElasticSearch</h2>
+<h3 id="搜索elasticsearch镜像">搜索ElasticSearch镜像</h3>
+<pre><code class="language-java">docker search elasticsearch
+</code></pre>
+<h3 id="拉取镜像">拉取镜像</h3>
+<p>拉取镜像的时候，可以指定版本，如果不指定，默认使用latest。</p>
+<pre><code class="language-java">docker pull elasticsearch:7.12.0
+</code></pre>
+<h3 id="查看镜像">查看镜像</h3>
+<pre><code class="language-java">docker images
+</code></pre>
+<h3 id="docker-启动-elasticsearch">docker 启动 elasticsearch</h3>
+<pre><code class="language-java"># --name : 为 elasticsearch 容器起个别名
+# -e : 指定为单节点集群模式
+# -i：表示运行容器
+# -t：表示容器启动后会进入其命令行。加入这两个参数后，容器创建就能登录进去。即分配一个伪终端。
+# -v：表示目录映射关系（前者是宿主机目录，后者是映射到宿主机上的目录），可以使用多个－v做多个目录或文件映射。注意：最好做目录映射，在宿主机上做修改，然后共享到容器上。
+# -d：在run后面加上-d参数,则会创建一个守护式容器在后台运行（这样创建容器后不会自动登录容器，如果只加-i -t两个参数，创建后就会自动进去容器）。
+# -p：表示端口映射，前者是宿主机端口，后者是容器内的映射端口。可以使用多个-p做多个端口映射
+docker run -di --name elasticsearch -p 9200:9200 -p 9300:9300 -e &quot;discovery.type=single-node&quot; elasticsearch:7.12.0 
+</code></pre>
+<h3 id="elasticsearch配置">elasticsearch配置</h3>
+<h4 id="创建elasticsearch滚动策略">创建elasticsearch滚动策略</h4>
+<pre><code class="language-json"># 定义审计日志管理策略
+curl -X PUT &quot;${host}/_ilm/policy/audit_policy&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;policy&quot;: {                       
+    &quot;phases&quot;: {
+      &quot;hot&quot;: {                      
+        &quot;actions&quot;: {
+          &quot;rollover&quot;: {             
+            &quot;max_size&quot;: &quot;30GB&quot;,
+            &quot;max_age&quot;: &quot;180d&quot;
+          }
+        }
+      },
+      &quot;delete&quot;: {
+        &quot;min_age&quot;: &quot;180d&quot;,           
+        &quot;actions&quot;: {
+          &quot;delete&quot;: {}              
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>热数据最大30G,最多180天，数据最少保持180天后删除</p>
+<h4 id="创建索引模板">创建索引模板</h4>
+<pre><code class="language-json"># 导出日志索引模板
+curl -X PUT &quot;${host}/_template/export_log_index_template&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;index_patterns&quot;: [
+    &quot;export_log_index*&quot;
+  ],
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 1,
+    &quot;number_of_replicas&quot;: 1,
+    &quot;index.lifecycle.name&quot;: &quot;audit_policy&quot;,
+    &quot;index.lifecycle.rollover_alias&quot;: &quot;export_log_index&quot;,
+    &quot;index.max_result_window&quot;: &quot;100000&quot;
+  },
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;applicationSide&quot;: {
+        &quot;type&quot;: &quot;integer&quot;
+      },
+      &quot;exportComment&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      },
+      &quot;exportFileSize&quot;: {
+        &quot;type&quot;: &quot;integer&quot;
+      },
+      &quot;exportType&quot;: {
+        &quot;type&quot;: &quot;integer&quot;
+      },
+      &quot;id&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      },
+      &quot;operationTime&quot;: {
+        &quot;type&quot;: &quot;date&quot;,
+        &quot;store&quot;: true,
+        &quot;format&quot;: &quot;yyyy-MM-dd HH:mm:ss&quot;
+      },
+      &quot;operationUser&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      },
+      &quot;operationUserName&quot;: {
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;analyzer&quot;: &quot;ik_max_word&quot;,
+        &quot;fields&quot;: {
+          &quot;keyword&quot;: {
+            &quot;type&quot;: &quot;keyword&quot;
+          }
+        }
+      },
+      &quot;remarks&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      },
+      &quot;successful&quot;: {
+        &quot;type&quot;: &quot;boolean&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h4 id="创建索引">创建索引</h4>
+<pre><code class="language-json"># 创建导出日志索引，按日期命名
+curl -X PUT &quot;${host}/%3Cexport_log_index-%7Bnow%2Fd%7D-1%3E&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;aliases&quot;: {
+    &quot;export_log_index&quot;: {
+      &quot;is_write_index&quot;: true
+    }
+  }
+}
+</code></pre>
+<h2 id="docker-安装-kibana">docker 安装 kibana</h2>
+<h3 id="拉取镜像-2">拉取镜像</h3>
+<p>拉取镜像的时候，需要注意的是, <strong>kibana 的版本最好与 elasticsearch 保持一致</strong>, 避免发生不必要的错误</p>
+<pre><code class="language-java">docker pull kibana:7.12.0
+</code></pre>
+<h3 id="查看镜像-2">查看镜像</h3>
+<pre><code class="language-java">docker images
+</code></pre>
+<h3 id="docker-启动-kibana">docker 启动 kibana</h3>
+<pre><code class="language-java"># -e : 指定环境变量配置, 提供汉化
+# --like : 建立两个容器之间的关联, kibana 关联到 es
+docker run -di --name kibana --link elasticsearch:elasticsearch -e &quot;I18N_LOCALE=zh-CN&quot; -p 5601:5601 kibana:7.12.0
+# kibana 的汉化我感觉做的并不好
+# 如果不习惯汉化, 可以把条件去除
+docker run -di --name kibana --link elasticsearch:elasticsearch -p 5601:5601 kibana:7.12.0
+</code></pre>
+<h2 id="docker-安装-logstash">Docker 安装 Logstash</h2>
+<h3 id="拉取镜像-3">拉取镜像</h3>
+<p>拉取镜像的时候，需要注意的是, <strong>Logstash 的版本最好与 elasticsearch 保持一致</strong>, 避免发生不必要的错误</p>
+<pre><code class="language-java">docker pull logstash:7.12.0
+</code></pre>
+<h3 id="查看镜像-3">查看镜像</h3>
+<pre><code class="language-java">docker images
+</code></pre>
+<h3 id="文件映射">文件映射</h3>
+<p>在本机建立配置文件和目录,用来存放所有配置的映射</p>
+<pre><code class="language-java">/usr/local/logstash/config/logstash.yml
+/usr/local/logstash/conf.d/
+</code></pre>
+<p>logstash.yml (文件内容)</p>
+<pre><code class="language-java">path.config: /usr/share/logstash/conf.d/*.conf
+path.logs: /var/log/logstash
+</code></pre>
+<p>conf.d/configuration.conf (文件内容)</p>
+<p><strong>Filebeat和elasticsearch的交互</strong></p>
+<pre><code class="language-json">input {
+    beats {
+    port =&gt; 5044
+    codec =&gt; &quot;json&quot;
+}
+}
+
+output {
+  elasticsearch { 
+    hosts =&gt; [&quot;elasticsearch:9200&quot;]，
+	index =&gt; &quot;export_log_index&quot;
+  }
+  stdout { codec =&gt; rubydebug }
+}
+</code></pre>
+<p><strong>mysql和elasticsearch的交互</strong></p>
+<pre><code class="language-json">input {
+  jdbc {
+    jdbc_driver_class =&gt; &quot;com.mysql.jdbc.Driver&quot;
+    jdbc_connection_string =&gt; &quot;jdbc:mysql://localhost:3306/db_example&quot;
+    jdbc_user =&gt; root
+    jdbc_password =&gt; ymruan123
+    #启用追踪，如果为true，则需要指定tracking_column
+    use_column_value =&gt; true
+    #指定追踪的字段，
+    tracking_column =&gt; &quot;last_updated&quot;
+    #追踪字段的类型，目前只有数字(numeric)和时间类型(timestamp)，默认是数字类型
+    tracking_column_type =&gt; &quot;numeric&quot;
+    #记录最后一次运行的结果
+    record_last_run =&gt; true
+    #上面运行结果的保存位置
+    last_run_metadata_path =&gt; &quot;jdbc-position.txt&quot;
+    statement =&gt; &quot;SELECT * FROM user where last_updated &gt;:sql_last_value;&quot;
+    schedule =&gt; &quot; * * * * * *&quot;
+  }
+}
+output {
+  elasticsearch {
+    document_id =&gt; &quot;%{id}&quot;
+    document_type =&gt; &quot;_doc&quot;
+    index =&gt; &quot;export_log_index&quot;
+    hosts =&gt; [&quot;http://localhost:9200&quot;]
+  }
+  stdout{
+    codec =&gt; rubydebug
+  }
+}
+</code></pre>
+<p><strong>kafka和elasticsearch的交互</strong></p>
+<pre><code class="language-json">input {
+ kafka{
+    topics =&gt; &quot;topic_export&quot;    #kafka中topic名称，记得创建该topic
+    group_id =&gt; &quot;group_export&quot;     #默认为“logstash”
+    codec =&gt; &quot;json&quot;    #与Shipper端output配置项一致
+    consumer_threads =&gt; 1    #消费线程数，集群中所有logstash相加最好等于 topic 分区数
+    bootstrap_servers =&gt; &quot;kafka:9092&quot;
+    decorate_events =&gt; true    #在输出消息的时候回输出自身的信息，包括：消费消息的大小、topic来源以及consumer的group信息。
+    type =&gt; &quot;topic_export&quot;  
+    tags =&gt; [&quot;canal&quot;] # 标签，额外使用该参数可以在elastci中创建不同索引
+  }
+  
+}
+ 
+ 
+filter {
+  # 把默认的data字段重命名为message字段，方便在elastic中显示
+  mutate {
+    rename =&gt; [&quot;data&quot;, &quot;message&quot;]
+  }
+  # 还可以使用其他的处理方式，在此就不再列出来了
+}
+ 
+output {
+  elasticsearch {
+    hosts =&gt; [&quot;http://172.17.107.187:9203&quot;, &quot;http://172.17.107.187:9201&quot;,&quot;http://172.17.107.187:9202&quot;]
+    index =&gt; &quot;export_log_index&quot; # decorate_events=true的作用，可以使用metadata中的数据
+    #user =&gt; &quot;elastic&quot;
+    #password =&gt; &quot;escluter123456&quot;
+  }
+ }
+</code></pre>
+<p><strong>logback和和elasticsearch的交互</strong></p>
+<p>引入依赖</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+      &lt;groupId&gt;net.logstash.logback&lt;/groupId&gt;
+      &lt;artifactId&gt;logstash-logback-encoder&lt;/artifactId&gt;
+     &lt;version&gt;4.10&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>参数配置</p>
+<pre><code class="language-json">input {
+  # 应用日志
+  tcp{
+    type =&gt; &quot;app&quot;
+    mode =&gt; &quot;server&quot;
+    host =&gt; &quot;0.0.0.0&quot;
+    port =&gt; 4560
+    codec =&gt; json
+  }
+}
+
+output {
+   elasticsearch {
+      hosts =&gt; &quot;http://127.0.0.1:9200&quot;
+      index =&gt; &quot;export_log_index&quot;
+    }
+}
+
+</code></pre>
+<p>应用日志入口端口为4560，需要配置java客户端logstash入口</p>
+<pre><code class="language-xml">&lt;!-- 这个是控制台日志输出格式 方便调试对比--&gt;
+&lt;appender name=&quot;console&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+    &lt;encoder&gt;
+        &lt;pattern&gt;%d{yyyy-MM-dd HH:mm:ss} %contextName %-5level %logger{50} -%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+&lt;/appender&gt;
+&lt;!--开启tcp格式的logstash传输，通过TCP协议连接Logstash--&gt;
+&lt;appender name=&quot;STASH&quot; class=&quot;net.logstash.logback.appender.LogstashTcpSocketAppender&quot;&gt;
+    &lt;destination&gt;127.0.0.1:9600&lt;/destination&gt;
+
+    &lt;encoder class=&quot;net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder&quot;&gt;
+        &lt;!--中文序列化--&gt;
+        &lt;jsonFactoryDecorator class=&quot;net.logstash.logback.decorate.CharacterEscapesJsonFactoryDecorator&quot;&gt;
+            &lt;escape&gt;
+                &lt;targetCharacterCode&gt;10&lt;/targetCharacterCode&gt;
+                &lt;escapeSequence&gt;\u2028&lt;/escapeSequence&gt;
+            &lt;/escape&gt;
+        &lt;/jsonFactoryDecorator&gt;
+        &lt;providers&gt;
+            &lt;pattern&gt;
+                &lt;pattern&gt;
+                    &lt;!--{
+                    &quot;timestamp&quot;:&quot;%date{ISO8601}&quot;,
+                    &quot;user&quot;:&quot;test&quot;,
+                    &quot;message&quot;:&quot;[%d{yyyy-MM-dd HH:mm:ss.SSS}][%p][%t][%l{80}|%L]%m&quot;}%n
+                    }--&gt;
+                    {
+                    &quot;timestamp&quot;: &quot;%date{\&quot;yyyy-MM-dd' 'HH:mm:ss,SSSZ\&quot;}&quot;,
+                    &quot;level&quot;: &quot;%level&quot;,
+                    &quot;thread&quot;: &quot;%thread&quot;,
+                    &quot;class_name&quot;: &quot;%class&quot;,
+                    &quot;line_number&quot;: &quot;%line&quot;,
+                    &quot;message&quot;: &quot;%message&quot;,
+                    &quot;stack_trace&quot;: &quot;%exception{5}&quot;,
+                    &quot;req_id&quot;: &quot;%X{reqId}&quot;,
+                    &quot;elapsed_time&quot;: &quot;#asLong{%X{elapsedTime}}&quot;
+                    }
+                &lt;/pattern&gt;
+            &lt;/pattern&gt;
+        &lt;/providers&gt;
+        &lt;!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--&gt;
+
+
+    &lt;/encoder&gt;
+    &lt;keepAliveDuration&gt;5 minutes&lt;/keepAliveDuration&gt;
+&lt;/appender&gt;
+
+&lt;root level=&quot;INFO&quot;&gt;
+    &lt;appender-ref ref=&quot;STASH&quot;/&gt;
+    &lt;appender-ref ref=&quot;console&quot;/&gt;
+&lt;/root&gt;
+</code></pre>
+<h3 id="docker-启动-logstash">docker 启动 Logstash</h3>
+<pre><code class="language-java">#docker容器互访 运行容器的时候加上参数link
+docker run -id -p 5044:5044 --name logstash --link elasticsearch --link beats -v /usr/local/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml -v /usr/local/logstash/conf.d/:/usr/share/logstash/conf.d/ logstash:7.4.1
+</code></pre>
+<h2 id="docker-安装-filebeat">Docker 安装 Filebeat</h2>
+<h3 id="拉取镜像-4">拉取镜像</h3>
+<p>拉取镜像的时候，需要注意的是, <strong>Filebeat 的版本最好与 elasticsearch 保持一致</strong>, 避免发生不必要的错误</p>
+<pre><code class="language-java">docker pull store/elastic/filebeat:7.12.0
+</code></pre>
+<h3 id="查看镜像-4">查看镜像</h3>
+<pre><code class="language-java">docker images
+</code></pre>
+<h3 id="文件映射-2">文件映射</h3>
+<p><strong>下载默认官方配置文件</strong></p>
+<pre><code class="language-http">wget https://raw.githubusercontent.com/elastic/beats/7.12/deploy/docker/filebeat.docker.yml
+</code></pre>
+<p>注意：文件放在宿主机/data/elk/filebeat目录下</p>
+<p><strong>打开配置文件</strong><br>
+<code>vim filebeat.docker.yml</code>，内容如下：</p>
+<pre><code class="language-xml"># 日志输入配置
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+  # 需要收集的日志所在的位置，可使用通配符进行配置
+  #- /data/elk/*.log
+  - /logs/*/*.log
+
+#日志输出配置(采用 logstash 收集日志，5044为logstash端口)
+output.logstash:
+  hosts: ['192.168.12.183:5044']
+</code></pre>
+<h3 id="docker运行filebeat">docker运行Filebeat</h3>
+<pre><code class="language-java">docker run --name filebeat --user=root -d --net somenetwork --volume=&quot;/usr/local/filebeat/log/nginx/:/var/log/nginx/&quot; --volume=&quot;/data/elk/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml&quot; --volume=&quot;/var/lib/docker/containers:/var/lib/docker/containers:ro&quot; --volume=&quot;/var/run/docker.sock:/var/run/docker.sock:ro&quot; store/elastic/filebeat:7.12.0
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#docker%E9%83%A8%E7%BD%B2elasticsearch">Docker部署ElasticSearch</a>
+<ul>
+<li><a href="#%E6%90%9C%E7%B4%A2elasticsearch%E9%95%9C%E5%83%8F">搜索ElasticSearch镜像</a></li>
+<li><a href="#%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F">拉取镜像</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F">查看镜像</a></li>
+<li><a href="#docker-%E5%90%AF%E5%8A%A8-elasticsearch">docker 启动 elasticsearch</a></li>
+<li><a href="#elasticsearch%E9%85%8D%E7%BD%AE">elasticsearch配置</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BAelasticsearch%E6%BB%9A%E5%8A%A8%E7%AD%96%E7%95%A5">创建elasticsearch滚动策略</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E6%A8%A1%E6%9D%BF">创建索引模板</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">创建索引</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#docker-%E5%AE%89%E8%A3%85-kibana">docker 安装 kibana</a>
+<ul>
+<li><a href="#%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F-2">拉取镜像</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F-2">查看镜像</a></li>
+<li><a href="#docker-%E5%90%AF%E5%8A%A8-kibana">docker 启动 kibana</a></li>
+</ul>
+</li>
+<li><a href="#docker-%E5%AE%89%E8%A3%85-logstash">Docker 安装 Logstash</a>
+<ul>
+<li><a href="#%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F-3">拉取镜像</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F-3">查看镜像</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E6%98%A0%E5%B0%84">文件映射</a></li>
+<li><a href="#docker-%E5%90%AF%E5%8A%A8-logstash">docker 启动 Logstash</a></li>
+</ul>
+</li>
+<li><a href="#docker-%E5%AE%89%E8%A3%85-filebeat">Docker 安装 Filebeat</a>
+<ul>
+<li><a href="#%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F-4">拉取镜像</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F-4">查看镜像</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E6%98%A0%E5%B0%84-2">文件映射</a></li>
+<li><a href="#docker%E8%BF%90%E8%A1%8Cfilebeat">docker运行Filebeat</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/Ari4Sf8A0/">
+                  <span class="post-title">
+                    springBoot,mybatis,druid整合&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/AdeCmc8BU/">
+                   <span class="post-title">
+                     elasticSearch查询语句&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

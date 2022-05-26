@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>jar包内类动态加载 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="jar包内类动态加载 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="jar包内类动态加载" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/E2kaihQ5a/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>jar包内类动态加载</h1>
+              <span class="meta">
+                Posted on
+                2022-01-04，13 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/E2kaihQ5a.png" alt="封面图">
+          </img>
+          
+          <h3 id="实体对象">实体对象</h3>
+<pre><code class="language-java">public class CmptDef {
+    private String idCmptDef; //组件在DB里的唯一ID号
+    private String name;//组件的唯一名称，只能是字母、数字、下划线组成，大于1小雨50，通常为Jar的名字
+    private CmptCategory cmptCategory; //种类
+    private String fullQualifiedName; //组件入口类全限定名
+    private String extraParas; //组件额外参数
+    private String formUrl; //组件自定义表单
+    private Float version = 1.0f; //组件版本
+    private CmptExecutePos executePos = CmptExecutePos.PRE; //组件在网关中执行的位置
+    private Integer priority = 100; //组件在相同位置的执行优先级，数字越小越高
+    private Integer timeout = 1000;//组件执行超时时间，单位毫秒
+    private String description; //组件描述
+    private Boolean defaultVersion; //是否是默认有效版本
+    private CmptStatus cmptStatus = CmptStatus.editing; // 组件状态
+    private String remarks; // 组件发布时需要填写备注信息
+    private String code; // 组件code，同一个组件的多个版本的code是一样的
+    private Date releaseTime; // 组件发布时间
+    private CustomFormCode customFormCode; // 自定义表单里类型
+    private String cmptType; //组件类型（特殊组件|普通组件|默认组件）
+}
+/**
+ * 组件类型。
+ */
+public enum CmptCategory {
+    AUTHENTICATION, //认证
+    AUTHORIZATION, //鉴权
+    FLOW_MANAGEMENT, //流量管理
+    REQUEST_COUNT_MANAGEMENT, //请求次数管理
+    CACHE, //缓存
+    ROUTER, //路由
+    TRANSFORM, //数据转换
+    LOGGER, //日志
+    OTHER//其它
+}
+/**
+ * 组件执行的位置。
+ */
+public enum CmptExecutePos {
+    PRE, //调用上游服务前
+    ROUTING, //调用中
+    AFTER //调用后
+}
+public enum CmptStatus {
+    editing, //编辑中
+    published, //已经发布
+    offline //已经下线
+}
+/**
+ * 组件风格。
+ */
+public enum CustomFormCode {
+    RESTFUL_FORM,
+    SQL_FORM,
+    DUBBO_FORM,
+    OTHER,
+    MQ_FORM,
+    WEBSERVICE_FORM
+}
+</code></pre>
+<h3 id="方法接口">方法接口</h3>
+<pre><code class="language-java">public interface ICmptService {
+    /**
+     * 根据组件类名和版本从缓存中获取组件,如果不存在则尝试动态加载组件类，实例化并刷新缓存后再获取，还是不存在则返回null；
+     * 另外配置更新会有单独的线程刷新缓存。
+     *
+     * @return
+     */
+    ICmpt getCmptInstance(final CmptDef cmptDef);
+
+    /**
+     * 刷新API关联的组件配置信息
+     *
+     * @param apis
+     * @param ignoreRefreshTime
+     * @return
+     */
+    boolean refreshCmptInstanceCache(List&lt;Api&gt; apis, boolean ignoreRefreshTime);
+
+    /**
+     * 删除组件实例缓存
+     *
+     * @param fullQualifiedName
+     * @param code
+     */
+    void removeCmpt(final String fullQualifiedName, final Float version, final String code);
+}
+</code></pre>
+<h3 id="方法实现">方法实现</h3>
+<pre><code class="language-java">@Service
+public class CmptServiceImpl implements ICmptService {
+    private static Logger logger = LoggerFactory.getLogger(CmptServiceImpl.class);
+
+    @Value(&quot;${cmpt.dynamicLoadCmptClass}&quot;)
+    private boolean dynamicLoadCmptClass;
+
+    @Autowired
+    private ICmptDefService cmptDefService;
+
+    @Override
+    public synchronized ICmpt getCmptInstance(final CmptDef cmptDef) {
+        ICmpt cmpt = CmptInstanceHolder.getInstance().getCmpt(cmptDef.getFullQualifiedName(), cmptDef.getVersion(), cmptDef.getCode());
+        if (null == cmpt) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(&quot;反射拿到实例&gt;&gt;&gt; &quot; + cmptDef.getFullQualifiedName());
+            }
+            if (this.dynamicLoadCmptClass) {
+                cmpt = CmptClassLoaderUtil.newInstance(cmptDef);
+            } else {
+                try {
+                    Class clazz = Class.forName(cmptDef.getFullQualifiedName());
+                    cmpt = (ICmpt) clazz.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (null != cmpt) {
+                if (cmpt instanceof AbstractCmpt) {
+                    //设置版本号
+                    ((AbstractCmpt) cmpt).setVersion(cmptDef.getVersion());
+                    ((AbstractCmpt) cmpt).setIdCmptDef(cmptDef.getIdCmptDef());
+                }
+                CmptInstanceHolder.getInstance().addEntry(cmpt, cmptDef.getFullQualifiedName(), cmptDef.getVersion(), cmptDef.getCode());
+            }
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug(&quot;缓存拿到实例&gt;&gt;&gt; &quot; + cmptDef.getFullQualifiedName());
+            }
+        }
+        if (null != cmpt) {
+            ApplicationContext context = SpringContextHolder.getContext();
+            if (null != context) {
+                ZkClient zkClient = context.getBean(ZkClient.class);
+                if (null != zkClient) {
+                    BaseListener listener = zkClient.getListener();
+                    listener.addObserver((AbstractCmpt) cmpt);
+                }
+            }
+        }
+        return cmpt;
+    }
+
+    @Override
+    public boolean refreshCmptInstanceCache(List&lt;Api&gt; apis, boolean ignoreRefreshTime) {
+        return false;
+    }
+
+    @Override
+    public synchronized void removeCmpt(final String fullQualifiedName, final Float version, final String code) {
+        ICmpt cmpt = CmptInstanceHolder.getInstance().getCmpt(fullQualifiedName, version, code);
+        if (null != cmpt) {
+            ApplicationContext context = SpringContextHolder.getContext();
+            if (null != context) {
+                ZkClient zkClient = context.getBean(ZkClient.class);
+                if (null != zkClient) {
+                    BaseListener listener = zkClient.getListener();
+                    listener.deleteObserver((AbstractCmpt) cmpt);
+                }
+            }
+            cmpt.destroy();
+            CmptDef cmptDef = CmptDefHolder.getInstance().getCmptDef(fullQualifiedName, version, code);
+            if (null == cmptDef) {
+                cmptDef = new CmptDef();
+                cmptDef.setFullQualifiedName(fullQualifiedName);
+                cmptDef.setVersion(version);
+                cmptDef.setCode(code);
+            }
+            //删除引用实体
+            CmptInstanceHolder.getInstance().removeEntry(fullQualifiedName, version, code);
+            cmpt = null;
+
+            String jarPath = CmptClassLoaderUtil.getJarPath(cmptDef);
+            if (logger.isDebugEnabled()) {
+                logger.debug(&quot;尝试卸载jar包: &quot; + jarPath);
+            }
+            CmptClassLoaderManager.unLoadJar(jarPath);
+        }
+        CmptInstanceHolder.getInstance().removeEntry(fullQualifiedName, version, code);
+    }
+}
+</code></pre>
+<h3 id="工具类">工具类</h3>
+<pre><code class="language-java">/**
+ * 组件配置缓存持有者
+ */
+public class CmptInstanceHolder {
+    private static CmptInstanceHolder cmptInstanceHolder = new CmptInstanceHolder();
+    //API所关联的组件配置缓存 key: fullQualifiedName    value: ICmpt
+    private Map&lt;String, ICmpt&gt; cmpts = new ConcurrentHashMap&lt;&gt;();
+
+    private CmptInstanceHolder() {
+    }
+
+    public static CmptInstanceHolder getInstance() {
+        return CmptInstanceHolder.cmptInstanceHolder;
+    }
+
+    /**
+     * 根据类名加版本从缓存中获取组件实例,如果不存在直接返回null；
+     *
+     * @return
+     */
+    public ICmpt getCmpt(final String fullQualifiedName, final Float version, String code) {
+        final String key = buildKey(fullQualifiedName, version, code);
+        return this.cmpts.get(key);
+    }
+
+    /**
+     * 添加对象
+     */
+    public void addEntry(final ICmpt cmpt, final String fullQualifiedName, final Float version, final String code) {
+        if (cmpt == null || StringUtils.isEmpty(fullQualifiedName) || StringUtils.isEmpty(code)) {
+            return;
+        }
+        final String key = buildKey(fullQualifiedName, version, code);
+        removeEntry(fullQualifiedName, version, code);
+        this.cmpts.put(key, cmpt);
+    }
+
+    private String buildKey(final String fullQualifiedName, Float version, final String code) {
+        return fullQualifiedName + &quot;.&quot; + version + code;
+    }
+
+    public void removeEntry(final String fullQualifiedName, final Float version, final String code) {
+        ICmpt remove = this.cmpts.remove(buildKey(fullQualifiedName, version, code));
+        if (null != remove) {
+            remove.destroy();
+        }
+    }
+
+    /**
+     * 获取所有的组件实例
+     * @return
+     */
+    public Map&lt;String, ICmpt&gt; getAllCmpts(){
+        return this.cmpts;
+    }
+}
+</code></pre>
+<pre><code class="language-java">public class CmptClassLoaderUtil {
+
+    private static Logger logger = LoggerFactory.getLogger(CmptClassLoaderUtil.class);
+
+    public static ICmpt newInstance(final CmptDef cmptDef) {
+        ICmpt cmpt = null;
+        try {
+            final String jarPath = getJarPath(cmptDef);
+            logger.info(&quot;尝试载入jar包,jar包路径: &quot; + jarPath);
+            //加载依赖jar
+            CmptClassLoader cmptClassLoader = CmptClassLoaderManager.loadJar(cmptDef.getIdCmptDef(), jarPath, true);
+            // 创建实例
+            if (null != cmptClassLoader) {
+                cmpt = LoadClassUtil.newObject(cmptDef, ICmpt.class, cmptClassLoader);
+            } else {
+                logger.error(&quot;加载组件jar包失败! jarPath: &quot; + jarPath);
+            }
+        } catch (Exception e) {
+            logger.error(&quot;组件类加载失败，请检查类名和版本是否正确。ClassName=&quot; + cmptDef.getFullQualifiedName() + &quot;, Version=&quot; + cmptDef.getVersion());
+            e.printStackTrace();
+        }
+        return cmpt;
+    }
+
+    public static String getJarPath(final CmptDef cmptDef) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(AppConfigUtil.getValue(&quot;app.home&quot;));
+        sb.append(AppConfigUtil.getValue(&quot;cmpt.location&quot;));
+        sb.append(&quot;/&quot;);
+        //开发中关闭多级目录,不好部署
+        sb.append(cmptDef.getCode());
+        sb.append(&quot;/&quot;);
+        sb.append(cmptDef.getVersion());
+        sb.append(&quot;/&quot;);
+        String[] split = cmptDef.getFullQualifiedName().split(&quot;\\.&quot;);
+        sb.append(split[split.length - 1]);
+        sb.append(&quot;_&quot;);
+        sb.append(cmptDef.getVersion());
+        sb.append(&quot;.jar&quot;);
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;构建jar包路径: &quot; + sb.toString());
+        }
+        return sb.toString();
+    }
+
+}
+</code></pre>
+<pre><code class="language-shell">#linux版home目录
+app.home=/work/sharestore
+#组件资源存放路径，&lt;home&gt;/cmpt/&lt;code&gt;/&lt;version&gt;/&lt;name&gt;_&lt;version&gt;.jar,html
+cmpt.location=/cmpt
+</code></pre>
+<pre><code class="language-java">/**
+ * 类加载器管理, 加载, 卸载jar包
+ */
+public class CmptClassLoaderManager {
+
+    private static final Logger logger = Logger.getLogger(CmptClassLoaderManager.class);
+
+    private static Map&lt;String, CmptClassLoader&gt; classLoaderMap = new ConcurrentHashMap&lt;&gt;();
+
+    private CmptClassLoaderManager() {
+    }
+
+    /**
+     * 载入Jar包, 判断是否重新载入Jar包
+     *
+     * @param fileName
+     * @param isReloadJar
+     * @return
+     */
+    public static CmptClassLoader loadJar(String IdCmptDef, String fileName, boolean isReloadJar) {
+        fileName = FileUtil.fixFileName(fileName);
+        CmptClassLoader cmptClassLoader = classLoaderMap.get(IdCmptDef);
+        if (isReloadJar || null == cmptClassLoader) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(&quot;从文件载入jar组件&quot;);
+            }
+            return loadJar(IdCmptDef, fileName);
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug(&quot;从缓存载入jar组件&quot;);
+            }
+            return cmptClassLoader;
+        }
+    }
+
+    /**
+     * 载入Jar包, 以新Jar包载入
+     *
+     * @param fileName
+     * @return 返回一个类加载器
+     */
+    private static CmptClassLoader loadJar(String IdCmptDef, String fileName) {
+        CmptClassLoader loader;
+        try {
+            boolean exists = new File(fileName).exists();
+            if (exists) {
+                if (null == classLoaderMap.get(IdCmptDef) || unLoadJar(IdCmptDef)) {
+                    loader = new CmptClassLoader();
+                    boolean loadJar = loader.addURL(fileName);
+                    if (loadJar) {
+                        classLoaderMap.put(IdCmptDef, loader);
+                        return loader;
+                    } else {
+                        loader.close();
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException(&quot;传入参数错误,文件不存在! file: &quot; + fileName);
+            }
+        } catch (Exception e) {
+            logger.error(&quot;&quot;,e);
+        }
+        return null;
+    }
+
+    public static boolean unLoadJar(String IdCmptDef) {
+        boolean unLoadJar = false;
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;请求卸载jar包: &quot; + IdCmptDef);
+        }
+        try {
+            CmptClassLoader loader = classLoaderMap.remove(IdCmptDef);
+            if (null != loader) {
+                loader.close();
+            }
+            unLoadJar = true;
+        } catch (Exception e) {
+            logger.error(&quot;&quot;,e);
+        }
+        return unLoadJar;
+    }
+
+    /**
+     * 获取组件定义对应的实例的类加载器
+     *
+     * @param idCmptDef
+     * @return
+     */
+    public static ClassLoader getCmptClassLoader(String idCmptDef) {
+        return classLoaderMap.get(idCmptDef);
+    }
+}
+</code></pre>
+<pre><code class="language-java">public class FileUtil {
+	public static String fixFileName(String fileName) {
+        if (null == fileName) fileName = &quot;&quot;;
+        fileName = fileName.replaceAll(&quot;\\\\&quot;, &quot;/&quot;);
+        fileName = fileName.replaceAll(&quot;//&quot;, &quot;/&quot;);
+        return fileName;
+    }
+}
+</code></pre>
+<pre><code class="language-java">/**
+ * 类加载器终极版, 加载, 卸载jar包
+ */
+public class CmptClassLoader extends URLClassLoader {
+
+    private static final Logger logger = Logger.getLogger(CmptClassLoader.class);
+
+    CmptClassLoader(URL[] urls, ClassLoader parent) {
+        super(urls, parent);
+    }
+
+    CmptClassLoader(URL[] urls) {
+        super(urls);
+    }
+
+    CmptClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
+        super(urls, parent, factory);
+    }
+
+    CmptClassLoader() {
+        super(new URL[]{}, findParentClassLoader());
+    }
+
+    /**
+     * 载入Jar
+     *
+     * @param fileName
+     * @return
+     */
+    boolean addURL(String fileName) {
+        try {
+            URL url = new File(fileName).toURL();
+            URLClassPath ucp = this.getUCP();
+            ucp.addURL(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 定位当前父类加载器
+     *
+     * @return
+     */
+    private static ClassLoader findParentClassLoader() {
+        ClassLoader parent = logger.getClass().getClassLoader();
+        if (parent == null) {
+            throw new RuntimeException(&quot;无法获取当前父加载器!&quot;);
+        }
+        return parent;
+    }
+
+    private URLClassPath getUCP() {
+        URLClassPath ucp = null;
+        try {
+            Field declaredField = URLClassLoader.class.getDeclaredField(&quot;ucp&quot;);
+            declaredField.setAccessible(true);
+            Object o = declaredField.get(this);
+            ucp = (URLClassPath) o;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return ucp;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        this.close();
+    }
+}
+</code></pre>
+<pre><code class="language-java">/**
+ * 类加载器工具类
+ */
+public class LoadClassUtil {
+    private final static LoadClassUtil LOAD_JAR_UTIL = new LoadClassUtil();
+    private static Logger logger = LoggerFactory.getLogger(LoadClassUtil.class);
+
+    private LoadClassUtil() {
+    }
+
+    /**
+     * 载入jar包
+     * 将jar包路径添加到系统类加载器扫描类和资源的文件列表里
+     *
+     * @param fileName jar绝对路径
+     * @return
+     */
+    public static boolean loadJar(String fileName) {
+        try {
+            if (strNotNull(fileName) &amp;&amp; fileExists(fileName)) {//(ClassLoader要与当前程序同一个loader)
+                getMethod().invoke(LOAD_JAR_UTIL.getClass().getClassLoader(), getURL(fileName));//添加路径URL
+                //getMethod().invoke(Launcher.getLauncher().getClassLoader(), getURL(fileName));//添加路径URL
+                return true;
+            } else {
+                throw new IllegalArgumentException(&quot;传入参数错误,文件或不存在! file: &quot; + fileName);
+            }
+        } catch (Exception e) {
+            logger.error(&quot;&quot;,e);
+        }
+        return false;
+    }
+
+    /**
+     * 判断字符串不为空
+     *
+     * @param str
+     * @return
+     */
+    private static boolean strNotNull(String str) {
+        return null != str &amp;&amp; !str.equals(&quot;&quot;);
+    }
+
+    private static boolean fileExists(String fileName) {
+        return new File(fileName).exists();
+    }
+
+    /**
+     * 拿到添加扫描类和资源的路径URL的方法
+     *
+     * @return
+     * @throws NoSuchMethodException
+     */
+    private static Method getMethod() throws NoSuchMethodException {
+        Method method = URLClassLoader.class.getDeclaredMethod(&quot;addURL&quot;, URL.class);
+        // 破解方法的访问权限
+        method.setAccessible(true);
+        return method;
+    }
+
+    /**
+     * 得到一个URL
+     *
+     * @param fileName
+     * @return
+     * @throws MalformedURLException
+     */
+    private static URL getURL(String fileName) throws MalformedURLException {
+        return new File(fileName).toURI().toURL();
+    }
+
+    /**
+     * 创建对象实例
+     *
+     * @param className 全限定名
+     * @return
+     */
+    public static Object newObject(String className) {
+        try {
+            return Class.forName(className).newInstance();
+        } catch (Exception e) {
+            logger.error(&quot;&quot;,e);
+        }
+        return null;
+    }
+
+    /**
+     * 创建转换类型后的对象实例
+     *
+     * @param className 全限定名
+     * @param tClass    返回类型
+     * @param &lt;T&gt;
+     * @return
+     */
+    public static &lt;T&gt; T newObject(String className, Class&lt;T&gt; tClass) {
+        try {
+            return (T) Class.forName(className).newInstance();
+        } catch (Exception e) {
+            logger.error(&quot;&quot;,e);
+        }
+        return null;
+    }
+
+    /**
+     * 创建转换类型后的对象实例
+     *
+     * @param cmptDef 组件定义-&gt;全限定名
+     * @param tClass    返回类型
+     * @param loader    类加载器
+     * @param &lt;T&gt;
+     * @return
+     */
+    public static &lt;T&gt; T newObject(CmptDef cmptDef, Class&lt;T&gt; tClass, ClassLoader loader) {
+        try {
+            String className = cmptDef.getFullQualifiedName();
+            Object newInstance = Class.forName(className, true, loader).newInstance();
+            return (T) newInstance;
+        } catch (Exception e) {
+            String jarPath = CmptClassLoaderUtil.getJarPath(cmptDef);
+            logger.error(&quot;创建组件实例失败! className=&quot; + cmptDef.getFullQualifiedName() + &quot; jarPath=&quot; + jarPath);
+            logger.error(&quot;创建出错组件:&quot; + cmptDef.getName() + cmptDef.getVersion() + &quot; ,文件信息:&quot; + FileUtil.fileInfo(jarPath));
+            try {
+                Class&lt;?&gt; aClass = loader.loadClass(cmptDef.getFullQualifiedName());
+            } catch (ClassNotFoundException e1) {
+                e1.printStackTrace();
+                logger.error(&quot;类未载入:&quot; + cmptDef.getFullQualifiedName());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 执行对象的方法
+     *
+     * @param o          实例对象
+     * @param methodName 方法名称
+     * @param args       形参
+     * @return
+     */
+    public static Object invokeMethod(Object o, String methodName, Object... args) {
+        try {
+            Object invoke;
+            if (null == args || args.length == 0) {//有缺陷,如果形参是任意Object,但传入参数是null,无法得到形参类型,得到有参的方法.
+                Method method = o.getClass().getMethod(methodName);
+                invoke = method.invoke(o);
+            } else {
+                Method method = o.getClass().getMethod(methodName, args.getClass());
+                invoke = method.invoke(o, args);
+            }
+            return invoke;
+        } catch (Exception e) {
+            logger.error(&quot;&quot;,e);
+        }
+        return null;
+    }
+
+}
+</code></pre>
+<h3 id="组件实现公共接口类">组件实现公共接口类</h3>
+<pre><code class="language-java">public interface ICmpt {
+
+    /**
+     * 组件执行入口
+     *
+     * @param request
+     * @param config，组件实例的参数配置
+     * @param actionNode,      当前执行的流程节点
+     * @param procContextDTO,     流程引擎实例上下文
+     * @return
+     */
+    CmptResult execute(CmptRequest request, Map&lt;String, FieldDTO&gt; config, ActionNode actionNode, ProcContextDTO procContextDTO);
+
+    /**
+     * 销毁组件持有的特殊资源，比如线程。
+     */
+    void destroy();
+}
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E5%AE%9E%E4%BD%93%E5%AF%B9%E8%B1%A1">实体对象</a></li>
+<li><a href="#%E6%96%B9%E6%B3%95%E6%8E%A5%E5%8F%A3">方法接口</a></li>
+<li><a href="#%E6%96%B9%E6%B3%95%E5%AE%9E%E7%8E%B0">方法实现</a></li>
+<li><a href="#%E5%B7%A5%E5%85%B7%E7%B1%BB">工具类</a></li>
+<li><a href="#%E7%BB%84%E4%BB%B6%E5%AE%9E%E7%8E%B0%E5%85%AC%E5%85%B1%E6%8E%A5%E5%8F%A3%E7%B1%BB">组件实现公共接口类</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/hIydIZSN1/">
+                  <span class="post-title">
+                    mybatis级联查询&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/awhwcpAEp/">
+                   <span class="post-title">
+                     Git 操作命令清单&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>第十章 Table API 与 SQL | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="第十章 Table API 与 SQL | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="第十章 Table API 与 SQL" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/tloS_nSAM/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
+                
+              </span>
+              <h1>第十章 Table API 与 SQL</h1>
+              <span class="meta">
+                Posted on
+                2021-04-17，79 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/tloS_nSAM.png" alt="封面图">
+          </img>
+          
+          <p style="text-indent:2em">Table API 是流处理和批处理通用的关系型 API， Table API 可以基于流输入或者批输入来运行而不需要进行任何修改。 Table API 是 SQL 语言的超集并专门为 Apache Flink 设计的， Table API 是 Scala 和 Java 语言集成式的 API。 与常规 SQL 语言中将查询指定为字符串不同， Table API 查询是以 Java 或 Scala 中的语言嵌入样式来定义
+的， 具有 IDE 支持如:自动完成和语法检测。</p>
+<h2 id="需要引入的-pom-依赖">需要引入的 pom 依赖</h2>
+<p>如果你想在 IDE 本地运行你的程序，你需要添加下面的模块，具体用哪个取决于你使用哪个 Planner：</p>
+<pre><code class="language-java">&lt;!-- Either... (for the old planner that was available before Flink 1.9) --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
+    &lt;artifactId&gt;flink-table-planner_2.12&lt;/artifactId&gt;
+    &lt;version&gt;1.10.1&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- or.. (for the new Blink planner) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
+  &lt;artifactId&gt;flink-table-planner-blink_2.12&lt;/artifactId&gt;
+  &lt;version&gt;1.10.1&lt;/version&gt;
+  &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>此外，根据目标编程语言，您需要添加Java或Scala API。</p>
+<pre><code class="language-java">&lt;!-- Either... --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
+  &lt;artifactId&gt;flink-table-api-java-bridge_2.11&lt;/artifactId&gt;
+  &lt;version&gt;1.8.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- or... --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
+  &lt;artifactId&gt;flink-table-api-scala-bridge_2.11&lt;/artifactId&gt;
+  &lt;version&gt;1.8.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>在内部，表生态系统的一部分是在Scala中实现的。 因此，请确保为批处理和流应用程序添加以下依赖项：</p>
+<pre><code class="language-java">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
+  &lt;artifactId&gt;flink-streaming-scala_2.11&lt;/artifactId&gt;
+  &lt;version&gt;1.8.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>如果要实现与Kafka或一组用户定义函数交互的自定义格式，以下依赖关系就足够了，可用于SQL客户端的JAR文件：</p>
+<pre><code class="language-java">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
+  &lt;artifactId&gt;flink-table-common&lt;/artifactId&gt;
+  &lt;version&gt;1.8.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>目前，该模块包括以下扩展点：</p>
+<ul>
+<li>SerializationSchemaFactory</li>
+<li>DeserializationSchemaFactory</li>
+<li>ScalarFunction</li>
+<li>TableFunction</li>
+<li>AggregateFunction</li>
+</ul>
+<h2 id="两种计划器planner的主要区别">两种计划器（Planner）的主要区别</h2>
+<ol>
+<li>Blink 将批处理作业视作流处理的一种特例。严格来说，<code>Table</code> 和 <code>DataSet</code> 之间不支持相互转换，并且批处理作业也不会转换成 <code>DataSet</code> 程序而是转换成 <code>DataStream</code> 程序，流处理作业也一样。</li>
+<li>Blink 计划器不支持 <code>BatchTableSource</code>，而是使用有界的 <code>StreamTableSource</code> 来替代。</li>
+<li>旧计划器和 Blink 计划器中 <code>FilterableTableSource</code> 的实现是不兼容的。旧计划器会将 <code>PlannerExpression</code> 下推至 <code>FilterableTableSource</code>，而 Blink 计划器则是将 <code>Expression</code> 下推。</li>
+<li>基于字符串的键值配置选项仅在 Blink 计划器中使用。（详情参见 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/config.html">配置</a> ）</li>
+<li><code>PlannerConfig</code> 在两种计划器中的实现（<code>CalciteConfig</code>）是不同的。</li>
+<li>Blink 计划器会将多sink（multiple-sinks）优化成一张有向无环图（DAG），<code>TableEnvironment</code> 和 <code>StreamTableEnvironment</code> 都支持该特性。旧计划器总是将每个sink都优化成一个新的有向无环图，且所有图相互独立。</li>
+<li>旧计划器目前不支持 catalog 统计数据，而 Blink 支持。</li>
+</ol>
+<h2 id="简单了解-tableapi">简单了解 TableAPI</h2>
+<p>所有用于批处理和流处理的 Table API 和 SQL 程序都遵循相同的模式。下面的代码示例展示了 Table API 和 SQL 程序的通用结构。</p>
+<pre><code class="language-java">public static void main(String[] args) throws Exception {
+    // 对于批处理程序来说使用 ExecutionEnvironment 来替换 StreamExecutionEnvironment
+    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+    // 创建一个TableEnvironment
+    // 对于批处理程序来说使用 BatchTableEnvironment 替换 StreamTableEnvironment
+    StreamTableEnvironment tableEnv = TableEnvironment.getTableEnvironment(env);
+
+    // 注册一个 Table
+    tableEnv.registerTable(&quot;table1&quot;, ...)            // 或者
+    tableEnv.registerTableSource(&quot;table2&quot;, ...);     // 或者
+    tableEnv.registerExternalCatalog(&quot;extCat&quot;, ...);
+
+    // 从Table API的查询中创建一个Table
+    Table tapiResult = tableEnv.scan(&quot;table1&quot;).select(...);
+    // 从SQL查询中创建一个Table
+    Table sqlResult  = tableEnv.sql(&quot;SELECT ... FROM table2 ... &quot;);
+
+    // 将Table API 种的结果 Table 发射到TableSink中 , SQL查询也是一样的
+    tapiResult.writeToSink(...);
+
+    // 执行
+    env.execute();
+}
+</code></pre>
+<h2 id="创建-tableenvironment">创建 TableEnvironment</h2>
+<p><code>TableEnvironment</code> 是 Table API 和 SQL 的核心概念。它负责:</p>
+<ul>
+<li>在内部的 catalog 中注册 <code>Table</code></li>
+<li>注册外部的 catalog</li>
+<li>加载可插拔模块</li>
+<li>执行 SQL 查询</li>
+<li>注册自定义函数 （scalar、table 或 aggregation）</li>
+<li>将 <code>DataStream</code> 或 <code>DataSet</code> 转换成 <code>Table</code></li>
+<li>持有对 <code>ExecutionEnvironment</code> 或 <code>StreamExecutionEnvironment</code> 的引用</li>
+</ul>
+<p><code>Table</code> 总是与特定的 <code>TableEnvironment</code> 绑定。不能在同一条查询中使用不同 TableEnvironment 中的表，例如，对它们进行 join 或 union 操作。</p>
+<p><code>TableEnvironment</code> 可以通过静态方法 <code>BatchTableEnvironment.create()</code> 或者 <code>StreamTableEnvironment.create()</code> 在 <code>StreamExecutionEnvironment</code> 或者 <code>ExecutionEnvironment</code> 中创建，<code>TableConfig</code> 是可选项。<code>TableConfig</code>可用于配置<code>TableEnvironment</code>或定制的查询优化和转换过程(参见 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#query-optimization">查询优化</a>)。</p>
+<p>请确保选择与你的编程语言匹配的特定的计划器<code>BatchTableEnvironment</code>/<code>StreamTableEnvironment</code>。</p>
+<p>如果两种计划器的 jar 包都在 classpath 中（默认行为），你应该明确地设置要在当前程序中使用的计划器。</p>
+<pre><code class="language-java">// **********************
+// FLINK STREAMING QUERY
+// **********************
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+
+EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useOldPlanner().inStreamingMode().build();
+StreamExecutionEnvironment fsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
+StreamTableEnvironment fsTableEnv = StreamTableEnvironment.create(fsEnv, fsSettings);
+// or TableEnvironment fsTableEnv = TableEnvironment.create(fsSettings);
+
+// ******************
+// FLINK BATCH QUERY
+// ******************
+import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
+
+ExecutionEnvironment fbEnv = ExecutionEnvironment.getExecutionEnvironment();
+BatchTableEnvironment fbTableEnv = BatchTableEnvironment.create(fbEnv);
+
+// **********************
+// BLINK STREAMING QUERY
+// **********************
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+
+StreamExecutionEnvironment bsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
+EnvironmentSettings bsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
+StreamTableEnvironment bsTableEnv = StreamTableEnvironment.create(bsEnv, bsSettings);
+// or TableEnvironment bsTableEnv = TableEnvironment.create(bsSettings);
+
+// ******************
+// BLINK BATCH QUERY
+// ******************
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.TableEnvironment;
+
+EnvironmentSettings bbSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build();
+TableEnvironment bbTableEnv = TableEnvironment.create(bbSettings);
+</code></pre>
+<h2 id="在-catalog-中创建表">在 Catalog 中创建表</h2>
+<p><code>TableEnvironment</code> 维护着一个由标识符（identifier）创建的表 catalog 的映射。标识符由三个部分组成：catalog 名称、数据库名称以及对象名称。如果 catalog 或者数据库没有指明，就会使用当前默认值（参见<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#expanding-table-identifiers">表标识符扩展</a>章节中的例子）。</p>
+<p><code>Table</code> 可以是虚拟的（视图 <code>VIEWS</code>）也可以是常规的（表 <code>TABLES</code>）。视图 <code>VIEWS</code>可以从已经存在的<code>Table</code>中创建，一般是 Table API 或者 SQL 的查询结果。 表<code>TABLES</code>描述的是外部数据，例如文件、数据库表或者消息队列。</p>
+<h3 id="临时表temporary-table和永久表permanent-table">临时表（Temporary Table）和永久表（Permanent Table）</h3>
+<p>表可以是临时的，并与单个 Flink 会话（session）的生命周期相关，也可以是永久的，并且在多个 Flink 会话和群集（cluster）中可见。</p>
+<p>永久表需要 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/catalogs.html">catalog</a>（例如 Hive Metastore）以维护表的元数据。一旦永久表被创建，它将对任何连接到 catalog 的 Flink 会话可见且持续存在，直至被明确删除。</p>
+<p>另一方面，临时表通常保存于内存中并且仅在创建它们的 Flink 会话持续期间存在。这些表对于其它会话是不可见的。它们不与任何 catalog 或者数据库绑定但可以在一个命名空间（namespace）中创建。即使它们对应的数据库被删除，临时表也不会被删除。</p>
+<h4 id="屏蔽shadowing">屏蔽（Shadowing）</h4>
+<p>可以使用与已存在的永久表相同的标识符去注册临时表。临时表会屏蔽永久表，并且只要临时表存在，永久表就无法访问。所有使用该标识符的查询都将作用于临时表。</p>
+<p>这可能对实验（experimentation）有用。它允许先对一个临时表进行完全相同的查询，例如只有一个子集的数据，或者数据是不确定的。一旦验证了查询的正确性，就可以对实际的生产表进行查询。</p>
+<h3 id="创建表">创建表</h3>
+<h4 id="虚拟表">虚拟表</h4>
+<p>在 SQL 的术语中，Table API 的对象对应于<code>视图</code>（虚拟表）。它封装了一个逻辑查询计划。它可以通过以下方法在 catalog 中创建：</p>
+<pre><code class="language-java">// get a TableEnvironment
+TableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// table is the result of a simple projection query 
+Table projTable = tableEnv.from(&quot;X&quot;).select(...);
+
+// register the Table projTable as table &quot;projectedTable&quot;
+tableEnv.createTemporaryView(&quot;projectedTable&quot;, projTable);
+</code></pre>
+<p><strong>注意：</strong> 从传统数据库系统的角度来看，<code>Table</code> 对象与 <code>VIEW</code> 视图非常像。也就是，定义了 <code>Table</code> 的查询是没有被优化的， 而且会被内嵌到另一个引用了这个注册了的 <code>Table</code>的查询中。如果多个查询都引用了同一个注册了的<code>Table</code>，那么它会被内嵌每个查询中并被执行多次， 也就是说注册了的<code>Table</code>的结果<strong>不会</strong>被共享（注：Blink 计划器的<code>TableEnvironment</code>会优化成只执行一次）。</p>
+<h4 id="connector-tables">Connector Tables</h4>
+<p>另外一个方式去创建 <code>TABLE</code> 是通过 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/connect.html">connector</a> 声明。Connector 描述了存储表数据的外部系统。存储系统例如 Apache Kafka 或者常规的文件系统都可以通过这种方式来声明。</p>
+<pre><code class="language-java">tableEnvironment
+  .connect(...)
+  .withFormat(...)
+  .withSchema(...)
+  .inAppendMode()
+  .createTemporaryTable(&quot;MyTable&quot;)
+</code></pre>
+<h3 id="扩展表标识符">扩展表标识符</h3>
+<p>表总是通过三元标识符注册，包括 catalog 名、数据库名和表名。</p>
+<p>用户可以指定一个 catalog 和数据库作为 “当前catalog” 和”当前数据库”。有了这些，那么刚刚提到的三元标识符的前两个部分就可以被省略了。如果前两部分的标识符没有指定， 那么会使用当前的 catalog 和当前数据库。用户也可以通过 Table API 或 SQL 切换当前的 catalog 和当前的数据库。</p>
+<p>标识符遵循 SQL 标准，因此使用时需要用反引号（```）进行转义。</p>
+<pre><code class="language-java">TableEnvironment tEnv = ...;
+tEnv.useCatalog(&quot;custom_catalog&quot;);
+tEnv.useDatabase(&quot;custom_database&quot;);
+
+Table table = ...;
+
+// register the view named 'exampleView' in the catalog named 'custom_catalog'
+// in the database named 'custom_database' 
+tableEnv.createTemporaryView(&quot;exampleView&quot;, table);
+
+// register the view named 'exampleView' in the catalog named 'custom_catalog'
+// in the database named 'other_database' 
+tableEnv.createTemporaryView(&quot;other_database.exampleView&quot;, table);
+
+// register the view named 'example.View' in the catalog named 'custom_catalog'
+// in the database named 'custom_database' 
+tableEnv.createTemporaryView(&quot;`example.View`&quot;, table);
+
+// register the view named 'exampleView' in the catalog named 'other_catalog'
+// in the database named 'other_database' 
+tableEnv.createTemporaryView(&quot;other_catalog.other_database.exampleView&quot;, table);
+</code></pre>
+<h2 id="查询表">查询表</h2>
+<h3 id="table-api">Table API</h3>
+<p>Table API 是关于 Scala 和 Java 的集成语言式查询 API。与 SQL 相反，Table API 的查询不是由字符串指定，而是在宿主语言中逐步构建。</p>
+<p>Table API 是基于 <code>Table</code> 类的，该类表示一个表（流或批处理），并提供使用关系操作的方法。这些方法返回一个新的 Table 对象，该对象表示对输入 Table 进行关系操作的结果。 一些关系操作由多个方法调用组成，例如 <code>table.groupBy(...).select()</code>，其中 <code>groupBy(...)</code> 指定 <code>table</code> 的分组，而 <code>select(...)</code> 在 <code>table</code> 分组上的投影。</p>
+<p>文档 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/tableApi.html">Table API</a> 说明了所有流处理和批处理表支持的 Table API 算子。</p>
+<p>以下示例展示了一个简单的 Table API 聚合查询：</p>
+<pre><code class="language-java">// get a TableEnvironment
+TableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// register Orders table
+
+// scan registered Orders table
+Table orders = tableEnv.from(&quot;Orders&quot;);
+// compute revenue for all customers from France
+Table revenue = orders
+  .filter($(&quot;cCountry&quot;).isEqual(&quot;FRANCE&quot;))
+  .groupBy($(&quot;cID&quot;), $(&quot;cName&quot;)
+  .select($(&quot;cID&quot;), $(&quot;cName&quot;), $(&quot;revenue&quot;).sum().as(&quot;revSum&quot;));
+
+// emit or convert Table
+// execute query
+</code></pre>
+<h3 id="sql">SQL</h3>
+<p>Flink SQL 是基于实现了SQL标准的 <a href="https://calcite.apache.org/">Apache Calcite</a> 的。SQL 查询由常规字符串指定。</p>
+<p>文档 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/sql/">SQL</a> 描述了Flink对流处理和批处理表的SQL支持。</p>
+<p>下面的示例演示了如何指定查询并将结果作为 <code>Table</code> 对象返回。</p>
+<pre><code class="language-java">// get a TableEnvironment
+TableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// register Orders table
+
+// compute revenue for all customers from France
+Table revenue = tableEnv.sqlQuery(
+    &quot;SELECT cID, cName, SUM(revenue) AS revSum &quot; +
+    &quot;FROM Orders &quot; +
+    &quot;WHERE cCountry = 'FRANCE' &quot; +
+    &quot;GROUP BY cID, cName&quot;
+  );
+
+// emit or convert Table
+// execute query
+</code></pre>
+<p>如下的示例展示了如何指定一个更新查询，将查询的结果插入到已注册的表中。</p>
+<pre><code class="language-java">// get a TableEnvironment
+TableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// register &quot;Orders&quot; table
+// register &quot;RevenueFrance&quot; output table
+
+// compute revenue for all customers from France and emit to &quot;RevenueFrance&quot;
+tableEnv.executeSql(
+    &quot;INSERT INTO RevenueFrance &quot; +
+    &quot;SELECT cID, cName, SUM(revenue) AS revSum &quot; +
+    &quot;FROM Orders &quot; +
+    &quot;WHERE cCountry = 'FRANCE' &quot; +
+    &quot;GROUP BY cID, cName&quot;
+  );
+</code></pre>
+<h3 id="混用-table-api-和-sql">混用 Table API 和 SQL</h3>
+<p>Table API 和 SQL 查询的混用非常简单因为它们都返回 <code>Table</code> 对象：</p>
+<ul>
+<li>可以在 SQL 查询返回的 <code>Table</code> 对象上定义 Table API 查询。</li>
+<li>在 <code>TableEnvironment</code> 中注册的<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#register-a-table">结果表</a>可以在 SQL 查询的 <code>FROM</code> 子句中引用，通过这种方法就可以在 Table API 查询的结果上定义 SQL 查询。</li>
+</ul>
+<h2 id="输出表">输出表</h2>
+<p><code>Table</code> 通过写入 <code>TableSink</code> 输出。<code>TableSink</code> 是一个通用接口，用于支持多种文件格式（如 CSV、Apache Parquet、Apache Avro）、存储系统（如 JDBC、Apache HBase、Apache Cassandra、Elasticsearch）或消息队列系统（如 Apache Kafka、RabbitMQ）。</p>
+<p>批处理 <code>Table</code> 只能写入 <code>BatchTableSink</code>，而流处理 <code>Table</code> 需要指定写入 <code>AppendStreamTableSink</code>，<code>RetractStreamTableSink</code> 或者 <code>UpsertStreamTableSink</code>。</p>
+<p>请参考文档 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/sourceSinks.html">Table Sources &amp; Sinks</a> 以获取更多关于可用 Sink 的信息以及如何自定义 <code>TableSink</code>。</p>
+<p>方法 <code>Table.executeInsert(String tableName)</code> 将 <code>Table</code> 发送至已注册的 <code>TableSink</code>。该方法通过名称在 catalog 中查找 <code>TableSink</code> 并确认<code>Table</code> schema 和 <code>TableSink</code> schema 一致。</p>
+<p>下面的示例演示如何输出 <code>Table</code>：</p>
+<pre><code class="language-java">// get a TableEnvironment
+TableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// create an output Table
+final Schema schema = new Schema()
+    .field(&quot;a&quot;, DataTypes.INT())
+    .field(&quot;b&quot;, DataTypes.STRING())
+    .field(&quot;c&quot;, DataTypes.BIGINT());
+
+tableEnv.connect(new FileSystem().path(&quot;/path/to/file&quot;))
+    .withFormat(new Csv().fieldDelimiter('|').deriveSchema())
+    .withSchema(schema)
+    .createTemporaryTable(&quot;CsvSinkTable&quot;);
+
+// compute a result Table using Table API operators and/or SQL queries
+Table result = ...
+// emit the result Table to the registered TableSink
+result.executeInsert(&quot;CsvSinkTable&quot;);
+</code></pre>
+<h2 id="翻译与执行查询">翻译与执行查询</h2>
+<p>两种计划器翻译和执行查询的方式是不同的。</p>
+<ul>
+<li><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#tab_Blink_planner_9"><strong>Blink planner</strong></a></li>
+<li><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#tab_Old_planner_9"><strong>Old planner</strong></a></li>
+</ul>
+<p>不论输入数据源是流式的还是批式的，Table API 和 SQL 查询都会被转换成 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/datastream_api.html">DataStream</a> 程序。查询在内部表示为逻辑查询计划，并被翻译成两个阶段：</p>
+<ol>
+<li>优化逻辑执行计划</li>
+<li>翻译成 DataStream 程序</li>
+</ol>
+<p>Table API 或者 SQL 查询在下列情况下会被翻译：</p>
+<ul>
+<li>当 <code>TableEnvironment.executeSql()</code> 被调用时。该方法是用来执行一个 SQL 语句，一旦该方法被调用， SQL 语句立即被翻译。</li>
+<li>当 <code>Table.executeInsert()</code> 被调用时。该方法是用来将一个表的内容插入到目标表中，一旦该方法被调用， TABLE API 程序立即被翻译。</li>
+<li>当 <code>Table.execute()</code> 被调用时。该方法是用来将一个表的内容收集到本地，一旦该方法被调用， TABLE API 程序立即被翻译。</li>
+<li>当 <code>StatementSet.execute()</code> 被调用时。<code>Table</code> （通过 <code>StatementSet.addInsert()</code> 输出给某个 <code>Sink</code>）和 INSERT 语句 （通过调用 <code>StatementSet.addInsertSql()</code>）会先被缓存到 <code>StatementSet</code> 中，<code>StatementSet.execute()</code> 方法被调用时，所有的 sink 会被优化成一张有向无环图。</li>
+<li>当 <code>Table</code> 被转换成 <code>DataStream</code> 时（参阅<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#integration-with-datastream-and-dataset-api">与 DataStream 和 DataSet API 结合</a>）。转换完成后，它就成为一个普通的 DataStream 程序，并会在调用 <code>StreamExecutionEnvironment.execute()</code> 时被执行。</li>
+</ul>
+<p><strong>注意</strong> <strong>从 1.11 版本开始，<code>sqlUpdate</code> 方法 和 <code>insertInto</code> 方法被废弃，从这两个方法构建的 Table 程序必须通过 <code>StreamTableEnvironment.execute()</code> 方法执行，而不能通过 <code>StreamExecutionEnvironment.execute()</code> 方法来执行。</strong></p>
+<h2 id="与-datastream-和-dataset-api-结合">与 DataStream 和 DataSet API 结合</h2>
+<p>在流处理方面两种计划器都可以与 <code>DataStream</code> API 结合。只有旧计划器可以与 <code>DataSet API</code> 结合。在批处理方面，Blink 计划器不能同两种计划器中的任何一个结合。</p>
+<p><strong>注意：</strong> 下文讨论的 <code>DataSet</code> API 只与旧计划起有关。</p>
+<p>Table API 和 SQL 可以被很容易地集成并嵌入到 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/datastream_api.html">DataStream</a> 和 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/batch/">DataSet</a> 程序中。例如，可以查询外部表（例如从 RDBMS），进行一些预处理，例如过滤，投影，聚合或与元数据 join，然后使用 DataStream 或 DataSet API（以及在这些 API 之上构建的任何库，例如 CEP 或 Gelly）。相反，也可以将 Table API 或 SQL 查询应用于 DataStream 或 DataSet 程序的结果。</p>
+<p>这种交互可以通过 <code>DataStream</code> 或 <code>DataSet</code> 与 <code>Table</code> 的相互转化实现。本节我们会介绍这些转化是如何实现的。</p>
+<h3 id="scala-隐式转换">Scala 隐式转换</h3>
+<p>Scala Table API 含有对 <code>DataSet</code>、<code>DataStream</code> 和 <code>Table</code> 类的隐式转换。 通过为 Scala DataStream API 导入 <code>org.apache.flink.table.api.bridge.scala._</code> 包以及 <code>org.apache.flink.api.scala._</code> 包，可以启用这些转换。</p>
+<h3 id="通过-dataset-或-datastream-创建视图">通过 DataSet 或 DataStream 创建<code>视图</code></h3>
+<p>在 <code>TableEnvironment</code> 中可以将 <code>DataStream</code> 或 <code>DataSet</code> 注册成视图。结果视图的 schema 取决于注册的 <code>DataStream</code> 或 <code>DataSet</code> 的数据类型。请参阅文档 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#mapping-of-data-types-to-table-schema">数据类型到 table schema 的映射</a>获取详细信息。</p>
+<p><strong>注意：</strong> 通过 <code>DataStream</code> 或 <code>DataSet</code> 创建的视图只能注册成临时视图。</p>
+<pre><code class="language-java">// get StreamTableEnvironment
+// registration of a DataSet in a BatchTableEnvironment is equivalent
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+DataStream&lt;Tuple2&lt;Long, String&gt;&gt; stream = ...
+
+// register the DataStream as View &quot;myTable&quot; with fields &quot;f0&quot;, &quot;f1&quot;
+tableEnv.createTemporaryView(&quot;myTable&quot;, stream);
+
+// register the DataStream as View &quot;myTable2&quot; with fields &quot;myLong&quot;, &quot;myString&quot;
+tableEnv.createTemporaryView(&quot;myTable2&quot;, stream, $(&quot;myLong&quot;), $(&quot;myString&quot;));
+</code></pre>
+<h3 id="将-datastream-或-dataset-转换成表">将 DataStream 或 DataSet 转换成表</h3>
+<p>与在 <code>TableEnvironment</code> 注册 <code>DataStream</code> 或 <code>DataSet</code> 不同，DataStream 和 DataSet 还可以直接转换成 <code>Table</code>。如果你想在 Table API 的查询中使用表，这将非常便捷。</p>
+<pre><code class="language-java">// get StreamTableEnvironment
+// registration of a DataSet in a BatchTableEnvironment is equivalent
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+DataStream&lt;Tuple2&lt;Long, String&gt;&gt; stream = ...
+
+// Convert the DataStream into a Table with default fields &quot;f0&quot;, &quot;f1&quot;
+Table table1 = tableEnv.fromDataStream(stream);
+
+// Convert the DataStream into a Table with fields &quot;myLong&quot;, &quot;myString&quot;
+Table table2 = tableEnv.fromDataStream(stream, $(&quot;myLong&quot;), $(&quot;myString&quot;));
+</code></pre>
+<h3 id="将表转换成-datastream-或-dataset">将表转换成 DataStream 或 DataSet</h3>
+<p><code>Table</code> 可以被转换成 <code>DataStream</code> 或 <code>DataSet</code>。通过这种方式，定制的 DataSet 或 DataStream 程序就可以在 Table API 或者 SQL 的查询结果上运行了。</p>
+<p>将 <code>Table</code> 转换为 <code>DataStream</code> 或者 <code>DataSet</code> 时，你需要指定生成的 <code>DataStream</code> 或者 <code>DataSet</code> 的数据类型，即，<code>Table</code> 的每行数据要转换成的数据类型。通常最方便的选择是转换成 <code>Row</code> 。以下列表概述了不同选项的功能：</p>
+<ul>
+<li><strong>Row</strong>: 字段按位置映射，字段数量任意，支持 <code>null</code> 值，无类型安全（type-safe）检查。</li>
+<li><strong>POJO</strong>: 字段按名称映射（POJO 必须按<code>Table</code> 中字段名称命名），字段数量任意，支持 <code>null</code> 值，无类型安全检查。</li>
+<li><strong>Case Class</strong>: 字段按位置映射，不支持 <code>null</code> 值，有类型安全检查。</li>
+<li><strong>Tuple</strong>: 字段按位置映射，字段数量少于 22（Scala）或者 25（Java），不支持 <code>null</code> 值，无类型安全检查。</li>
+<li><strong>Atomic Type</strong>: <code>Table</code> 必须有一个字段，不支持 <code>null</code> 值，有类型安全检查。</li>
+</ul>
+<h4 id="将表转换成-datastream">将表转换成 DataStream</h4>
+<p>流式查询（streaming query）的结果表会动态更新，即，当新纪录到达查询的输入流时，查询结果会改变。因此，像这样将动态查询结果转换成 DataStream 需要对表的更新方式进行编码。</p>
+<p>将 <code>Table</code> 转换为 <code>DataStream</code> 有两种模式：</p>
+<ol>
+<li><strong>Append Mode</strong>: 仅当动态 <code>Table</code> 仅通过<code>INSERT</code>更改进行修改时，才可以使用此模式，即，它仅是追加操作，并且之前输出的结果永远不会更新。</li>
+<li><strong>Retract Mode</strong>: 任何情形都可以使用此模式。它使用 boolean 值对 <code>INSERT</code> 和 <code>DELETE</code> 操作的数据进行标记。</li>
+</ol>
+<pre><code class="language-java">// get StreamTableEnvironment. 
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// Table with two fields (String name, Integer age)
+Table table = ...
+
+// convert the Table into an append DataStream of Row by specifying the class
+DataStream&lt;Row&gt; dsRow = tableEnv.toAppendStream(table, Row.class);
+
+// convert the Table into an append DataStream of Tuple2&lt;String, Integer&gt; 
+//   via a TypeInformation
+TupleTypeInfo&lt;Tuple2&lt;String, Integer&gt;&gt; tupleType = new TupleTypeInfo&lt;&gt;(
+  Types.STRING(),
+  Types.INT());
+DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; dsTuple = 
+  tableEnv.toAppendStream(table, tupleType);
+
+// convert the Table into a retract DataStream of Row.
+//   A retract stream of type X is a DataStream&lt;Tuple2&lt;Boolean, X&gt;&gt;. 
+//   The boolean field indicates the type of the change. 
+//   True is INSERT, false is DELETE.
+DataStream&lt;Tuple2&lt;Boolean, Row&gt;&gt; retractStream = 
+  tableEnv.toRetractStream(table, Row.class);
+</code></pre>
+<p><strong>注意：</strong> 文档<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/streaming/dynamic_tables.html">动态表</a>给出了有关动态表及其属性的详细讨论。</p>
+<p><strong>注意</strong> <strong>一旦 Table 被转化为 DataStream，必须使用 StreamExecutionEnvironment 的 execute 方法执行该 DataStream 作业。</strong></p>
+<h4 id="将表转换成-dataset">将表转换成 DataSet</h4>
+<p>将 <code>Table</code> 转换成 <code>DataSet</code> 的过程如下：</p>
+<pre><code class="language-java">// get BatchTableEnvironment
+BatchTableEnvironment tableEnv = BatchTableEnvironment.create(env);
+
+// Table with two fields (String name, Integer age)
+Table table = ...
+
+// convert the Table into a DataSet of Row by specifying a class
+DataSet&lt;Row&gt; dsRow = tableEnv.toDataSet(table, Row.class);
+
+// convert the Table into a DataSet of Tuple2&lt;String, Integer&gt; via a TypeInformation
+TupleTypeInfo&lt;Tuple2&lt;String, Integer&gt;&gt; tupleType = new TupleTypeInfo&lt;&gt;(
+  Types.STRING(),
+  Types.INT());
+DataSet&lt;Tuple2&lt;String, Integer&gt;&gt; dsTuple = 
+  tableEnv.toDataSet(table, tupleType);
+</code></pre>
+<p><strong>注意</strong> <strong>一旦 Table 被转化为 DataSet，必须使用 ExecutionEnvironment 的 execute 方法执行该 DataSet 作业。</strong></p>
+<h3 id="数据类型到-table-schema-的映射">数据类型到 Table Schema 的映射</h3>
+<p>Flink 的 DataStream 和 DataSet APIs 支持多样的数据类型。例如 Tuple（Scala 内置以及Flink Java tuple）、POJO 类型、Scala case class 类型以及 Flink 的 Row 类型等允许嵌套且有多个可在表的表达式中访问的字段的复合数据类型。其他类型被视为原子类型。下面，我们讨论 Table API 如何将这些数据类型类型转换为内部 row 表示形式，并提供将 <code>DataStream</code> 转换成 <code>Table</code> 的样例。</p>
+<p>数据类型到 table schema 的映射有两种方式：<strong>基于字段位置</strong>或<strong>基于字段名称</strong>。</p>
+<p><strong>基于位置映射</strong></p>
+<p>基于位置的映射可在保持字段顺序的同时为字段提供更有意义的名称。这种映射方式可用于<em>具有特定的字段顺序</em>的复合数据类型以及原子类型。如 tuple、row 以及 case class 这些复合数据类型都有这样的字段顺序。然而，POJO 类型的字段则必须通过名称映射（参见下一章）。可以将字段投影出来，但不能使用<code>as</code>重命名。</p>
+<p>定义基于位置的映射时，输入数据类型中一定不能存在指定的名称，否则 API 会假定应该基于字段名称进行映射。如果未指定任何字段名称，则使用默认的字段名称和复合数据类型的字段顺序，或者使用 <code>f0</code> 表示原子类型。</p>
+<pre><code class="language-java">// get a StreamTableEnvironment, works for BatchTableEnvironment equivalently
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section;
+
+DataStream&lt;Tuple2&lt;Long, Integer&gt;&gt; stream = ...
+
+// convert DataStream into Table with default field names &quot;f0&quot; and &quot;f1&quot;
+Table table = tableEnv.fromDataStream(stream);
+
+// convert DataStream into Table with field &quot;myLong&quot; only
+Table table = tableEnv.fromDataStream(stream, $(&quot;myLong&quot;));
+
+// convert DataStream into Table with field names &quot;myLong&quot; and &quot;myInt&quot;
+Table table = tableEnv.fromDataStream(stream, $(&quot;myLong&quot;), $(&quot;myInt&quot;));
+</code></pre>
+<p><strong>基于名称的映射</strong></p>
+<p>基于名称的映射适用于任何数据类型包括 POJO 类型。这是定义 table schema 映射最灵活的方式。映射中的所有字段均按名称引用，并且可以通过 <code>as</code> 重命名。字段可以被重新排序和映射。</p>
+<p>若果没有指定任何字段名称，则使用默认的字段名称和复合数据类型的字段顺序，或者使用 <code>f0</code> 表示原子类型。</p>
+<pre><code class="language-java">// get a StreamTableEnvironment, works for BatchTableEnvironment equivalently
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+DataStream&lt;Tuple2&lt;Long, Integer&gt;&gt; stream = ...
+
+// convert DataStream into Table with default field names &quot;f0&quot; and &quot;f1&quot;
+Table table = tableEnv.fromDataStream(stream);
+
+// convert DataStream into Table with field &quot;f1&quot; only
+Table table = tableEnv.fromDataStream(stream, $(&quot;f1&quot;));
+
+// convert DataStream into Table with swapped fields
+Table table = tableEnv.fromDataStream(stream, $(&quot;f1&quot;), $(&quot;f0&quot;));
+
+// convert DataStream into Table with swapped fields and field names &quot;myInt&quot; and &quot;myLong&quot;
+Table table = tableEnv.fromDataStream(stream, $(&quot;f1&quot;).as(&quot;myInt&quot;), $(&quot;f0&quot;).as(&quot;myLong&quot;));
+</code></pre>
+<h4 id="原子类型">原子类型</h4>
+<p>Flink 将基础数据类型（<code>Integer</code>、<code>Double</code>、<code>String</code>）或者通用数据类型（不可再拆分的数据类型）视为原子类型。原子类型的 <code>DataStream</code> 或者 <code>DataSet</code> 会被转换成只有一条属性的 <code>Table</code>。属性的数据类型可以由原子类型推断出，还可以重新命名属性。</p>
+<pre><code class="language-java">// get a StreamTableEnvironment, works for BatchTableEnvironment equivalently
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+DataStream&lt;Long&gt; stream = ...
+
+// convert DataStream into Table with default field name &quot;f0&quot;
+Table table = tableEnv.fromDataStream(stream);
+
+// convert DataStream into Table with field name &quot;myLong&quot;
+Table table = tableEnv.fromDataStream(stream, $(&quot;myLong&quot;));
+</code></pre>
+<h4 id="tuple类型scala-和-java和-case-class类型仅-scala">Tuple类型（Scala 和 Java）和 Case Class类型（仅 Scala）</h4>
+<p>Flink 支持 Scala 的内置 tuple 类型并给 Java 提供自己的 tuple 类型。两种 tuple 的 DataStream 和 DataSet 都能被转换成表。可以通过提供所有字段名称来重命名字段（基于位置映射）。如果没有指明任何字段名称，则会使用默认的字段名称。如果引用了原始字段名称（对于 Flink tuple 为<code>f0</code>、<code>f1</code> … …，对于 Scala tuple 为<code>_1</code>、<code>_2</code> … …），则 API 会假定映射是基于名称的而不是基于位置的。基于名称的映射可以通过 <code>as</code> 对字段和投影进行重新排序。</p>
+<pre><code class="language-java">// get a StreamTableEnvironment, works for BatchTableEnvironment equivalently
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+DataStream&lt;Tuple2&lt;Long, String&gt;&gt; stream = ...
+
+// convert DataStream into Table with default field names &quot;f0&quot;, &quot;f1&quot;
+Table table = tableEnv.fromDataStream(stream);
+
+// convert DataStream into Table with renamed field names &quot;myLong&quot;, &quot;myString&quot; (position-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;myLong&quot;), $(&quot;myString&quot;));
+
+// convert DataStream into Table with reordered fields &quot;f1&quot;, &quot;f0&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;f1&quot;), $(&quot;f0&quot;));
+
+// convert DataStream into Table with projected field &quot;f1&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;f1&quot;));
+
+// convert DataStream into Table with reordered and aliased fields &quot;myString&quot;, &quot;myLong&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;f1&quot;).as(&quot;myString&quot;), $(&quot;f0&quot;).as(&quot;myLong&quot;));
+</code></pre>
+<h4 id="pojo-类型-java-和-scala">POJO 类型 （Java 和 Scala）</h4>
+<p>Flink 支持 POJO 类型作为复合类型。确定 POJO 类型的规则记录在<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/types_serialization.html#pojos">这里</a>.</p>
+<p>在不指定字段名称的情况下将 POJO 类型的 <code>DataStream</code> 或 <code>DataSet</code> 转换成 <code>Table</code> 时，将使用原始 POJO 类型字段的名称。名称映射需要原始名称，并且不能按位置进行。字段可以使用别名（带有 <code>as</code> 关键字）来重命名，重新排序和投影。</p>
+<pre><code class="language-java">// get a StreamTableEnvironment, works for BatchTableEnvironment equivalently
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// Person is a POJO with fields &quot;name&quot; and &quot;age&quot;
+DataStream&lt;Person&gt; stream = ...
+
+// convert DataStream into Table with default field names &quot;age&quot;, &quot;name&quot; (fields are ordered by name!)
+Table table = tableEnv.fromDataStream(stream);
+
+// convert DataStream into Table with renamed fields &quot;myAge&quot;, &quot;myName&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;age&quot;).as(&quot;myAge&quot;), $(&quot;name&quot;).as(&quot;myName&quot;));
+
+// convert DataStream into Table with projected field &quot;name&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;name&quot;));
+
+// convert DataStream into Table with projected and renamed field &quot;myName&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;name&quot;).as(&quot;myName&quot;));
+</code></pre>
+<h4 id="row类型">Row类型</h4>
+<p><code>Row</code> 类型支持任意数量的字段以及具有 <code>null</code> 值的字段。字段名称可以通过 <code>RowTypeInfo</code> 指定，也可以在将 <code>Row</code> 的 <code>DataStream</code> 或 <code>DataSet</code> 转换为 <code>Table</code> 时指定。Row 类型的字段映射支持基于名称和基于位置两种方式。字段可以通过提供所有字段的名称的方式重命名（基于位置映射）或者分别选择进行投影/排序/重命名（基于名称映射）。</p>
+<pre><code class="language-java">// get a StreamTableEnvironment, works for BatchTableEnvironment equivalently
+StreamTableEnvironment tableEnv = ...; // see &quot;Create a TableEnvironment&quot; section
+
+// DataStream of Row with two fields &quot;name&quot; and &quot;age&quot; specified in `RowTypeInfo`
+DataStream&lt;Row&gt; stream = ...
+
+// convert DataStream into Table with default field names &quot;name&quot;, &quot;age&quot;
+Table table = tableEnv.fromDataStream(stream);
+
+// convert DataStream into Table with renamed field names &quot;myName&quot;, &quot;myAge&quot; (position-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;myName&quot;), $(&quot;myAge&quot;));
+
+// convert DataStream into Table with renamed fields &quot;myName&quot;, &quot;myAge&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;name&quot;).as(&quot;myName&quot;), $(&quot;age&quot;).as(&quot;myAge&quot;));
+
+// convert DataStream into Table with projected field &quot;name&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;name&quot;));
+
+// convert DataStream into Table with projected and renamed field &quot;myName&quot; (name-based)
+Table table = tableEnv.fromDataStream(stream, $(&quot;name&quot;).as(&quot;myName&quot;));
+</code></pre>
+<h2 id="查询优化">查询优化</h2>
+<ul>
+<li><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#tab_Blink_planner_20"><strong>Blink planner</strong></a></li>
+<li><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/common.html#tab_Old_planner_20"><strong>Old planner</strong></a></li>
+</ul>
+<p>Apache Flink 使用并扩展了 Apache Calcite 来执行复杂的查询优化。 这包括一系列基于规则和成本的优化，例如：</p>
+<ul>
+<li>基于 Apache Calcite 的子查询解相关</li>
+<li>投影剪裁</li>
+<li>分区剪裁</li>
+<li>过滤器下推</li>
+<li>子计划消除重复数据以避免重复计算</li>
+<li>特殊子查询重写，包括两部分：
+<ul>
+<li>将 IN 和 EXISTS 转换为 left semi-joins</li>
+<li>将 NOT IN 和 NOT EXISTS 转换为 left anti-join</li>
+</ul>
+</li>
+<li>可选 join 重新排序
+<ul>
+<li>通过 <code>table.optimizer.join-reorder-enabled</code> 启用</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意：</strong> 当前仅在子查询重写的结合条件下支持 IN / EXISTS / NOT IN / NOT EXISTS。</p>
+<p>优化器不仅基于计划，而且还基于可从数据源获得的丰富统计信息以及每个算子（例如 io，cpu，网络和内存）的细粒度成本来做出明智的决策。</p>
+<p>高级用户可以通过 <code>CalciteConfig</code> 对象提供自定义优化，可以通过调用 <code>TableEnvironment＃getConfig＃setPlannerConfig</code> 将其提供给 TableEnvironment。</p>
+<h2 id="解释表">解释表</h2>
+<p>Table API 提供了一种机制来解释计算 <code>Table</code> 的逻辑和优化查询计划。 这是通过 <code>Table.explain()</code> 方法或者 <code>StatementSet.explain()</code> 方法来完成的。<code>Table.explain()</code> 返回一个 Table 的计划。<code>StatementSet.explain()</code> 返回多 sink 计划的结果。它返回一个描述三种计划的字符串：</p>
+<ol>
+<li>关系查询的抽象语法树（the Abstract Syntax Tree），即未优化的逻辑查询计划，</li>
+<li>优化的逻辑查询计划，以及</li>
+<li>物理执行计划。</li>
+</ol>
+<p>可以用 <code>TableEnvironment.explainSql()</code> 方法和 <code>TableEnvironment.executeSql()</code> 方法支持执行一个 <code>EXPLAIN</code> 语句获取逻辑和优化查询计划，请参阅 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/sql/explain.html">EXPLAIN</a> 页面.</p>
+<p>以下代码展示了一个示例以及对给定 <code>Table</code> 使用 <code>Table.explain()</code> 方法的相应输出：</p>
+<pre><code class="language-java">StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+StreamTableEnvironment tEnv = StreamTableEnvironment.create(env);
+
+DataStream&lt;Tuple2&lt;Integer, String&gt;&gt; stream1 = env.fromElements(new Tuple2&lt;&gt;(1, &quot;hello&quot;));
+DataStream&lt;Tuple2&lt;Integer, String&gt;&gt; stream2 = env.fromElements(new Tuple2&lt;&gt;(1, &quot;hello&quot;));
+
+// explain Table API
+Table table1 = tEnv.fromDataStream(stream1, $(&quot;count&quot;), $(&quot;word&quot;));
+Table table2 = tEnv.fromDataStream(stream2, $(&quot;count&quot;), $(&quot;word&quot;));
+Table table = table1
+  .where($(&quot;word&quot;).like(&quot;F%&quot;))
+  .unionAll(table2);
+System.out.println(table.explain());
+</code></pre>
+<p>上述例子的结果是：</p>
+<pre><code class="language-java">== Abstract Syntax Tree ==
+LogicalUnion(all=[true])
+  LogicalFilter(condition=[LIKE($1, _UTF-16LE'F%')])
+    FlinkLogicalDataStreamScan(id=[1], fields=[count, word])
+  FlinkLogicalDataStreamScan(id=[2], fields=[count, word])
+
+== Optimized Logical Plan ==
+DataStreamUnion(all=[true], union all=[count, word])
+  DataStreamCalc(select=[count, word], where=[LIKE(word, _UTF-16LE'F%')])
+    DataStreamScan(id=[1], fields=[count, word])
+  DataStreamScan(id=[2], fields=[count, word])
+
+== Physical Execution Plan ==
+Stage 1 : Data Source
+	content : collect elements with CollectionInputFormat
+
+Stage 2 : Data Source
+	content : collect elements with CollectionInputFormat
+
+	Stage 3 : Operator
+		content : from: (count, word)
+		ship_strategy : REBALANCE
+
+		Stage 4 : Operator
+			content : where: (LIKE(word, _UTF-16LE'F%')), select: (count, word)
+			ship_strategy : FORWARD
+
+			Stage 5 : Operator
+				content : from: (count, word)
+				ship_strategy : REBALANCE
+</code></pre>
+<p>以下代码展示了一个示例以及使用 <code>StatementSet.explain()</code> 的多 sink 计划的相应输出：</p>
+<pre><code class="language-java">EnvironmentSettings settings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
+TableEnvironment tEnv = TableEnvironment.create(settings);
+
+final Schema schema = new Schema()
+    .field(&quot;count&quot;, DataTypes.INT())
+    .field(&quot;word&quot;, DataTypes.STRING());
+
+tEnv.connect(new FileSystem().path(&quot;/source/path1&quot;))
+    .withFormat(new Csv().deriveSchema())
+    .withSchema(schema)
+    .createTemporaryTable(&quot;MySource1&quot;);
+tEnv.connect(new FileSystem().path(&quot;/source/path2&quot;))
+    .withFormat(new Csv().deriveSchema())
+    .withSchema(schema)
+    .createTemporaryTable(&quot;MySource2&quot;);
+tEnv.connect(new FileSystem().path(&quot;/sink/path1&quot;))
+    .withFormat(new Csv().deriveSchema())
+    .withSchema(schema)
+    .createTemporaryTable(&quot;MySink1&quot;);
+tEnv.connect(new FileSystem().path(&quot;/sink/path2&quot;))
+    .withFormat(new Csv().deriveSchema())
+    .withSchema(schema)
+    .createTemporaryTable(&quot;MySink2&quot;);
+
+StatementSet stmtSet = tEnv.createStatementSet();
+
+Table table1 = tEnv.from(&quot;MySource1&quot;).where($(&quot;word&quot;).like(&quot;F%&quot;));
+stmtSet.addInsert(&quot;MySink1&quot;, table1);
+
+Table table2 = table1.unionAll(tEnv.from(&quot;MySource2&quot;));
+stmtSet.addInsert(&quot;MySink2&quot;, table2);
+
+String explanation = stmtSet.explain();
+System.out.println(explanation);
+</code></pre>
+<p>多 sink 计划的结果是：</p>
+<pre><code class="language-java">== Abstract Syntax Tree ==
+LogicalLegacySink(name=[MySink1], fields=[count, word])
++- LogicalFilter(condition=[LIKE($1, _UTF-16LE'F%')])
+   +- LogicalTableScan(table=[[default_catalog, default_database, MySource1, source: [CsvTableSource(read fields: count, word)]]])
+
+LogicalLegacySink(name=[MySink2], fields=[count, word])
++- LogicalUnion(all=[true])
+   :- LogicalFilter(condition=[LIKE($1, _UTF-16LE'F%')])
+   :  +- LogicalTableScan(table=[[default_catalog, default_database, MySource1, source: [CsvTableSource(read fields: count, word)]]])
+   +- LogicalTableScan(table=[[default_catalog, default_database, MySource2, source: [CsvTableSource(read fields: count, word)]]])
+
+== Optimized Logical Plan ==
+Calc(select=[count, word], where=[LIKE(word, _UTF-16LE'F%')], reuse_id=[1])
++- TableSourceScan(table=[[default_catalog, default_database, MySource1, source: [CsvTableSource(read fields: count, word)]]], fields=[count, word])
+
+LegacySink(name=[MySink1], fields=[count, word])
++- Reused(reference_id=[1])
+
+LegacySink(name=[MySink2], fields=[count, word])
++- Union(all=[true], union=[count, word])
+   :- Reused(reference_id=[1])
+   +- TableSourceScan(table=[[default_catalog, default_database, MySource2, source: [CsvTableSource(read fields: count, word)]]], fields=[count, word])
+
+== Physical Execution Plan ==
+Stage 1 : Data Source
+	content : collect elements with CollectionInputFormat
+
+	Stage 2 : Operator
+		content : CsvTableSource(read fields: count, word)
+		ship_strategy : REBALANCE
+
+		Stage 3 : Operator
+			content : SourceConversion(table:Buffer(default_catalog, default_database, MySource1, source: [CsvTableSource(read fields: count, word)]), fields:(count, word))
+			ship_strategy : FORWARD
+
+			Stage 4 : Operator
+				content : Calc(where: (word LIKE _UTF-16LE'F%'), select: (count, word))
+				ship_strategy : FORWARD
+
+				Stage 5 : Operator
+					content : SinkConversionToRow
+					ship_strategy : FORWARD
+
+					Stage 6 : Operator
+						content : Map
+						ship_strategy : FORWARD
+
+Stage 8 : Data Source
+	content : collect elements with CollectionInputFormat
+
+	Stage 9 : Operator
+		content : CsvTableSource(read fields: count, word)
+		ship_strategy : REBALANCE
+
+		Stage 10 : Operator
+			content : SourceConversion(table:Buffer(default_catalog, default_database, MySource2, source: [CsvTableSource(read fields: count, word)]), fields:(count, word))
+			ship_strategy : FORWARD
+
+			Stage 12 : Operator
+				content : SinkConversionToRow
+				ship_strategy : FORWARD
+
+				Stage 13 : Operator
+					content : Map
+					ship_strategy : FORWARD
+
+					Stage 7 : Data Sink
+						content : Sink: CsvTableSink(count, word)
+						ship_strategy : FORWARD
+
+						Stage 14 : Data Sink
+							content : Sink: CsvTableSink(count, word)
+							ship_strategy : FORWARD
+</code></pre>
+<h3 id="动态表">动态表</h3>
+<p>如果流中的数据类型是 case class 可以直接根据 case class 的结构生成 table</p>
+<pre><code class="language-java">tableEnv.fromDataStream(dataStream)
+</code></pre>
+<p>或者根据字段顺序单独命名</p>
+<pre><code class="language-java">tableEnv.fromDataStream(dataStream,’id,’timestamp .......)
+</code></pre>
+<p>最后的动态表可以转换为流进行输出</p>
+<pre><code class="language-java">table.toAppendStream[(String,String)]
+</code></pre>
+<h3 id="字段">字段</h3>
+<p>用一个单引放到字段前面来标识字段名, 如 ‘name , ‘id ,’amount 等</p>
+<h2 id="tableapi-的窗口聚合操作">TableAPI 的窗口聚合操作</h2>
+<h3 id="通过一个例子了解-tableapi">通过一个例子了解 TableAPI</h3>
+<pre><code class="language-java">package myflink.sql;
+ 
+import org.apache.flink.api.java.DataSet;
+import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.java.BatchTableEnvironment;
+ 
+ 
+public class WordCountSQL {
+ 
+    public static void main(String[] args) throws Exception {
+ 
+        ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+        BatchTableEnvironment tEnv = BatchTableEnvironment.getTableEnvironment(env);
+ 
+        DataSet&lt;WC&gt; input = env.fromElements(
+                WC.of(&quot;hello&quot;, 1),
+                WC.of(&quot;hqs&quot;, 1),
+                WC.of(&quot;world&quot;, 1),
+                WC.of(&quot;hello&quot;, 1)
+        );
+        //注册数据集
+        tEnv.registerDataSet(&quot;WordCount&quot;, input, &quot;word, frequency&quot;);
+ 
+        //执行SQL，并结果集做为一个新表
+        Table table = tEnv.sqlQuery(&quot;SELECT word, SUM(frequency) as frequency FROM WordCount GROUP BY word&quot;);
+ 
+        DataSet&lt;WC&gt; result = tEnv.toDataSet(table, WC.class);
+ 
+        result.print();
+ 
+    }
+ 
+    public static class WC {
+        public String word; //hello
+        public long frequency;
+ 
+        //创建构造方法，让flink进行实例化
+        public WC() {}
+ 
+        public static WC of(String word, long frequency) {
+            WC wc = new WC();
+            wc.word = word;
+            wc.frequency = frequency;
+            return wc;
+        }
+ 
+        @Override
+        public String toString() {
+            return &quot;WC &quot; + word + &quot; &quot; + frequency;
+        }
+    }
+ 
+}
+</code></pre>
+<h3 id="关于-group-by">关于 group by</h3>
+<ol>
+<li>如果了使用 groupby， table 转换为流的时候只能用 toRetractDstream</li>
+</ol>
+<pre><code class="language-java">DataStream&lt;Tuple2&lt;Boolean, Tuple2&lt;Integer, Integer&gt;&gt;&gt; joinStream = bsTableEnv.toRetractStream(queryTable, Types.TUPLE(Types.INT, Types.INT));
+</code></pre>
+<ol start="2">
+<li>
+<p>toRetractDstream 得到的第一个 boolean 型字段标识 true 就是最新的数据<br>
+(Insert)， false 表示过期老数据(Delete)</p>
+</li>
+<li>
+<p>如果使用的 api 包括时间窗口， 那么窗口的字段必须出现在 groupBy 中。</p>
+</li>
+</ol>
+<pre><code class="language-java">Table resultTable= dataTable
+   .window( Tumble over 10.seconds on 'ts as 'tw )
+   .groupBy('id, 'tw)
+   .select('id, 'id.count)
+</code></pre>
+<h3 id="关于时间窗口">关于时间窗口</h3>
+<ol>
+<li>用到时间窗口， 必须提前声明时间字段， 如果是 processTime 直接在创建动<br>
+态表时进行追加就可以。</li>
+</ol>
+<pre><code class="language-java">Table dataTable= tableEnv.fromDataStream(dataStream, 'id,'temperature, 'ps.proctime)
+</code></pre>
+<ol>
+<li>如果是 EventTime 要在创建动态表时声明</li>
+</ol>
+<pre><code class="language-java">Table dataTable= tableEnv.fromDataStream(dataStream, 'id,'temperature, 'ts.rowtime)
+</code></pre>
+<ol>
+<li>滚动窗口可以使用 Tumble over 10000.millis on 来表示</li>
+</ol>
+<pre><code class="language-java">Table resultTable = dataTable
+    .window( Tumble over 10.seconds on 'ts as 'tw )
+    .groupBy('id, 'tw)
+    .select('id, 'id.count)
+</code></pre>
+<h2 id="sql-如何编写">SQL 如何编写</h2>
+<p>从一个txt文件中读取数据，txt文件中包含id, 人字, 书名，价格信息。然后将数据注册成一个表，然后将这个表的结果进行统计，按人名统计出来这个人买书所花费的钱，将结果sink到一个文件中。上代码。</p>
+<pre><code class="language-java">package myflink.sql;
+ 
+import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.DataSet;
+import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.api.java.operators.DataSource;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.Types;
+import org.apache.flink.table.api.java.BatchTableEnvironment;
+import org.apache.flink.table.sinks.CsvTableSink;
+import org.apache.flink.table.sinks.TableSink;
+ 
+public class SQLFromFile {
+ 
+    public static void main(String[] args) throws Exception {
+        ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+ 
+        BatchTableEnvironment tableEnv = BatchTableEnvironment.getTableEnvironment(env);
+ 
+        env.setParallelism(1);
+        //读取文件
+        DataSource&lt;String&gt; input = env.readTextFile(&quot;test.txt&quot;);
+        //将读取到的文件进行输出
+        input.print();
+        //转换为DataSet
+        DataSet&lt;Orders&gt; inputDataSet = input.map(new MapFunction&lt;String, Orders&gt;() {
+            @Override
+            public Orders map(String s) throws Exception {
+                String[] splits = s.split(&quot; &quot;);
+                return Orders.of(Integer.valueOf(splits[0]), String.valueOf(splits[1]), String.valueOf(splits[2]), Double.valueOf(splits[3]));
+            }
+        });
+        //转换为table
+        Table order = tableEnv.fromDataSet(inputDataSet);
+        //注册Orders表名
+        tableEnv.registerTable(&quot;Orders&quot;, order);
+        Table nameResult = tableEnv.scan(&quot;Orders&quot;).select(&quot;name&quot;);
+        //输出一下表
+        nameResult.printSchema();
+ 
+        //执行一下查询
+        Table sqlQueryResult = tableEnv.sqlQuery(&quot;select name, sum(price) as total from Orders group by name order by total desc&quot;);
+        //查询结果转换为DataSet
+        DataSet&lt;Result&gt; result = tableEnv.toDataSet(sqlQueryResult, Result.class);
+        result.print();
+ 
+        //以tuple的方式进行输出
+        result.map(new MapFunction&lt;Result, Tuple2&lt;String, Double&gt;&gt;() {
+            @Override
+            public Tuple2&lt;String, Double&gt; map(Result result) throws Exception {
+                String name = result.name;
+                Double total = result.total;
+                return Tuple2.of(name, total);
+            }
+        }).print();
+ 
+        TableSink sink  = new CsvTableSink(&quot;SQLText.txt&quot;, &quot; | &quot;);
+ 
+        //设置字段名
+        String[] filedNames = {&quot;name&quot;, &quot;total&quot;};
+        //设置字段类型
+        TypeInformation[] filedTypes = {Types.STRING(), Types.DOUBLE()};
+ 
+        tableEnv.registerTableSink(&quot;SQLTEXT&quot;, filedNames, filedTypes, sink);
+ 
+        sqlQueryResult.insertInto(&quot;SQLTEXT&quot;);
+ 
+        env.execute();
+ 
+    }
+ 
+    public static class Orders {
+        public Integer id;
+        public String name;
+        public String book;
+        public Double price;
+ 
+        public Orders() {
+            super();
+        }
+ 
+        public static Orders of(Integer id, String name, String book, Double price) {
+            Orders orders = new Orders();
+            orders.id = id;
+            orders.name = name;
+            orders.book = book;
+            orders.price = price;
+            return orders;
+        }
+    }
+ 
+    public static class Result {
+        public String name;
+        public Double total;
+ 
+        public Result() {
+            super();
+        }
+ 
+        public static Result of(String name, Double total) {
+            Result result = new Result();
+            result.name = name;
+            result.total = total;
+            return result;
+        }
+    }
+ 
+}
+</code></pre>
+<h2 id="操作">操作</h2>
+<p>Table API支持下面的操作，请注意并不是所有的操作都同时支持批程序和流程序，不支持的会被响应的标记出来。</p>
+<h3 id="scan-projection-and-filter">Scan, Projection, and Filter</h3>
+<table>
+<thead>
+<tr>
+<th>Operators</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>From</strong> <code>Batch</code> <code>Streaming</code></td>
+<td>与SQL查询中的FROM子句类似。 执行已注册表的扫描。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;);</code></td>
+</tr>
+<tr>
+<td><strong>Select</strong> <code>Batch</code> <code>Streaming</code></td>
+<td>与SQL SELECT语句类似。 执行选择操作。<br/> <code>Table orders= tableEnv.from(&quot;Orders&quot;)</code><br/> <code>Table result = orders.select($(&quot;a&quot;), $(&quot;c&quot;).as(&quot;d&quot;))</code> <br/>可以使用星号（***）作为通配符，选择表格中的所有列。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;)</code><br/> <code>Table result = orders.select($(&quot;*&quot;))</code></td>
+</tr>
+<tr>
+<td><strong>As</strong> <code>Batch</code> <code>Streaming</code></td>
+<td>重命名字段。 <code>Table orders = tableEnv.from(&quot;Orders&quot;).as('x, 'y, 'z, 't)</code></td>
+</tr>
+<tr>
+<td><strong>Where / Filter</strong> <code>Batch</code> <code>Streaming</code></td>
+<td>与SQL WHERE子句类似。 过滤掉未通过过滤谓词的行。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;)</code> <br/><code>Table result = orders.filter($(&quot;a&quot;).mod(2).isEqual(0))</code><br /> or<br /><code>Table orders= tableEnv.from(&quot;Orders&quot;)</code> <br/><code>Table result = orders.where($(&quot;b&quot;).isEqual(&quot;red&quot;))</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="column-operations">Column Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Operators</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AddColumns</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">执行字段添加操作。如果添加的字段已经存在，它将引发异常。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;);</code> <br/><code>Table result = orders.addColumns(concat($(&quot;c&quot;), &quot;sunny&quot;))</code></td>
+</tr>
+<tr>
+<td><strong>AddOrReplaceColumns</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">执行字段添加操作。如果添加列名称与现有列名称相同，则现有字段将被替换。此外，如果添加的字段具有重复的字段名称，则使用最后一个。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;);</code> <br/><code>Table result = orders.addOrReplaceColumns(concat($(&quot;c&quot;), &quot;sunny&quot;).as(&quot;desc&quot;))</code></td>
+</tr>
+<tr>
+<td><strong>DropColumns</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">执行字段删除操作。字段表达式应该是字段引用表达式，并且只能删除现有字段。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;);</code> <br/><code>Table result = orders.dropColumns($(&quot;b&quot;), $(&quot;c&quot;))</code></td>
+</tr>
+<tr>
+<td><strong>RenameColumns</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">执行字段重命名操作。字段表达式应该是别名表达式，并且只有现有字段可以重命名。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;);</code> <br/><code>Table result = orders.renameColumns($(&quot;b&quot;).as(&quot;b2&quot;), $(&quot;c&quot;).as(&quot;c2&quot;))</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="aggregations">Aggregations</h3>
+<table>
+<thead>
+<tr>
+<th>Operators</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GroupBy聚合</strong> <code>Batch</code> <code>Streaming</code> <code>Result Updating</code></td>
+<td style="text-align:left">类似于SQL GROUP BY子句。使用以下正在运行的聚合运算符将分组键上的行分组，以逐行聚合行。<br/> <code>Table orders: Table = tableEnv.scan(&quot;Orders&quot;)</code><br/> <code>Table result = orders.groupBy($(&quot;a&quot;)).select($(&quot;a&quot;), $(&quot;b&quot;).sum().as(&quot;d&quot;))</code> <br/>注意：对于流式查询，计算查询结果所需的状态可能会无限增长，具体取决于聚合类型和不同分组键的数量。 请提供具有有效保留间隔的查询配置，以防止状态过大。 请参阅<a href="https://blog.csdn.net/lp284558195/article/details/104609739">查询配置</a></td>
+</tr>
+<tr>
+<td><strong>GroupBy窗口聚合</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">在组窗口可能的一个或多个分组key上对表进行分组和聚集。<br/> <code>val orders: Table = tableEnv.scan(&quot;Orders&quot;)</code> <br/><code>Table result = orders</code><br />    <code>.window(Tumble.over(lit(5).minutes()).on($(&quot;rowtime&quot;)).as(&quot;w&quot;)) // define window</code><br />    <code>.groupBy($(&quot;a&quot;), $(&quot;w&quot;)) // group by key and window</code><br />  <code>// access window properties and aggregate</code><br />   <code>.select(</code><br />       <code>$(&quot;a&quot;),</code><br />       <code>$(&quot;w&quot;).start(),</code><br />       <code>$(&quot;w&quot;).end(),</code><br />       <code>$(&quot;w&quot;).rowtime(),</code><br />       <code>$(&quot;b&quot;).sum().as(&quot;d&quot;)</code><br />  <code>);</code></td>
+</tr>
+<tr>
+<td><strong>Over 窗口聚合</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">类似于SQL OVER子句。基于前一行和后一行的窗口（范围），为每一行计算窗口聚合。<br/> <code>Table orders = tableEnv.from(&quot;Orders&quot;);</code><br /> <code>Table result = orders // define window</code><br />   <code>.window(</code><br />       <code>Over</code><br />         <code>.partitionBy($(&quot;a&quot;))</code><br />         <code>.orderBy($(&quot;rowtime&quot;))</code><br />         <code>.preceding(UNBOUNDED_RANGE)</code><br />         <code>.following(CURRENT_RANGE)</code><br />         <code>.as(&quot;w&quot;)) // sliding aggregate</code><br />    <code>.select(</code><br />         <code>$(&quot;a&quot;),</code><br />         <code>$(&quot;b&quot;).avg().over($(&quot;w&quot;)),</code><br />         <code>$(&quot;b&quot;).max().over($(&quot;w&quot;)),</code><br />         <code>$(&quot;b&quot;).min().over($(&quot;w&quot;))</code><br />   <code>);</code><br />**Note:**必须在同一窗口（即相同的分区，排序和范围）上定义所有聚合。当前，仅支持PRECEDING（无边界和有界）到CURRENT ROW范围的窗口。目前尚不支持带有FOLLOWING的范围。必须在单个<a href="http://www.lllpan.top/article/55">时间属性</a>上指定ORDER BY。</td>
+</tr>
+<tr>
+<td><strong>Distinct聚合</strong> <code>Batch</code> <code>Streaming</code> <code>Result Updating</code></td>
+<td style="text-align:left">类似于SQL DISTINCT AGGREGATION子句，例如COUNT（DISTINCT a）。不同的聚合声明聚合函数（内置或用户定义的）仅应用于不同的输入值。Distinct聚合可以用于GroupBy聚合，GroupBy窗口聚合和Over窗口聚合。<br/><code>Table orders = tableEnv.from(&quot;Orders&quot;);</code><br /> <code>// Distinct aggregation on group by</code><br /> <code>Table groupByDistinctResult = orders</code><br />   <code>.groupBy($(&quot;a&quot;))</code><br />   <code>.select($(&quot;a&quot;), $(&quot;b&quot;).sum().distinct().as(&quot;d&quot;));</code><br /><code>// Distinct aggregation on time window group by</code><br /> <code>Table groupByWindowDistinctResult = orders</code><br />   <code>.window(Tumble</code><br />          <code>.over(lit(5).minutes())</code><br />          <code>.on($(&quot;rowtime&quot;))</code><br />          <code>.as(&quot;w&quot;)</code><br />   <code>)</code><br />    <code>.groupBy($(&quot;a&quot;), $(&quot;w&quot;))</code><br />    <code>.select($(&quot;a&quot;), $(&quot;b&quot;).sum().distinct().as(&quot;d&quot;));</code><br /><code>// Distinct aggregation on over window</code><br /> <code>Table result = orders</code><br />     <code>.window(Over</code><br />         <code>.partitionBy($(&quot;a&quot;))</code><br />         <code>.orderBy($(&quot;rowtime&quot;))</code><br />         <code>.preceding(UNBOUNDED_RANGE)</code><br />         <code>.as(&quot;w&quot;))</code><br />    <code>.select(</code><br />         <code>$(&quot;a&quot;), $(&quot;b&quot;).avg().distinct().over($(&quot;w&quot;)),</code><br />         <code>$(&quot;b&quot;).max().over($(&quot;w&quot;)),</code><br />         <code>$(&quot;b&quot;).min().over($(&quot;w&quot;))</code><br />    <code>);</code><br />用户定义的聚合函数也可以与DISTINCT修饰符一起使用。要仅针对不同值计算聚合结果，只需向聚合函数添加distinct修饰符即可。 <br /><code>Table orders = tEnv.from(&quot;Orders&quot;);</code><br /> <code>// Use distinct aggregation for user-defined aggregate functions</code><br /><code>tEnv.registerFunction(&quot;myUdagg&quot;, new MyUdagg());</code><br /> <code>orders.groupBy(&quot;users&quot;)</code><br />     <code>.select(</code><br />        <code>$(&quot;users&quot;),</code><br />        <code>call(&quot;myUdagg&quot;, $(&quot;points&quot;)).distinct().as(&quot;myDistinctResult&quot;)</code><br />  <code>);</code><br /> **Note:**对于流式查询，计算查询结果所需的状态可能会无限增长，具体取决于聚合类型和不同分组键的数量。 请提供具有有效保留间隔的查询配置，以防止状态过大。 请参阅<a href="https://blog.csdn.net/lp284558195/article/details/104609739">查询配置</a></td>
+</tr>
+<tr>
+<td><strong>Distinct</strong> <code>Batch</code> <code>Streaming</code> <code>Result Updating</code></td>
+<td style="text-align:left">类似于SQL DISTINCT子句。返回具有不同值组合的记录。<br /> <code>Table orders= tableEnv.from(&quot;Orders&quot;)</code> <br /><code>Table result = orders.distinct()</code><br /> **Note:**对于流查询，根据查询字段的数量，计算查询结果所需的状态可能会无限增长。请提供具有有效保留间隔的查询配置，以防止出现过多的状态。如果启用了状态清除功能，那么distinct必须发出消息，以防止下游运算符过早地退出状态，这会导致distinct包含结果更新。有关详细信息，请参阅<a href="https://blog.csdn.net/lp284558195/article/details/104609739">查询配置</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="joins">Joins</h3>
+<table>
+<thead>
+<tr>
+<th>Operators</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Inner Join</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">类似于SQL JOIN子句。连接两个表。两个表必须具有不同的字段名称，并且至少一个相等的联接谓词必须通过联接运算符或使用where或filter运算符进行定义。<br /><code>Table left = tableEnv.fromDataSet(ds1, &quot;a, b, c&quot;);</code><br /><code>Table right = tableEnv.fromDataSet(ds2, &quot;d, e, f&quot;);</code><br /><code>Table result = left.join(right)</code><br />    <code>.where($(&quot;a&quot;).isEqual($(&quot;d&quot;)))</code><br />    <code>.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;e&quot;));</code><br />Note:** 对于流查询，根据不同输入行的数量，计算查询结果所需的状态可能会无限增长。请提供具有有效保留间隔的查询配置，以防止出现过多的状态。有关详细信息，请参阅<a href="https://blog.csdn.net/lp284558195/article/details/104609739">查询配置</a></td>
+</tr>
+<tr>
+<td><strong>Outer Join</strong> <code>Batch</code> <code>Streaming</code> <code>Result Updating</code></td>
+<td style="text-align:left">类似于SQL LEFT / RIGHT / FULL OUTER JOIN子句。连接两个表。两个表必须具有不同的字段名称，并且必须至少定义一个相等联接谓词。 <br /><code>Table left = tableEnv.fromDataSet(ds1, &quot;a, b, c&quot;);</code><br /><code>Table right = tableEnv.fromDataSet(ds2, &quot;d, e, f&quot;);</code><br /><code>Table leftOuterResult = left.leftOuterJoin(right, $(&quot;a&quot;).isEqual($(&quot;d&quot;)))</code><br />                           <code>.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;e&quot;));</code><br /><code>Table rightOuterResult = left.rightOuterJoin(right, $(&quot;a&quot;).isEqual($(&quot;d&quot;)))</code><br />                         <code>.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;e&quot;));</code><br /><code>Table fullOuterResult = left.fullOuterJoin(right, $(&quot;a&quot;).isEqual($(&quot;d&quot;)))</code><br />                           <code>.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;e&quot;));</code><br /><strong>Note:</strong> 对于流查询，根据不同输入行的数量，计算查询结果所需的状态可能会无限增长。请提供具有有效保留间隔的查询配置，以防止出现过多的状态。有关详细信息，请参阅<a href="https://blog.csdn.net/lp284558195/article/details/104609739">查询配置</a></td>
+</tr>
+<tr>
+<td><strong>Inner/Outer Interval Join</strong><code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left"><strong>Note:</strong> 时间窗口连接是可以以流方式处理的常规子集连接。 时间窗口连接需要至少一个等连接和一个限制双方时间的连接条件。可以通过两个适当的范围谓词（&lt;，&lt;=，&gt; =，&gt;）或比较两个输入表的相同类型的时间属性（即处理时间或事件时间）的单个相等谓词来定义这种条件。 例如，以下是有效的窗口连接条件：<br /> <code>'ltime === 'rtime</code><br /> <code>'ltime &gt;= 'rtime &amp;&amp; 'ltime &lt; 'rtime + 10.minutes</code>  <br /><code>Table left = tableEnv.fromDataSet(ds1, $(&quot;a&quot;), $(&quot;b&quot;), $(&quot;c&quot;), $(&quot;ltime&quot;).rowtime());</code><br /><code>Table right = tableEnv.fromDataSet(ds2, $(&quot;d&quot;), $(&quot;e&quot;), $(&quot;f&quot;), $(&quot;rtime&quot;).rowtime()));</code><br /><code>Table result = left.join(right)</code><br />   <code>.where(</code><br />    <code>and(</code><br />         <code>$(&quot;a&quot;).isEqual($(&quot;d&quot;)),</code><br />         <code>$(&quot;ltime&quot;).isGreaterOrEqual($(&quot;rtime&quot;).minus(lit(5).minutes())),</code><br />         <code>$(&quot;ltime&quot;).isLess($(&quot;rtime&quot;).plus(lit(10).minutes()))</code><br />    <code>))</code><br /> <code>.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;e&quot;), $(&quot;ltime&quot;));</code></td>
+</tr>
+<tr>
+<td><strong>Inner Join with Table Function (UDTF)</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">使用表函数的结果与表连接。左(外)表的每一行都与表函数的相应调用产生的所有行连接在一起。如果其表函数调用返回空结果，则删除左(外)表的一行。<br /> <code>// register User-Defined Table Function</code><br /><code>TableFunction&lt;String&gt; split = new MySplitUDTF();</code><br /><code>tableEnv.registerFunction(&quot;split&quot;, split);</code><br /> <code>// join</code><br /><code>Table orders = tableEnv.from(&quot;Orders&quot;);</code><br /><code>Table result = orders</code><br />     <code>.joinLateral(call(&quot;split&quot;, $(&quot;c&quot;)).as(&quot;s&quot;, &quot;t&quot;, &quot;v&quot;))</code><br />     <code>.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;s&quot;), $(&quot;t&quot;), $(&quot;v&quot;));</code></td>
+</tr>
+<tr>
+<td><strong>Left Outer Join with Table Function (UDTF)</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">使用表函数的结果连接表。 左(外)表的每一行与表函数的相应调用产生的所有行连接。 如果表函数调用返回空结果，则保留相应的外部行，并使用空值填充结果。 **Note:**目前，表函数的左外连接只能为空或为true。<br /><code>// register User-Defined Table Function</code><br /><code>TableFunction&lt;String&gt; split = new MySplitUDTF();</code><br /><code>tableEnv.registerFunction(&quot;split&quot;, split);</code><br /><code>// join</code><br /><code>Table orders = tableEnv.from(&quot;Orders&quot;);</code><br /><code>Table result = orders</code><br />     <code>.leftOuterJoinLateral(call(&quot;split&quot;, $(&quot;c&quot;)).as(&quot;s&quot;, &quot;t&quot;, &quot;v&quot;))</code><br />     <code>.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;s&quot;), $(&quot;t&quot;), $(&quot;v&quot;));</code></td>
+</tr>
+<tr>
+<td><strong>Join with Temporal Table</strong> <code>Streaming</code></td>
+<td style="text-align:left"><a href="http://www.lllpan.top/article/54">时态表</a>是跟踪其随时间变化的表。 时态表功能提供对特定时间点时态表状态的访问。使用时态表函数联接表的语法与使用表函数进行内部联接的语法相同。 **Note:**当前仅支持使用临时表的内部联接。 <br /><code>Table ratesHistory = tableEnv.from(&quot;RatesHistory&quot;);</code><br /><code>// register temporal table function with a time attribute and primary key</code><br /><code>TemporalTableFunction rates = ratesHistory.createTemporalTableFunction(</code><br />   <code>&quot;r_proctime&quot;,</code><br />   <code>&quot;r_currency&quot;);</code><br /><code>tableEnv.registerFunction(&quot;rates&quot;, rates);</code><br /><code>// join with &quot;Orders&quot; based on the time attribute and key</code><br /><code>Table orders = tableEnv.from(&quot;Orders&quot;);</code><br /><code>Table result = orders</code><br />    <code>.joinLateral(call(&quot;rates&quot;, $(&quot;o_proctime&quot;)), $(&quot;o_currency&quot;).isEqual($(&quot;r_currency&quot;)))</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="集合算子">集合算子</h3>
+<table>
+<thead>
+<tr>
+<th>Operators</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Union</strong> <code>Batch</code></td>
+<td style="text-align:left">类似于SQL UNION子句。合并两个已删除重复记录的表，两个表必须具有相同的字段类型。<br /> <code>Table left = ds1.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table right = ds2.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table result = left.union(right)</code></td>
+</tr>
+<tr>
+<td><strong>UnionAll</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">类似于SQL UNION ALL子句。合并两个表，两个表必须具有相同的字段类型。<br /> <code>Table left = ds1.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table right = ds2.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table result = left.unionAll(right)</code></td>
+</tr>
+<tr>
+<td><strong>Intersect</strong> <code>Batch</code></td>
+<td style="text-align:left">类似于SQL INTERSECT子句。相交返回两个表中都存在的记录。如果一个记录在一个或两个表中多次出现，则仅返回一次，即结果表中没有重复的记录。两个表必须具有相同的字段类型。<br /> <code>Table left = ds1.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table right = ds2.toTable(tableEnv, 'a, 'b, 'c)</code><br /><code>Table result = left.intersect(right)</code></td>
+</tr>
+<tr>
+<td><strong>IntersectAll</strong> <code>Batch</code></td>
+<td style="text-align:left">类似于SQL INTERSECT ALL子句。IntersectAll返回两个表中都存在的记录。如果一个记录在两个表中都存在一次以上，则返回的次数与两个表中存在的次数相同，即，结果表可能具有重复的记录。两个表必须具有相同的字段类型。 <br /> <code>Table left = ds1.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table right = ds2.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table result = left.intersectAll(right)</code></td>
+</tr>
+<tr>
+<td><strong>Minus</strong> <code>Batch</code></td>
+<td style="text-align:left">类似于SQL EXCEPT子句。Minus返回左表中右表中不存在的记录。左表中的重复记录只返回一次，即删除重复项。 两个表必须具有相同的字段类型。 <br /> <code>Table left = ds1.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table right = ds2.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table result = left.minus(right)</code></td>
+</tr>
+<tr>
+<td><strong>MinusAll</strong> <code>Batch</code></td>
+<td style="text-align:left">类似于SQL EXCEPT ALL子句。 MinusAll返回右表中不存在的记录。 在左表中出现n次并在右表中出现m次的记录返回（n-m）次，即，删除右表中出现的重复数。 两个表必须具有相同的字段类型。 <br /> <code>Table left = ds1.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table right = ds2.toTable(tableEnv, 'a, 'b, 'c)</code><br /> <code>Table result = left.minusAll(right)</code></td>
+</tr>
+<tr>
+<td><strong>In</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">与SQL IN子句类似。 如果表达式存在于给定的表子查询中，则返回true。 子查询表必须包含一列。 此列必须与表达式具有相同的数据类型。<br /> <code>Table left = ds1.toTable(tableEnv, &quot;a, b, c&quot;);</code><br /> <code>Table right = ds2.toTable(tableEnv, &quot;a&quot;);</code><br /> <code>Table result = left.select($(&quot;a&quot;), $(&quot;b&quot;), $(&quot;c&quot;)).where($(&quot;a&quot;).in(right));</code><br /><strong>Note:</strong> 对于流查询，该操作将被重写为join and group操作。根据不同的输入行的数量，计算查询结果所需的状态可能会无限增长。请提供具有有效保留间隔的查询配置，以防止出现过多的状态。有关详细信息，请参阅<a href="https://blog.csdn.net/lp284558195/article/details/104609739">查询配置</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="orderby-offset-fetch">OrderBy, Offset &amp; Fetch</h3>
+<table>
+<thead>
+<tr>
+<th>Operators</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Order By</strong> <code>Batch</code></td>
+<td style="text-align:left">类似于SQL ORDER BY子句。返回在所有并行分区上全局排序的记录。<br /><code>Table in = tableEnv.fromDataSet(ds, &quot;a, b, c&quot;);</code><br /> <code>Table result = in.orderBy($(&quot;a&quot;).asc()&quot;);</code></td>
+</tr>
+<tr>
+<td><strong>Offset &amp; Fetch</strong> <code>Batch</code></td>
+<td style="text-align:left">类似于SQL OFFSET和FETCH子句。偏移和提取限制了从排序结果返回的记录数。偏移和提取在技术上是Order By运算符的一部分，因此必须在其之前。<br /><code>Table in = tableEnv.fromDataSet(ds, &quot;a, b, c&quot;);</code><br />  <code>// returns the first 5 records from the sorted result</code><br /><code>Table result1 = in.orderBy($(&quot;a&quot;).asc()).fetch(5);</code><br /> <code>// skips the first 3 records and returns all following records from the sorted result</code><br /><code>Table result2 = in.orderBy($(&quot;a&quot;).asc()).offset(3);</code><br /><code>// skips the first 10 records and returns the next 5 records from the sorted result</code><br /><code>Table result3 = in.orderBy($(&quot;a&quot;).asc()).offset(10).fetch(5);</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="insert">Insert</h3>
+<table>
+<thead>
+<tr>
+<th>Operators</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Insert Into</strong> <code>Batch</code> <code>Streaming</code></td>
+<td style="text-align:left">与SQL查询中的INSERT INTO子句相似。在已插入的输出表中执行插入。 输出表必须在TableEnvironment中注册。此外，已注册表的模式必须与查询的模式匹配。 <br /><code>Table orders = tableEnv.from(&quot;Orders&quot;);</code><br /><code>orders.executeInsert(&quot;OutOrders&quot;);</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="group-windows">Group Windows</h3>
+<p>组窗口根据时间或行计数（row-count ）间隔将行组聚合为有限组，并按组聚合函数。 对于批处理表，窗口是按时间间隔对记录进行分组的便捷快捷方式。</p>
+<p>Windows是使用window（w：GroupWindow）子句定义的，并且需要使用as子句指定的别名。为了按窗口对表进行分组，必须像常规分组属性一样在groupBy（…）子句中引用窗口别名。</p>
+<p>以下示例显示如何在表上定义窗口聚合。</p>
+<pre><code class="language-java">Table table = input
+  .window([GroupWindow w].as(&quot;w&quot;))  // define window with alias w
+  .groupBy($(&quot;w&quot;))  // group the table by window w
+  .select($(&quot;b&quot;).sum());  // aggregate
+</code></pre>
+<p>在流式环境中，如果窗口聚合除了窗口之外还在一个或多个属性上进行分组，则它们只能并行计算。即groupBy（…）子句引用了窗口别名和至少一个其他属性。仅引用窗口别名的groupBy（…）子句（例如上例中的子句）只能由单个非并行任务求值。以下示例显示如何使用其他分组属性定义窗口聚合。</p>
+<pre><code class="language-java">Table table = input
+  .window([GroupWindow w].as(&quot;w&quot;))  // define window with alias w
+  .groupBy($(&quot;w&quot;), $(&quot;a&quot;))  // group the table by attribute a and window w
+  .select($(&quot;a&quot;), $(&quot;b&quot;).sum());  // aggregate
+</code></pre>
+<p>可以在select语句中将窗口属性（例如时间窗口的开始，结束或行时间戳）添加为窗口别名的属性，分别为w.start，w.end和w.rowtime。窗口开始和行时间时间戳是包含窗口的上下边界。相反，窗口结束时间戳是唯一的窗口上边界。例如，从下午2点开始的30分钟滚动窗口将以14：00：00.000作为开始时间戳，以14：29：59.999作为行时间时间戳，以14：30：00.000作为结束时间戳。</p>
+<pre><code class="language-java">Table table = input
+  .window([GroupWindow w].as(&quot;w&quot;))  // define window with alias w
+  .groupBy($(&quot;w&quot;), $(&quot;a&quot;))  // group the table by attribute a and window w
+  .select($(&quot;a&quot;), $(&quot;w&quot;).start(), $(&quot;w&quot;).end(), $(&quot;w&quot;).rowtime(), $(&quot;b&quot;).count()); // aggregate and add window start, end, and rowtime timestamps
+</code></pre>
+<p>Window参数定义如何将行映射到窗口。窗口不是用户可以实现的接口。相反，Table API提供了一组具有特定语义的预定义Window类，这些类被转换为基础的DataStream或DataSet操作。支持的窗口定义在下面列出。</p>
+<h4 id="tumble-滚动窗口">Tumble (滚动窗口)</h4>
+<p>滚动窗口将行分配给固定长度的不重叠的连续窗口。</p>
+<p>例如，5分钟的翻滚窗口以5分钟为间隔对行进行分组。 可以在事件时间，处理时间或行数上定义翻滚窗口。使用Tumble类定义翻滚窗口如下：</p>
+<p>滚动窗口是使用Tumble类定义的，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>over</td>
+<td style="text-align:left">定义窗口的长度，可以是时间间隔也可以是行数间隔。</td>
+</tr>
+<tr>
+<td>on</td>
+<td style="text-align:left">时间属性为组（时间间隔）或排序（行计数）。 对于批处理查询，这可能是任何Long或Timestamp属性。 对于流式查询，这必须是声明的事件时间或处理时间属性。</td>
+</tr>
+<tr>
+<td>as</td>
+<td style="text-align:left">为窗口指定别名。 别名用于引用以下groupBy（）子句中的窗口，并可选择在select（）子句中选择窗口属性，如window start，end或rowtime timestamp。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-java">// Tumbling Event-time Window
+.window(Tumble.over(lit(10).minutes()).on($(&quot;rowtime&quot;)).as(&quot;w&quot;));
+
+// Tumbling Processing-time Window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Tumble.over(lit(10).minutes()).on($(&quot;proctime&quot;)).as(&quot;w&quot;));
+
+// Tumbling Row-count Window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Tumble.over(rowInterval(10)).on($(&quot;proctime&quot;)).as(&quot;w&quot;));
+</code></pre>
+<h4 id="slide-滑动窗口">Slide (滑动窗口)</h4>
+<p>滑动窗口的大小固定，并以指定的滑动间隔滑动。如果滑动间隔小于窗口大小，则滑动窗口重叠。因此，可以将行分配给多个窗口。</p>
+<p>例如，15分钟大小和5分钟滑动间隔的滑动窗口将每行分配给3个不同的15分钟大小的窗口，这些窗口以5分钟的间隔进行调用。 可以在事件时间，处理时间或行数上定义滑动窗口。</p>
+<p>滑动窗口是通过使用Slide类定义的，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>over</td>
+<td>定义窗口的长度，可以是时间或行计数间隔。</td>
+</tr>
+<tr>
+<td>every</td>
+<td>定义滑动间隔，可以是时间间隔也可以是行数。 滑动间隔必须与大小间隔的类型相同。</td>
+</tr>
+<tr>
+<td>on</td>
+<td>时间属性为组（时间间隔）或排序（行计数）。 对于批处理查询，这可能是任何Long或Timestamp属性。 对于流式查询，这必须是<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.10/dev/table/streaming/time_attributes.html">声明的事件时间或处理时间属性</a>。</td>
+</tr>
+<tr>
+<td>as</td>
+<td>为窗口指定别名。 别名用于引用以下groupBy（）子句中的窗口，并可选择在select（）子句中选择窗口属性，如window start，end或rowtime timestamp。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-java">// Sliding Event-time Window
+.window(Slide.over(lit(10).minutes())
+            .every(lit(5).minutes())
+            .on($(&quot;rowtime&quot;))
+            .as(&quot;w&quot;));
+
+// Sliding Processing-time window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Slide.over(lit(10).minutes())
+            .every(lit(5).minutes())
+            .on($(&quot;proctime&quot;))
+            .as(&quot;w&quot;));
+
+// Sliding Row-count window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Slide.over(rowInterval(10)).every(rowInterval(5)).on($(&quot;proctime&quot;)).as(&quot;w&quot;));
+</code></pre>
+<h4 id="session-会话窗口">Session (会话窗口)</h4>
+<p>会话窗口没有固定的大小，但是其边界由不活动的时间间隔定义，即如果在定义的间隔时间内没有事件出现，则会话窗口关闭。</p>
+<p>例如，间隔30分钟的会话窗口会在30分钟不活动后观察到一行（否则该行将被添加到现有窗口）后开始，如果30分钟内未添加任何行，则关闭该窗口。会话窗口可以在事件时间或处理时间工作。</p>
+<p>会话窗口是通过使用Session类定义的，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>withGap</td>
+<td>将两个窗口之间的间隔定义为时间间隔。</td>
+</tr>
+<tr>
+<td>on</td>
+<td>时间属性为组（时间间隔）或排序（行计数）。 对于批处理查询，这可能是任何Long或Timestamp属性。 对于流式查询，这必须是声明的事件时间或处理时间属性。</td>
+</tr>
+<tr>
+<td>as</td>
+<td>为窗口指定别名。 别名用于引用以下groupBy（）子句中的窗口，并可选择在select（）子句中选择窗口属性，如window start，end或rowtime timestamp。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-java">// Session Event-time Window
+.window(Session.withGap(lit(10).minutes()).on($(&quot;rowtime&quot;)).as(&quot;w&quot;));
+
+// Session Processing-time Window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Session.withGap(lit(10).minutes()).on($(&quot;proctime&quot;)).as(&quot;w&quot;));
+</code></pre>
+<h3 id="over-windows">Over Windows</h3>
+<p>窗口聚合是标准SQL（OVER子句）已知的，并在查询的SELECT子句中定义。与在GROUP BY子句中指定的组窗口不同，在窗口上方不会折叠行。取而代之的是在窗口聚合中，为每个输入行在其相邻行的范围内计算聚合。</p>
+<p>使用window（w：OverWindow <em>）子句（在Python API中使用over_window（</em> OverWindow））定义窗口，并在select() 方法中通过别名引用。以下示例显示如何在表上定义窗口聚合。</p>
+<pre><code class="language-java">Table table = input
+  .window([OverWindow w].as(&quot;w&quot;))           // define over window with alias w
+  .select($(&quot;a&quot;), $(&quot;b&quot;).sum().over($(&quot;w&quot;)), $(&quot;c&quot;).min().over($(&quot;w&quot;))); // aggregate over the over window w
+</code></pre>
+<p>OverWindow定义了计算聚合的行范围。OverWindow不是用户可以实现的接口。相反，Table API提供了Over类来配置over窗口的属性。可以在事件时间或处理时间以及指定为时间间隔或行计数的范围上定义窗口上方。受支持的over窗口定义作为Over（和其他类）上的方法公开，并在下面列出：</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>partitionBy</td>
+<td>Optional</td>
+<td>在一个或多个属性上定义输入的分区。每个分区都经过单独排序，并且聚合函数分别应用于每个分区。 <strong>Note:</strong> 在流环境中，如果窗口包含partition by子句，则只能并行计算整个窗口聚合。没有partitionBy（…），流将由单个非并行任务处理。</td>
+</tr>
+<tr>
+<td>orderBy</td>
+<td>Required</td>
+<td>定义每个分区内的行顺序，从而定义将聚合函数应用于行的顺序。 <strong>Note:</strong> 对于流查询，它必须是声明的事件时间或处理时间时间属性。当前，仅支持单个sort属性。</td>
+</tr>
+<tr>
+<td>preceding</td>
+<td>Optional</td>
+<td>定义窗口中包含的并在当前行之前的行的间隔。该间隔可以指定为时间间隔或行计数间隔。 用时间间隔的大小指定窗口上的边界，例如，时间间隔为10分钟，行计数间隔为10行。 使用常数指定窗口上的无边界，即对于时间间隔为UNBOUNDED_RANGE或对于行计数间隔为UNBOUNDED_ROW。Windows上的无边界从分区的第一行开始。 如果省略了前面的子句，则将UNBOUNDED_RANGE和CURRENT_RANGE用作窗口的默认前后。</td>
+</tr>
+<tr>
+<td>following</td>
+<td>Optional</td>
+<td>定义窗口中包含并紧随当前行的行的窗口间隔。该间隔必须与前面的间隔（时间或行计数）以相同的单位指定。目前，不支持具有当前行之后的行的窗口。而是可以指定两个常量之一： 1. CURRENT_ROW将窗口的上限设置为当前行。 2. CURRENT_RANGE将窗口的上限设置为当前行的排序键，即，与当前行具有相同排序键的所有行都包含在窗口中。 如果省略以下子句，则将时间间隔窗口的上限定义为CURRENT_RANGE，将行计数间隔窗口的上限定义为CURRENT_ROW。</td>
+</tr>
+<tr>
+<td>as</td>
+<td>Required</td>
+<td>为上方窗口分配别名。别名用于引用以下select（）子句中的over窗口。</td>
+</tr>
+</tbody>
+</table>
+<p>注意：当前，同一select（）调用中的所有聚合函数必须在相同的窗口范围内计算。</p>
+<h4 id="unbounded-over-windows">Unbounded Over Windows</h4>
+<pre><code class="language-java">// Unbounded Event-time over window (assuming an event-time attribute &quot;rowtime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy($(&quot;rowtime&quot;)).preceding(UNBOUNDED_RANGE).as(&quot;w&quot;));
+
+// Unbounded Processing-time over window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy(&quot;proctime&quot;).preceding(UNBOUNDED_RANGE).as(&quot;w&quot;));
+
+// Unbounded Event-time Row-count over window (assuming an event-time attribute &quot;rowtime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy($(&quot;rowtime&quot;)).preceding(UNBOUNDED_ROW).as(&quot;w&quot;));
+ 
+// Unbounded Processing-time Row-count over window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy($(&quot;proctime&quot;)).preceding(UNBOUNDED_ROW).as(&quot;w&quot;));
+</code></pre>
+<h4 id="bounded-over-windows">Bounded Over Windows</h4>
+<pre><code class="language-java">// Bounded Event-time over window (assuming an event-time attribute &quot;rowtime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy($(&quot;rowtime&quot;)).preceding(lit(1).minutes()).as(&quot;w&quot;))
+
+// Bounded Processing-time over window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy($(&quot;proctime&quot;)).preceding(lit(1).minutes()).as(&quot;w&quot;))
+
+// Bounded Event-time Row-count over window (assuming an event-time attribute &quot;rowtime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy($(&quot;rowtime&quot;)).preceding(rowInterval(10)).as(&quot;w&quot;))
+ 
+// Bounded Processing-time Row-count over window (assuming a processing-time attribute &quot;proctime&quot;)
+.window(Over.partitionBy($(&quot;a&quot;)).orderBy($(&quot;proctime&quot;)).preceding(rowInterval(10)).as(&quot;w&quot;))
+</code></pre>
+<h3 id="基于行的操作">基于行的操作</h3>
+<p>基于行的操作生成具有多列的输出。</p>
+<ul>
+<li>
+<p><strong>Map</strong> <code>Batch</code> <code>Streaming</code></p>
+<p>使用用户定义的标量函数或内置标量函数执行映射操作。如果输出类型是复合类型，则输出将被展平。</p>
+<pre><code class="language-java">public class MyMapFunction extends ScalarFunction {
+    public Row eval(String a) {
+        return Row.of(a, &quot;pre-&quot; + a);
+    }
+
+    @Override
+    public TypeInformation&lt;?&gt; getResultType(Class&lt;?&gt;[] signature) {
+        return Types.ROW(Types.STRING(), Types.STRING());
+    }
+}
+
+ScalarFunction func = new MyMapFunction();
+tableEnv.registerFunction(&quot;func&quot;, func);
+
+Table table = input
+  .map(call(&quot;func&quot;, $(&quot;c&quot;)).as(&quot;a&quot;, &quot;b&quot;))
+</code></pre>
+</li>
+<li>
+<p><strong>FlatMap</strong> <code>Batch</code> <code>Streaming</code></p>
+<p>使用表函数执行flatMap操作。</p>
+<pre><code class="language-java">public class MyFlatMapFunction extends TableFunction&lt;Row&gt; {
+
+    public void eval(String str) {
+        if (str.contains(&quot;#&quot;)) {
+            String[] array = str.split(&quot;#&quot;);
+            for (int i = 0; i &lt; array.length; ++i) {
+                collect(Row.of(array[i], array[i].length()));
+            }
+        }
+    }
+
+    @Override
+    public TypeInformation&lt;Row&gt; getResultType() {
+        return Types.ROW(Types.STRING(), Types.INT());
+    }
+}
+
+TableFunction func = new MyFlatMapFunction();
+tableEnv.registerFunction(&quot;func&quot;, func);
+
+Table table = input
+  .flatMap(call(&quot;func&quot;, $(&quot;c&quot;)).as(&quot;a&quot;, &quot;b&quot;))
+</code></pre>
+</li>
+<li>
+<p><strong>Aggregate</strong> <code>Batch</code> <code>Streaming</code> <code>Result Updating</code></p>
+<p>使用聚合函数执行聚合操作。您必须使用select语句关闭“聚合”，并且select语句不支持聚合函数。如果输出类型是复合类型，则聚合的输出将被展平。</p>
+<pre><code class="language-java">public class MyMinMaxAcc {
+    public int min = 0;
+    public int max = 0;
+}
+
+public class MyMinMax extends AggregateFunction&lt;Row, MyMinMaxAcc&gt; {
+
+    public void accumulate(MyMinMaxAcc acc, int value) {
+        if (value &lt; acc.min) {
+            acc.min = value;
+        }
+        if (value &gt; acc.max) {
+            acc.max = value;
+        }
+    }
+
+    @Override
+    public MyMinMaxAcc createAccumulator() {
+        return new MyMinMaxAcc();
+    }
+
+    public void resetAccumulator(MyMinMaxAcc acc) {
+        acc.min = 0;
+        acc.max = 0;
+    }
+
+    @Override
+    public Row getValue(MyMinMaxAcc acc) {
+        return Row.of(acc.min, acc.max);
+    }
+
+    @Override
+    public TypeInformation&lt;Row&gt; getResultType() {
+        return new RowTypeInfo(Types.INT, Types.INT);
+    }
+}
+
+AggregateFunction myAggFunc = new MyMinMax();
+tableEnv.registerFunction(&quot;myAggFunc&quot;, myAggFunc);
+Table table = input
+  .groupBy($(&quot;key&quot;))
+  .aggregate(call(&quot;myAggFunc&quot;, $(&quot;a&quot;)).as(&quot;x&quot;, &quot;y&quot;))
+  .select($(&quot;key&quot;), $(&quot;x&quot;), $(&quot;y&quot;))
+</code></pre>
+</li>
+<li>
+<p><strong>Group Window Aggregate</strong> <code>Batch</code> <code>Streaming</code></p>
+<p>在组窗口和可能的一个或多个分组键上对表进行分组和聚集。您必须使用select语句关闭“聚合”。并且select语句不支持“ *”或聚合函数。</p>
+<pre><code class="language-java">AggregateFunction myAggFunc = new MyMinMax();
+tableEnv.registerFunction(&quot;myAggFunc&quot;, myAggFunc);
+
+Table table = input
+    .window(Tumble.over(lit(5).minutes())
+                  .on($(&quot;rowtime&quot;))
+                  .as(&quot;w&quot;)) // define window
+    .groupBy($(&quot;key&quot;), $(&quot;w&quot;)) // group by key and window
+    .aggregate(call(&quot;myAggFunc&quot;, $(&quot;a&quot;)).as(&quot;x&quot;, &quot;y&quot;))
+    .select($(&quot;key&quot;), $(&quot;x&quot;), $(&quot;y&quot;), $(&quot;w&quot;).start(), $(&quot;w&quot;).end()); // access window properties and aggregate results
+</code></pre>
+</li>
+<li>
+<p><strong>FlatAggregate</strong> <code>Batch</code> <code>Streaming</code></p>
+<p>类似于GroupBy聚合。使用以下运行表聚合运算符将分组键上的行分组，以逐行聚合行。与AggregateFunction的区别在于TableAggregateFunction可以为一个组返回0个或更多记录。您必须使用select语句关闭“ flatAggregate”。并且select语句不支持聚合函数。除了使用emitValue来输出结果之外，还可以使用emitUpdateWithRetract方法。与emitValue不同，emitUpdateWithRetract用于发出已更新的值。此方法在撤消模式下增量输出数据，即，一旦有更新，我们就必须撤消旧记录，然后再发送新的更新记录。如果在表聚合函数中定义了这两种方法，则将优先使用emitUpdateWithRetract方法，因为这两种方法比emitValue更有效，因为它可以增量输出值。</p>
+<pre><code class="language-java">/**
+ * Accumulator for Top2.
+ */
+public class Top2Accum {
+    public Integer first;
+    public Integer second;
+}
+
+/**
+ * The top2 user-defined table aggregate function.
+ */
+public class Top2 extends TableAggregateFunction&lt;Tuple2&lt;Integer, Integer&gt;, Top2Accum&gt; {
+
+    @Override
+    public Top2Accum createAccumulator() {
+        Top2Accum acc = new Top2Accum();
+        acc.first = Integer.MIN_VALUE;
+        acc.second = Integer.MIN_VALUE;
+        return acc;
+    }
+
+
+    public void accumulate(Top2Accum acc, Integer v) {
+        if (v &gt; acc.first) {
+            acc.second = acc.first;
+            acc.first = v;
+        } else if (v &gt; acc.second) {
+            acc.second = v;
+        }
+    }
+
+    public void merge(Top2Accum acc, java.lang.Iterable&lt;Top2Accum&gt; iterable) {
+        for (Top2Accum otherAcc : iterable) {
+            accumulate(acc, otherAcc.first);
+            accumulate(acc, otherAcc.second);
+        }
+    }
+
+    public void emitValue(Top2Accum acc, Collector&lt;Tuple2&lt;Integer, Integer&gt;&gt; out) {
+        // emit the value and rank
+        if (acc.first != Integer.MIN_VALUE) {
+            out.collect(Tuple2.of(acc.first, 1));
+        }
+        if (acc.second != Integer.MIN_VALUE) {
+            out.collect(Tuple2.of(acc.second, 2));
+        }
+    }
+}
+
+tEnv.registerFunction(&quot;top2&quot;, new Top2());
+Table orders = tableEnv.from(&quot;Orders&quot;);
+Table result = orders
+    .groupBy($(&quot;key&quot;))
+    .flatAggregate(call(&quot;top2&quot;, $(&quot;a&quot;)).as(&quot;v&quot;, &quot;rank&quot;))
+    .select($(&quot;key&quot;), $(&quot;v&quot;), $(&quot;rank&quot;);
+</code></pre>
+<p>**Note:**对于流查询，根据聚合的类型和不同的分组键的数量，计算查询结果所需的状态可能会无限增长。请提供具有有效保留间隔的查询配置，以防止出现过多的状态。有关详细信息，请参见查询配置。</p>
+</li>
+<li>
+<p><strong>Group Window FlatAggregate</strong> <code>Batch</code> <code>Streaming</code></p>
+<p>在组窗口和可能的一个或多个分组键上对表进行分组和聚集。您必须使用select语句关闭“ flatAggregate”。并且select语句不支持聚合函数。</p>
+<pre><code class="language-java">tableEnv.registerFunction(&quot;top2&quot;, new Top2());
+Table orders = tableEnv.from(&quot;Orders&quot;);
+Table result = orders
+    .window(Tumble.over(lit(5).minutes())
+                  .on($(&quot;rowtime&quot;))
+                  .as(&quot;w&quot;)) // define window
+    .groupBy($(&quot;a&quot;), $(&quot;w&quot;)) // group by key and window
+    .flatAggregate(call(&quot;top2&quot;, $(&quot;b&quot;).as(&quot;v&quot;, &quot;rank&quot;))
+    .select($(&quot;a&quot;), $(&quot;w&quot;).start(), $(&quot;w&quot;).end(), $(&quot;w&quot;).rowtime(), $(&quot;v&quot;), $(&quot;rank&quot;)); // access window properties and aggregate results
+</code></pre>
+</li>
+</ul>
+<h2 id="data-types">Data Types</h2>
+<p>请参阅有关<a href="http://www.lllpan.top/article/52">数据类型</a>的专用页面。通用类型和（嵌套的）复合类型（例如POJO，元组，行，Scala案例类）也可以是一行的字段。可以使用值访问功能访问具有任意嵌套的复合类型的字段。泛型类型被视为黑盒，可以通过用户定义的函数传递或处理。</p>
+<h2 id="表达式语法">表达式语法</h2>
+<p>前面几节中的某些运算符期望一个或多个表达式。可以使用嵌入式Scala DSL或字符串指定表达式。请参考上面的示例以了解如何指定表达式。</p>
+<p>这是用于表达式的EBNF语法：</p>
+<pre><code class="language-sh">expressionList = expression , { &quot;,&quot; , expression } ;
+
+expression = overConstant | alias ;
+
+alias = logic | ( logic , &quot;as&quot; , fieldReference ) | ( logic , &quot;as&quot; , &quot;(&quot; , fieldReference , { &quot;,&quot; , fieldReference } , &quot;)&quot; ) ;
+
+logic = comparison , [ ( &quot;&amp;&amp;&quot; | &quot;||&quot; ) , comparison ] ;
+
+comparison = term , [ ( &quot;=&quot; | &quot;==&quot; | &quot;===&quot; | &quot;!=&quot; | &quot;!==&quot; | &quot;&gt;&quot; | &quot;&gt;=&quot; | &quot;&lt;&quot; | &quot;&lt;=&quot; ) , term ] ;
+
+term = product , [ ( &quot;+&quot; | &quot;-&quot; ) , product ] ;
+
+product = unary , [ ( &quot;*&quot; | &quot;/&quot; | &quot;%&quot;) , unary ] ;
+
+unary = [ &quot;!&quot; | &quot;-&quot; | &quot;+&quot; ] , composite ;
+
+composite = over | suffixed | nullLiteral | prefixed | atom ;
+
+suffixed = interval | suffixAs | suffixCast | suffixIf | suffixDistinct | suffixFunctionCall | timeIndicator ;
+
+prefixed = prefixAs | prefixCast | prefixIf | prefixDistinct | prefixFunctionCall ;
+
+interval = timeInterval | rowInterval ;
+
+timeInterval = composite , &quot;.&quot; , (&quot;year&quot; | &quot;years&quot; | &quot;quarter&quot; | &quot;quarters&quot; | &quot;month&quot; | &quot;months&quot; | &quot;week&quot; | &quot;weeks&quot; | &quot;day&quot; | &quot;days&quot; | &quot;hour&quot; | &quot;hours&quot; | &quot;minute&quot; | &quot;minutes&quot; | &quot;second&quot; | &quot;seconds&quot; | &quot;milli&quot; | &quot;millis&quot;) ;
+
+rowInterval = composite , &quot;.&quot; , &quot;rows&quot; ;
+
+suffixCast = composite , &quot;.cast(&quot; , dataType , &quot;)&quot; ;
+
+prefixCast = &quot;cast(&quot; , expression , dataType , &quot;)&quot; ;
+
+dataType = &quot;BYTE&quot; | &quot;SHORT&quot; | &quot;INT&quot; | &quot;LONG&quot; | &quot;FLOAT&quot; | &quot;DOUBLE&quot; | &quot;BOOLEAN&quot; | &quot;STRING&quot; | &quot;DECIMAL&quot; | &quot;SQL_DATE&quot; | &quot;SQL_TIME&quot; | &quot;SQL_TIMESTAMP&quot; | &quot;INTERVAL_MONTHS&quot; | &quot;INTERVAL_MILLIS&quot; | ( &quot;MAP&quot; , &quot;(&quot; , dataType , &quot;,&quot; , dataType , &quot;)&quot; ) | ( &quot;PRIMITIVE_ARRAY&quot; , &quot;(&quot; , dataType , &quot;)&quot; ) | ( &quot;OBJECT_ARRAY&quot; , &quot;(&quot; , dataType , &quot;)&quot; ) ;
+
+suffixAs = composite , &quot;.as(&quot; , fieldReference , &quot;)&quot; ;
+
+prefixAs = &quot;as(&quot; , expression, fieldReference , &quot;)&quot; ;
+
+suffixIf = composite , &quot;.?(&quot; , expression , &quot;,&quot; , expression , &quot;)&quot; ;
+
+prefixIf = &quot;?(&quot; , expression , &quot;,&quot; , expression , &quot;,&quot; , expression , &quot;)&quot; ;
+
+suffixDistinct = composite , &quot;distinct.()&quot; ;
+
+prefixDistinct = functionIdentifier , &quot;.distinct&quot; , [ &quot;(&quot; , [ expression , { &quot;,&quot; , expression } ] , &quot;)&quot; ] ;
+
+suffixFunctionCall = composite , &quot;.&quot; , functionIdentifier , [ &quot;(&quot; , [ expression , { &quot;,&quot; , expression } ] , &quot;)&quot; ] ;
+
+prefixFunctionCall = functionIdentifier , [ &quot;(&quot; , [ expression , { &quot;,&quot; , expression } ] , &quot;)&quot; ] ;
+
+atom = ( &quot;(&quot; , expression , &quot;)&quot; ) | literal | fieldReference ;
+
+fieldReference = &quot;*&quot; | identifier ;
+
+nullLiteral = &quot;nullOf(&quot; , dataType , &quot;)&quot; ;
+
+timeIntervalUnit = &quot;YEAR&quot; | &quot;YEAR_TO_MONTH&quot; | &quot;MONTH&quot; | &quot;QUARTER&quot; | &quot;WEEK&quot; | &quot;DAY&quot; | &quot;DAY_TO_HOUR&quot; | &quot;DAY_TO_MINUTE&quot; | &quot;DAY_TO_SECOND&quot; | &quot;HOUR&quot; | &quot;HOUR_TO_MINUTE&quot; | &quot;HOUR_TO_SECOND&quot; | &quot;MINUTE&quot; | &quot;MINUTE_TO_SECOND&quot; | &quot;SECOND&quot; ;
+
+timePointUnit = &quot;YEAR&quot; | &quot;MONTH&quot; | &quot;DAY&quot; | &quot;HOUR&quot; | &quot;MINUTE&quot; | &quot;SECOND&quot; | &quot;QUARTER&quot; | &quot;WEEK&quot; | &quot;MILLISECOND&quot; | &quot;MICROSECOND&quot; ;
+
+over = composite , &quot;over&quot; , fieldReference ;
+
+overConstant = &quot;current_row&quot; | &quot;current_range&quot; | &quot;unbounded_row&quot; | &quot;unbounded_row&quot; ;
+
+timeIndicator = fieldReference , &quot;.&quot; , ( &quot;proctime&quot; | &quot;rowtime&quot; ) ;
+</code></pre>
+<p><strong>文字</strong>：这里的文字是有效的Java文字。字符串文字可以使用单引号或双引号指定。复制引号以进行转义（例如“是我。”或“我”喜欢”狗。”）。</p>
+<p><strong>空文字</strong>：空文字必须附加一个类型。使用nullOf（type）（例如nullOf（INT））创建空值。</p>
+<p><strong>字段引用</strong>：fieldReference指定数据中的一列（如果使用*，则指定所有列），而functionIdentifier指定受支持的标量函数。列名和函数名遵循Java标识符语法。</p>
+<p><strong>函数调用</strong>：指定为字符串的表达式也可以使用前缀表示法而不是后缀表示法来调用运算符和函数。</p>
+<p><strong>小数</strong>：如果需要使用精确的数值或大的小数，则Table API还支持Java的BigDecimal类型。在Scala Table API中，小数可以由BigDecimal（“ 123456”）定义，而在Java中，可以通过附加“ p”来精确定义例如123456页</p>
+<p><strong>时间表示</strong>：为了使用时间值，Table API支持Java SQL的日期，时间和时间戳类型。在Scala Table API中，可以使用java.sql.Date.valueOf（“ 2016-06-27”），java.sql.Time.valueOf（“ 10:10:42”）或java.sql定义文字。Timestamp.valueOf（“ 2016-06-27 10：10：42.123”）。Java和Scala表API还支持调用“ 2016-06-27” .toDate（），“ 10:10:42” .toTime（）和“ 2016-06-27 10：10：42.123” .toTimestamp（）用于将字符串转换为时间类型。注意：由于Java的时态SQL类型取决于时区，因此请确保Flink Client和所有TaskManager使用相同的时区。</p>
+<p><strong>时间间隔</strong>：时间间隔可以表示为月数（Types.INTERVAL_MONTHS）或毫秒数（Types.INTERVAL_MILLIS）。可以添加或减去相同类型的间隔（例如1.小时+ 10分钟）。可以将毫秒间隔添加到时间点（例如“ 2016-08-10” .toDate + 5.days）。</p>
+<p><strong>Scala表达式</strong>:：Scala表达式使用隐式转换。因此，请确保将通配符导入org.apache.flink.table.api.scala._添加到程序中。如果文字不被视为表达式，请使用.toExpr（如3.toExpr）强制转换文字。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E9%9C%80%E8%A6%81%E5%BC%95%E5%85%A5%E7%9A%84-pom-%E4%BE%9D%E8%B5%96">需要引入的 pom 依赖</a></li>
+<li><a href="#%E4%B8%A4%E7%A7%8D%E8%AE%A1%E5%88%92%E5%99%A8planner%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB">两种计划器（Planner）的主要区别</a></li>
+<li><a href="#%E7%AE%80%E5%8D%95%E4%BA%86%E8%A7%A3-tableapi">简单了解 TableAPI</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-tableenvironment">创建 TableEnvironment</a></li>
+<li><a href="#%E5%9C%A8-catalog-%E4%B8%AD%E5%88%9B%E5%BB%BA%E8%A1%A8">在 Catalog 中创建表</a>
+<ul>
+<li><a href="#%E4%B8%B4%E6%97%B6%E8%A1%A8temporary-table%E5%92%8C%E6%B0%B8%E4%B9%85%E8%A1%A8permanent-table">临时表（Temporary Table）和永久表（Permanent Table）</a>
+<ul>
+<li><a href="#%E5%B1%8F%E8%94%BDshadowing">屏蔽（Shadowing）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%A1%A8">创建表</a>
+<ul>
+<li><a href="#%E8%99%9A%E6%8B%9F%E8%A1%A8">虚拟表</a></li>
+<li><a href="#connector-tables">Connector Tables</a></li>
+</ul>
+</li>
+<li><a href="#%E6%89%A9%E5%B1%95%E8%A1%A8%E6%A0%87%E8%AF%86%E7%AC%A6">扩展表标识符</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E8%A1%A8">查询表</a>
+<ul>
+<li><a href="#table-api">Table API</a></li>
+<li><a href="#sql">SQL</a></li>
+<li><a href="#%E6%B7%B7%E7%94%A8-table-api-%E5%92%8C-sql">混用 Table API 和 SQL</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BE%93%E5%87%BA%E8%A1%A8">输出表</a></li>
+<li><a href="#%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%89%A7%E8%A1%8C%E6%9F%A5%E8%AF%A2">翻译与执行查询</a></li>
+<li><a href="#%E4%B8%8E-datastream-%E5%92%8C-dataset-api-%E7%BB%93%E5%90%88">与 DataStream 和 DataSet API 结合</a>
+<ul>
+<li><a href="#scala-%E9%9A%90%E5%BC%8F%E8%BD%AC%E6%8D%A2">Scala 隐式转换</a></li>
+<li><a href="#%E9%80%9A%E8%BF%87-dataset-%E6%88%96-datastream-%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE">通过 DataSet 或 DataStream 创建<code>视图</code></a></li>
+<li><a href="#%E5%B0%86-datastream-%E6%88%96-dataset-%E8%BD%AC%E6%8D%A2%E6%88%90%E8%A1%A8">将 DataStream 或 DataSet 转换成表</a></li>
+<li><a href="#%E5%B0%86%E8%A1%A8%E8%BD%AC%E6%8D%A2%E6%88%90-datastream-%E6%88%96-dataset">将表转换成 DataStream 或 DataSet</a>
+<ul>
+<li><a href="#%E5%B0%86%E8%A1%A8%E8%BD%AC%E6%8D%A2%E6%88%90-datastream">将表转换成 DataStream</a></li>
+<li><a href="#%E5%B0%86%E8%A1%A8%E8%BD%AC%E6%8D%A2%E6%88%90-dataset">将表转换成 DataSet</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%88%B0-table-schema-%E7%9A%84%E6%98%A0%E5%B0%84">数据类型到 Table Schema 的映射</a>
+<ul>
+<li><a href="#%E5%8E%9F%E5%AD%90%E7%B1%BB%E5%9E%8B">原子类型</a></li>
+<li><a href="#tuple%E7%B1%BB%E5%9E%8Bscala-%E5%92%8C-java%E5%92%8C-case-class%E7%B1%BB%E5%9E%8B%E4%BB%85-scala">Tuple类型（Scala 和 Java）和 Case Class类型（仅 Scala）</a></li>
+<li><a href="#pojo-%E7%B1%BB%E5%9E%8B-java-%E5%92%8C-scala">POJO 类型 （Java 和 Scala）</a></li>
+<li><a href="#row%E7%B1%BB%E5%9E%8B">Row类型</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">查询优化</a></li>
+<li><a href="#%E8%A7%A3%E9%87%8A%E8%A1%A8">解释表</a>
+<ul>
+<li><a href="#%E5%8A%A8%E6%80%81%E8%A1%A8">动态表</a></li>
+<li><a href="#%E5%AD%97%E6%AE%B5">字段</a></li>
+</ul>
+</li>
+<li><a href="#tableapi-%E7%9A%84%E7%AA%97%E5%8F%A3%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C">TableAPI 的窗口聚合操作</a>
+<ul>
+<li><a href="#%E9%80%9A%E8%BF%87%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E4%BA%86%E8%A7%A3-tableapi">通过一个例子了解 TableAPI</a></li>
+<li><a href="#%E5%85%B3%E4%BA%8E-group-by">关于 group by</a></li>
+<li><a href="#%E5%85%B3%E4%BA%8E%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3">关于时间窗口</a></li>
+</ul>
+</li>
+<li><a href="#sql-%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99">SQL 如何编写</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C">操作</a>
+<ul>
+<li><a href="#scan-projection-and-filter">Scan, Projection, and Filter</a></li>
+<li><a href="#column-operations">Column Operations</a></li>
+<li><a href="#aggregations">Aggregations</a></li>
+<li><a href="#joins">Joins</a></li>
+<li><a href="#%E9%9B%86%E5%90%88%E7%AE%97%E5%AD%90">集合算子</a></li>
+<li><a href="#orderby-offset-fetch">OrderBy, Offset &amp; Fetch</a></li>
+<li><a href="#insert">Insert</a></li>
+<li><a href="#group-windows">Group Windows</a>
+<ul>
+<li><a href="#tumble-%E6%BB%9A%E5%8A%A8%E7%AA%97%E5%8F%A3">Tumble (滚动窗口)</a></li>
+<li><a href="#slide-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3">Slide (滑动窗口)</a></li>
+<li><a href="#session-%E4%BC%9A%E8%AF%9D%E7%AA%97%E5%8F%A3">Session (会话窗口)</a></li>
+</ul>
+</li>
+<li><a href="#over-windows">Over Windows</a>
+<ul>
+<li><a href="#unbounded-over-windows">Unbounded Over Windows</a></li>
+<li><a href="#bounded-over-windows">Bounded Over Windows</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%BA%E4%BA%8E%E8%A1%8C%E7%9A%84%E6%93%8D%E4%BD%9C">基于行的操作</a></li>
+</ul>
+</li>
+<li><a href="#data-types">Data Types</a></li>
+<li><a href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%AD%E6%B3%95">表达式语法</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/rxadb61B8/">
+                  <span class="post-title">
+                    第九章 状态编程和容错机制&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/EEiV7EREL/">
+                   <span class="post-title">
+                     附录 Flink常见面试问题汇总&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

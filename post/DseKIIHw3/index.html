@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Thingsboard源码编译 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Thingsboard源码编译 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Thingsboard源码编译" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/DseKIIHw3/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RJ6D2wgHO/" class="tag">Thingsboard</a>
+                
+              </span>
+              <h1>Thingsboard源码编译</h1>
+              <span class="meta">
+                Posted on
+                2021-12-02，17 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/DseKIIHw3.png" alt="封面图">
+          </img>
+          
+          <h2 id="环境安装">环境安装</h2>
+<p>开发环境要求： Jdk 1.11 版本 Postgresql 9 以上 Node.js Npm Maven 3.6 以上 Git 工具 Idea 开发工具 Redis</p>
+<h3 id="jdk">JDK</h3>
+<p><strong>下载安装</strong></p>
+<p>JDK 官方下载地址： <a href="https://www.oracle.com/java/technologies/downloads/#java11-windows">Java Downloads | Oracle</a></p>
+<p>JDK 版本选择 JDK11，我本地环境是 Windos10 64 位，所以选择 jdk-11.0.13-windows-x64.exe</p>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1638431548398.png" alt="" loading="lazy"><br>
+下载好了之后直接默认安装就行</p>
+<p><strong>免安装版本</strong></p>
+<p>下载jdk11<br>
+http://openjdk.java.net/install/index.html</p>
+<p>这个页面大部分都是linux系统的；</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1638431591806.png" alt="" loading="lazy"></figure>
+<p>然后我们点击jdk.java.net ，接着我们选择下载Java SE 11；</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1638431626019.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1638431650013.png" alt="" loading="lazy"></figure>
+<p>下好了后，我们得到这样的文件：openjdk-11+28_windows-x64_bin.zip，解压后得到：jdk-11这样的文件夹；将该文件夹放到你习惯的地方；</p>
+<p><strong>配置环境变量</strong></p>
+<p><strong>步骤 1：</strong> 在 JAVA_HOME 中增加 JDK 的安装地址：C:\Program Files\Java\jdk1.8.0_221 <img src="https://tinaxiawuhao.github.io/post-images/1638431720261.png" alt="" loading="lazy"></p>
+<p><strong>步骤 2：</strong> 在 CLASSPATH 中增加 JDK 的安装地址中的文件：.;%JAVA_HOME%\lib;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar <img src="https://tinaxiawuhao.github.io/post-images/1638431747039.png" alt="" loading="lazy"></p>
+<p><strong>步骤 3：</strong> 在 Path 中增加 JDK 的地址：%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin; <img src="https://tinaxiawuhao.github.io/post-images/1638431804325.png" alt="" loading="lazy"></p>
+<p><strong>步骤 4</strong> 输入以下命令</p>
+<pre><code class="language-shell">java -version
+</code></pre>
+<p>如果能出现以下的提示信息，就算安装成功了<img src="https://tinaxiawuhao.github.io/post-images/1638431854451.png" alt="" loading="lazy"></p>
+<h3 id="安装-idea">安装 IDEA</h3>
+<p>参考：<a href="https://www.iotschool.com/topics/72">IDEA 安装教程</a></p>
+<h3 id="安装-maven">安装 Maven</h3>
+<p>步骤 1：下载 maven，进入地址：http://maven.apache.org/download.cgi <img src="https://tinaxiawuhao.github.io/post-images/1638431903988.png" alt="" loading="lazy"></p>
+<p>步骤 2：下载到本地 <img src="https://tinaxiawuhao.github.io/post-images/1638431943007.png" alt="" loading="lazy"></p>
+<p>步骤 3：配置环境变量 增加 MAVEN_HOME，即 maven 的地址：D:\tb\apache-maven-3.6.1-bin，请注意，如果直接解压，有可能会有两个 apache-maven-3.6.1-bin<img src="https://tinaxiawuhao.github.io/post-images/1638432216067.png" alt="" loading="lazy"></p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1638432310973.png" alt="" loading="lazy"></figure>
+<p>MAVEN_OPTS，参数是 -Xms128m -Xmx1024m<img src="https://tinaxiawuhao.github.io/post-images/1638432342300.png" alt="" loading="lazy"></p>
+<p>修改 Path，增加 Maven 的地址%MAVEN_HOME%\bin; <img src="https://tinaxiawuhao.github.io/post-images/1638432408010.png" alt="" loading="lazy"></p>
+<p>测试 Maven 安装，打开命令行工具。使用命令 mvn -v，如果能出现以下提示，即安装成功 <img src="https://tinaxiawuhao.github.io/post-images/1638432460487.png" alt="" loading="lazy"></p>
+<h3 id="nodejs-安装">Nodejs 安装</h3>
+<p>步骤 1：下载 Nodejs 安装包，Nodejs 官网地址：https://nodejs.org/en/download/ <img src="https://tinaxiawuhao.github.io/post-images/1638432643509.png" alt="" loading="lazy"></p>
+<p>步骤 2：安装完成后，使用命令查看 Nodejs 是否已经安装完成，能出现以下提示说明已经安装成功 !<img src="https://tinaxiawuhao.github.io/post-images/1638432779272.png" alt="" loading="lazy"></p>
+<h3 id="安装-git">安装 git</h3>
+<p>步骤 1：下载 git 安装包，git 官网地址是：https://git-scm.com/download/win<img src="https://tinaxiawuhao.github.io/post-images/1638433242163.png" alt="" loading="lazy"></p>
+<p>步骤 2：安装完成后，使用命令行测试 git <img src="https://tinaxiawuhao.github.io/post-images/1638433294783.png" alt="" loading="lazy"></p>
+<h3 id="安装-npm-全局依赖">安装 npm 全局依赖</h3>
+<p>步骤 1：使用管理员 CMD 命令行，执行下面命令</p>
+<pre><code class="language-shell">#npm 环境读取环境变量包
+npm install -g cross-env
+#webpack打包工具
+npm install -g webpack
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1638433336020.png" alt="" loading="lazy"></figure>
+<h3 id="安装-redis">安装 redis</h3>
+<p>Redis 安装参考：https://www.iotschool.com/wiki/redis</p>
+<p>环境安装到此结束，接下来是通过 Git 拉取代码。</p>
+<h2 id="克隆-thingsboard-代码">克隆 thingsboard 代码</h2>
+<h3 id="确定代码存放位置">确定代码存放位置</h3>
+<p>在本地创建代码存放位置的文件目录，然后进入当前目录点击鼠标右键，选择 Git Bash Here <img src="https://tinaxiawuhao.github.io/post-images/1638433373069.png" alt="" loading="lazy"></p>
+<h3 id="输入-git-命令克隆源代码">输入 git 命令克隆源代码</h3>
+<pre><code class="language-shell">git clone https://github.com/thingsboard/thingsboard.git
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1638433403642.png" alt="" loading="lazy"></figure>
+<p>耐心等待一段时间后，看到以下界面就算下载成功 <img src="https://tinaxiawuhao.github.io/post-images/1638433434959.png" alt="" loading="lazy"></p>
+<h3 id="切换-git-分支">切换 git 分支</h3>
+<p>默认下载的代码是 master 主分支的，我们开发需要切换到最新版本的分支。</p>
+<p>查看项目源码的所有分支，下载源码后，需要进入到 thingsboard 文件夹 <img src="https://tinaxiawuhao.github.io/post-images/1638433484980.png" alt="" loading="lazy"></p>
+<p>发现最新发布的版本是 2.4，所以我这里选择 2.4，当然你可以根据自己的情况进行分支选择</p>
+<p>输入命令以下，即可切换至 2.4 的分支</p>
+<pre><code class="language-shell">git checkout release-2.4
+</code></pre>
+<p>看到下图这样，即切换成成功 <img src="https://tinaxiawuhao.github.io/post-images/1638433523862.png" alt="" loading="lazy"></p>
+<h2 id="准备工作">准备工作</h2>
+<h3 id="外网连接">外网连接</h3>
+<p>因为 TB 在编译过程中需要依赖很多国外的包，那么需要外网才能连接，有连接外网支持，可以到社区求助：https://www.iotschool.com/topics/node8</p>
+<h3 id="设置-maven-为淘宝镜像">设置 Maven 为淘宝镜像</h3>
+<p>工程是基于 Maven 管理，直接通过 idea open，之后会自动下载各种依赖包。依赖包的默认存储地址为：C:\Users\用户名.m2\repository，内容如下：</p>
+<pre><code class="language-shell">$tree ~/.m2 -L 2
+/home/jay/.m2
+└── repository
+    ├── antlr
+    ├── aopalliance
+    ├── asm
+    ├── backport-util-concurrent
+    ├── ch
+    ...
+</code></pre>
+<p>一般情况下，使用官方镜像更新依赖包，网速不稳定，可将 Maven 镜像源设置为淘宝的，在 maven 安装包目录下找到 settings.xml 设置</p>
+<p>大概位置截图：</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1638433563017.png" alt="" loading="lazy"></figure>
+<p>把 settings.xml 里面内容设置成以下：</p>
+<pre><code class="language-xml">&lt;mirrors&gt;
+  &lt;mirror&gt;
+       &lt;!--This sends everything else to /public --&gt;
+       &lt;id&gt;aliyun_nexus&lt;/id&gt;
+       &lt;mirrorOf&gt;*,!maven_nexus_201&lt;/mirrorOf&gt; 
+       &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
+   &lt;/mirror&gt;
+&lt;/mirrors&gt;
+</code></pre>
+<p>不会设置的，可以参考这个文件：https://cdn.iotschool.com/iotschool/settings.xml</p>
+<p>thingsboard QQ 群也有这个资源：121202538</p>
+<h3 id="设置-npm-为淘宝镜像">设置 npm 为淘宝镜像</h3>
+<p>同上，网速不好 npm 过程中也会下载失败，这是导致很多同学 thingsboard 编译失败的主要原因，所以我们在进行编译之前，也将 npm 替换为淘宝镜像：</p>
+<pre><code class="language-shell">npm install -g mirror-config-china --registry=http://registry.npm.taobao.org        #使用淘宝镜像
+npm config get registry                                                             #查询当前镜像
+npm config rm registry                                                              #删除自定义镜像，使用官方镜像
+npm info express
+</code></pre>
+<h3 id="设置-idea-管理员启动">设置 IDEA 管理员启动</h3>
+<p>我本地开发环境编译项目使用 IDEA 工具进行编译，所以需要设置管理员启动，这样才有所有的权限执行编译命令。 步骤 1：点击 IDEA 图标右键，选择属性。<img src="https://tinaxiawuhao.github.io/post-images/1638433591413.png" alt="" loading="lazy"></p>
+<p>步骤 2：点击兼容性 - 更改所有用户设置 - 以管理员身份运行此程序<img src="https://tinaxiawuhao.github.io/post-images/1638433662301.png" alt="" loading="lazy"></p>
+<h2 id="开始编译">开始编译</h2>
+<p>编译项目跟网速有关，最好连接上外网进行编译，一般 5~30 分钟都有可能，超过 30 分钟要检查你的网络。</p>
+<h3 id="清理项目编译文件">清理项目编译文件</h3>
+<p>使用 IDEA Maven 工具进行清理 <img src="https://tinaxiawuhao.github.io/post-images/1638433705438.png" alt="" loading="lazy"></p>
+<h3 id="输入编译命令开始编译">输入编译命令开始编译</h3>
+<p>在 IDEA 控制台（左下方）Terminal 输入以下命令进行编译：</p>
+<pre><code class="language-shell">mvn clean install -DskipTests
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1638433732682.png" alt="" loading="lazy"></figure>
+<p>等一段时间后，看到下面这张图就算编译成功，如果没有编译成功请按照本教程最后的常见问题进行排查，一般都是网络问题。如果还有问题，请到社区<a href="https://www.iotschool.com/topics/node8">thingsboard 专题</a>中提问。</p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1638433762968.png" alt="" loading="lazy"></figure>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="pom包pkgname等标签未定义">pom包pkg.name等标签未定义</h3>
+<pre><code class="language-xml">    &lt;properties&gt;
+        &lt;pkg.name&gt;thingsboard&lt;/pkg.name&gt;
+        &lt;main.dir&gt;${basedir}&lt;/main.dir&gt;
+        &lt;pkg.type&gt;java&lt;/pkg.type&gt;
+        &lt;pkg.mainClass&gt;org.thingsboard.server.ThingsboardServerApplication&lt;/pkg.mainClass&gt;
+        &lt;pkg.copyInstallScripts&gt;true&lt;/pkg.copyInstallScripts&gt;
+
+
+        &lt;main.dir&gt;${basedir}&lt;/main.dir&gt;
+        &lt;pkg.disabled&gt;true&lt;/pkg.disabled&gt;
+        &lt;pkg.process-resources.phase&gt;none&lt;/pkg.process-resources.phase&gt;
+        &lt;pkg.package.phase&gt;none&lt;/pkg.package.phase&gt;
+        &lt;pkg.user&gt;thingsboard&lt;/pkg.user&gt;
+        &lt;pkg.implementationTitle&gt;${project.name}&lt;/pkg.implementationTitle&gt;
+        &lt;pkg.unixLogFolder&gt;/var/log/${pkg.name}&lt;/pkg.unixLogFolder&gt;
+        &lt;pkg.installFolder&gt;/usr/share/${pkg.name}&lt;/pkg.installFolder&gt;
+  &lt;/properties&gt;
+</code></pre>
+<h3 id="缓存导致编译失败">缓存导致编译失败</h3>
+<p>每次编译失败进行二次编译时，要清理缓存，并杀死遗留进程 步骤 1：执行下面命令，杀死遗留进程</p>
+<pre><code class="language-shell">taskkill /f /im java.exe
+</code></pre>
+<p>步骤 2：使用 IDEA Maven 工具进行清理 <img src="https://tinaxiawuhao.github.io/post-images/1638433793132.png" alt="" loading="lazy"></p>
+<p><strong>温馨提示：要进行二次编译前，最好重启一次电脑！</strong></p>
+<h3 id="server-ui-编译失败">Server UI 编译失败</h3>
+<pre><code class="language-java">[ERROR] Failed to execute goal com.github.eirslett:frontend-maven-plugin:1.0:npm (npm install) on project ui: Failed to run task: 'npm install' failed. (error code 1) -&gt; [Help 1]
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1638433824944.png" alt="" loading="lazy"></figure>
+<p>如果遇到这个问题，可从以下几个原因进行分析：</p>
+<h4 id="原因-1node-npm-版本号问题">原因 1：node、npm 版本号问题</h4>
+<p>本地环境安装的 node、npm 版本号与源码中 pom.xml 文件配置的版本号不一致。</p>
+<p>解决方案： 步骤 1：使用 node -v、npm -v 查看安装的 node 和 npm 版本号 <img src="https://tinaxiawuhao.github.io/post-images/1638433858043.png" alt="" loading="lazy"></p>
+<p>步骤 2：修改源码中 pom.xml 文件中的版本号</p>
+<pre><code class="language-xml">&lt;configuration&gt;
+   &lt;nodeVersion&gt;v12.13.1&lt;/nodeVersion&gt;
+   &lt;npmVersion&gt;6.12.1&lt;/npmVersion&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>需要修改的文件有三处，位置如下： <img src="https://tinaxiawuhao.github.io/post-images/1638433897767.png" alt="" loading="lazy"></p>
+<h4 id="原因-2node-sass-下载失败">原因 2：node-sass 下载失败</h4>
+<p>编译 Server UI 时，会下载 node-sass 依赖，如果因为网络原因没有下载成功，也会编译失败。如果你是按照本本教材一步一步来的，应该不会有问题，上面准备工作中，将 npm 镜像源切换为淘宝，那么下载会很快的。</p>
+<pre><code class="language-shell">[INFO] Downloading binary from https://github.com/sass/node-sass/releases/download/v4.12.0/win32-x64-72_binding.node
+[ERROR] Cannot download &quot;https://github.com/sass/node-sass/releases/download/v4.12.0/win32-x64-72_binding.node&quot;:
+[ERROR]
+[ERROR] ESOCKETTIMEDOUT
+[ERROR]
+[ERROR] Hint: If github.com is not accessible in your location
+[ERROR]       try setting a proxy via HTTP_PROXY, e.g.
+[ERROR]
+[ERROR]       export HTTP_PROXY=http://example.com:1234
+[ERROR]
+[ERROR] or configure npm proxy via
+[ERROR]
+[ERROR]       npm config set proxy http://example.com:8080
+[INFO]
+[INFO] &gt; node-sass@4.12.0 postinstall F:\workspace\thingsboard\thingsboard\ui\node_modules\node-sass
+[INFO] &gt; node scripts/build.js
+[INFO]
+</code></pre>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1638433935418.png" alt="" loading="lazy"></figure>
+<p>解决方案：<a href="https://www.iotschool.com/wiki/tbinstall#%E8%AE%BE%E7%BD%AEnpm%E4%B8%BA%E6%B7%98%E5%AE%9D%E9%95%9C%E5%83%8F">切换镜像源为淘宝</a></p>
+<p>解决方案：重启电脑，清理缓存</p>
+<h4 id="原因-3thingsboard-30-版本编译遇到的问题">原因 3：Thingsboard 3.0 版本编译遇到的问题</h4>
+<p>亲测：2.4 版本也可以通过这种方式来解决</p>
+<pre><code class="language-shell">Failed to execute goal com.github.eirslett:frontend-maven-plugin:1.7.5:npm (npm install) on project ui-ngx: Failed to run task: 'npm install' failed. org.apache.commons.exec.ExecuteException: Process exited with an error: -4048 (Exit value: -4048) -&gt; [Help 1]
+</code></pre>
+<p>解决方案：https://www.iotschool.com/topics/84</p>
+<h4 id="原因-4二次编译导致残留进程">原因 4：二次编译导致残留进程</h4>
+<p>报错：</p>
+<pre><code class="language-shell">[ERROR] Failed to execute goal org.apache.maven.plugins:maven-clean-plugin:2.5:clean (default-clean) on project ui: Failed to clean project: Failed to delete F:\workspace\thingsboard\thingsboard\ui\target\node\node.exe -&gt; [Help 1]
+</code></pre>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1638433961674.png" alt="" loading="lazy"></figure>
+<h3 id="server-tool-编译失败">Server Tool 编译失败</h3>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1638433985854.png" alt="" loading="lazy"></figure>
+<pre><code class="language-shell">[ERROR] Failed to execute goal on project tools: Could not resolve dependencies for project org.thingsboard:tools:jar:2.4.3: Failed to collect dependencies at org.eclipse.paho:org.eclipse.paho.client.mqttv3:jar:1.1.0: Failed to read artifact descriptor for org.eclipse.paho:org.eclipse.paho.clien
+t.mqttv3:jar:1.1.0: Could not transfer artifact org.eclipse.paho:org.eclipse.paho.client.mqttv3:pom:1.1.0 from/to aliyun_nexus (http://maven.aliyun.com/nexus/content/groups/public/): Failed to transfer file http://maven.aliyun.com/nexus/content/groups/public/org/eclipse/paho/org.eclipse.paho.cli
+ent.mqttv3/1.1.0/org.eclipse.paho.client.mqttv3-1.1.0.pom with status code 502 -&gt; [Help 1]
+</code></pre>
+<p>一般由于网络原因，IoTSchool 小编至少编译了 3 次才成功，每次编译都重启电脑，并清理环境。</p>
+<p>解决方案：如果使用的是 mvn clean install -DskipTests 命令进行编译，那么就多尝试几次，每次编译前，要清理环境。</p>
+<p>参考：https://github.com/thingsboard/performance-tests/issues/10</p>
+<h3 id="javascript-executor-编译失败">JavaScript Executor 编译失败</h3>
+<p>JavaScript Executor Microservice 编译失败 <img src="https://tinaxiawuhao.github.io/post-images/1638434020950.png" alt="" loading="lazy"></p>
+<pre><code class="language-shell">[ERROR] Failed to execute goal com.github.eirslett:frontend-maven-plugin:1.0:npm (npm install) on project js-executor: Failed to run task: 'npm install' failed. (error code 2) -&gt; [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR]
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn &lt;goals&gt; -rf :js-executor
+</code></pre>
+<p>原因：本地缓存缺少 fetched-v10.15.3-linux-x64 和 fetched-v10.15.3-win-x64 这两个文件。</p>
+<p>解决方案： 步骤 1：下载这两个文件到本地，下载后记得重命名，下载地址：https://github.com/zeit/pkg-fetch/releases <img src="https://tinaxiawuhao.github.io/post-images/1638434130104.png" alt="" loading="lazy"></p>
+<p>步骤 2: 将下载的两个文件放到：放到：C:\Users\你的用户名 \ .pkg-cache\v2.6。并将名字分别修改为：fetched-v10.15.3-linux-x64 和 fetched-v10.15.3-win-x64</p>
+<p>参考：https://github.com/thingsboard/thingsboard/issues/2084</p>
+<h3 id="license-检查不通过">License 检查不通过</h3>
+<pre><code class="language-shell">[ERROR] Failed to execute goal com.mycila:license-maven-plugin:3.0:check (default) on project thingsboard: Some files do not have the expected license header -&gt; [Help 1]
+</code></pre>
+<p>解决方案：在根目录 pom.xml 中屏蔽 license-maven-plugin</p>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1638434154303.png" alt="" loading="lazy"></figure>
+<p>搜索 license-maven-plugin，将整个 plugin 都注释掉 <img src="https://tinaxiawuhao.github.io/post-images/1638434302255.png" alt="" loading="lazy"></p>
+<h3 id="web-ui-编译失败">Web UI 编译失败</h3>
+<p>Web UI 编译失败请参考[Server UI 编译失败第一个原因](https://www.iotschool.com/wiki/tbinstall#Server Tool编译失败)</p>
+<h3 id="mavencould-not-resolve-dependencies-for-project-orgthingsboardapplication">maven:Could not resolve dependencies for project org.thingsboard:application:</h3>
+<p>错误信息</p>
+<pre><code class="language-shell">[ERROR] Failed to execute goal on project application: Could not resolve dependencies for project org.thingsboard:application:jar:2.4.1: The following artifacts could not be resolved: org.thingsboard.rule-engine:rule-engine-components:jar:2.4.1, org.thingsboard:dao:jar:2.4.1: Could not find artifact org.thingsboard.rule-engine:rule-engine-components:jar:2.4.1 in jenkins (http://repo.jenkins-ci.org/releases) -&gt; [Help 1]
+</code></pre>
+<p>解决方案：根目录下去 maven 编译，不要在每个单独编译，否则不能自动解决依赖，如果你已经在子模块进行了编译，请回到根目录先 clean 一下，再重新编译。</p>
+<h3 id="mavenfailed-to-delete-tb-http-transportrpm">maven:Failed to delete tb-http-transport.rpm</h3>
+<p>错误信息：</p>
+<pre><code class="language-shell">[ERROR] Failed to execute goal org.apache.maven.plugins:maven-clean-plugin:2.5:clean (default-clean) on project http: Failed to clean project: Failed to delete D:\my_project\thingsboard\transport\http\target\tb-http-transport.rpm -&gt; [Help 1]
+</code></pre>
+<p>解决方案：第一次编译失败，再次编译可能会提示该错误，可以手动到报错路径删除，如果提示文件正在使用，需要在任务管理器杀死 java 进程后再手动删除。</p>
+<h3 id="npmnpmcb-never-called">npm:npm:cb() never called!</h3>
+<p>错误信息：</p>
+<pre><code class="language-shell">npm ERR! cb() never called!
+npm ERR! This is an error with npm itself. Please report this error at:
+npm ERR!     &lt;https://npm.community&gt;
+npm ERR! A complete log of this run can be found in:
+npm ERR!     C:\Users\yuren\AppData\Roaming\npm-cache\_logs\2019-11-06T10_55_28_258Z-debug.log
+</code></pre>
+<p>解决方案： 尝试 npm cache clean --force 后再次 npm install 无果； 尝试更换淘宝镜像源后再次 npm install 无果； 怀疑有些包下载需要翻墙，全局代理翻墙后问题依然存在； 参考网上关闭所有代理后问题依然存在； 通过 log 日志分析最后一个解包报错的地方，屏蔽需要的 material-design-icons，新 modules rxjs 仍然报错；</p>
+<pre><code class="language-shell">extract material-design-icons@3.0.1 extracted to node_modules\.staging\material-design-icons-61b4d55e (72881ms)
+extract rxjs@6.5.2 extracted to node_modules\.staging\rxjs-e901ba4c (24280ms)
+</code></pre>
+<p>参考 npm ERR cb() never called 执行</p>
+<pre><code class="language-shell">npm install --no-package-lock
+</code></pre>
+<p>之后提示 npm ERR! path git，添加 git 到环境变量后正常。</p>
+<h3 id="npmnpm-err-path-git">npm:npm ERR! path git</h3>
+<p>错误信息</p>
+<pre><code class="language-shell">npm ERR! path git
+npm ERR! code ENOENT
+npm ERR! errno ENOENT
+npm ERR! syscall spawn git
+npm ERR! enoent Error while executing:
+npm ERR! enoent undefined ls-remote -h -t git://github.com/fabiobiondi/angular-
+</code></pre>
+<p>解决方案：添加 git 到环境变量。</p>
+<h3 id="no-compiler-is-provided-in-this-environment">No compiler is provided in this environment</h3>
+<p>错误信息：</p>
+<pre><code class="language-shell">[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.
+1:compile (default-compile) on project netty-mqtt: Compilation failure
+[ERROR] No compiler is provided in this environment. Perhaps you are running on
+a JRE rather than a JDK?
+</code></pre>
+<p>需要在环境变量中设置 java，包含%JAVA_HOME%bin;%JAVA_HOME%lib;</p>
+<h3 id="failed-to-execute-goal-orgthingsboardgradle-maven-plugin1010invoke-default-on-project-http-orggradletoolingbuildexception-could-not-execute-build-using-gradle-distribution-httpsservicesgradleorgdistributionsgradle-63-binzip">Failed to execute goal org.thingsboard:gradle-maven-plugin:1.0.10:invoke (default) on project http: org.gradle.tooling.BuildException: Could not execute build using Gradle distribution 'https://services.gradle.org/distributions/gradle-6.3-bin.zip'.</h3>
+<h3 id="failed-to-execute-goal-orgapachemavenpluginsmaven-compiler-plugin381compile-default-compile-on-project-rest-client-compilation-failure">Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project rest-client: Compilation failure</h3>
+<p>An unknown compilation problem occurred</p>
+<p>这个问题主要是jdk版本跟项目不一致导致的，如果项目的版本是大于(不含！)3.2.1，则需要JDK11，反之JDK8</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85">环境安装</a>
+<ul>
+<li><a href="#jdk">JDK</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-idea">安装 IDEA</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-maven">安装 Maven</a></li>
+<li><a href="#nodejs-%E5%AE%89%E8%A3%85">Nodejs 安装</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-git">安装 git</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-npm-%E5%85%A8%E5%B1%80%E4%BE%9D%E8%B5%96">安装 npm 全局依赖</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-redis">安装 redis</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%8B%E9%9A%86-thingsboard-%E4%BB%A3%E7%A0%81">克隆 thingsboard 代码</a>
+<ul>
+<li><a href="#%E7%A1%AE%E5%AE%9A%E4%BB%A3%E7%A0%81%E5%AD%98%E6%94%BE%E4%BD%8D%E7%BD%AE">确定代码存放位置</a></li>
+<li><a href="#%E8%BE%93%E5%85%A5-git-%E5%91%BD%E4%BB%A4%E5%85%8B%E9%9A%86%E6%BA%90%E4%BB%A3%E7%A0%81">输入 git 命令克隆源代码</a></li>
+<li><a href="#%E5%88%87%E6%8D%A2-git-%E5%88%86%E6%94%AF">切换 git 分支</a></li>
+</ul>
+</li>
+<li><a href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</a>
+<ul>
+<li><a href="#%E5%A4%96%E7%BD%91%E8%BF%9E%E6%8E%A5">外网连接</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE-maven-%E4%B8%BA%E6%B7%98%E5%AE%9D%E9%95%9C%E5%83%8F">设置 Maven 为淘宝镜像</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE-npm-%E4%B8%BA%E6%B7%98%E5%AE%9D%E9%95%9C%E5%83%8F">设置 npm 为淘宝镜像</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE-idea-%E7%AE%A1%E7%90%86%E5%91%98%E5%90%AF%E5%8A%A8">设置 IDEA 管理员启动</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E8%AF%91">开始编译</a>
+<ul>
+<li><a href="#%E6%B8%85%E7%90%86%E9%A1%B9%E7%9B%AE%E7%BC%96%E8%AF%91%E6%96%87%E4%BB%B6">清理项目编译文件</a></li>
+<li><a href="#%E8%BE%93%E5%85%A5%E7%BC%96%E8%AF%91%E5%91%BD%E4%BB%A4%E5%BC%80%E5%A7%8B%E7%BC%96%E8%AF%91">输入编译命令开始编译</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">常见问题</a>
+<ul>
+<li><a href="#pom%E5%8C%85pkgname%E7%AD%89%E6%A0%87%E7%AD%BE%E6%9C%AA%E5%AE%9A%E4%B9%89">pom包pkg.name等标签未定义</a></li>
+<li><a href="#%E7%BC%93%E5%AD%98%E5%AF%BC%E8%87%B4%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5">缓存导致编译失败</a></li>
+<li><a href="#server-ui-%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5">Server UI 编译失败</a>
+<ul>
+<li><a href="#%E5%8E%9F%E5%9B%A0-1node-npm-%E7%89%88%E6%9C%AC%E5%8F%B7%E9%97%AE%E9%A2%98">原因 1：node、npm 版本号问题</a></li>
+<li><a href="#%E5%8E%9F%E5%9B%A0-2node-sass-%E4%B8%8B%E8%BD%BD%E5%A4%B1%E8%B4%A5">原因 2：node-sass 下载失败</a></li>
+<li><a href="#%E5%8E%9F%E5%9B%A0-3thingsboard-30-%E7%89%88%E6%9C%AC%E7%BC%96%E8%AF%91%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98">原因 3：Thingsboard 3.0 版本编译遇到的问题</a></li>
+<li><a href="#%E5%8E%9F%E5%9B%A0-4%E4%BA%8C%E6%AC%A1%E7%BC%96%E8%AF%91%E5%AF%BC%E8%87%B4%E6%AE%8B%E7%95%99%E8%BF%9B%E7%A8%8B">原因 4：二次编译导致残留进程</a></li>
+</ul>
+</li>
+<li><a href="#server-tool-%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5">Server Tool 编译失败</a></li>
+<li><a href="#javascript-executor-%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5">JavaScript Executor 编译失败</a></li>
+<li><a href="#license-%E6%A3%80%E6%9F%A5%E4%B8%8D%E9%80%9A%E8%BF%87">License 检查不通过</a></li>
+<li><a href="#web-ui-%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5">Web UI 编译失败</a></li>
+<li><a href="#mavencould-not-resolve-dependencies-for-project-orgthingsboardapplication">maven:Could not resolve dependencies for project org.thingsboard:application:</a></li>
+<li><a href="#mavenfailed-to-delete-tb-http-transportrpm">maven:Failed to delete tb-http-transport.rpm</a></li>
+<li><a href="#npmnpmcb-never-called">npm:npm:cb() never called!</a></li>
+<li><a href="#npmnpm-err-path-git">npm:npm ERR! path git</a></li>
+<li><a href="#no-compiler-is-provided-in-this-environment">No compiler is provided in this environment</a></li>
+<li><a href="#failed-to-execute-goal-orgthingsboardgradle-maven-plugin1010invoke-default-on-project-http-orggradletoolingbuildexception-could-not-execute-build-using-gradle-distribution-httpsservicesgradleorgdistributionsgradle-63-binzip">Failed to execute goal org.thingsboard:gradle-maven-plugin:1.0.10:invoke (default) on project http: org.gradle.tooling.BuildException: Could not execute build using Gradle distribution 'https://services.gradle.org/distributions/gradle-6.3-bin.zip'.</a></li>
+<li><a href="#failed-to-execute-goal-orgapachemavenpluginsmaven-compiler-plugin381compile-default-compile-on-project-rest-client-compilation-failure">Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project rest-client: Compilation failure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/BBgY7nkHa/">
+                  <span class="post-title">
+                    Docker安装clickhouse&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/GwxNFXsxh/">
+                   <span class="post-title">
+                     ClickHouse初识&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

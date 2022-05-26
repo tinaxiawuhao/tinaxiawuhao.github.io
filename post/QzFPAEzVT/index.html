@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>mysql概述二 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="mysql概述二 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="mysql概述二" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/QzFPAEzVT/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/8_sUkscaB/" class="tag">mysql</a>
+                
+              </span>
+              <h1>mysql概述二</h1>
+              <span class="meta">
+                Posted on
+                2021-05-19，23 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/QzFPAEzVT.png" alt="封面图">
+          </img>
+          
+          <h3 id="索引">索引</h3>
+<blockquote>
+<p>索引是一种特殊的文件(InnoDB数据表上的索引是表空间的一个组成部分)，它们包含着对数据表里所有记录的引用指针。</p>
+</blockquote>
+<blockquote>
+<p>索引是一种数据结构。数据库索引，是数据库管理系统中一个排序的数据结构，以协助快速查询、更新数据库表中数据。索引的实现通常使用B树及其变种B+树。</p>
+</blockquote>
+<p>更通俗的说，索引就相当于目录。为了方便查找书中的内容，通过对内容建立索引形成目录。索引是一个文件，它是要占据物理空间的。</p>
+<h3 id="索引的基本原理">索引的基本原理</h3>
+<p>索引用来快速地寻找那些具有特定值的记录。如果没有索引，一般来说执行查询时遍历整张表。</p>
+<p>索引的原理很简单，就是把无序的数据变成有序的查询</p>
+<ol>
+<li>把创建了索引的列的内容进行排序</li>
+<li>对排序结果生成倒排表</li>
+<li>在倒排表内容上拼上数据地址链</li>
+<li>在查询的时候，先拿到倒排表内容，再取出数据地址链，从而拿到具体数据</li>
+</ol>
+<h3 id="索引优缺点">索引优缺点</h3>
+<h4 id="优点">优点</h4>
+<ul>
+<li>可以大大加快数据的检索速度，这也是创建索引的最主要的原因。</li>
+<li>通过使用索引，可以在查询的过程中，使用优化隐藏器，提高系统的性能。</li>
+</ul>
+<h4 id="缺点">缺点</h4>
+<ul>
+<li>时间方面：创建索引和维护索引要耗费时间，具体地，当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，会降低增/改/删的执行效率；</li>
+<li>空间方面：索引需要占物理空间。</li>
+</ul>
+<h3 id="使用场景重点">使用场景（重点）</h3>
+<h4 id="where">where</h4>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620897817779.png" alt="" loading="lazy"></figure>
+<p>上图中，根据id查询记录，因为id字段仅建立了主键索引，因此此SQL执行可选的索引只有主键索引，如果有多个，最终会选一个较优的作为检索的依据。</p>
+<p>-- 增加一个没有建立索引的字段 <code>alter table innodb1 add sex char(1);</code></p>
+<p>-- 按sex检索时可选的索引为null <code>EXPLAIN SELECT * from innodb1 where sex='男';</code></p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620897795644.png" alt="" loading="lazy"></figure>
+<p>可以尝试在一个字段未建立索引时，根据该字段查询的效率，然后对该字段建立索引<code>alter table 表名 add index(字段名)</code>，同样的SQL执行的效率，你会发现查询效率会有明显的提升（数据量越大越明显）。</p>
+<h4 id="order-by">order by</h4>
+<p>当我们使用order by将查询结果按照某个字段排序时，如果该字段没有建立索引，那么执行计划会将查询出的所有数据使用外部排序（将数据从硬盘分批读取到内存使用内部排序，最后合并排序结果），这个操作是很影响性能的，因为需要将查询涉及到的所有数据从磁盘中读到内存（如果单条数据过大或者数据量过多都会降低效率），更无论读到内存之后的排序了。</p>
+<p>但是如果我们对该字段建立索引<code>alter table 表名 add index(字段名)</code>，那么由于索引本身是有序的，因此直接按照索引的顺序和映射关系逐条取出数据即可。而且如果分页的，那么只用<strong>取出索引表某个范围内的索引对应的数据</strong>，而不用像上述那<strong>取出所有数据</strong>进行排序再返回某个范围内的数据。（从磁盘取数据是最影响性能的）</p>
+<h4 id="join">join</h4>
+<p>对join语句匹配关系（on）涉及的字段建立索引能够提高效率</p>
+<h4 id="索引覆盖">索引覆盖</h4>
+<p>如果要查询的字段都建立过索引，那么引擎会直接在索引表中查询而不会访问原始数据（否则只要有一个字段没有建立索引就会做全表扫描），这叫索引覆盖。因此我们需要尽可能的在select后只写必要的查询字段，以增加索引覆盖的几率。</p>
+<p>这里值得注意的是不要想着为每个字段建立索引，因为优先使用索引的优势就在于其体积小。</p>
+<h3 id="索引类型">索引类型</h3>
+<p><strong>主键索引:</strong> 数据列不允许重复，不允许为NULL，一个表只能有一个主键。</p>
+<p><strong>唯一索引:</strong> 数据列不允许重复，允许为NULL值，一个表允许多个列创建唯一索引。</p>
+<ul>
+<li>可以通过 <code>ALTER TABLE table_name ADD UNIQUE (column);</code> 创建唯一索引</li>
+<li>可以通过 <code>ALTER TABLE table_name ADD UNIQUE (column1,column2);</code> 创建唯一组合索引</li>
+</ul>
+<p><strong>普通索引:</strong> 基本的索引类型，没有唯一性的限制，允许为NULL值。</p>
+<ul>
+<li>可以通过<code>ALTER TABLE table_name ADD INDEX index_name (column);</code>创建普通索引</li>
+<li>可以通过<code>ALTER TABLE table_name ADD INDEX index_name(column1, column2, column3);</code>创建组合索引</li>
+</ul>
+<p><strong>全文索引：</strong> 是目前搜索引擎使用的一种关键技术。</p>
+<ul>
+<li>可以通过<code>ALTER TABLE table_name ADD FULLTEXT (column);</code>创建全文索引</li>
+</ul>
+<h3 id="索引设计的原则">索引设计的原则</h3>
+<ol>
+<li>适合索引的列是出现在where子句中的列，或者连接子句中指定的列</li>
+<li>基数较小的类，索引效果较差，没有必要在此列建立索引</li>
+<li>使用短索引，如果对长字符串列进行索引，应该指定一个前缀长度，这样能够节省大量索引空间</li>
+<li>不要过度索引。索引需要额外的磁盘空间，并降低写操作的性能。在修改表内容的时候，索引会进行更新甚至重构，索引列越多，这个时间就会越长。所以只保持需要的索引有利于查询即可。</li>
+</ol>
+<h3 id="创建索引的原则重中之重">创建索引的原则（重中之重）</h3>
+<p>索引虽好，但也不是无限制的使用，最好符合一下几个原则</p>
+<p>1） 最左前缀匹配原则，组合索引非常重要的原则，mysql会一直向右匹配直到遇到范围查询<code>(&gt;、&lt;、between、like)</code>就停止匹配，比如<code>a = 1 and b = 2 and c &gt; 3 and d = 4</code> 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整。</p>
+<p>2）较频繁作为查询条件的字段才去创建索引</p>
+<p>3）更新频繁字段不适合创建索引</p>
+<p>4）若是不能有效区分数据的列不适合做索引列(如性别，男女未知，最多也就三种，区分度实在太低)</p>
+<p>5）尽量的扩展索引，不要新建索引。比如表中已经有a的索引，现在要加(a,b)的索引，那么只需要修改原来的索引即可。</p>
+<p>6）定义有外键的数据列一定要建立索引。</p>
+<p>7）对于那些查询中很少涉及的列，重复值比较多的列不要建立索引。</p>
+<p>8）对于定义为text、image和bit的数据类型的列不要建立索引。</p>
+<h3 id="创建索引的三种方式">创建索引的三种方式</h3>
+<ol>
+<li>
+<p>第一种方式：在执行CREATE TABLE时创建索引</p>
+<pre><code class="language-mysql">CREATE TABLE user_index2 (
+	id INT auto_increment PRIMARY KEY,
+	first_name VARCHAR ( 16 ),
+	last_name VARCHAR ( 16 ),
+	id_card VARCHAR ( 18 ),
+	information text,
+	KEY NAME ( first_name, last_name ),
+	FULLTEXT KEY ( information ),
+UNIQUE KEY ( id_card ) 
+);
+</code></pre>
+</li>
+<li>
+<p>第二种方式：使用ALTER TABLE命令去增加索引</p>
+<pre><code class="language-mysql">//ALTER TABLE用来创建普通索引、UNIQUE索引或PRIMARY KEY索引。
+ALTER TABLE table_name ADD INDEX index_name (column_list);
+</code></pre>
+<p>其中table_name是要增加索引的表名，column_list指出对哪些列进行索引，多列时各列之间用逗号分隔。</p>
+<p>索引名index_name可自己命名，缺省时，MySQL将根据第一个索引列赋一个名称。另外，ALTER TABLE允许在单个语句中更改多个表，因此可以在同时创建多个索引。</p>
+</li>
+<li>
+<p>第三种方式：使用CREATE INDEX命令创建</p>
+<pre><code class="language-mysql">//CREATE INDEX可对表增加普通索引或UNIQUE索引。（但是，不能创建PRIMARY KEY索引）
+CREATE INDEX index_name ON table_name (column_list);
+</code></pre>
+</li>
+</ol>
+<h3 id="删除索引">删除索引</h3>
+<p>根据索引名删除普通索引、唯一索引、全文索引：<code>alter table 表名 drop KEY 索引名</code></p>
+<pre><code class="language-mysql">ALTER TABLE user_index DROP KEY NAME;
+ALTER TABLE user_index DROP KEY id_card;
+ALTER TABLE user_index DROP KEY information;
+</code></pre>
+<p>删除主键索引：alter table 表名 drop primary key（因为主键只有一个）。这里值得注意的是，如果主键自增长，那么不能直接执行此操作（自增长依赖于主键索引）：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1620897774703.png" alt="" loading="lazy"></figure>
+<p>需要取消自增长再行删除：</p>
+<pre><code class="language-mysql">alter table user_index
+-- 重新定义字段
+MODIFY id int,
+drop PRIMARY KEY
+</code></pre>
+<p>但通常不会删除主键，因为设计主键一定与业务逻辑无关。</p>
+<h3 id="创建索引时需要注意什么">创建索引时需要注意什么？</h3>
+<ul>
+<li>非空字段：应该指定列为NOT NULL，除非你想存储NULL。在mysql中，含有空值的列很难进行查询优化，因为它们使得索引、索引的统计信息以及比较运算更加复杂。你应该用0、一个特殊的值或者一个空串代替空值；</li>
+<li>取值离散大的字段：（变量各个取值之间的差异程度）的列放到联合索引的前面，可以通过count()函数查看字段的差异值，返回值越大说明字段的唯一值越多字段的离散程度高；</li>
+<li>索引字段越小越好：数据库的数据存储以页为单位一页存储的数据越多一次IO操作获取的数据越大效率越高。</li>
+</ul>
+<h3 id="使用索引查询一定能提高查询的性能吗为什么">使用索引查询一定能提高查询的性能吗？为什么</h3>
+<p>通常，通过索引查询数据比全表扫描要快。但是我们也必须注意到它的代价。</p>
+<ul>
+<li>索引需要空间来存储，也需要定期维护， 每当有记录在表中增减或索引列被修改时，索引本身也会被修改。 这意味着每条记录的INSERT，DELETE，UPDATE将为此多付出4，5 次的磁盘I/O。 因为索引需要额外的存储空间和处理，那些不必要的索引反而会使查询反应时间变慢。使用索引查询不一定能提高查询性能，索引范围查询(INDEX RANGE SCAN)适用于两种情况:</li>
+<li>基于一个范围的检索，一般查询返回结果集小于表中记录数的30%</li>
+<li>基于非唯一性索引的检索</li>
+</ul>
+<h3 id="百万级别或以上的数据如何删除">百万级别或以上的数据如何删除</h3>
+<p>关于索引：由于索引需要额外的维护成本，因为索引文件是单独存在的文件,所以当我们对数据的增加,修改,删除,都会产生额外的对索引文件的操作,这些操作需要消耗额外的IO,会降低增/改/删的执行效率。所以，在我们删除数据库百万级别数据的时候，查询MySQL官方手册得知删除数据的速度和创建的索引数量是成正比的。</p>
+<ol>
+<li>所以我们想要删除百万数据的时候可以先删除索引（此时大概耗时三分多钟）</li>
+<li>然后删除其中无用数据（此过程需要不到两分钟）</li>
+<li>删除完成后重新创建索引(此时数据较少了)创建索引也非常快，约十分钟左右。</li>
+<li>与之前的直接删除绝对是要快速很多，更别说万一删除中断,一切删除会回滚。那更是坑了。</li>
+</ol>
+<h3 id="前缀索引">前缀索引</h3>
+<p>语法：<code>index(field(10))</code>，使用字段值的前10个字符建立索引，默认是使用字段的全部内容建立索引。</p>
+<p>前提：前缀的标识度高。比如密码就适合建立前缀索引，因为密码几乎各不相同。</p>
+<p>实操的难度：在于前缀截取的长度。</p>
+<p>我们可以利用<code>select count(*)/count(distinct left(password,prefixLen));</code>，通过从调整prefixLen的值（从1自增）查看不同前缀长度的一个平均匹配度，接近1时就可以了（表示一个密码的前prefixLen个字符几乎能确定唯一一条记录）</p>
+<h3 id="什么是最左前缀原则什么是最左匹配原则">什么是最左前缀原则？什么是最左匹配原则</h3>
+<ul>
+<li>顾名思义，就是最左优先，在创建多列索引时，要根据业务需求，where子句中使用最频繁的一列放在最左边。</li>
+<li>最左前缀匹配原则，非常重要的原则，mysql会一直向右匹配直到遇到范围查询<code>(&gt;、&lt;、between、like)</code>就停止匹配，比如a = 1 and b = 2 and c &gt; 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整。</li>
+<li>=和in可以乱序，比如a = 1 and b = 2 and c = 3 建立(a,b,c)索引可以任意顺序，mysql的查询优化器会帮你优化成索引可以识别的形式</li>
+</ul>
+<h3 id="索引算法">索引算法</h3>
+<p>索引算法有 BTree算法和Hash算法</p>
+<h4 id="btree算法">BTree算法</h4>
+<p>BTree是最常用的mysql数据库索引算法，也是mysql默认的算法。因为它不仅可以被用在<code>=</code>,<code>&gt;</code>,<code>&gt;=</code>,<code>&lt;</code>,<code>&lt;=</code>和<code>between</code>这些比较操作符上，而且还可以用于<code>like</code>操作符，只要它的查询条件是一个不以通配符开头的常量， 例如：</p>
+<p>-- 只要它的查询条件是一个不以通配符开头的常量 <code>select * from user where name like 'jack%';</code></p>
+<p>-- 如果一通配符开头，或者没有使用常量，则不会使用索引，例如： <code>select * from user where name like '%jack';</code></p>
+<h4 id="hash算法">Hash算法</h4>
+<p>Hash Hash索引只能用于对等比较，例如<code>=</code>,<code>&lt;=&gt;（相当于=）</code>操作符。由于是一次定位数据，不像BTree索引需要从根节点到枝节点，最后才能访问到页节点这样多次IO访问，所以检索效率远高于BTree索引。</p>
+<h3 id="索引的数据结构b树hash">索引的数据结构（b树，hash）</h3>
+<p>索引的数据结构和具体存储引擎的实现有关，在MySQL中使用较多的索引有<strong>Hash索引</strong>，<strong>B+树索引</strong>等，而我们经常使用的InnoDB存储引擎的默认索引实现为：B+树索引。对于哈希索引来说，底层的数据结构就是哈希表，因此在绝大多数需求为单条记录查询的时候，可以选择哈希索引，查询性能最快；其余大部分场景，建议选择BTree索引。</p>
+<ol>
+<li>
+<p>B树索引</p>
+<p>mysql通过存储引擎取数据，基本上90%的人用的就是InnoDB了，按照实现方式分，InnoDB的索引类型目前只有两种：BTREE（B树）索引和HASH索引。B树索引是Mysql数据库中使用最频繁的索引类型，基本所有存储引擎都支持BTree索引。通常我们说的索引不出意外指的就是（B树）索引（实际是用B+树实现的，因为在查看表索引时<code>SHOW INDEX FROM &lt;表名&gt; [ FROM &lt;数据库名&gt;]</code>，mysql一律打印BTREE，所以简称为B树索引）</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1620984450233.png" alt="" loading="lazy"></figure>
+<p><strong>查询方式：</strong></p>
+<p>主键索引区:PI(关联保存的数据的地址)按主键查询,</p>
+<p>普通索引区:si(关联的id的地址,然后再到达上面的地址)。所以按主键查询,速度最快</p>
+<p><strong>B+tree性质：</strong></p>
+<p>1.）n棵子tree的节点包含n个关键字，不用来保存数据而是保存数据的索引。</p>
+<p>2.）所有的叶子结点中包含了全部关键字的信息，及指向含这些关键字记录的指针，且叶子结点本身依关键字的大小自小而大顺序链接。</p>
+<p>3.）所有的非终端结点可以看成是索引部分，结点中仅含其子树中的最大（或最小）关键字。</p>
+<p>4.）B+ 树中，数据对象的插入和删除仅在叶节点上进行。</p>
+<p>5.）B+树有2个头指针，一个是树的根节点，一个是最小关键码的叶节点。</p>
+</li>
+<li>
+<p>哈希索引</p>
+<p>简要说下，类似于数据结构中简单实现的HASH表（散列表）一样，当我们在mysql中用哈希索引时，主要就是通过Hash算法（常见的Hash算法有直接定址法、平方取中法、折叠法、除数取余法、随机数法），将数据库字段数据转换成定长的Hash值，与这条数据的行指针一并存入Hash表的对应位置；如果发生Hash碰撞（两个不同关键字的Hash值相同），则在对应Hash键下以链表形式存储。当然这只是简略模拟图。</p>
+</li>
+</ol>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1620897738341.webp" alt="" loading="lazy"></figure>
+<h3 id="b树和b树的区别">B树和B+树的区别</h3>
+<ul>
+<li>在B树中，你可以将键和值存放在内部节点和叶子节点；但在B+树中，内部节点都是键，没有值，叶子节点同时存放键和值。</li>
+<li>B+树的叶子节点有一条链相连，而B树的叶子节点各自独立。</li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1620897723431.jpeg" alt="" loading="lazy"></figure>
+<h4 id="使用b树的好处">使用B树的好处</h4>
+<p>B树可以在内部节点同时存储键和值，因此，把频繁访问的数据放在靠近根节点的地方将会大大提高热点数据的查询效率。这种特性使得B树在特定数据重复多次查询的场景中更加高效。</p>
+<h4 id="使用b树的好处-2">使用B+树的好处</h4>
+<p>由于B+树的内部节点只存放键，不存放值，因此，一次读取，可以在内存页中获取更多的键，有利于更快地缩小查找范围。 B+树的叶节点由一条链相连，因此，当需要进行一次全数据遍历的时候，B+树只需要使用O(logN)时间找到最小的一个节点，然后通过链进行O(N)的顺序遍历即可。而B树则需要对树的每一层进行遍历，这会需要更多的内存置换次数，因此也就需要花费更多的时间</p>
+<h3 id="hash索引和b树对比">Hash索引和B+树对比</h3>
+<p>首先要知道Hash索引和B+树索引的底层实现原理：</p>
+<p>hash索引底层就是hash表，进行查找时，调用一次hash函数就可以获取到相应的键值，之后进行回表查询获得实际数据。B+树底层实现是多路平衡查找树。对于每一次的查询都是从根节点出发，查找到叶子节点方可以获得所查键值，然后根据查询判断是否需要回表查询数据。</p>
+<p>那么可以看出他们有以下的不同：</p>
+<ul>
+<li>hash索引进行等值查询更快(一般情况下)，但是却无法进行范围查询。</li>
+</ul>
+<p>因为在hash索引中经过hash函数建立索引之后，索引的顺序与原顺序无法保持一致，不能支持范围查询。而B+树的的所有节点皆遵循(左节点小于父节点，右节点大于父节点，多叉树也类似)，天然支持范围。</p>
+<ul>
+<li>hash索引不支持使用索引进行排序，原理同上。</li>
+<li>hash索引不支持模糊查询以及多列索引的最左前缀匹配。原理也是因为hash函数的不可预测。AAAA和AAAAB的索引没有相关性。</li>
+<li>hash索引任何时候都避免不了回表查询数据，而B+树在符合某些条件(聚簇索引，覆盖索引等)的时候可以只通过索引完成查询。</li>
+<li>hash索引虽然在等值查询上较快，但是不稳定。性能不可预测，当某个键值存在大量重复的时候，发生hash碰撞，此时效率可能极差。而B+树的查询效率比较稳定，对于所有的查询都是从根节点到叶子节点，且树的高度较低。</li>
+</ul>
+<p>因此，在大多数情况下，直接选择B+树索引可以获得稳定且较好的查询速度。而不需要使用hash索引。</p>
+<h3 id="数据库为什么使用b树而不是b树">数据库为什么使用B+树而不是B树</h3>
+<ul>
+<li>B树只适合随机检索，而B+树同时支持随机检索和顺序检索；</li>
+<li>B+树空间利用率更高，可减少I/O次数，磁盘读写代价更低。一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。这样的话，索引查找过程中就要产生磁盘I/O消耗。B+树的内部结点并没有指向关键字具体信息的指针，只是作为索引使用，其内部结点比B树小，盘块能容纳的结点中关键字数量更多，一次性读入内存中可以查找的关键字也就越多，相对的，IO读写次数也就降低了。而IO读写次数是影响索引检索效率的最大因素；</li>
+<li>B+树的查询效率更加稳定。B树搜索有可能会在非叶子结点结束，越靠近根节点的记录查找时间越短，只要找到关键字即可确定记录的存在，其性能等价于在关键字全集内做一次二分查找。而在B+树中，顺序检索比较明显，随机检索时，任何关键字的查找都必须走一条从根节点到叶节点的路，所有关键字的查找路径长度相同，导致每一个关键字的查询效率相当。</li>
+<li>B-树在提高了磁盘IO性能的同时并没有解决元素遍历的效率低下的问题。B+树的叶子节点使用指针顺序连接在一起，只要遍历叶子节点就可以实现整棵树的遍历。而且在数据库中基于范围的查询是非常频繁的，而B树不支持这样的操作。</li>
+<li>增删文件（节点）时，效率更高。因为B+树的叶子节点包含所有关键字，并以有序的链表结构存储，这样可很好提高增删效率。</li>
+</ul>
+<h3 id="b树在满足聚簇索引和覆盖索引的时候不需要回表查询数据">B+树在满足聚簇索引和覆盖索引的时候不需要回表查询数据</h3>
+<p>在B+树的索引中，叶子节点可能存储了当前的key值，也可能存储了当前的key值以及整行的数据，这就是聚簇索引和非聚簇索引。 在InnoDB中，只有主键索引是聚簇索引，如果没有主键，则挑选一个唯一键建立聚簇索引。如果没有唯一键，则隐式的生成一个键来建立聚簇索引。</p>
+<p>当查询使用聚簇索引时，在对应的叶子节点，可以获取到整行数据，因此不用再次进行回表查询。</p>
+<h3 id="什么是聚簇索引何时使用聚簇索引与非聚簇索引">什么是聚簇索引？何时使用聚簇索引与非聚簇索引</h3>
+<ul>
+<li>聚簇索引：将数据存储与索引放到了一块，找到索引也就找到了数据</li>
+<li>非聚簇索引：将数据存储于索引分开结构，索引结构的叶子节点指向了数据的对应行，myisam通过key_buffer把索引先缓存到内存中，当需要访问数据时（通过索引访问数据），在内存中直接搜索索引，然后通过索引找到磁盘相应数据，这也就是为什么索引不在key buffer命中时，速度慢的原因</li>
+</ul>
+<p>澄清一个概念：innodb中，在聚簇索引之上创建的索引称之为辅助索引，辅助索引访问数据总是需要二次查找，非聚簇索引都是辅助索引，像复合索引、前缀索引、唯一索引，辅助索引叶子节点存储的不再是行的物理位置，而是主键值</p>
+<p>何时使用聚簇索引与非聚簇索引</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1620897704953.png" alt="" loading="lazy"></figure>
+<h3 id="非聚簇索引一定会回表查询吗">非聚簇索引一定会回表查询吗？</h3>
+<p>不一定，这涉及到查询语句所要求的字段是否全部命中了索引，如果全部命中了索引，那么就不必再进行回表查询。</p>
+<p>举个简单的例子，假设我们在员工表的年龄上建立了索引，那么当进行<code>select age from employee where age &lt; 20</code>的查询时，在索引的叶子节点上，已经包含了age信息，不会再次进行回表查询。</p>
+<h3 id="联合索引">联合索引</h3>
+<blockquote>
+<p>MySQL可以使用多个字段同时建立一个索引，叫做联合索引。</p>
+</blockquote>
+<p>在联合索引中，如果想要命中索引，需要按照建立索引时的字段顺序挨个使用，否则无法命中索引。</p>
+<p>具体原因为:</p>
+<p>MySQL使用索引时需要索引有序，假设现在建立了<code>&quot;name，age，school&quot;</code>的联合索引，那么索引的排序为: 先按照name排序，如果name相同，则按照age排序，如果age的值也相等，则按照school进行排序。</p>
+<p>当进行查询时，此时索引仅仅按照name严格有序，因此必须首先使用name字段进行等值查询，之后对于匹配到的列而言，其按照age字段严格有序，此时可以使用age字段用做索引查找，以此类推。因此在建立联合索引的时候应该注意索引列的顺序，一般情况下，将查询需求频繁或者字段选择性高的列放在前面。此外可以根据特例的查询或者表结构进行单独的调整。</p>
+<blockquote>
+<p>漫画：什么是B-树？https://tinaxiawuhao.github.io/post/LhRxiTagh/<br>
+漫画：什么是B+树？https://tinaxiawuhao.github.io/post/jVTlR3ljT/</p>
+</blockquote>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E7%B4%A2%E5%BC%95">索引</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">索引的基本原理</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E4%BC%98%E7%BC%BA%E7%82%B9">索引优缺点</a>
+<ul>
+<li><a href="#%E4%BC%98%E7%82%B9">优点</a></li>
+<li><a href="#%E7%BC%BA%E7%82%B9">缺点</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E9%87%8D%E7%82%B9">使用场景（重点）</a>
+<ul>
+<li><a href="#where">where</a></li>
+<li><a href="#order-by">order by</a></li>
+<li><a href="#join">join</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E8%A6%86%E7%9B%96">索引覆盖</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E7%B1%BB%E5%9E%8B">索引类型</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%8E%9F%E5%88%99">索引设计的原则</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E7%9A%84%E5%8E%9F%E5%88%99%E9%87%8D%E4%B8%AD%E4%B9%8B%E9%87%8D">创建索引的原则（重中之重）</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F">创建索引的三种方式</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95">删除索引</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E6%97%B6%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BB%80%E4%B9%88">创建索引时需要注意什么？</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E6%9F%A5%E8%AF%A2%E4%B8%80%E5%AE%9A%E8%83%BD%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E7%9A%84%E6%80%A7%E8%83%BD%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88">使用索引查询一定能提高查询的性能吗？为什么</a></li>
+<li><a href="#%E7%99%BE%E4%B8%87%E7%BA%A7%E5%88%AB%E6%88%96%E4%BB%A5%E4%B8%8A%E7%9A%84%E6%95%B0%E6%8D%AE%E5%A6%82%E4%BD%95%E5%88%A0%E9%99%A4">百万级别或以上的数据如何删除</a></li>
+<li><a href="#%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95">前缀索引</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E5%8E%9F%E5%88%99%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99">什么是最左前缀原则？什么是最左匹配原则</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E7%AE%97%E6%B3%95">索引算法</a>
+<ul>
+<li><a href="#btree%E7%AE%97%E6%B3%95">BTree算法</a></li>
+<li><a href="#hash%E7%AE%97%E6%B3%95">Hash算法</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84b%E6%A0%91hash">索引的数据结构（b树，hash）</a></li>
+<li><a href="#b%E6%A0%91%E5%92%8Cb%E6%A0%91%E7%9A%84%E5%8C%BA%E5%88%AB">B树和B+树的区别</a>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8b%E6%A0%91%E7%9A%84%E5%A5%BD%E5%A4%84">使用B树的好处</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8b%E6%A0%91%E7%9A%84%E5%A5%BD%E5%A4%84-2">使用B+树的好处</a></li>
+</ul>
+</li>
+<li><a href="#hash%E7%B4%A2%E5%BC%95%E5%92%8Cb%E6%A0%91%E5%AF%B9%E6%AF%94">Hash索引和B+树对比</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8b%E6%A0%91%E8%80%8C%E4%B8%8D%E6%98%AFb%E6%A0%91">数据库为什么使用B+树而不是B树</a></li>
+<li><a href="#b%E6%A0%91%E5%9C%A8%E6%BB%A1%E8%B6%B3%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E5%92%8C%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95%E7%9A%84%E6%97%B6%E5%80%99%E4%B8%8D%E9%9C%80%E8%A6%81%E5%9B%9E%E8%A1%A8%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE">B+树在满足聚簇索引和覆盖索引的时候不需要回表查询数据</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%BD%95%E6%97%B6%E4%BD%BF%E7%94%A8%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%B8%8E%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95">什么是聚簇索引？何时使用聚簇索引与非聚簇索引</a></li>
+<li><a href="#%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%B8%80%E5%AE%9A%E4%BC%9A%E5%9B%9E%E8%A1%A8%E6%9F%A5%E8%AF%A2%E5%90%97">非聚簇索引一定会回表查询吗？</a></li>
+<li><a href="#%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95">联合索引</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/Nq-4WaiGL/">
+                  <span class="post-title">
+                    mysql概述一&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/5ppmKteEb/">
+                   <span class="post-title">
+                     mysql概述三&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

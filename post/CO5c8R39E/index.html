@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>代理模式 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="代理模式 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="代理模式" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/CO5c8R39E/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RvlbUayk-/" class="tag">spring</a>
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>代理模式</h1>
+              <span class="meta">
+                Posted on
+                2021-09-13，5 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/CO5c8R39E.png" alt="封面图">
+          </img>
+          
+          <p>静态代理、JDK动态代理以及CGLIB动态代理<br>
+代理模式是java中最常用的设计模式之一，尤其是在spring框架中广泛应用。对于java的代理模式，一般可分为：静态代理、动态代理、以及CGLIB实现动态代理。<br>
+对于上述三种代理模式，分别进行说明。</p>
+<h2 id="静态代理">静态代理</h2>
+<p>静态代理其实就是在程序运行之前，提前写好被代理方法的代理类，编译后运行。在程序运行之前，class已经存在。<br>
+下面我们实现一个静态代理demo:</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1634527030816.png" alt="" loading="lazy"></figure>
+<p>定义一个接口Target</p>
+<pre><code class="language-java">package com.test.proxy;
+
+public interface Target {
+
+    public String execute();
+
+}
+</code></pre>
+<p>TargetImpl 实现接口Target</p>
+<pre><code class="language-java">package com.test.proxy;
+
+public class TargetImpl implements Target {
+
+    @Override
+    public String execute() {
+        System.out.println(&quot;TargetImpl execute！&quot;);
+        return &quot;execute&quot;;
+    }
+
+}
+</code></pre>
+<p>代理类</p>
+<pre><code class="language-java">package com.test.proxy;
+
+public class Proxy implements Target{
+
+    private Target target;
+    
+    public Proxy(Target target) {
+        this.target = target;
+    }
+    
+    @Override
+    public String execute() {
+        System.out.println(&quot;perProcess&quot;);
+        String result = this.target.execute();
+        System.out.println(&quot;postProcess&quot;);
+        return result;
+    }
+
+}
+</code></pre>
+<p>测试类:</p>
+<pre><code class="language-java">package com.test.proxy;
+
+public class ProxyTest {
+
+    public static void main(String[] args) {
+    
+        Target target = new TargetImpl();
+        Proxy p = new Proxy(target);
+        String result =  p.execute();
+        System.out.println(result);
+    }
+
+}
+</code></pre>
+<p>运行结果:</p>
+<blockquote>
+<p>perProcess<br>
+TargetImpl execute！<br>
+postProcess<br>
+execute</p>
+</blockquote>
+<p>静态代理需要针对被代理的方法提前写好代理类，如果被代理的方法非常多则需要编写很多代码，因此，对于上述缺点，通过动态代理的方式进行了弥补。</p>
+<h2 id="动态代理">动态代理</h2>
+<h3 id="jdk代理">jdk代理</h3>
+<p>动态代理主要是通过反射机制，在运行时动态生成所需代理的class.</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1634527039701.png" alt="" loading="lazy"></figure>
+<p>接口</p>
+<pre><code class="language-java">package com.test.dynamic;
+
+public interface Target {
+
+    public String execute();
+
+}
+</code></pre>
+<p>实现类</p>
+<pre><code class="language-java">package com.test.dynamic;
+
+public class TargetImpl implements Target {
+
+    @Override
+    public String execute() {
+        System.out.println(&quot;TargetImpl execute！&quot;);
+        return &quot;execute&quot;;
+    }
+
+}
+</code></pre>
+<p>代理类</p>
+<pre><code class="language-java">package com.test.dynamic;
+
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
+public class DynamicProxyHandler implements InvocationHandler{
+
+    private Target target;
+    
+    public DynamicProxyHandler(Target target) {
+        this.target = target;
+    }
+    
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        System.out.println(&quot;========before==========&quot;);
+        Object result = method.invoke(target,args);
+        System.out.println(&quot;========after===========&quot;);
+        return result;
+    }
+
+}
+</code></pre>
+<p>测试类</p>
+<pre><code class="language-java">package com.test.dynamic;
+
+import java.lang.reflect.Proxy;
+
+public class DynamicProxyTest {
+
+    public static void main(String[] args) {
+        Target target = new TargetImpl();
+        DynamicProxyHandler handler = new DynamicProxyHandler(target);
+        Target proxySubject = (Target) Proxy.newProxyInstance(TargetImpl.class.getClassLoader(),TargetImpl.class.getInterfaces(),handler);
+        String result = proxySubject.execute();
+        System.out.println(result);
+    }
+
+}
+</code></pre>
+<p>运行结果：</p>
+<blockquote>
+<p><mark><mark><mark><mark>before</mark></mark></mark></mark>==<br>
+TargetImpl execute！<br>
+<mark><mark><mark><mark>after</mark></mark></mark></mark>===<br>
+execute</p>
+</blockquote>
+<p>无论是动态代理还是静态带领，都需要定义接口，然后才能实现代理功能。这同样存在局限性，因此，为了解决这个问题，出现了第三种代理方式：cglib代理。</p>
+<h3 id="cglib代理">cglib代理</h3>
+<p>CGLib采用了非常底层的字节码技术，其原理是通过字节码技术为一个类创建子类，并在子类中采用方法拦截的技术拦截所有父类方法的调用，顺势织入横切逻辑。JDK动态代理与CGLib动态代理均是实现Spring AOP的基础。</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1634527048720.png" alt="" loading="lazy"></figure>
+<p>目标类</p>
+<pre><code class="language-java">package com.test.cglib;
+
+public class Target {
+
+    public String execute() {
+        String message = &quot;-----------test------------&quot;;
+        System.out.println(message);
+        return message;
+    }
+
+}
+</code></pre>
+<p>通用代理类</p>
+<pre><code class="language-java">package com.test.cglib;
+
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
+import java.lang.reflect.Method;
+
+public class MyMethodInterceptor implements MethodInterceptor{
+
+    @Override
+    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+        System.out.println(&quot;&gt;&gt;&gt;&gt;MethodInterceptor start...&quot;);
+        Object result = proxy.invokeSuper(obj,args);
+        System.out.println(&quot;&gt;&gt;&gt;&gt;MethodInterceptor ending...&quot;);
+        return &quot;result&quot;;
+    }
+
+}
+</code></pre>
+<p>测试类</p>
+<pre><code class="language-java">package com.test.cglib;
+
+import net.sf.cglib.proxy.Enhancer;
+
+public class CglibTest {
+
+    public static void main(String[] args) {
+        System.out.println(&quot;***************&quot;);
+        Target target = new Target();
+        CglibTest test = new CglibTest();
+        Target proxyTarget = (Target) test.createProxy(Target.class);
+        String res = proxyTarget.execute();
+        System.out.println(res);
+    }
+    
+    public Object createProxy(Class targetClass) {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(targetClass);
+        enhancer.setCallback(new MyMethodInterceptor());
+        return enhancer.create();
+    }
+
+}
+</code></pre>
+<p>执行结果:</p>
+<hr>
+<blockquote>
+<p>MethodInterceptor start...<br>
+-----------test------------<br>
+MethodInterceptor ending...<br>
+result</p>
+</blockquote>
+<p>代理对象的生成过程由Enhancer类实现，大概步骤如下：</p>
+<ol>
+<li>生成代理类Class的二进制字节码；</li>
+<li>通过Class.forName加载二进制字节码，生成Class对象；</li>
+<li>通过反射机制获取实例构造，并初始化代理类对象。</li>
+</ol>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86">静态代理</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86">动态代理</a>
+<ul>
+<li><a href="#jdk%E4%BB%A3%E7%90%86">jdk代理</a></li>
+<li><a href="#cglib%E4%BB%A3%E7%90%86">cglib代理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/QvbaHSogu/">
+                  <span class="post-title">
+                    OOM&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/2nzKhQbUe/">
+                   <span class="post-title">
+                     CAS/ABA/AtomicReference&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

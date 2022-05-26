@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>saiku自动对接kylin | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="saiku自动对接kylin | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="saiku自动对接kylin" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/0wQHSTDWt/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/KfrHL101k/" class="tag">olap</a>
+                
+              </span>
+              <h1>saiku自动对接kylin</h1>
+              <span class="meta">
+                Posted on
+                2021-09-28，26 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/0wQHSTDWt.png" alt="封面图">
+          </img>
+          
+          <p>saiku通过添加schema和datasource的形式管理对接入系统的数据源，然后提供界面作为直观的分析数据方式，界面产生mdx，由mondrian连接数据源，解析mdx和执行查询</p>
+<p>kylin提供大规模数据的olap能力，通过saiku与kylin的对接，利用saiku的友好界面来很方面的查询</p>
+<p>如上的整合，需要手动配置数据源，编写schema的操作，感觉比较繁琐，可以通过修改saiku的代码，到kylin中获取project和cube的各种信息，根据一定规则转换生成schema并作为数据源管理起来，这样就很直接将saiku与kylin无缝对接起来。</p>
+<h3 id="代码案例">代码案例</h3>
+<p><strong>saiku-wabapp</strong></p>
+<pre><code class="language-xml">#saiku-beans.properties
+sylin.user=ADMIN
+sylin.password=ADMIN
+sylin.cube.url=http://localhost:7070/kylin/api/cubes
+sylin.cubedesc.url=http://localhost:7070/kylin/api/cube_desc
+sylin.model.url=http://localhost:7070/kylin/api/model
+sylin.url=localhost:7070
+</code></pre>
+<pre><code class="language-java">//saiku-beans.xml
+ &lt;bean id=&quot;repositoryDsManager&quot; class=&quot;org.saiku.service.datasource.RepositoryDatasourceManager&quot; init-method=&quot;load&quot; destroy-method=&quot;unload&quot;&gt;
+     &lt;!--aop:scoped-proxy/--&gt;
+         ......
+         &lt;property name=&quot;sylinUser&quot; value=&quot;${sylin.user}&quot;/&gt;
+         &lt;property name=&quot;sylinPassWord&quot; value=&quot;${sylin.password}&quot;/&gt;
+         &lt;property name=&quot;sylinCubeUrl&quot; value=&quot;${sylin.cube.url}&quot;/&gt;
+         &lt;property name=&quot;sylinCubeDescUrl&quot; value=&quot;${sylin.cubedesc.url}&quot;/&gt;
+         &lt;property name=&quot;sylinModelUrl&quot; value=&quot;${sylin.model.url}&quot;/&gt;
+         &lt;property name=&quot;sylinUrl&quot; value=&quot;${sylin.url}&quot;/&gt;
+ &lt;/bean&gt;
+</code></pre>
+<p><strong>saiku-service</strong></p>
+<pre><code class="language-java">public class RepositoryDatasourceManager implements IDatasourceManager, ApplicationListener&lt;HttpSessionCreatedEvent&gt; {
+	private String sylinUser;
+    private String sylinPassWord;
+    private String sylinCubeUrl;
+    private String sylinCubeDescUrl;
+    private String sylinModelUrl;
+    private String sylinUrl;
+    //get.set省略
+    ......
+    private void loadDatasources(Properties ext) {
+        datasources.clear();
+
+        List&lt;DataSource&gt; exporteddatasources = null;
+
+        try {
+            String result = execute(sylinCubeUrl);
+            JSONArray ja = JSON.parseArray(result);
+            for (int i = 0; i &lt; ja.size(); i++) {
+                JSONObject js = JSONObject.parseObject(ja.getString(i));
+                String newCubeName = js.getString(&quot;project&quot;) + &quot;#&quot; + js.getString(&quot;name&quot;);
+                datasources.put(js.getString(&quot;name&quot;), getSaikuDatasource(newCubeName));
+            }
+        } catch (Exception e) {
+            log.error(&quot;Failed add sylin cube to datasource&quot;, e);
+            e.printStackTrace();
+        }
+
+       ......
+    }
+     private SaikuDatasource getSaikuDatasource(String datasourceName) throws Exception {
+        if (datasourceName.contains(&quot;#&quot;)) {
+            String cubeName = datasourceName.split(&quot;#&quot;)[1].trim();
+            String cubeDescString = execute(sylinCubeDescUrl + &quot;/&quot; + cubeName);
+            CubeDesc cubeDesc = OBJECT_MAPPER.readValue(JSON.parseArray(cubeDescString).getString(0), CubeDesc.class);
+            //CubeDesc cubeDesc = JSONObject.parseObject(JSON.parseArray(cubeDescString).getString(0), CubeDesc.class);
+            String modelName = cubeDesc.getModelName();
+            String cubeModelString = execute(sylinModelUrl + &quot;/&quot; + modelName);
+            DataModelDesc modelDesc = OBJECT_MAPPER.readValue(cubeModelString, DataModelDesc.class);
+            //DataModelDesc modelDesc = JSONObject.parseObject(cubeModelString, DataModelDesc.class);
+            if (cubeDesc != null &amp;&amp; modelDesc != null) {
+                addSchema(SchemaUtil.createSchema(datasourceName, cubeDesc, modelDesc), &quot;/datasources/&quot; + datasourceName.replace(&quot;#&quot;, &quot;.&quot;) + &quot;.xml&quot;, datasourceName);
+            }
+            String project = new String();
+            if (datasourceName.contains(&quot;#&quot;)) {
+                project = datasourceName.split(&quot;#&quot;)[0].trim();
+            } else {
+                project = datasourceName;
+            }
+
+            Properties properties = new Properties();
+            properties.put(&quot;location&quot;, &quot;jdbc:mondrian:Jdbc=jdbc:kylin://&quot; + sylinUrl + &quot;/&quot; + project + &quot;;JdbcDrivers=org.apache.kylin.jdbc.Driver&quot; + &quot;;Catalog=mondrian:///datasources/&quot; + datasourceName.replace(&quot;#&quot;, &quot;.&quot;) + &quot;.xml&quot;);
+            properties.put(&quot;driver&quot;, &quot;mondrian.olap4j.MondrianOlap4jDriver&quot;);
+            properties.put(&quot;username&quot;, sylinUser);
+            properties.put(&quot;password&quot;, sylinPassWord);
+            properties.put(&quot;security.enabled&quot;, false);
+            properties.put(&quot;advanced&quot;, false);
+            return new SaikuDatasource(cubeName, SaikuDatasource.Type.OLAP, properties);
+        }
+        return null;
+    }
+
+    private String execute(String url) throws URISyntaxException, IOException {
+        int httpConnectionTimeoutMs = 30000;
+        int httpSocketTimeoutMs = 120000;
+        final HttpParams httpParams = new BasicHttpParams();
+        final PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
+        HttpConnectionParams.setSoTimeout(httpParams, httpSocketTimeoutMs);
+        HttpConnectionParams.setConnectionTimeout(httpParams, httpConnectionTimeoutMs);
+        cm.setDefaultMaxPerRoute(20);
+        cm.setMaxTotal(200);
+        HttpGet get = newGet(url);
+        get.setURI(new URI(url));
+        DefaultHttpClient client = new DefaultHttpClient(cm, httpParams);
+        if (sylinUser != null &amp;&amp; sylinPassWord != null) {
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(sylinUser, sylinPassWord);
+            provider.setCredentials(AuthScope.ANY, credentials);
+            client.setCredentialsProvider(provider);
+        }
+        HttpResponse response = client.execute(get);
+        if (response.getStatusLine().getStatusCode() != 200) {
+            throw new IOException(&quot;Invalid response &quot; + response.getStatusLine().getStatusCode());
+        }
+
+        String result = getContent(response);
+        return result;
+    }
+
+    private HttpGet newGet(String url) {
+        HttpGet get = new HttpGet();
+        addHttpHeaders(get);
+        return get;
+    }
+
+    private void addHttpHeaders(HttpRequestBase method) {
+        method.addHeader(&quot;Accept&quot;, &quot;application/json, text/plain, */*&quot;);
+        method.addHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);
+        String basicAuth = DatatypeConverter
+                .printBase64Binary((sylinUser + &quot;:&quot; + sylinPassWord).getBytes(StandardCharsets.UTF_8));
+        method.addHeader(&quot;Authorization&quot;, &quot;Basic &quot; + basicAuth);
+    }
+
+    private String getContent(HttpResponse response) throws IOException {
+        InputStreamReader reader = null;
+        BufferedReader rd = null;
+        StringBuffer result = new StringBuffer();
+        try {
+            reader = new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8);
+            rd = new BufferedReader(reader);
+            String line = null;
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+        } finally {
+            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(rd);
+        }
+        return result.toString();
+    }
+}
+</code></pre>
+<p><strong>mondrian3.0语法工具类</strong></p>
+<pre><code class="language-java">package org.saiku.service.util;
+
+import org.apache.kylin.cube.model.CubeDesc;
+import org.apache.kylin.cube.model.DimensionDesc;
+import org.apache.kylin.metadata.model.*;
+
+import java.util.*;
+
+public class SchemaUtil1 {
+    private static String newLine = &quot;\r\n&quot;;
+    private static Set&lt;String&gt; aggSet = new HashSet&lt;String&gt;(){
+        {
+            add(&quot;sum&quot;);
+            add(&quot;min&quot;);
+            add(&quot;max&quot;);
+            add(&quot;count&quot;);
+            add(&quot;count_distinct&quot;);
+        }
+
+    };
+
+
+    public static String createSchema(String dataSourceName, CubeDesc cubeDesc, DataModelDesc modelDesc) {
+        StringBuffer sb = new StringBuffer();
+        sb = appendSchema(sb, dataSourceName, cubeDesc, modelDesc);
+        return sb.toString();
+    }
+
+    public static StringBuffer appendSchema(StringBuffer sb, String dataSourceName, CubeDesc cubeDesc, DataModelDesc modelDesc) {
+        sb.append(&quot;&lt;?xml version='1.0'?&gt;&quot;).append(newLine)
+                .append(&quot;&lt;Schema name='&quot; + dataSourceName.split(&quot;#&quot;)[0].trim()+&quot;'&gt;&quot;)
+                .append(newLine);
+        sb = appendCube(sb, dataSourceName, cubeDesc, modelDesc);
+        sb.append(&quot;&lt;/Schema&gt;&quot;).append(newLine);
+        return sb;
+    }
+
+    public static StringBuffer appendCube(StringBuffer sb, String cubeName, CubeDesc cubeDesc, DataModelDesc modelDesc) {
+        sb.append(&quot;&lt;Cube name='&quot; + cubeName.split(&quot;#&quot;)[1] + &quot;'&gt;&quot;).append(newLine);
+        sb.append(&quot;&lt;Table name='&quot;+dealTableName(modelDesc.getRootFactTableName())+&quot;'/&gt;&quot;).append(newLine);
+        HashMap&lt;String,String&gt; aliasTableMap = new HashMap&lt;String,String&gt;();
+        HashMap&lt;String,String&gt; aliasTableJoinMap = new HashMap&lt;String,String&gt;();
+        aliasTableMap.put(dealTableName(modelDesc.getRootFactTableName()),dealTableName(modelDesc.getRootFactTableName()));
+        for(JoinTableDesc joinTableDesc:modelDesc.getJoinTables()) {
+            aliasTableMap.put(joinTableDesc.getAlias(),dealTableName(joinTableDesc.getTable()));
+            if(joinTableDesc.getJoin().getPrimaryKey().length == 1){
+                aliasTableJoinMap.put(dealTableName(joinTableDesc.getAlias()),joinTableDesc.getJoin().getPrimaryKey()[0].concat(&quot;#&quot;).concat(joinTableDesc.getJoin().getForeignKey()[0]));
+            }
+        }
+
+        for(DimensionDesc dimensionDesc: cubeDesc.getDimensions()){
+            // tableSet.add(dealTableName(dimensionDesc.getTable()));
+            if(aliasTableMap.get(dealTableName(dimensionDesc.getTable())).equals(dealTableName(modelDesc.getRootFactTableName()))){
+                sb.append(&quot;&lt;Dimension name='&quot;+dimensionDesc.getName()+&quot;'&gt;&quot;).append(newLine);
+                sb.append(&quot;&lt;Hierarchy name='&quot;+dimensionDesc.getName()+&quot;' hasAll='true' allMemberName='All &quot;+dimensionDesc.getName()+&quot;'&gt;&quot;).append(newLine);
+
+            }else if(aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable()))==null){
+                continue;
+            } else if(aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable()))!=null &amp;&amp; aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable())).split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[0]
+                    .equals(dealTableName(modelDesc.getRootFactTableName()))){
+                sb.append(&quot;&lt;Dimension name='&quot;+dimensionDesc.getName()+&quot;' foreignKey='&quot;+aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable()))
+                        .split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[1]+&quot;'&gt;&quot;).append(newLine);
+
+                sb.append(&quot;&lt;Hierarchy name='&quot;+dimensionDesc.getName()+&quot;' hasAll='true' allMemberName='All &quot;+dimensionDesc.getName()+&quot;' primaryKey='&quot;+
+                        aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable())).split(&quot;#&quot;)[0].split(&quot;\\.&quot;)[1]+&quot;'&gt;&quot;).append(newLine);
+
+                sb.append(&quot;&lt;Table name='&quot;+aliasTableMap.get(dealTableName(dimensionDesc.getTable()))+&quot;'/&gt;&quot;).append(newLine);
+
+            } else if(aliasTableJoinMap.get(aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable())).split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[0])
+                    .split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[0].equals(dealTableName(modelDesc.getRootFactTableName()))){
+                sb.append(&quot;&lt;Dimension name='&quot;+dimensionDesc.getName()+&quot;' foreignKey='&quot;+aliasTableJoinMap.get(aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable()))
+                        .split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[0]).split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[1]+&quot;'&gt;&quot;).append(newLine);
+
+                sb.append(&quot;&lt;Hierarchy name='&quot;+dimensionDesc.getName()+&quot;' hasAll='true' allMemberName='All &quot;+dimensionDesc.getName()+&quot;' primaryKey='&quot;+
+                        aliasTableJoinMap.get(aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable())).split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[0])
+                                .split(&quot;#&quot;)[0].split(&quot;\\.&quot;)[1]+&quot;' primaryKeyTable='&quot;+aliasTableMap.get(aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable()))
+                        .split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[0])+&quot;'&gt;&quot;).append(newLine);
+
+                sb.append(&quot;&lt;Join leftKey='&quot;+aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable())).split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[1]+&quot;' rightAlias='&quot;+aliasTableMap.get(dimensionDesc.getTable())+
+                        &quot;' rightKey='&quot;+aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable())).split(&quot;#&quot;)[0].split(&quot;\\.&quot;)[1]+&quot;'&gt;&quot;).append(newLine);
+
+                sb.append(&quot;&lt;Table name='&quot;+aliasTableMap.get(aliasTableJoinMap.get(dealTableName(dimensionDesc.getTable())).split(&quot;#&quot;)[1].split(&quot;\\.&quot;)[0])+&quot;'/&gt;&quot;).append(newLine);
+                sb.append(&quot;&lt;Table name='&quot;+aliasTableMap.get(dimensionDesc.getTable())+&quot;'/&gt;&quot;).append(newLine);
+                sb.append(&quot;&lt;/Join&gt;&quot;).append(newLine);
+            } else {
+                continue;
+            }
+            Set&lt;String&gt; columns = getColumns(dimensionDesc);
+            for(String column:columns){
+                sb.append(&quot;&lt;Level name='&quot;+column+&quot;' column='&quot;+column+&quot;' table='&quot;+aliasTableMap.get(dimensionDesc.getTable())+&quot;'/&gt;&quot;).append(newLine);
+            }
+            sb.append(&quot;&lt;/Hierarchy&gt;&quot;).append(newLine);
+            sb.append(&quot;&lt;/Dimension&gt;&quot;).append(newLine);
+        }
+        for (MeasureDesc measureDesc : cubeDesc.getMeasures()) {
+            int i=0;
+            String table = measureDesc.getFunction().getParameter().getValue().split(&quot;\\.&quot;)[0];
+            final boolean flag = Arrays.stream(modelDesc.getJoinTables()).anyMatch(item -&gt; table.equals(dealTableName(item.getTable())));
+            if(table.equals(dealTableName(modelDesc.getRootFactTableName()))||flag||table.equals(&quot;1&quot;)){
+                addMeasure(sb,measureDesc,getColumn(cubeDesc,modelDesc,dealTableName(modelDesc.getRootFactTableName())));
+            }
+        }
+
+        sb.append(&quot;&lt;/Cube&gt;&quot;).append(newLine);
+        return sb;
+    }
+
+
+
+    public static String dealTableName(String tableName){
+        if(tableName.contains(&quot;.&quot;))
+            return tableName.split(&quot;\\.&quot;)[1];
+        else
+            return tableName;
+    }
+
+    public static StringBuffer addMeasure(StringBuffer sb, MeasureDesc measureDesc, String defaultColumn) {
+        FunctionDesc funtionDesc = measureDesc.getFunction();
+        String aggregator = funtionDesc.getExpression().trim().toLowerCase();
+        if(aggSet.contains(aggregator.toLowerCase())){
+            //mondrian only have distinct-count
+            if(aggregator.equals(&quot;count_distinct&quot;)){
+                aggregator = &quot;distinct-count&quot;;
+            }
+            if(funtionDesc.getParameter().getValue().equals(&quot;1&quot;)) {
+                sb.append(&quot;&lt;Measure aggregator='&quot; + aggregator + &quot;' column='&quot; + defaultColumn + &quot;' name='&quot; + measureDesc.getName() + &quot;' visible='true'/&gt;&quot;)
+                        .append(newLine);
+            }
+            else
+                sb.append(&quot;&lt;Measure aggregator='&quot; + aggregator + &quot;' column='&quot; + funtionDesc.getParameter().getValue().split(&quot;\\.&quot;)[1] + &quot;' name='&quot; + measureDesc.getName() + &quot;' visible='true'/&gt;&quot;)
+                        .append(newLine);
+            return sb;
+        }
+        return sb;
+    }
+
+    public static String getColumn(CubeDesc cubeDesc,DataModelDesc dataModelDesc,String tableName){
+        List&lt;MeasureDesc&gt; measureDescList = cubeDesc.getMeasures();
+        for(MeasureDesc measureDesc:measureDescList){
+            if(measureDesc.getFunction().getParameter().getValue().split(&quot;\\.&quot;)[0].equals(tableName)){
+                return measureDesc.getFunction().getParameter().getValue().split(&quot;\\.&quot;)[1];
+            }
+        }
+        if(dataModelDesc.getMetrics().length&gt;0){
+            return dataModelDesc.getMetrics()[0];
+        }
+
+        for(ModelDimensionDesc modelDimensionDesc:dataModelDesc.getDimensions()){
+            if(modelDimensionDesc.getTable().equals(tableName)){
+                return modelDimensionDesc.getColumns()[0];
+            }
+        }
+        return null;
+    }
+
+    public static Set&lt;String&gt; getColumns(DimensionDesc dimensionDesc){
+        Set&lt;String&gt; columns = new HashSet&lt;String&gt;();
+        if (dimensionDesc.getColumn() != null || dimensionDesc.getDerived() != null) {
+            if(dimensionDesc.getColumn() != null) {
+                columns.add(dimensionDesc.getColumn());
+            }
+            if (dimensionDesc.getDerived() != null) {
+                for (String derived : dimensionDesc.getDerived()) {
+                    columns.add(derived);
+                }
+            }
+        } else {
+            columns.add(dimensionDesc.getName());
+        }
+        return columns;
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;Schema name=&quot;Mondrian&quot;&gt;  &lt;!--模型定义--&gt;
+&lt;Cube name=&quot;Person&quot;&gt;     &lt;!--立方体 ，一个立方体有多个维度--&gt;
+    &lt;Table name=&quot;PERSON&quot; /&gt;  &lt;!--立方体对应的表 --&gt;
+     &lt;Dimension name=&quot;部门&quot; foreignKey=&quot;USERID&quot; &gt; &lt;!--定义维度 --&gt;
+        &lt;Hierarchy  hasAll=&quot;true&quot; primaryKey=&quot;USERID&quot; allMemberName=&quot;所有部门&quot; &gt; &lt;!--定义维度下面的层次，层次包含很多层 --&gt;
+          &lt;Table name=&quot;PERSON&quot; alias=&quot;a&quot;/&gt;                                   &lt;!--定义维度获取数据的来源-表 --&gt;
+        &lt;Level name=&quot;部门&quot; column=&quot;DEPARTMENT&quot; uniqueMembers=&quot;true&quot; /&gt; &lt;!--定义层次的层，每个层对应数据库中对应的字段 --&gt;
+        &lt;Level name=&quot;姓名&quot; column=&quot;USERNAME&quot; uniqueMembers=&quot;true&quot; /&gt;           
+        &lt;/Hierarchy&gt;
+    &lt;/Dimension&gt;     
+    &lt;Dimension name=&quot;性别&quot;  foreignKey=&quot;USERID&quot; &gt;
+        &lt;Hierarchy hasAll=&quot;true&quot; primaryKey=&quot;USERID&quot; allMemberName=&quot;所有性别&quot;&gt;         
+            &lt;Table name=&quot;PERSON&quot; alias=&quot;b&quot; /&gt;
+        &lt;Level name=&quot;性别&quot; column=&quot;SEX&quot;   uniqueMembers=&quot;true&quot; /&gt;
+        &lt;/Hierarchy&gt;
+    &lt;/Dimension&gt;
+    &lt;Dimension name=&quot;专业技术资格类别&quot;  foreignKey=&quot;USERID&quot; &gt;
+        &lt;Hierarchy hasAll=&quot;true&quot; primaryKey=&quot;USERID&quot; allMemberName=&quot;所有专业技术资格类别&quot;&gt;         
+            &lt;Table name=&quot;PERSON&quot; alias=&quot;c&quot; /&gt;
+        &lt;Level name=&quot;资格类别&quot; column=&quot;ZYJSLB&quot;   uniqueMembers=&quot;true&quot; /&gt;
+        &lt;/Hierarchy&gt;
+    &lt;/Dimension&gt;
+    &lt;Dimension name=&quot;专业技术资格等级&quot;  foreignKey=&quot;USERID&quot; &gt;
+        &lt;Hierarchy hasAll=&quot;true&quot; primaryKey=&quot;USERID&quot; allMemberName=&quot;所有专业技术资格等级&quot;&gt;         
+            &lt;Table name=&quot;PERSON&quot; alias=&quot;d&quot; /&gt;
+        &lt;Level name=&quot;资格等级&quot; column=&quot;ZYJSDJ&quot;   uniqueMembers=&quot;true&quot; /&gt;
+        &lt;/Hierarchy&gt;
+    &lt;/Dimension&gt;
+     &lt;Dimension name=&quot;职系&quot;  foreignKey=&quot;USERID&quot; &gt;
+        &lt;Hierarchy hasAll=&quot;true&quot; primaryKey=&quot;USERID&quot; allMemberName=&quot;所有职系&quot;&gt;         
+            &lt;Table name=&quot;PERSON&quot; alias=&quot;e&quot; /&gt;
+        &lt;Level name=&quot;职系&quot; column=&quot;ZHIXI&quot;   uniqueMembers=&quot;true&quot; /&gt;
+        &lt;/Hierarchy&gt;
+    &lt;/Dimension&gt;
+    &lt;Dimension name=&quot;民族&quot;  foreignKey=&quot;USERID&quot; &gt;
+        &lt;Hierarchy hasAll=&quot;true&quot; primaryKey=&quot;USERID&quot; allMemberName=&quot;所有民族&quot;&gt;         
+            &lt;Table name=&quot;PERSON&quot; alias=&quot;f&quot; /&gt;
+        &lt;Level name=&quot;民族&quot; column=&quot;NATIONALITY&quot;   uniqueMembers=&quot;true&quot; /&gt;
+        &lt;/Hierarchy&gt;
+    &lt;/Dimension&gt;
+    &lt;Dimension name=&quot;学历&quot;  foreignKey=&quot;USERID&quot; &gt;
+        &lt;Hierarchy hasAll=&quot;true&quot; primaryKey=&quot;USERID&quot; allMemberName=&quot;所有学历&quot;&gt;         
+            &lt;Table name=&quot;PERSON&quot; alias=&quot;g&quot; /&gt;
+        &lt;Level name=&quot;学历&quot; column=&quot;XUELI&quot;   uniqueMembers=&quot;true&quot; /&gt;
+        &lt;/Hierarchy&gt;
+    &lt;/Dimension&gt;       
+    &lt;Measure name=&quot;人数&quot; column=&quot;USERID&quot; aggregator=&quot;distinct count&quot; /&gt;       &lt;!--指标/度量，采用distinct count聚合 --&gt;
+    &lt;/Cube&gt;
+&lt;/Schema&gt;
+</code></pre>
+<p><strong>mondrian4.0语法工具类</strong></p>
+<pre><code class="language-java">package org.saiku.service.util;
+
+import org.apache.kylin.cube.model.CubeDesc;
+import org.apache.kylin.cube.model.DimensionDesc;
+import org.apache.kylin.cube.model.RowKeyDesc;
+import org.apache.kylin.metadata.model.*;
+
+import java.util.*;
+
+public class SchemaUtil {
+    private static final String newLine = &quot;\r\n&quot;;
+    private static Map&lt;String, String&gt; map;
+
+    public static String createSchema(String dataSourceName, CubeDesc cubeDesc, DataModelDesc modelDesc) {
+        StringBuffer sb = new StringBuffer();
+        sb = appendSchema(sb, dataSourceName, cubeDesc, modelDesc);
+//        System.out.println(&quot;********************************&quot; + sb.toString());
+        return sb.toString();
+    }
+
+    public static StringBuffer appendSchema(StringBuffer sb, String dataSourceName, CubeDesc cubeDesc, DataModelDesc modelDesc) {
+        sb.append(&quot;&lt;?xml version='1.0'?&gt;&quot;).append(newLine)
+                .append(&quot;&lt;Schema name='&quot;).append(dataSourceName.split(&quot;#&quot;)[0].trim()).append(&quot;' metamodelVersion='4.0'&gt;&quot;)
+//                .append(&quot;&lt;Schema name='&quot; + dataSourceName + &quot;' metamodelVersion='4.0'&gt;&quot;)
+                .append(newLine);
+        appendTable(sb, modelDesc);
+        appendDimension(sb, modelDesc);
+        appendCube(sb, dataSourceName, cubeDesc, modelDesc);
+        sb.append(&quot;&lt;/Schema&gt;&quot;).append(newLine);
+        return sb;
+    }
+
+    public static StringBuffer appendTable(StringBuffer sb, DataModelDesc modelDesc) {
+        StringBuilder linkSb = new StringBuilder();
+        //获取所有关系表
+        final List&lt;ModelDimensionDesc&gt; tables = modelDesc.getDimensions();
+        sb.append(&quot;&lt;PhysicalSchema&gt;&quot;).append(newLine);
+        //添加表关联关系
+        final JoinTableDesc[] joinTables = modelDesc.getJoinTables();
+        for (JoinTableDesc joinTableDesc : joinTables) {
+            String factTablename = dealModelTableName(joinTableDesc.getJoin().getForeignKey()[0]);
+            String Column = dealTableName(joinTableDesc.getJoin().getForeignKey()[0]);
+            String joinTablename = dealModelTableName(joinTableDesc.getJoin().getPrimaryKey()[0]);
+            String joinColumn = dealTableName(joinTableDesc.getJoin().getPrimaryKey()[0]);
+            linkSb.append(&quot;&lt;Link source='&quot;).append(factTablename).append(&quot;' target='&quot;).append(joinTablename).append(&quot;'&gt;&quot;).append(newLine)
+                    .append(&quot;&lt;ForeignKey&gt;&quot;).append(newLine)
+                    .append(&quot;&lt;Column name='&quot;).append(Column).append(&quot;'/&gt;&quot;).append(newLine)
+                    .append(&quot;&lt;/ForeignKey&gt;&quot;).append(newLine)
+                    .append(&quot;&lt;/Link&gt;&quot;).append(newLine);
+            //清空map
+            map = new HashMap&lt;&gt;();
+            tables.forEach(item -&gt; {
+                if (item.getTable().equals(factTablename)) {
+                    map.put(factTablename, Column);
+                }
+                if (item.getTable().equals(joinTablename)) {
+                    map.put(joinTablename, joinColumn);
+                }
+            });
+        }
+        //添加表
+        for (String tableName : map.keySet()) {
+            sb.append(&quot;&lt;Table name='&quot;).append(tableName).append(&quot;'&gt;&quot;).append(newLine)
+                    .append(&quot;&lt;Key&gt;&quot;).append(newLine).append(&quot;&lt;Column name='&quot;).append(map.get(tableName)).append(&quot;'/&gt;&quot;).append(newLine)
+                    .append(&quot;&lt;/Key&gt;&quot;).append(newLine)
+                    .append(&quot;&lt;/Table&gt;&quot;).append(newLine);
+        }
+
+        sb.append(linkSb);
+        linkSb.delete(0, linkSb.length());
+        sb.append(&quot;&lt;/PhysicalSchema&gt;&quot;).append(newLine);
+        return sb;
+    }
+
+    public static Map&lt;String, JoinDesc&gt; getJoinDesc(DataModelDesc modelDesc) {
+        Map&lt;String, JoinDesc&gt; joinDescMap = new HashMap&lt;String, JoinDesc&gt;();
+        for (JoinTableDesc lookupDesc : modelDesc.getJoinTables()) {
+            if (!joinDescMap.containsKey(dealTableName(lookupDesc.getTable())))
+                joinDescMap.put(dealTableName(lookupDesc.getTable()), lookupDesc.getJoin());
+        }
+        return joinDescMap;
+    }
+
+    public static void appendDimension(StringBuffer sb, DataModelDesc modelDesc) {
+        StringBuilder hierSb = new StringBuilder();
+        for (ModelDimensionDesc dimensionDesc : modelDesc.getDimensions()) {
+            sb.append(&quot;&lt;Dimension name='&quot;).append(dimensionDesc.getTable()).append(&quot;' key='&quot;).append(map.get(dimensionDesc.getTable())).append(&quot;' table='&quot;).append(dimensionDesc.getTable()).append(&quot;'&gt;&quot;).append(newLine);
+            sb.append(&quot;&lt;Attributes&gt;&quot;).append(newLine);
+            hierSb.append(&quot;&lt;Hierarchies&gt;&quot;).append(newLine);
+            hierSb.append(&quot;&lt;Hierarchy  name='&quot;).append(dimensionDesc.getTable()).append(&quot;' hasAll='true'&gt;&quot;).append(newLine);
+            for (String column : dimensionDesc.getColumns()) {
+                // add Attributes to stringbuffer
+                addAttribute(sb, column);
+                addHierarchy(hierSb, column);
+            }
+            sb.append(&quot;&lt;/Attributes&gt;&quot;).append(newLine);
+            hierSb.append(&quot;&lt;/Hierarchy&gt;&quot;).append(newLine);
+            hierSb.append(&quot;&lt;/Hierarchies&gt;&quot;).append(newLine);
+            sb.append(hierSb);
+            hierSb.delete(0, hierSb.length());
+            sb.append(&quot;&lt;/Dimension&gt;&quot;).append(newLine);
+        }
+    }
+
+    public static Set&lt;String&gt; getColumns(DimensionDesc dimensionDesc) {
+        Set&lt;String&gt; columns = new HashSet&lt;String&gt;();
+        if (dimensionDesc.getColumn() != null || dimensionDesc.getDerived() != null) {
+            if (dimensionDesc.getColumn() != null) {
+//                for (String column : dimensionDesc.getColumn()) {
+                columns.add(dimensionDesc.getColumn());
+//                }
+            }
+            if (dimensionDesc.getDerived() != null) {
+                columns.addAll(Arrays.asList(dimensionDesc.getDerived()));
+            }
+        } else {
+            columns.add(dimensionDesc.getName());
+        }
+        return columns;
+    }
+
+    public static StringBuffer addAttribute(StringBuffer sb, String attr) {
+        sb.append(&quot;&lt;Attribute name='&quot;).append(attr).append(&quot;' keyColumn='&quot;).append(attr).append(&quot;' hasHierarchy='false'/&gt;&quot;).append(newLine);
+        return sb;
+    }
+
+    public static void addHierarchy(StringBuilder sb, String attr) {
+        sb.append(&quot;&lt;Level attribute='&quot;).append(attr).append(&quot;'/&gt;&quot;).append(newLine);
+    }
+
+
+    public static String dealTableName(String tableName) {
+        if (tableName.contains(&quot;.&quot;))
+            return tableName.split(&quot;\\.&quot;)[1];
+        else
+            return tableName;
+    }
+
+    public static String dealModelTableName(String tableName) {
+        if (tableName.contains(&quot;.&quot;))
+            return tableName.split(&quot;\\.&quot;)[0];
+        else
+            return tableName;
+    }
+
+    public static StringBuffer appendCube(StringBuffer sb, String cubeName, CubeDesc cubeDesc, DataModelDesc modelDesc) {
+        sb.append(&quot;&lt;Cube name='&quot;).append(cubeName.split(&quot;#&quot;)[1].trim()).append(&quot;'&gt;&quot;).append(newLine);
+        addCubeDimension(sb, modelDesc.getDimensions());
+        sb.append(&quot;&lt;MeasureGroups&gt;&quot;).append(newLine);
+
+        Map&lt;String, Map&lt;String, MeasureDesc&gt;&gt; allMap = new HashMap();
+
+        MeasureDesc one = new MeasureDesc();
+        for (MeasureDesc measureDesc : cubeDesc.getMeasures()) {
+            final String tableName = dealModelTableName(measureDesc.getFunction().getParameter().getValue());
+            final String columnName = dealTableName(measureDesc.getFunction().getParameter().getValue());
+            if (&quot;1&quot;.equals(tableName)) {
+                one = measureDesc;
+            } else {
+                if (Objects.isNull(allMap.get(tableName))) {
+                    Map&lt;String, MeasureDesc&gt; map = new HashMap();
+                    if (Objects.nonNull(one)) {
+                        map.put(columnName, one);
+                        one = null;
+                    }
+                    map.put(columnName, measureDesc);
+                    allMap.put(tableName, map);
+                } else {
+                    allMap.get(tableName).put(columnName, measureDesc);
+                }
+            }
+        }
+
+        allMap.forEach((tableName, value) -&gt; {
+            sb.append(&quot;&lt;MeasureGroup table='&quot;).append(dealTableName(tableName)).append(&quot;'&gt;&quot;).append(newLine);
+            addDimensionLink(sb, modelDesc);
+            sb.append(&quot;&lt;Measures&gt;&quot;).append(newLine);
+            value.forEach((columnName, measureDesc) -&gt; {
+                addMeasure(sb, measureDesc, getColumn(cubeDesc));
+            });
+            sb.append(&quot;&lt;/Measures&gt;&quot;).append(newLine);
+            sb.append(&quot;&lt;/MeasureGroup&gt;&quot;).append(newLine);
+        });
+        sb.append(&quot;&lt;/MeasureGroups&gt;&quot;).append(newLine);
+        sb.append(&quot;&lt;/Cube&gt;&quot;).append(newLine);
+        return sb;
+    }
+
+    public static void addCubeDimension(StringBuffer sb, List&lt;ModelDimensionDesc&gt; dimensionDescs) {
+        sb.append(&quot;&lt;Dimensions&gt;&quot;).append(newLine);
+        for (ModelDimensionDesc dimensionDesc : dimensionDescs) {
+            sb.append(&quot;&lt;Dimension source='&quot;).append(dimensionDesc.getTable()).append(&quot;' visible='true'/&gt;&quot;).append(newLine);
+        }
+        sb.append(&quot;&lt;/Dimensions&gt;&quot;).append(newLine);
+    }
+
+    public static void addDimensionLink(StringBuffer sb, DataModelDesc modelDesc) {
+        sb.append(&quot;&lt;DimensionLinks&gt;&quot;).append(newLine);
+        for(ModelDimensionDesc dimensionDesc : modelDesc.getDimensions()) {
+            if(dimensionDesc.getTable().contains(dealTableName(modelDesc.getRootFactTableName()))) {
+                sb.append(&quot;&lt;FactLink dimension='&quot;).append(dimensionDesc.getTable()).append(&quot;'/&gt;&quot;).append(newLine);
+            }else{
+                sb.append(&quot;&lt;ForeignKeyLink dimension='&quot;).append(dimensionDesc.getTable()).append(&quot;' foreignKeyColumn='&quot;).append(map.get(dimensionDesc.getTable())).append(&quot;'/&gt;&quot;).append(newLine);
+            }
+        }
+        sb.append(&quot; &lt;/DimensionLinks&gt;&quot;).append(newLine);
+    }
+
+    public static StringBuffer addMeasure(StringBuffer sb, MeasureDesc measureDesc, String defaultColumn) {
+        FunctionDesc funtionDesc = measureDesc.getFunction();
+        String aggregator = funtionDesc.getExpression().trim().toLowerCase();
+        //mondrian only have distinct-count
+        if (aggregator.equals(&quot;count_distinct&quot;)) {
+            aggregator = &quot;distinct-count&quot;;
+        }
+        if (funtionDesc.getParameter().getValue().equals(&quot;1&quot;)) {
+            sb.append(&quot;&lt;Measure aggregator='&quot;).append(aggregator).append(&quot;' column='&quot;).append(dealTableName(defaultColumn)).append(&quot;' name='&quot;).append(measureDesc.getName()).append(&quot;' visible='true'/&gt;&quot;)
+                    .append(newLine);
+        } else
+            sb.append(&quot;&lt;Measure aggregator='&quot;).append(aggregator).append(&quot;' column='&quot;).append(dealTableName(funtionDesc.getParameter().getValue())).append(&quot;' name='&quot;).append(measureDesc.getName()).append(&quot;' visible='true'/&gt;&quot;)
+                    .append(newLine);
+        return sb;
+    }
+
+    public static Set&lt;String&gt; getTables(List&lt;DimensionDesc&gt; dimensionDescList) {
+        Set&lt;String&gt; tables = new HashSet&lt;String&gt;();
+        for (DimensionDesc dimensionDesc : dimensionDescList) {
+            String table = dealTableName(dimensionDesc.getTable());
+            tables.add(table);
+        }
+        return tables;
+    }
+
+    public static String getColumn(CubeDesc cubeDesc) {
+        RowKeyDesc rowKey = cubeDesc.getRowkey();
+        return rowKey.getRowKeyColumns()[0].getColumn();
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;?xml version='1.0'?&gt;
+&lt;Schema name='xiaowei' metamodelVersion='4.0'&gt;
+&lt;PhysicalSchema&gt;
+	&lt;Table name='TBL_FARM_INCOME_STATICS'&gt;
+		&lt;Key&gt;
+			&lt;Column name='COMPANY_ID'/&gt;
+		&lt;/Key&gt;
+	&lt;/Table&gt;
+	&lt;Table name='TBL_CUSTOMER'&gt;
+		&lt;Key&gt;
+			&lt;Column name='COMPANY_ID'/&gt;
+		&lt;/Key&gt;
+	&lt;/Table&gt;
+	&lt;Link source='TBL_FARM_INCOME_STATICS' target='TBL_CUSTOMER'&gt;
+		&lt;ForeignKey&gt;
+			&lt;Column name='COMPANY_ID'/&gt;
+		&lt;/ForeignKey&gt;
+	&lt;/Link&gt;
+&lt;/PhysicalSchema&gt;
+&lt;Dimension name='TBL_FARM_INCOME_STATICS' table='TBL_FARM_INCOME_STATICS' key='COMPANY_ID'&gt;
+	&lt;Attributes&gt;
+		&lt;Attribute name='COMPANY_ID' keyColumn='COMPANY_ID' hasHierarchy='false'/&gt;
+		&lt;Attribute name='INCOME_DATE' keyColumn='INCOME_DATE' hasHierarchy='false'/&gt;
+	&lt;/Attributes&gt;
+
+	&lt;Hierarchies&gt;
+		&lt;Hierarchy name='TBL_FARM_INCOME_STATICS' allMemberName='All Warehouses'&gt;
+			&lt;Level attribute='COMPANY_ID'/&gt;
+			&lt;Level attribute='INCOME_DATE'/&gt;
+		&lt;/Hierarchy&gt;
+	&lt;/Hierarchies&gt;
+&lt;/Dimension&gt;
+
+&lt;Dimension name='TBL_CUSTOMER' table='TBL_CUSTOMER' key='COMPANY_ID'&gt;
+	&lt;Attributes&gt;
+		&lt;Attribute name='COMPANY_ID' keyColumn='COMPANY_ID' hasHierarchy='false'/&gt;
+		&lt;Attribute name='CUSTOMER_TYPE' keyColumn='CUSTOMER_TYPE' hasHierarchy='false'/&gt;
+		&lt;Attribute name='PHONE' keyColumn='PHONE' hasHierarchy='false'/&gt;
+	&lt;/Attributes&gt;
+
+	&lt;Hierarchies&gt;
+		&lt;Hierarchy name='TBL_CUSTOMER' allMemberName='All Warehouses'&gt;
+			&lt;Level attribute='COMPANY_ID'/&gt;
+			&lt;Level attribute='CUSTOMER_TYPE'/&gt;
+			&lt;Level attribute='PHONE'/&gt;
+		&lt;/Hierarchy&gt;
+	&lt;/Hierarchies&gt;
+&lt;/Dimension&gt;
+
+&lt;Cube name='tbl_farm_income_statics'&gt;
+&lt;Dimensions&gt;
+&lt;Dimension source='TBL_FARM_INCOME_STATICS' visible='true'/&gt;
+&lt;Dimension source='TBL_CUSTOMER' visible='true'/&gt;
+&lt;/Dimensions&gt;
+&lt;MeasureGroups&gt;
+	&lt;MeasureGroup table='TBL_CUSTOMER'&gt;
+		&lt;Measures&gt;
+			&lt;Measure aggregator='sum' column='CONSUME_AMMOUT' name='CONSUME_AMMOUT_SUM' visible='true'/&gt;
+		&lt;/Measures&gt;
+		&lt;DimensionLinks&gt;
+			&lt;FactLink dimension='TBL_FARM_INCOME_STATICS'/&gt;
+			&lt;ForeignKeyLink dimension='TBL_CUSTOMER' foreignKeyColumn='COMPANY_ID'/&gt;
+		&lt;/DimensionLinks&gt;
+	&lt;/MeasureGroup&gt;
+
+	&lt;MeasureGroup table='TBL_FARM_INCOME_STATICS'&gt;
+		&lt;Measures&gt;
+			&lt;Measure aggregator='count' column='COMPANY_ID' name='_COUNT_' visible='true'/&gt;
+			&lt;Measure aggregator='sum' column='REFUND_AMOUNT' name='REFUND_AMOUNT_SUM' visible='true'/&gt;
+			&lt;Measure aggregator='sum' column='COMMON_REFUND_AMOUNT' name='COMMON_REFUND_AMOUNT_SUM' visible='true'/&gt;
+			&lt;Measure aggregator='sum' column='COMMON_INCOME' name='COMMON_INCOME_SUM' visible='true'/&gt;
+			&lt;Measure aggregator='sum' column='SALE_AMOUNT' name='SALE_AMOUNT_SUM' visible='true'/&gt;
+			&lt;Measure aggregator='sum' column='RENEW_AMOUNT' name='RENEW_AMOUNT_SUM' visible='true'/&gt;
+			&lt;Measure aggregator='sum' column='TOTAL_AMOUNT' name='TOTAL_AMOUNT_SUM' visible='true'/&gt;
+		&lt;/Measures&gt;
+		&lt;DimensionLinks&gt;
+			&lt;FactLink dimension='TBL_FARM_INCOME_STATICS'/&gt;
+			&lt;ForeignKeyLink dimension='TBL_CUSTOMER' foreignKeyColumn='COMPANY_ID'/&gt;
+		&lt;/DimensionLinks&gt;
+	&lt;/MeasureGroup&gt;
+&lt;/MeasureGroups&gt;
+&lt;/Cube&gt;
+&lt;/Schema&gt;
+
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81%E6%A1%88%E4%BE%8B">代码案例</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/1SOcADwUR/">
+                  <span class="post-title">
+                    同步 异步 阻塞 非阻塞&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/wvy4g9Zbn/">
+                   <span class="post-title">
+                     netty_nio_Reactor模式&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

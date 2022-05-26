@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>CAS/ABA/AtomicReference | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="CAS/ABA/AtomicReference | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="CAS/ABA/AtomicReference" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/2nzKhQbUe/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>CAS/ABA/AtomicReference</h1>
+              <span class="meta">
+                Posted on
+                2021-09-13，7 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/2nzKhQbUe.png" alt="封面图">
+          </img>
+          
+          <p>锁是用来做并发最简单的方式，当然代价也是最高的。</p>
+<p>独占锁是一种悲观锁，synchronized就是一种独占锁；它假设最坏的情况，并且只有在确保其它线程不会造成干扰的情况下执行，会导致其它所有需要锁的线程挂起直到持有锁的线程释放锁。</p>
+<p>所谓乐观锁就是每次不加锁,假设没有冲突而去完成某项操作;如果发生冲突了那就去重试，直到成功为止。</p>
+<p>CAS(Compare And Swap)是一种有名的无锁算法。CAS算法是乐观锁的一种实现。CAS有3个操作数，内存值V，旧的预期值A，要修改的新值B。当且仅当预期值A和内存值V相同时，将内存值V修改为B并返回true，否则返回false。</p>
+<blockquote>
+<p>注:synchronized和ReentrantLock都是悲观锁。</p>
+</blockquote>
+<blockquote>
+<p>注:什么时候使用悲观锁效率更高、什么使用使用乐观锁效率更高，要根据实际情况来判断选择。</p>
+</blockquote>
+<p>提示:atomic中包下的类，采用的即为CAS乐观算法。</p>
+<p>以AtomicInteger的public final int getAndSet(int newValue)方法，进行简单说明，<br>
+该方法是这样的:</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1631512353549.png" alt="" loading="lazy"></figure>
+<p>其调用了Unsafe类的public final int getAndSetInt(Object var1, long var2, int var4)方法:</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1631512364454.png" alt="" loading="lazy"></figure>
+<p>而该方法又do{…}while(…)循环调用了本地方法public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1631512374405.png" alt="" loading="lazy"></figure>
+<p>注:至于Windows/Linux下public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5)本地方法是如何实现的，推荐阅读https://blog.csdn.net/v123411739/article/details/79561458。</p>
+<p><strong>CAS(Compare And Swap)原理简述：</strong></p>
+<pre><code>   某一线程执行一个CAS逻辑(如上图线程A),如果中途有其他线程修改了共享变量的值(如:上图中线程A执行到笑脸那一刻时),导致这个线程的CAS逻辑运算后得到的值与期望结果不一致，那么这个线程会再次执行CAS逻辑(这里是一个do while循环),直到成功为止。
+</code></pre>
+<p><strong>ABA问题：</strong></p>
+<pre><code>  就是说一个线程把数据A变为了B，然后又重新变成了A。此时另外一个线程读取的时候，发现A没有变化，就误以为是原来的那个A。这就是有名的ABA问题。
+</code></pre>
+<blockquote>
+<p>注:根据实际情况，判断是否处理ABA问题。如果ABA问题并不会影响我们的业务结果，可以选择性处理或不处理;如果<br>
+ABA会影响我们的业务结果的，这时就必须处理ABA问题了。<br>
+追注:对于AtomicInteger等,没有什么可修改的属性;且我们只在意其结果值，所以对于这些类来说，本身就算发生了ABA现象，也不会对原线程的结果造成什么影响。</p>
+</blockquote>
+<p>AtomicReference原子应用类，可以保证你在修改对象引用时的线程安全性，比较时可以按照偏移量进行<br>
+怎样使用AtomicReference：</p>
+<pre><code class="language-java">AtomicReference&lt;String&gt; ar = new AtomicReference&lt;String&gt;();
+ar.set(&quot;hello&quot;);
+//CAS操作更新
+ar.compareAndSet(&quot;hello&quot;, &quot;hello1&quot;);
+</code></pre>
+<p>AtomicReference的成员变量：</p>
+<pre><code class="language-java">private static final long serialVersionUID = -1848883965231344442L;
+//unsafe类,提供cas操作的功能
+private static final Unsafe unsafe = Unsafe.getUnsafe();
+//value变量的偏移地址,说的就是下面那个value,这个偏移地址在static块里初始化
+private static final long valueOffset;
+//实际传入需要原子操作的那个类实例
+private volatile V value;
+</code></pre>
+<p>类装载的时候初始化偏移地址：</p>
+<pre><code class="language-java">static {
+        try {
+            valueOffset = unsafe.objectFieldOffset
+                (AtomicReference.class.getDeclaredField(&quot;value&quot;));
+        } catch (Exception ex) { throw new Error(ex); }
+    }
+</code></pre>
+<p>compareAndSet方法：</p>
+<pre><code class="language-java">//就是调用Unsafe的cas操作,传入对象,expect值,偏移地址,需要更新的值,即可,如果更新成功,返回true,如果失败,返回false
+public final boolean compareAndSet(V expect, V update) {
+        return unsafe.compareAndSwapObject(this, valueOffset, expect, update);
+    }
+</code></pre>
+<p>对于String变量来说,必须是对象相同才视为相同,而不是字符串的内容相同就可以相同:</p>
+<pre><code class="language-java">AtomicReference&lt;String&gt; ar = new AtomicReference&lt;String&gt;();
+ar.set(&quot;hello&quot;);
+System.out.println(ar.compareAndSet(new String(&quot;hello&quot;), &quot;hello1&quot;));//false
+</code></pre>
+<p>AtomicReference可解决volatile不具有原子性i++操作<br>
+AtomicReference可以保证结果是正确的.</p>
+<pre><code class="language-java">private static volatile Integer num1 = 0;
+private static AtomicReference&lt;Integer&gt; ar=new AtomicReference&lt;Integer&gt;(num1);
+
+public void dfasd111() throws InterruptedException{
+    for (int i = 0; i &lt; 1000; i++) {
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                for (int i = 0; i &lt; 10000; i++)
+                    while(true){
+                        Integer temp=ar.get();
+                        if(ar.compareAndSet(temp, temp+1))break;
+                    }
+            }       
+        }).start();
+    }
+    Thread.sleep(10000);
+    System.out.println(ar.get()); //10000000
+}
+</code></pre>
+<p>类似i++这样的&quot;读-改-写&quot;复合操作(在一个操作序列中, 后一个操作依赖前一次操作的结果), 在多线程并发处理的时候会出现问题, 因为可能一个线程修改了变量, 而另一个线程没有察觉到这样变化, 当使用原子变量之后, 则将一系列的复合操作合并为一个原子操作,从而避免这种问题, i++=&gt;i.incrementAndGet()</p>
+<p>这里的compareAndSet方法即cas操作本身是原子的，但是在某些场景下会出现异常场景</p>
+<p>此处说一下ABA问题：</p>
+<p>比如，我们只是简单得要做一个数值加法，即使在我取得期望值后，这个数字被不断的修改，只要它最终改回了我的期望值，我的加法计算就不会出错。也就是说，当你修改的对象没有过程的状态信息，所有的信息都只保存于对象的数值本身。</p>
+<p>但是，在现实中，还可能存在另外一种场景。就是我们是否能修改对象的值，不仅取决于当前值，还和对象的过程变化有关，这时，AtomicReference就无能为力了。</p>
+<p><strong>AtomicStampedReference与AtomicReference的区别：</strong><br>
+AtomicStampedReference它内部不仅维护了对象值，还维护了一个时间戳（我这里把它称为时间戳，实际上它可以使任何一个整数，它使用整数来表示状态值）。当AtomicStampedReference对应的数值被修改时，除了更新数据本身外，还必须要更新时间戳。当AtomicStampedReference设置对象值时，对象值以及时间戳都必须满足期望值，写入才会成功。因此，即使对象值被反复读写，写回原值，只要时间戳发生变化，就能防止不恰当的写入。</p>
+<p><strong>解决ABA问题</strong></p>
+<pre><code class="language-java">
+public static void main(String[] args) {
+ 
+        String str1 = &quot;aaa&quot;;
+        String str2 = &quot;bbb&quot;;
+        AtomicStampedReference&lt;String&gt; reference = new AtomicStampedReference&lt;String&gt;(str1,1);
+        reference.compareAndSet(str1,str2,reference.getStamp(),reference.getStamp()+1);
+        System.out.println(&quot;reference.getReference() = &quot; + reference.getReference());
+ 
+        boolean b = reference.attemptStamp(str2, reference.getStamp() + 1);
+        System.out.println(&quot;b: &quot;+b);
+        System.out.println(&quot;reference.getStamp() = &quot;+reference.getStamp());
+ 
+        boolean c = reference.weakCompareAndSet(str2,&quot;ccc&quot;,4, reference.getStamp()+1);
+        System.out.println(&quot;reference.getReference() = &quot;+reference.getReference());
+        System.out.println(&quot;c = &quot; + c);
+    }
+ 
+输出:
+reference.getReference() = bbb
+b: true
+reference.getStamp() = 3
+reference.getReference() = bbb
+c = false
+</code></pre>
+
+          <div class="toc-container"></div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/CO5c8R39E/">
+                  <span class="post-title">
+                    代理模式&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/Um55sd5Z3/">
+                   <span class="post-title">
+                     服务器变慢诊断命令&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

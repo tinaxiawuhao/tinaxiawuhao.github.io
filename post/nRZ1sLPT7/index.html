@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Java的值传递 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Java的值传递 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Java的值传递" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/nRZ1sLPT7/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>Java的值传递</h1>
+              <span class="meta">
+                Posted on
+                2021-04-23，18 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/nRZ1sLPT7.png" alt="封面图">
+          </img>
+          
+          <h3 id="形参与实参">形参与实参</h3>
+<p>我们先来重温一组语法：</p>
+<ol>
+<li>
+<p>形参：方法被调用时需要传递进来的参数，如：<code>func(int a)</code>中的a，它只有在<code>func</code>被调用期间a才有意义，也就是会被分配内存空间，在方法<code>func</code>执行完成后，a就会被销毁释放空间，也就是不存在了</p>
+</li>
+<li>
+<p>实参：方法被调用时传入的实际值，它在方法被调用前就已经被初始化并且在方法被调用时传入。</p>
+</li>
+</ol>
+<p>举个栗子：</p>
+<pre><code class="language-java">public static void func(int a){
+    a=20; 
+    System.out.println(a);
+}
+public static void main(String[] args) { 
+    int a=10;  
+    func(a); 
+}
+</code></pre>
+<p>例子中</p>
+<p><code>int a=10;</code>中的a在被调用之前就已经创建并初始化，在调用<code>func</code>方法时，他被当做参数传入，所以这个a是实参。</p>
+<p>而<code>func(int a)</code>中的a只有在<code>func</code>被调用时它的生命周期才开始，而在<code>func</code>调用结束之后，它也随之被<code>JVM</code>释放掉，所以这个a是形参。</p>
+<h3 id="java的数据类型">Java的数据类型</h3>
+<p>所谓数据类型，是编程语言中对内存的一种抽象表达方式，我们知道程序是由代码文件和静态资源组成，在程序被运行前，这些代码存在在硬盘里，程序开始运行，这些代码会被转成计算机能识别的内容放到内存中被执行。</p>
+<p>因此</p>
+<blockquote>
+<p>数据类型实质上是用来定义编程语言中相同类型的数据的存储形式，也就是决定了如何将代表这些值的位存储到计算机的内存中。</p>
+</blockquote>
+<p>所以，数据在内存中的存储，是根据数据类型来划定存储形式和存储位置的。</p>
+<p>那么</p>
+<p>Java的数据类型有哪些？</p>
+<ol>
+<li>
+<p>基本类型：编程语言中内置的最小粒度的数据类型。它包括四大类八种类型：</p>
+<p>4种整数类型：byte、short、int、long</p>
+<p>2种浮点数类型：float、double</p>
+<p>1种字符类型：char</p>
+<p>1种布尔类型：boolean</p>
+</li>
+<li>
+<p>引用类型：引用也叫句柄，引用类型，是编程语言中定义的在句柄中存放着实际内容所在地址的地址值的一种数据形式。它主要包括：</p>
+<p>类</p>
+<p>接口</p>
+<p>数组</p>
+</li>
+</ol>
+<p>有了数据类型，<code>JVM</code>对程序数据的管理就规范化了，不同的数据类型，它的存储形式和位置是不一样的，要想知道<code>JVM</code>是怎么存储各种类型的数据，就得先了解<code>JVM</code>的内存划分以及每部分的职能。</p>
+<h3 id="jvm内存的划分及职能">JVM内存的划分及职能</h3>
+<p>​	Java语言本身是不能操作内存的，它的一切都是交给<code>JVM</code>来管理和控制的，因此Java内存区域的划分也就是<code>JVM</code>的区域划分，在说<code>JVM</code>的内存划分之前，我们先来看一下Java程序的执行过程，如下图：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619167275279.jpeg" alt="" loading="lazy"></figure>
+<p>有图可以看出：Java代码被编译器编译成字节码之后，<code>JVM</code>开辟一片内存空间（也叫运行时数据区），通过类加载器加到到运行时数据区来存储程序执行期间需要用到的数据和相关信息，在这个数据区中，它由以下几部分组成：</p>
+<ol>
+<li>
+<p>虚拟机栈</p>
+</li>
+<li>
+<p>堆</p>
+</li>
+<li>
+<p>程序计数器</p>
+</li>
+<li>
+<p>方法区</p>
+</li>
+<li>
+<p>本地方法栈</p>
+</li>
+</ol>
+<p>我们接着来了解一下每部分的原理以及具体用来存储程序执行过程中的哪些数据。</p>
+<h4 id="虚拟机栈">虚拟机栈</h4>
+<p>虚拟机栈是Java方法执行的内存模型，栈中存放着栈帧，每个栈帧分别对应一个被调用的方法，方法的调用过程对应栈帧在虚拟机中入栈到出栈的过程。</p>
+<p>栈是线程私有的，也就是线程之间的栈是隔离的；当程序中某个线程开始执行一个方法时就会相应的创建一个栈帧并且入栈（位于栈顶），在方法结束后，栈帧出栈。</p>
+<p>下图表示了一个Java栈的模型以及栈帧的组成：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619167296313.jpeg" alt="" loading="lazy"></p>
+<p><strong>栈帧</strong>:是用于支持虚拟机进行方法调用和方法执行的数据结构，它是虚拟机运行时数据区中的虚拟机栈的栈元素。</p>
+<p>每个栈帧中包括：</p>
+<ol>
+<li>局部变量表:用来存储方法中的局部变量（非静态变量、函数形参）。当变量为基本数据类型时，直接存储值，当变量为引用类型时，存储的是指向具体对象的引用。</li>
+<li>操作数栈:Java虚拟机的解释执行引擎被称为&quot;基于栈的执行引擎&quot;，其中所指的栈就是指操作数栈。</li>
+<li>指向运行时常量池的引用:存储程序执行时可能用到常量的引用。</li>
+<li>方法返回地址:存储方法执行完成后的返回地址。</li>
+</ol>
+<h4 id="堆">堆</h4>
+<p>堆是用来存储对象本身和数组的，在<code>JVM</code>中只有一个堆，因此，堆是被所有线程共享的。</p>
+<h4 id="方法区">方法区：</h4>
+<p>​	方法区是一块所有线程共享的内存逻辑区域，在<code>JVM</code>中只有一个方法区，用来存储一些线程可共享的内容，它是线程安全的，多个线程同时访问方法区中同一个内容时，只能有一个线程装载该数据，其它线程只能等待。</p>
+<p>​	方法区可存储的内容有：类的全路径名、类的直接超类的权全限定名、类的访问修饰符、类的类型（类或接口）、类的直接接口全限定名的有序列表、常量池（字段，方法信息，静态变量，类型引用（class））等。</p>
+<h4 id="本地方法栈">本地方法栈：</h4>
+<p>​	本地方法栈的功能和虚拟机栈是基本一致的，并且也是线程私有的，它们的区别在于虚拟机栈是为执行Java方法服务的，而本地方法栈是为执行本地方法服务的。</p>
+<p>有人会疑惑：什么是本地方法？为什么Java还要调用本地方法？</p>
+<h4 id="程序计数器">程序计数器：</h4>
+<p>​	线程私有的。记录着当前线程所执行的字节码的行号指示器，在程序运行过程中，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、异常处理、线程恢复等基础功能都需要依赖计数器完成。</p>
+<h3 id="数据如何在内存中存储">数据如何在内存中存储？</h3>
+<p>从上面程序运行图我们可以看到，<code>JVM</code>在程序运行时的内存分配有三个地方：</p>
+<ul>
+<li>堆</li>
+<li>栈</li>
+<li>静态方法区</li>
+<li>常量区</li>
+</ul>
+<p>相应地，每个存储区域都有自己的内存分配策略：</p>
+<ul>
+<li>堆式：</li>
+<li>栈式</li>
+<li>静态</li>
+</ul>
+<p>我们已经知道：Java中的数据类型有基本数据类型和引用数据类型，那么这些数据的存储都使用哪一种策略呢？</p>
+<p>这里要分以下的情况进行探究：</p>
+<ol>
+<li>
+<p>基本数据类型的存储：</p>
+<ul>
+<li>A. 基本数据类型的局部变量</li>
+<li>B. 基本数据类型的成员变量</li>
+<li>C. 基本数据类型的静态变量</li>
+</ul>
+</li>
+<li>
+<p>引用数据类型的存储</p>
+</li>
+</ol>
+<h4 id="基本数据类型的存储">基本数据类型的存储</h4>
+<p>我们分别来研究一下：</p>
+<p>A.基本数据类型的局部变量</p>
+<ol>
+<li>定义基本数据类型的局部变量以及数据都是直接存储在内存中的栈上，也就是前面说到的“虚拟机栈”，数据本身的值就是存储在栈空间里面。</li>
+</ol>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619167321876.jpeg" alt="" loading="lazy"></figure>
+<p>如上图，在方法内定义的变量直接存储在栈中，如</p>
+<pre><code class="language-java">int age=50; 
+int weight=50; 
+int grade=6;
+</code></pre>
+<p>当我们写“int age=50；”，其实是分为两步的：</p>
+<p><code>int age;</code>//定义变量<code>age=50;</code>//赋值</p>
+<p>​	首先<code>JVM</code>创建一个名为age的变量，存于局部变量表中，然后去栈中查找是否存在有字面量值为50的内容，如果有就直接把age指向这个地址，如果没有，<code>JVM</code>会在栈中开辟一块空间来存储“50”这个内容，并且把age指向这个地址。因此我们可以知道：</p>
+<p>​	我们声明并初始化基本数据类型的局部变量时，变量名以及字面量值都是存储在栈中，而且是真实的内容。</p>
+<p>​	我们再来看<code>“int weight=50；”</code>，按照刚才的思路：字面量为50的内容在栈中已经存在，因此weight是直接指向这个地址的。由此可见：栈中的数据在当前线程下是共享的。</p>
+<p>​	那么如果再执行下面的代码呢？</p>
+<p>​	<code>weight=40；</code></p>
+<p>​	当代码中重新给weight变量进行赋值时，<code>JVM</code>会去栈中寻找字面量为40的内容，发现没有，就会开辟一块内存空间存储40这个内容，并且把weight指向这个地址。由此可知：</p>
+<p>​	基本数据类型的数据本身是不会改变的，当局部变量重新赋值时，并不是在内存中改变字面量内容，而是重新在栈中寻找已存在的相同的数据，若栈中不存在，则重新开辟内存存新数据，并且把要重新赋值的局部变量的引用指向新数据所在地址。</p>
+<p>B. 基本数据类型的成员变量</p>
+<p>成员变量：顾名思义，就是在类体中定义的变量。</p>
+<p>看下图：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619167338990.jpeg" alt="" loading="lazy"></p>
+<p>我们看per的地址指向的是堆内存中的一块区域，我们来还原一下代码：</p>
+<pre><code class="language-java"> public class Person{ 
+     private int age;  
+     private String name; 
+     private int grade; //省略setter getter方法  
+     static void run(){    
+         System.out.println(&quot;run....&quot;);   
+     }; 
+ }
+//调用 Person per=new Person();
+</code></pre>
+<p>​	同样是局部变量的age、name、grade却被存储到了堆中为per对象开辟的一块空间中。因此可知：基本数据类型的成员变量名和值都存储于堆中，其生命周期和对象的是一致的。</p>
+<p>C. 基本数据类型的静态变量</p>
+<p>​	前面提到方法区用来存储一些共享数据，因此基本数据类型的静态变量名以及值存储于方法区的运行时常量池中，静态变量随类加载而加载，随类消失而消失</p>
+<h4 id="引用数据类型的存储">引用数据类型的存储:</h4>
+<p>上面提到：堆是用来存储对象本身和数组，而引用（句柄）存放的是实际内容的地址值，因此通过上面的程序运行图，也可以看出，当我们定义一个对象时</p>
+<pre><code class="language-java">Person per=new Person();
+</code></pre>
+<p>实际上，它也是有两个过程：</p>
+<pre><code class="language-java">Person per;//定义变量 
+per=new Person();//赋值
+</code></pre>
+<p>​	在执行<code>Person per;</code>时，<code>JVM</code>先在虚拟机栈中的变量表中开辟一块内存存放per变量，在执行<code>per=new Person()</code>时，<code>JVM</code>会创建一个Person类的实例对象并在堆中开辟一块内存存储这个实例，同时把实例的地址值赋值给per变量。因此可见：</p>
+<p>对于引用数据类型的对象/数组，变量名存在栈中，变量值存储的是对象的地址，并不是对象的实际内容。</p>
+<h3 id="值传递和引用传递">值传递和引用传递</h3>
+<p>​	前面已经介绍过形参和实参，也介绍了数据类型以及数据在内存中的存储形式，接下来，就是文章的主题：值传递和引用的传递。</p>
+<h4 id="值传递">值传递：</h4>
+<blockquote>
+<p>在方法被调用时，实参通过形参把它的内容副本传入方法内部，此时形参接收到的内容是实参值的一个拷贝，因此在方法内对形参的任何操作，都仅仅是对这个副本的操作，不影响原始值的内容。</p>
+</blockquote>
+<p>来看个例子：</p>
+<pre><code class="language-java"> public static void valueCrossTest(int age,float weight){
+     System.out.println(&quot;传入的age：&quot;+age);
+     System.out.println(&quot;传入的weight：&quot;+weight);
+     age=33;
+     weight=89.5f;
+     System.out.println(&quot;方法内重新赋值后的age：&quot;+age);
+     System.out.println(&quot;方法内重新赋值后的weight：&quot;+weight);
+     }
+ 
+//测试
+public static void main(String[] args) {
+        int a=25;
+        float w=77.5f;
+        valueCrossTest(a,w);
+        System.out.println(&quot;方法执行后的age：&quot;+a);
+        System.out.println(&quot;方法执行后的weight：&quot;+w);
+}
+</code></pre>
+<p>输出结果：</p>
+<pre><code class="language-sh">传入的age：25
+传入的weight：77.5
+
+方法内重新赋值后的age：33
+方法内重新赋值后的weight：89.5
+
+方法执行后的age：25
+方法执行后的weight：77.5
+</code></pre>
+<p>从上面的打印结果可以看到：</p>
+<p>a和w作为实参传入<code>valueCrossTest</code>之后，无论在方法内做了什么操作，最终a和w都没变化。</p>
+<p>这是什么造型呢？！！</p>
+<p>下面我们根据上面学到的知识点，进行详细的分析：</p>
+<p>首先程序运行时，调用<code>mian()</code>方法，此时<code>JVM</code>为<code>main()</code>方法往虚拟机栈中压入一个栈帧，即为当前栈帧，用来存放<code>main()</code>中的局部变量表(包括参数)、操作栈、方法出口等信息，如a和w都是<code>mian()</code>方法中的局部变量，因此可以断定，a和w是躺着<code>mian</code>方法所在的栈帧中</p>
+<p>如图：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619167361127.jpeg" alt="" loading="lazy"></figure>
+<p>而当执行到<code>valueCrossTest()</code>方法时，<code>JVM</code>也为其往虚拟机栈中压入一个栈，即为当前栈帧，用来存放<code>valueCrossTest()</code>中的局部变量等信息，因此age和weight是躺着<code>valueCrossTest</code>方法所在的栈帧中，而他们的值是从a和w的值copy了一份副本而得，如图：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1619167368733.jpeg" alt="" loading="lazy"></figure>
+<p>因而可以a和age、w和weight对应的内容是不一致的，所以当在方法内重新赋值时，实际流程如图：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619167375812.jpeg" alt="" loading="lazy"></p>
+<p>也就是说，age和weight的改动，只是改变了当前栈帧（<code>valueCrossTest</code>方法所在栈帧）里的内容，当方法执行结束之后，这些局部变量都会被销毁，<code>mian</code>方法所在栈帧重新回到栈顶，成为当前栈帧，再次输出a和w时，依然是初始化时的内容。</p>
+<p>因此：</p>
+<p>值传递传递的是真实内容的一个副本，对副本的操作不影响原内容，也就是形参怎么变化，不会影响实参对应的内容。</p>
+<h4 id="引用传递">引用传递：</h4>
+<p>​	”引用”也就是指向真实内容的地址值，在方法调用时，实参的地址通过方法调用被传递给相应的形参，在方法体内，形参和实参指向同一块内存地址，对形参的操作会影响的真实内容。</p>
+<p>举个栗子：</p>
+<p>先定义一个对象：</p>
+<pre><code class="language-java"> public class Person {   
+     private String name;   
+     private int age;        
+     public String getName() {   
+         return name;       
+     }       
+     public void setName(String name) { 
+         this.name = name;    
+     }      
+     public int getAge() {  
+         return age;     
+     }       
+     public void setAge(int age) {  
+         this.age = age;       
+     }
+ }
+</code></pre>
+<p>我们写个函数测试一下：</p>
+<pre><code class="language-java">public static void PersonCrossTest(Person person){  
+    System.out.println(&quot;传入的person的name：&quot;+person.getName());  
+    person.setName(&quot;我是张三&quot;);        
+    System.out.println(&quot;方法内重新赋值后的name：&quot;+person.getName());   
+} 
+//测试
+public static void main(String[] args) { 
+    Person p=new Person();        
+    p.setName(&quot;我是李四&quot;);   
+    p.setAge(45);       
+    PersonCrossTest(p);   
+    System.out.println(&quot;方法执行后的name：&quot;+p.getName()); 
+}
+</code></pre>
+<p>输出结果：</p>
+<pre><code class="language-sh">传入的person的name：我是李四
+方法内重新赋值后的name：我是张三
+方法执行后的name：我是张三
+</code></pre>
+<p>可以看出，person经过<code>personCrossTest()</code>方法的执行之后，内容发生了改变，这印证了上面所说的“引用传递”，对形参的操作，改变了实际对象的内容。</p>
+<p>那么，到这里就结题了吗？</p>
+<p>不是的，没那么简单，</p>
+<p>能看得到想要的效果</p>
+<p>是因为刚好选对了例子而已！！！</p>
+<p>下面我们对上面的例子稍作修改，加上一行代码，</p>
+<pre><code class="language-java">public static void PersonCrossTest(Person person){    
+    System.out.println(&quot;传入的person的name：&quot;+person.getName());     
+    person=new Person();//加多此行代码    
+    person.setName(&quot;我是张三&quot;);   
+    System.out.println(&quot;方法内重新赋值后的name：&quot;+person.getName());  
+}
+</code></pre>
+<p>输出结果：</p>
+<pre><code class="language-sh">传入的person的name：我是李四 
+方法内重新赋值后的name：我是张三 
+方法执行后的name：我是李四
+</code></pre>
+<p>为什么这次的输出和上次的不一样了呢？</p>
+<p>看出什么问题了吗？</p>
+<p>按照上面讲到<code>JVM</code>内存模型可以知道，对象和数组是存储在Java堆区的，而且堆区是共享的，因此程序执行到main（）方法中的下列代码时</p>
+<pre><code class="language-java">Person p=new Person();      
+p.setName(&quot;我是李四&quot;);    
+p.setAge(45);      
+PersonCrossTest(p);
+</code></pre>
+<p><code>JVM</code>会在堆内开辟一块内存，用来存储p对象的所有内容，同时在main（）方法所在线程的栈区中创建一个引用p存储堆区中p对象的真实地址，如图：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1619167401540.jpeg" alt="" loading="lazy"></figure>
+<p>当执行到<code>PersonCrossTest()</code>方法时，因为方法内有这么一行代码：</p>
+<pre><code class="language-java">person=new Person();
+</code></pre>
+<p><code>JVM</code>需要在堆内另外开辟一块内存来存储new Person()，假如地址为<code>“xo3333”</code>，那此时形参person指向了这个地址，假如真的是引用传递，那么由上面讲到：引用传递中形参实参指向同一个对象，形参的操作会改变实参对象的改变。</p>
+<p>可以推出：实参也应该指向了新创建的person对象的地址，所以在执行<code>PersonCrossTest()</code>结束之后，最终输出的应该是后面创建的对象内容。</p>
+<p>然而实际上，最终的输出结果却跟我们推测的不一样，最终输出的仍然是一开始创建的对象的内容。</p>
+<p>由此可见：引用传递，在Java中并不存在。</p>
+<p>但是有人会疑问：为什么第一个例子中，在方法内修改了形参的内容，会导致原始对象的内容发生改变呢？</p>
+<p>这是因为：无论是基本类型和是引用类型，在实参传入形参时，都是值传递，也就是说传递的都是一个副本，而不是内容本身。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1619167408670.jpeg" alt="" loading="lazy"></figure>
+<p>有图可以看出，方法内的形参person和实参p并无实质关联，它只是由p处copy了一份指向对象的地址，此时：</p>
+<p>p和person都是指向同一个对象。</p>
+<p>因此在第一个例子中，对形参p的操作，会影响到实参对应的对象内容。而在第二个例子中，当执行到new Person()之后，<code>JVM</code>在堆内开辟一块空间存储新对象，并且把person改成指向新对象的地址，此时：</p>
+<p>p依旧是指向旧的对象，person指向新对象的地址。</p>
+<p>所以此时对person的操作，实际上是对新对象的操作，于实参p中对应的对象毫无关系。</p>
+<h3 id="结语">结语</h3>
+<p>因此可见：在Java中所有的参数传递，不管基本类型还是引用类型，都是值传递，或者说是副本传递。</p>
+<p>只是在传递过程中：</p>
+<p>如果是对基本数据类型的数据进行操作，由于原始内容和副本都是存储实际值，并且是在不同的栈区，因此形参的操作，不影响原始内容。</p>
+<p>如果是对引用类型的数据进行操作，分两种情况，一种是形参和实参保持指向同一个对象地址，则形参的操作，会影响实参指向的对象的内容。一种是形参被改动指向新的对象地址（如重新赋值引用），则形参的操作，不会影响实参指向的对象的内容。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E5%BD%A2%E5%8F%82%E4%B8%8E%E5%AE%9E%E5%8F%82">形参与实参</a></li>
+<li><a href="#java%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">Java的数据类型</a></li>
+<li><a href="#jvm%E5%86%85%E5%AD%98%E7%9A%84%E5%88%92%E5%88%86%E5%8F%8A%E8%81%8C%E8%83%BD">JVM内存的划分及职能</a>
+<ul>
+<li><a href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88">虚拟机栈</a></li>
+<li><a href="#%E5%A0%86">堆</a></li>
+<li><a href="#%E6%96%B9%E6%B3%95%E5%8C%BA">方法区：</a></li>
+<li><a href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88">本地方法栈：</a></li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8">程序计数器：</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%A6%82%E4%BD%95%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E5%AD%98%E5%82%A8">数据如何在内存中存储？</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%AD%98%E5%82%A8">基本数据类型的存储</a></li>
+<li><a href="#%E5%BC%95%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%AD%98%E5%82%A8">引用数据类型的存储:</a></li>
+</ul>
+</li>
+<li><a href="#%E5%80%BC%E4%BC%A0%E9%80%92%E5%92%8C%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92">值传递和引用传递</a>
+<ul>
+<li><a href="#%E5%80%BC%E4%BC%A0%E9%80%92">值传递：</a></li>
+<li><a href="#%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92">引用传递：</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%93%E8%AF%AD">结语</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/aFuh1RRNc/">
+                  <span class="post-title">
+                    附录 kafka常见面试问题汇总&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/HEMJYLqMW/">
+                   <span class="post-title">
+                     JVM调优&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

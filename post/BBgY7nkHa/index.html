@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Docker安装clickhouse | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Docker安装clickhouse | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Docker安装clickhouse" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/BBgY7nkHa/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RW2qYs4AY/" class="tag">clickhouse</a>
+                
+              </span>
+              <h1>Docker安装clickhouse</h1>
+              <span class="meta">
+                Posted on
+                2021-11-30，4 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/BBgY7nkHa.png" alt="封面图">
+          </img>
+          
+          <p>ClickHouse 很多大厂都在用，本篇主要使用Docker进行安装</p>
+<h3 id="安装配置">安装配置</h3>
+<p>创建目录并更改权限</p>
+<pre><code class="language-shell">mkdir -p /app/cloud/clickhouse/data
+mkdir -p /app/cloud/clickhouse/conf
+mkdir -p /app/cloud/clickhouse/log
+
+chmod -R 777 /app/cloud/clickhouse/data
+chmod -R 777 /app/cloud/clickhouse/conf
+chmod -R 777 /app/cloud/clickhouse/log
+</code></pre>
+<h3 id="拉取镜像">拉取镜像</h3>
+<pre><code class="language-shell">docker pull yandex/clickhouse-server:20.3.5.21
+docker pull yandex/clickhouse-client:20.3.5.21
+</code></pre>
+<p>查看 <a href="https://hub.docker.com/r/yandex/clickhouse-server/dockerfile">https://hub.docker.com/r/yandex/clickhouse-server/dockerfile</a> 文件，EXPOSE  9000  8123  9009 了三个端口</p>
+<h3 id="创建临时容器">创建临时容器</h3>
+<pre><code class="language-shell">docker run --rm -d --name=clickhouse-server --ulimit nofile=262144:262144 -p 8123:8123 -p 9009:9009 -p 9000:9000 yandex/clickhouse-server:20.3.5.21
+</code></pre>
+<h3 id="复制临时容器内配置文件到宿主机">复制临时容器内配置文件到宿主机</h3>
+<pre><code class="language-shell">docker cp clickhouse-server:/etc/clickhouse-server/config.xml D:/clickhouse/conf/config.xml
+docker cp clickhouse-server:/etc/clickhouse-server/users.xml D:/clickhouse/conf/users.xml
+</code></pre>
+<h3 id="停掉临时容器">停掉临时容器</h3>
+<pre><code class="language-shell">docker stop clickhouse-server
+</code></pre>
+<h3 id="创建default账号密码">创建default账号密码</h3>
+<pre><code class="language-shell">PASSWORD=$(base64 &lt; /dev/urandom | head -c8); echo &quot;$PASSWORD&quot;; echo -n &quot;$PASSWORD&quot; | sha256sum | tr -d '-'
+</code></pre>
+<pre><code class="language-shell">SEGByR98
+211371f5bc54970907173acf6facb35f0acbc17913e1b71b814117667c01d96d
+</code></pre>
+<p>会输出明码和SHA256密码</p>
+<h3 id="创建root账号密码">创建root账号密码</h3>
+<pre><code class="language-shell">PASSWORD=$(base64 &lt; /dev/urandom | head -c8); echo &quot;$PASSWORD&quot;; echo -n &quot;$PASSWORD&quot; | sha256sum | tr -d '-'
+</code></pre>
+<pre><code class="language-shell">092j3AnV
+35542ded44184b1b4b6cd621e052662578025b58b4187176a3ad2b9548c8356e
+</code></pre>
+<p>会输出明码和SHA256密码</p>
+<p>修改 D:/clickhouse/conf/users.xml<br>
+把default账号设为只读权限，并设置密码yandex--&gt;users--&gt;default--&gt;profile节点设为 <code>readonly</code> 注释掉 yandex--&gt;users--&gt;default--&gt;password 节点 新增  yandex--&gt;users--&gt;default--&gt;password_sha256_hex 节点，填入生成的密码</p>
+<p>修改default账号</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;yandex&gt;
+    &lt;users&gt;
+        &lt;default&gt;
+            &lt;password_sha256_hex&gt;211371f5bc54970907173acf6facb35f0acbc17913e1b71b814117667c01d96d&lt;/password_sha256_hex&gt;
+            &lt;networks incl=&quot;networks&quot; replace=&quot;replace&quot;&gt;
+                &lt;ip&gt;::/0&lt;/ip&gt;
+            &lt;/networks&gt;
+            &lt;profile&gt;readonly&lt;/profile&gt;
+            &lt;quota&gt;default&lt;/quota&gt;
+        &lt;/default&gt;
+	&lt;/users&gt;
+&lt;/yandex&gt;
+</code></pre>
+<p>新增root账号</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;yandex&gt;
+    &lt;users&gt;
+        &lt;root&gt;
+                    &lt;password_sha256_hex&gt;35542ded44184b1b4b6cd621e052662578025b58b4187176a3ad2b9548c8356e&lt;/password_sha256_hex&gt;
+             &lt;networks incl=&quot;networks&quot; replace=&quot;replace&quot;&gt;
+                &lt;ip&gt;::/0&lt;/ip&gt;
+            &lt;/networks&gt;
+            &lt;profile&gt;default&lt;/profile&gt;
+            &lt;quota&gt;default&lt;/quota&gt;
+        &lt;/root&gt;
+	&lt;/users&gt;
+&lt;/yandex&gt;
+</code></pre>
+<h3 id="创建容器">创建容器</h3>
+<pre><code class="language-shell">docker run -d --name=clickhouse-server -p 8123:8123 -p 9009:9009 -p 9000:9000 --ulimit nofile=262144:262144 -v D:/clickhouse/data:/var/lib/clickhouse:rw -v D:/clickhouse/conf/config.xml:/etc/clickhouse-server/config.xml -v D:/clickhouse/conf/users.xml:/etc/clickhouse-server/users.xml -v D:/clickhouse/log:/var/log/clickhouse-server:rw yandex/clickhouse-server
+</code></pre>
+<h3 id="操作">操作</h3>
+<ol>
+<li>docker exec -it docker-clickhouse /bin/bash 进入容器</li>
+<li>clickhouse-client 进入clickhouse命令行</li>
+</ol>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE">安装配置</a></li>
+<li><a href="#%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F">拉取镜像</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%B4%E6%97%B6%E5%AE%B9%E5%99%A8">创建临时容器</a></li>
+<li><a href="#%E5%A4%8D%E5%88%B6%E4%B8%B4%E6%97%B6%E5%AE%B9%E5%99%A8%E5%86%85%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%88%B0%E5%AE%BF%E4%B8%BB%E6%9C%BA">复制临时容器内配置文件到宿主机</a></li>
+<li><a href="#%E5%81%9C%E6%8E%89%E4%B8%B4%E6%97%B6%E5%AE%B9%E5%99%A8">停掉临时容器</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BAdefault%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81">创建default账号密码</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BAroot%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81">创建root账号密码</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8">创建容器</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C">操作</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/r2VmiGgor/">
+                  <span class="post-title">
+                    clickhouse安装&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/DseKIIHw3/">
+                   <span class="post-title">
+                     Thingsboard源码编译&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

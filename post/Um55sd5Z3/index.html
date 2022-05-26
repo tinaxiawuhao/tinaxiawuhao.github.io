@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>服务器变慢诊断命令 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="服务器变慢诊断命令 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="服务器变慢诊断命令" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/Um55sd5Z3/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/YE7mCvrHb/" class="tag">linux</a>
+                
+              </span>
+              <h1>服务器变慢诊断命令</h1>
+              <span class="meta">
+                Posted on
+                2021-09-15，24 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/Um55sd5Z3.png" alt="封面图">
+          </img>
+          
+          <h3 id="top命令详解">top命令详解</h3>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1631692082043.png" alt="" loading="lazy"></figure>
+<p><strong>第一行，任务队列信息，同 uptime 命令的执行结果</strong></p>
+<blockquote>
+<p>系统时间：07:27:05</p>
+<p>运行时间：up 1:57 min,</p>
+<p>当前登录用户： 3 user</p>
+<p>负载均衡(uptime) load average: 0.00, 0.00, 0.00</p>
+<p>average后面的三个数分别是1分钟、5分钟、15分钟的负载情况。</p>
+<p>load average数据是每隔5秒钟检查一次活跃的进程数，然后按特定算法计算出的数值。如果这个数除以逻辑CPU的数量，结果高于5的时候就表明系统在超负荷运转了</p>
+</blockquote>
+<p><strong>第二行，Tasks — 任务（进程）</strong></p>
+<blockquote>
+<p>总进程:150 total, 运行:1 running, 休眠:149 sleeping, 停止: 0 stopped, 僵尸进程: 0 zombie</p>
+</blockquote>
+<p><strong>第三行，cpu状态信息</strong></p>
+<blockquote>
+<p>0.0%us【user space】— 用户空间占用CPU的百分比。</p>
+<p>0.3%sy【sysctl】— 内核空间占用CPU的百分比。</p>
+<p>0.0%ni【】— 改变过优先级的进程占用CPU的百分比</p>
+<p>99.7%id【idolt】— 空闲CPU百分比</p>
+<p>0.0%wa【wait】— IO等待占用CPU的百分比</p>
+<p>0.0%hi【Hardware IRQ】— 硬中断占用CPU的百分比</p>
+<p>0.0%si【Software Interrupts】— 软中断占用CPU的百分比</p>
+</blockquote>
+<p><strong>第四行,内存状态</strong></p>
+<blockquote>
+<p>1003020k total,  234464k used,  777824k free,  24084k buffers【缓存的内存量】</p>
+</blockquote>
+<p><strong>第五行，swap交换分区信息</strong></p>
+<blockquote>
+<p>2031612k total,   536k used, 2031076k free,  505864k cached【缓冲的交换区总量】</p>
+</blockquote>
+<blockquote>
+<p>备注：</p>
+<p>可用内存=free + buffer + cached</p>
+<p>对于内存监控，在top里我们要时刻监控第五行swap交换分区的used，如果这个数值在不断的变化，说明内核在不断进行内存和swap的数据交换，这是真正的内存不够用了。</p>
+<p>第四行中使用中的内存总量（used）指的是现在系统内核控制的内存数，</p>
+<p>第四行中空闲内存总量（free）是内核还未纳入其管控范围的数量。</p>
+<p>纳入内核管理的内存不见得都在使用中，还包括过去使用过的现在可以被重复利用的内存，内核并不把这些可被重新使用的内存交还到free中去，因此在linux上free内存会越来越少，但不用为此担心。</p>
+</blockquote>
+<p><strong>第六行，空行</strong></p>
+<p><strong>第七行以下：各进程（任务）的状态监控</strong></p>
+<blockquote>
+<p>PID — 进程id<br>
+USER — 进程所有者<br>
+PR — 进程优先级<br>
+NI — nice值。负值表示高优先级，正值表示低优先级<br>
+VIRT — 进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES<br>
+RES — 进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA<br>
+SHR — 共享内存大小，单位kb<br>
+S —进程状态。D=不可中断的睡眠状态 R=运行 S=睡眠 T=跟踪/停止 Z=僵尸进程<br>
+%CPU — 上次更新到现在的CPU时间占用百分比<br>
+%MEM — 进程使用的物理内存百分比<br>
+TIME+ — 进程使用的CPU时间总计，单位1/100秒<br>
+COMMAND — 进程名称（命令名/命令行）</p>
+</blockquote>
+<p><strong>详解</strong></p>
+<blockquote>
+<p>**VIRT：virtual memory usage 虚拟内存<br>
+**1、进程“需要的”虚拟内存大小，包括进程使用的库、代码、数据等<br>
+2、假如进程申请100m的内存，但实际只使用了10m，那么它会增长100m，而不是实际的使用量</p>
+<p><strong>RES：resident memory usage 常驻内存</strong><br>
+1、进程当前使用的内存大小，但不包括swap out<br>
+2、包含其他进程的共享<br>
+3、如果申请100m的内存，实际使用10m，它只增长10m，与VIRT相反<br>
+4、关于库占用内存的情况，它只统计加载的库文件所占内存大小</p>
+<p><strong>SHR：shared memory 共享内存</strong><br>
+1、除了自身进程的共享内存，也包括其他进程的共享内存<br>
+2、虽然进程只使用了几个共享库的函数，但它包含了整个共享库的大小<br>
+3、计算某个进程所占的物理内存大小公式：RES – SHR<br>
+4、swap out后，它将会降下来</p>
+<p><strong>DATA</strong><br>
+1、数据占用的内存。如果top没有显示，按f键可以显示出来。<br>
+2、真正的该程序要求的数据空间，是真正在运行中要使用的。</p>
+<p><strong>top 运行中可以通过 top 的内部命令对进程的显示方式进行控制。内部命令如下：</strong><br>
+s – 改变画面更新频率<br>
+l – 关闭或开启第一部分第一行 top 信息的表示<br>
+t – 关闭或开启第一部分第二行 Tasks 和第三行 Cpus 信息的表示<br>
+m – 关闭或开启第一部分第四行 Mem 和 第五行 Swap 信息的表示<br>
+N – 以 PID 的大小的顺序排列表示进程列表<br>
+P – 以 CPU 占用率大小的顺序排列进程列表<br>
+M – 以内存占用率大小的顺序排列进程列表<br>
+h – 显示帮助<br>
+n – 设置在进程列表所显示进程的数量<br>
+q – 退出 top<br>
+s – 改变画面更新周期</p>
+</blockquote>
+<h3 id="vmstat命令详解">vmstat命令详解</h3>
+<p>vmstat命令是最常见的Linux/Unix监控工具，可以展现给定时间间隔的服务器的状态值,包括服务器的CPU使用率，内存使用，虚拟内存交换情况,IO读写情况。这个命令是我查看Linux/Unix最喜爱的命令，一个是Linux/Unix都支持，二是相比top，我可以看到整个机器的CPU,内存,IO的使用情况，而不是单单看到各个进程的CPU使用率和内存使用率(使用场景不一样)。</p>
+<p>一般vmstat工具的使用是通过两个数字参数来完成的，第一个参数是采样的时间间隔数，单位是秒，第二个参数是采样的次数，如:</p>
+<pre><code>root@ubuntu:~# vmstat 2 1
+procs -----------memory---------- ---swap-- -----io---- -system-- ----cpu----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa
+ 1  0      0 3498472 315836 3819540    0    0     0     1    2    0  0  0 100  0
+</code></pre>
+<p>2表示每个两秒采集一次服务器状态，1表示只采集一次。</p>
+<p>实际上，在应用过程中，我们会在一段时间内一直监控，不想监控直接结束vmstat就行了,例如:</p>
+<pre><code>root@ubuntu:~# vmstat 2  
+procs -----------memory---------- ---swap-- -----io---- -system-- ----cpu----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa
+ 1  0      0 3499840 315836 3819660    0    0     0     1    2    0  0  0 100  0
+ 0  0      0 3499584 315836 3819660    0    0     0     0   88  158  0  0 100  0
+ 0  0      0 3499708 315836 3819660    0    0     0     2   86  162  0  0 100  0
+ 0  0      0 3499708 315836 3819660    0    0     0    10   81  151  0  0 100  0
+ 1  0      0 3499732 315836 3819660    0    0     0     2   83  154  0  0 100  0
+</code></pre>
+<p>这表示vmstat每2秒采集数据，一直采集，直到我结束程序，这里采集了5次数据我就结束了程序。</p>
+<p><strong>参数详解</strong></p>
+<blockquote>
+<p><strong>r</strong> 表示运行队列(就是说多少个进程真的分配到CPU)，我测试的服务器目前CPU比较空闲，没什么程序在跑，当这个值超过了CPU数目，就会出现CPU瓶颈了。这个也和top的负载有关系，一般负载超过了3就比较高，超过了5就高，超过了10就不正常了，服务器的状态很危险。top的负载类似每秒的运行队列。如果运行队列过大，表示你的CPU很繁忙，一般会造成CPU使用率很高。</p>
+<p><strong>b</strong> 表示阻塞的进程,这个不多说，进程阻塞，大家懂的。</p>
+<p><strong>swpd</strong> 虚拟内存已使用的大小，如果大于0，表示你的机器物理内存不足了，如果不是程序内存泄露的原因，那么你该升级内存了或者把耗内存的任务迁移到其他机器。</p>
+<p><strong>free</strong>  空闲的物理内存的大小，我的机器内存总共8G，剩余3415M。</p>
+<p><strong>buff</strong>  Linux/Unix系统是用来存储，目录里面有什么内容，权限等的缓存，我本机大概占用300多M</p>
+<p><strong>cache</strong> cache直接用来记忆我们打开的文件,给文件做缓冲，我本机大概占用300多M(这里是Linux/Unix的聪明之处，把空闲的物理内存的一部分拿来做文件和目录的缓存，是为了提高 程序执行的性能，当程序使用内存时，buffer/cached会很快地被使用。)</p>
+<p><strong>si</strong> 每秒从磁盘读入虚拟内存的大小，如果这个值大于0，表示物理内存不够用或者内存泄露了，要查找耗内存进程解决掉。我的机器内存充裕，一切正常。</p>
+<p><strong>so</strong> 每秒虚拟内存写入磁盘的大小，如果这个值大于0，同上。</p>
+<p><strong>bi</strong> 块设备每秒接收的块数量，这里的块设备是指系统上所有的磁盘和其他块设备，默认块大小是1024byte，我本机上没什么IO操作，所以一直是0，但是我曾在处理拷贝大量数据(2-3T)的机器上看过可以达到140000/s，磁盘写入速度差不多140M每秒</p>
+<p><strong>bo</strong> 块设备每秒发送的块数量，例如我们读取文件，bo就要大于0。bi和bo一般都要接近0，不然就是IO过于频繁，需要调整。</p>
+<p><strong>in</strong> 每秒CPU的中断次数，包括时间中断</p>
+<p><strong>cs</strong> 每秒上下文切换次数，例如我们调用系统函数，就要进行上下文切换，线程的切换，也要进程上下文切换，这个值要越小越好，太大了，要考虑调低线程或者进程的数目,例如在apache和nginx这种web服务器中，我们一般做性能测试时会进行几千并发甚至几万并发的测试，选择web服务器的进程可以由进程或者线程的峰值一直下调，压测，直到cs到一个比较小的值，这个进程和线程数就是比较合适的值了。系统调用也是，每次调用系统函数，我们的代码就会进入内核空间，导致上下文切换，这个是很耗资源，也要尽量避免频繁调用系统函数。上下文切换次数过多表示你的CPU大部分浪费在上下文切换，导致CPU干正经事的时间少了，CPU没有充分利用，是不可取的。</p>
+<p><strong>us</strong> 用户CPU时间，我曾经在一个做加密解密很频繁的服务器上，可以看到us接近100,r运行队列达到80(机器在做压力测试，性能表现不佳)。</p>
+<p><strong>sy</strong> 系统CPU时间，如果太高，表示系统调用时间长，例如是IO操作频繁。</p>
+<p><strong>id</strong> 空闲 CPU时间，一般来说，id + us + sy = 100,一般我认为id是空闲CPU使用率，us是用户CPU使用率，sy是系统CPU使用率。</p>
+<p><strong>wt</strong> 等待IO CPU时间。</p>
+</blockquote>
+<h3 id="pid命令详解">pid命令详解</h3>
+<p>pidstat是sysstat工具的一个命令，用于监控全部或指定进程的cpu、内存、线程、设备IO等系统资源的占用情况。pidstat首次运行时显示自系统启动开始的各项统计信息，之后运行pidstat将显示自上次运行该命令以后的统计信息。用户可以通过指定统计的次数和时间来获得所需的统计信息。</p>
+<p>pidstat 的用法：</p>
+<pre><code>pidstat [ 选项 ] [ &lt;时间间隔&gt; ] [ &lt;次数&gt; ]
+</code></pre>
+<p>如下图：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1631692116794.png" alt="" loading="lazy"></figure>
+<p><strong>常用的参数：</strong></p>
+<ul>
+<li>-u：默认的参数，显示各个进程的cpu使用统计</li>
+<li>-r：显示各个进程的内存使用统计</li>
+<li>-d：显示各个进程的IO使用情况</li>
+<li>-p：指定进程号</li>
+<li>-w：显示每个进程的上下文切换情况</li>
+<li>-t：显示选择任务的线程的统计信息外的额外信息</li>
+<li>-T { TASK | CHILD | ALL }<br>
+这个选项指定了pidstat监控的。TASK表示报告独立的task，CHILD关键字表示报告进程下所有线程统计信息。ALL表示报告独立的task和task下面的所有线程。<br>
+注意：task和子线程的全局的统计信息和pidstat选项无关。这些统计信息不会对应到当前的统计间隔，这些统计信息只有在子线程kill或者完成的时候才会被收集。</li>
+<li>-V：版本号</li>
+<li>-h：在一行上显示了所有活动，这样其他程序可以容易解析。</li>
+<li>-I：在SMP环境，表示任务的CPU使用率/内核数量</li>
+<li>-l：显示命令名和所有参数</li>
+</ul>
+<pre><code>pidstat
+pidstat -u -p ALL
+</code></pre>
+<p>pidstat 和 pidstat -u -p ALL 是等效的。<br>
+pidstat 默认显示了所有进程的cpu使用率。</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1631692161313.png" alt="" loading="lazy"></figure>
+<p><strong>参数详解</strong></p>
+<ul>
+<li>
+<p>PID：进程ID</p>
+</li>
+<li>
+<p>%usr：进程在用户空间占用cpu的百分比</p>
+</li>
+<li>
+<p>%system：进程在内核空间占用cpu的百分比</p>
+</li>
+<li>
+<p>%guest：进程在虚拟机占用cpu的百分比</p>
+</li>
+<li>
+<p>%CPU：进程占用cpu的百分比</p>
+</li>
+<li>
+<p>CPU：处理进程的cpu编号</p>
+</li>
+<li>
+<p>Command：当前进程对应的命令</p>
+</li>
+</ul>
+<h3 id="free命令详解">free命令详解</h3>
+<p>free 命令显示系统内存的使用情况，包括物理内存、交换内存(swap)和内核缓冲区内存。</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1631692175318.png" alt="" loading="lazy"></figure>
+<p>如果加上 -h 选项，输出的结果会友好很多：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1631692195242.png" alt="" loading="lazy"></figure>
+<p>有时我们需要持续的观察内存的状况，此时可以使用 -s 选项并指定间隔的秒数：</p>
+<pre><code>$ free -h -s 3
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1631692210174.png" alt="" loading="lazy"></figure>
+<p>上面的命令每隔 3 秒输出一次内存的使用情况，直到你按下 ctrl + c。</p>
+<p>由于 free 命令本身比较简单，所以本文的重点会放在如何通过 free 命令了解系统当前的内存使用状况。</p>
+<p><strong>输出说明</strong><br>
+<strong>Mem</strong> 行(第二行)是内存的使用情况。<br>
+<strong>Swap</strong> 行(第三行)是交换空间的使用情况。<br>
+<strong>total</strong> 列显示系统总的可用物理内存和交换空间大小。<br>
+<strong>used</strong> 列显示已经被使用的物理内存和交换空间。<br>
+<strong>free</strong> 列显示还有多少物理内存和交换空间可用使用。<br>
+<strong>shared</strong> 列显示被共享使用的物理内存大小。<br>
+<strong>buff/cache</strong> 列显示被 buffer 和 cache 使用的物理内存大小。<br>
+<strong>available</strong> 列显示还可以被应用程序使用的物理内存大小。</p>
+<h3 id="df命令详解">df命令详解</h3>
+<p>Linux df（英文全拼：disk free） 命令用于显示目前在 Linux 系统上的文件系统磁盘使用情况统计。</p>
+<p><strong>语法</strong></p>
+<pre><code>df [选项]... [FILE]...
+</code></pre>
+<ul>
+<li>文件-a, --all 包含所有的具有 0 Blocks 的文件系统</li>
+<li>文件--block-size={SIZE} 使用 {SIZE} 大小的 Blocks</li>
+<li>文件-h, --human-readable 使用人类可读的格式(预设值是不加这个选项的...)</li>
+<li>文件-H, --si 很像 -h, 但是用 1000 为单位而不是用 1024</li>
+<li>文件-i, --inodes 列出 inode 资讯，不列出已使用 block</li>
+<li>文件-k, --kilobytes 就像是 --block-size=1024</li>
+<li>文件-l, --local 限制列出的文件结构</li>
+<li>文件-m, --megabytes 就像 --block-size=1048576</li>
+<li>文件--no-sync 取得资讯前不 sync (预设值)</li>
+<li>文件-P, --portability 使用 POSIX 输出格式</li>
+<li>文件--sync 在取得资讯前 sync</li>
+<li>文件-t, --type=TYPE 限制列出文件系统的 TYPE</li>
+<li>文件-T, --print-type 显示文件系统的形式</li>
+<li>文件-x, --exclude-type=TYPE 限制列出文件系统不要显示 TYPE</li>
+<li>文件-v (忽略)</li>
+<li>文件--help 显示这个帮手并且离开</li>
+<li>文件--version 输出版本资讯并且离开</li>
+</ul>
+<p><strong>实例</strong></p>
+<p>显示文件系统的磁盘使用情况统计：</p>
+<pre><code># df 
+Filesystem     1K-blocks    Used     Available Use% Mounted on 
+/dev/sda6       29640780 4320704     23814388  16%     / 
+udev             1536756       4     1536752    1%     /dev 
+tmpfs             617620     888     616732     1%     /run 
+none                5120       0     5120       0%     /run/lock 
+none             1544044     156     1543888    1%     /run/shm 
+</code></pre>
+<p>第一列指定文件系统的名称，第二列指定一个特定的文件系统1K-块1K是1024字节为单位的总内存。用和可用列正在使用中，分别指定的内存量。</p>
+<p>使用列指定使用的内存的百分比，而最后一栏&quot;安装在&quot;指定的文件系统的挂载点。</p>
+<p>df也可以显示磁盘使用的文件系统信息：</p>
+<pre><code># df test 
+Filesystem     1K-blocks    Used      Available Use% Mounted on 
+/dev/sda6       29640780    4320600   23814492  16%       / 
+</code></pre>
+<p>用一个-i选项的df命令的输出显示inode信息而非块使用量。</p>
+<pre><code>df -i 
+Filesystem      Inodes    IUsed    IFree     IUse% Mounted on 
+/dev/sda6      1884160    261964   1622196   14%        / 
+udev           212748     560      212188    1%         /dev 
+tmpfs          216392     477      215915    1%         /run 
+none           216392     3        216389    1%         /run/lock 
+none           216392     8        216384    1%         /run/shm 
+</code></pre>
+<p>显示所有的信息:</p>
+<pre><code># df --total 
+Filesystem     1K-blocks    Used    Available Use% Mounted on 
+/dev/sda6       29640780 4320720    23814372  16%     / 
+udev             1536756       4    1536752   1%      /dev 
+tmpfs             617620     892    616728    1%      /run 
+none                5120       0    5120      0%      /run/lock 
+none             1544044     156    1543888   1%      /run/shm 
+total           33344320 4321772    27516860  14% 
+</code></pre>
+<p>我们看到输出的末尾，包含一个额外的行，显示总的每一列。</p>
+<p>-h选项，通过它可以产生可读的格式df命令的输出：</p>
+<pre><code># df -h 
+Filesystem      Size  Used   Avail Use% Mounted on 
+/dev/sda6       29G   4.2G   23G   16%     / 
+udev            1.5G  4.0K   1.5G   1%     /dev 
+tmpfs           604M  892K   603M   1%     /run 
+none            5.0M     0   5.0M   0%     /run/lock 
+none            1.5G  156K   1.5G   1%     /run/shm 
+</code></pre>
+<p>我们可以看到输出显示的数字形式的'G'（千兆字节），&quot;M&quot;（兆字节）和&quot;K&quot;（千字节）。</p>
+<p>这使输出容易阅读和理解，从而使显示可读的。请注意，第二列的名称也发生了变化，为了使显示可读的&quot;大小&quot;。</p>
+<h3 id="iostat命令详解">iostat命令详解</h3>
+<p>用法：iostat [ 选项 ] [ &lt;时间间隔&gt; [ &lt;次数&gt; ]]</p>
+<p>常用选项说明：</p>
+<pre><code>-c：只显示系统CPU统计信息，即单独输出avg-cpu结果，不包括device结果
+-d：单独输出Device结果，不包括cpu结果
+-k/-m：输出结果以kB/mB为单位，而不是以扇区数为单位
+-x:输出更详细的io设备统计信息
+interval/count：每次输出间隔时间，count表示输出次数，不带count表示循环输出
+</code></pre>
+<p>说明：更多选项使用使用man iostat查看</p>
+<p><strong>实例</strong></p>
+<p>1、iostat，结果为从系统开机到当前执行时刻的统计信息</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1631692226555.png" alt="" loading="lazy"></figure>
+<p>输出含义：</p>
+<p>avg-cpu: 总体cpu使用情况统计信息，对于多核cpu，这里为所有cpu的平均值。重点关注iowait值，表示CPU用于等待io请求的完成时间。</p>
+<p>Device: 各磁盘设备的IO统计信息。各列含义如下：</p>
+<pre><code>Device: 以sdX形式显示的设备名称
+tps: 每秒进程下发的IO读、写请求数量
+KB_read/s: 每秒从驱动器读入的数据量，单位为K。
+KB_wrtn/s: 每秒从驱动器写入的数据量，单位为K。
+KB_read: 读入数据总量，单位为K。
+KB_wrtn: 写入数据总量，单位为K。
+</code></pre>
+<p>2、iostat -x -k -d 1 2。每隔1S输出磁盘IO的详细详细，总共采样2次。</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1631692235192.png" alt="" loading="lazy"></figure>
+<p>以上各列的含义如下：</p>
+<pre><code>rrqm/s: 每秒对该设备的读请求被合并次数，文件系统会对读取同块(block)的请求进行合并
+wrqm/s: 每秒对该设备的写请求被合并次数
+r/s: 每秒完成的读次数
+w/s: 每秒完成的写次数
+rkB/s: 每秒读数据量(kB为单位)
+wkB/s: 每秒写数据量(kB为单位)
+avgrq-sz:平均每次IO操作的数据量(扇区数为单位)
+avgqu-sz: 平均等待处理的IO请求队列长度
+await: 平均每次IO请求等待时间(包括等待时间和处理时间，毫秒为单位)
+svctm: 平均每次IO请求的处理时间(毫秒为单位)
+%util: 采用周期内用于IO操作的时间比率，即IO队列非空的时间比率
+</code></pre>
+<p>重点关注参数</p>
+<blockquote>
+<p>1、iowait% 表示CPU等待IO时间占整个CPU周期的百分比，如果iowait值超过50%，或者明显大于%system、%user以及%idle，表示IO可能存在问题。</p>
+<p>2、avgqu-sz 表示磁盘IO队列长度，即IO等待个数。</p>
+<p>3、await 表示每次IO请求等待时间，包括等待时间和处理时间</p>
+<p>4、svctm 表示每次IO请求处理的时间</p>
+<p>5、%util 表示磁盘忙碌情况，一般该值超过80%表示该磁盘可能处于繁忙状态。</p>
+</blockquote>
+<h3 id="ifstat命令详解">ifstat命令详解</h3>
+<p>统计网络接口流量状态</p>
+<p>下载</p>
+<pre><code class="language-shell">wget http://gael.roualland.free.fr/ifstat/ifstat-1.1.tar.gz
+</code></pre>
+<p>编译安装</p>
+<pre><code class="language-shell">tar -zxvf ifstat-1.1.tar.gz
+cd ifstat-1.1
+./configure            
+make
+make install # 默认会安装到/usr/local/bin/目录中
+</code></pre>
+<p><code>注释</code>：执行which ifstat输出/usr/local/bin/ifstat</p>
+<p>选项</p>
+<blockquote>
+<p>-l 监测环路网络接口（lo）。缺省情况下，ifstat监测活动的所有非环路网络接口。经使用发现，加上-l参数能监测所有的网络接口的信息，而不是只监测 lo的接口信息，也就是说，加上-l参数比不加-l参数会多一个lo接口的状态信息。<br>
+-a 监测能检测到的所有网络接口的状态信息。使用发现，比加上-l参数还多一个plip0的接口信息，搜索一下发现这是并口（网络设备中有一 个叫PLIP (Parallel Line Internet Protocol). 它提供了并口...）<br>
+-z 隐藏流量是无的接口，例如那些接口虽然启动了但是未用的<br>
+-i 指定要监测的接口,后面跟网络接口名<br>
+-s 等于加-d snmp:[comm@][#]host[/nn]] 参数，通过SNMP查询一个远程主机<br>
+-h 显示简短的帮助信息<br>
+-n 关闭显示周期性出现的头部信息（也就是说，不加-n参数运行ifstat时最顶部会出现网络接口的名称，当一屏显示不下时，会再一次出现接口的名称，提示我们显示的流量信息具体是哪个网络接口的。加上-n参数把周期性的显示接口名称关闭，只显示一次）<br>
+-t 在每一行的开头加一个时间 戳（能告诉我们具体的时间）<br>
+-T 报告所有监测接口的全部带宽（最后一列有个total，显示所有的接口的in流量和所有接口的out流量，简单的把所有接口的in流量相加,out流量相 加）<br>
+-w  用指定的列宽，而不是为了适应接口名称的长度而去自动放大列宽<br>
+-W 如果内容比终端窗口的宽度还要宽就自动换行<br>
+-S 在同一行保持状态更新（不滚动不换行）注：如果不喜欢屏幕滚动则此项非常方便，与bmon的显示方式类似<br>
+-b 用kbits/s显示带宽而不是kbytes/s<br>
+-q 安静模式，警告信息不出现<br>
+-v 显示版本信息<br>
+-d 指定一个驱动来收集状态信息</p>
+</blockquote>
+<p><strong>实例</strong><br>
+默认使用</p>
+<pre><code class="language-shell"> #ifstat
+       eth0                eth1       
+ KB/s in  KB/s out   KB/s in  KB/s out
+    0.07      0.20      0.00      0.00
+    0.07      0.15      0.58      0.00
+</code></pre>
+<p>默认ifstat不监控回环接口，显示的流量单位是KB。</p>
+<pre><code class="language-shell">ifstat -tT
+  time           eth0                eth1                eth2                eth3               Total      
+HH:MM:ss   KB/s in  KB/s out   KB/s in  KB/s out   KB/s in  KB/s out   KB/s in  KB/s out   KB/s in  KB/s out
+16:53:04      0.84      0.62   1256.27   1173.05      0.12      0.18      0.00      0.00   1257.22   1173.86
+16:53:05      0.57      0.40      0.57      0.76      0.00      0.00      0.00      0.00      1.14      1.17
+16:53:06      1.58      0.71      0.42      0.78      0.00      0.00      0.00      0.00      2.01      1.48
+16:53:07      0.57      0.40      1.91      2.61      0.00      0.00      0.00      0.00      2.48      3.01
+16:53:08      0.73      0.40    924.02   1248.91      0.00      0.00      0.00      0.00    924.76   1249.31
+</code></pre>
+<p>监控所有网络接口</p>
+<pre><code class="language-shell">ifstat -a
+        lo                 eth0                eth1       
+ KB/s in  KB/s out   KB/s in  KB/s out   KB/s in  KB/s out
+    0.00      0.00      0.28      0.58      0.06      0.06
+    0.00      0.00      1.41      1.13      0.00      0.00
+    0.61      0.61      0.26      0.23      0.00      0.00
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#top%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3">top命令详解</a></li>
+<li><a href="#vmstat%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3">vmstat命令详解</a></li>
+<li><a href="#pid%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3">pid命令详解</a></li>
+<li><a href="#free%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3">free命令详解</a></li>
+<li><a href="#df%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3">df命令详解</a></li>
+<li><a href="#iostat%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3">iostat命令详解</a></li>
+<li><a href="#ifstat%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3">ifstat命令详解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/2nzKhQbUe/">
+                  <span class="post-title">
+                    CAS/ABA/AtomicReference&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/7Wmx9Q2PP/">
+                   <span class="post-title">
+                     NIO-FileChannel&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

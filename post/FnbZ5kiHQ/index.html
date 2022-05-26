@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>第六章 Flink 中的 Window | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="第六章 Flink 中的 Window | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="第六章 Flink 中的 Window" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/FnbZ5kiHQ/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
+                
+              </span>
+              <h1>第六章 Flink 中的 Window</h1>
+              <span class="meta">
+                Posted on
+                2021-04-12，8 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/FnbZ5kiHQ.png" alt="封面图">
+          </img>
+          
+          <h2 id="window">Window</h2>
+<h3 id="window-概述">Window 概述</h3>
+<p style="text-indent:2em">streaming 流式计算是一种被设计用于处理无限数据集的数据处理引擎， 而无限数据集是指一种不断增长的本质上无限的数据集， 而 window 是一种切割无限数据
+为有限块进行处理的手段。</p>
+<p style="text-indent:2em">Window 是无限数据流处理的核心， Window 将一个无限的 stream 拆分成有限大小的” buckets” 桶， 我们可以在这些桶上做计算操作。</p>
+<h3 id="window-类型">Window 类型</h3>
+<p>Window 可以分成两类：</p>
+<ol>
+<li>CountWindow： 按照指定的数据条数生成一个 Window， 与时间无关。</li>
+<li>TimeWindow： 按照时间生成 Window。<br>
+对于 TimeWindow， 可以根据窗口实现原理的不同分成三类： <code>滚动窗口（ TumblingWindow）</code> 、 <code>滑动窗口（ Sliding Window）</code>、 <code>和会话窗口（ Session Window）</code> 。</li>
+</ol>
+<h4 id="滚动窗口tumbling-windows">滚动窗口（Tumbling Windows）</h4>
+<p>将数据依据固定的窗口长度对数据进行切片。<br>
+特点： <code>时间对齐</code>， <code>窗口长度固定</code>， <code>没有重叠</code>。</p>
+<p style="text-indent:2em">滚动窗口分配器将每个元素分配到一个指定窗口大小的窗口中， 滚动窗口有一个固定的大小， 并且不会出现重叠。 例如： 如果你指定了一个 5 分钟大小的滚动窗
+口， 窗口的创建如下图所示：</p>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618471104246.png" alt="" loading="lazy"><br>
+图 滚动窗口<br>
+适用场景： 适合做 BI 统计等（ 做每个时间段的聚合计算） 。</p>
+<h4 id="滑动窗口sliding-windows">滑动窗口（Sliding Windows）</h4>
+<p>滑动窗口是固定窗口的更广义的一种形式， 滑动窗口由固定的窗口长度和滑动间隔组成。<br>
+特点：<code>时间对齐</code>， <code>窗口长度固定</code>， <code>可以有重叠</code>。</p>
+<p style="text-indent:2em">滑动窗口分配器将元素分配到固定长度的窗口中， 与滚动窗口类似， 窗口的大小由窗口大小参数来配置， 另一个窗口滑动参数控制滑动窗口开始的频率。 因此，
+滑动窗口如果滑动参数小于窗口大小的话， 窗口是可以重叠的， 在这种情况下元素会被分配到多个窗口中。</p>
+<p style="text-indent:2em">例如， 你有 10 分钟的窗口和 5 分钟的滑动， 那么每个窗口中 5 分钟的窗口里包含着上个 10 分钟产生的数据， 如下图所示：</p>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618471120950.png" alt="" loading="lazy"><br>
+图 滑动窗口<br>
+适用场景： 对最近一个时间段内的统计（ 求某接口最近 5min 的失败率来决定是<br>
+否要报警） 。</p>
+<h4 id="会话窗口session-windows">会话窗口（Session Windows）</h4>
+<p style="text-indent:2em">由一系列事件组合一个指定时间长度的 timeout 间隙组成， 类似于 web 应用的session， 也就是一段时间没有接收到新数据就会生成新的窗口。
+特点： 时间无对齐。</p>
+<p style="text-indent:2em">session 窗口分配器通过 session 活动来对元素进行分组， session 窗口跟滚动窗口和滑动窗口相比， 不会有重叠和固定的开始时间和结束时间的情况， 相反， 当它在一个固定的时间周期内不再收到元素， 即非活动间隔产生， 那个这个窗口就会关
+闭。 一个 session 窗口通过一个 session 间隔来配置， 这个 session 间隔定义了非活跃
+周期的长度， 当这个非活跃周期产生， 那么当前的 session 将关闭并且后续的元素将
+被分配到新的 session 窗口中去。</p>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618471406934.png" alt="" loading="lazy"><br>
+图 会话窗口</p>
+<h2 id="window-api">Window API</h2>
+<h3 id="timewindow">TimeWindow</h3>
+<p>TimeWindow 是将指定时间范围内的所有数据组成一个 window， 一次对一个<br>
+window 里面的所有数据进行计算。</p>
+<ol>
+<li>滚动窗口<br>
+Flink 默认的时间窗口根据 Processing Time 进行窗口的划分， 将 Flink 获取到的<br>
+数据根据进入 Flink 的时间划分到不同的窗口中。<br>
+时间间隔可以通过 Time.milliseconds(x)， Time.seconds(x)， Time.minutes(x)等其<br>
+中的一个来指定。</li>
+</ol>
+<pre><code class="language-java">import com.tan.flink.bean.SensorReading;
+import com.tan.flink.source.SourceFromCustom;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.time.Time;
+
+public class TimeWindow_Tumbling {
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        DataStreamSource&lt;SensorReading&gt; inputDataStream = env.addSource(new SourceFromCustom.CustomSource());
+        SingleOutputStreamOperator&lt;SensorReading&gt; resultDataStream = inputDataStream.keyBy(&quot;id&quot;)
+                .timeWindow(Time.seconds(5L)) // 滚动时间窗口大小
+                .maxBy(&quot;temperature&quot;);
+        resultDataStream.print();
+        env.execute();
+    }
+}
+</code></pre>
+<ol start="2">
+<li>滑动窗口（SlidingEventTimeWindows）<br>
+滑动窗口和滚动窗口的函数名是完全一致的， 只是在传参数时需要传入两个参<br>
+数， 一个是 window_size， 一个是 sliding_size。下面代码中的 sliding_size 设置为了 5s， 也就是说， 每 5s 就计算输出结果一次，每一次计算的 window 范围是 15s 内的所有元素。<br>
+时间间隔可以通过 Time.milliseconds(x)， Time.seconds(x)， Time.minutes(x)等其<br>
+中的一个来指定。</li>
+</ol>
+<pre><code class="language-java">import com.tan.flink.bean.SensorReading;
+import com.tan.flink.source.SourceFromCustom;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.time.Time;
+
+public class TimeWindow_Sliding {
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        DataStreamSource&lt;SensorReading&gt; inputDataStream = env.addSource(new SourceFromCustom.CustomSource());
+        SingleOutputStreamOperator&lt;SensorReading&gt; resultDataStream = inputDataStream.keyBy(&quot;id&quot;)
+                .timeWindow(Time.seconds(15L), Time.seconds(5)) // 窗口大小15秒 滑动大小5秒
+                .minBy(&quot;temperature&quot;);
+        resultDataStream.print();
+        env.execute();
+    }
+}
+</code></pre>
+<h3 id="countwindow">CountWindow</h3>
+<p style="text-indent:2em">CountWindow 根据窗口中相同 key 元素的数量来触发执行， 执行时只计算元素数量达到窗口大小的 key 对应的结果。</p>
+注意： CountWindow 的 window_size 指的是相同 Key 的元素的个数， 不是输入
+的所有元素的总数。
+<p>1 滚动窗口</p>
+<p style="text-indent:2em">默认的 CountWindow 是一个滚动窗口， 只需要指定窗口大小即可， 当元素数量达到窗口大小时， 就会触发窗口的执行。</p>
+<pre><code class="language-java">import com.tan.flink.bean.SensorReading;
+import com.tan.flink.source.SourceFromCustom;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+public class CountWindow_Tumbling {
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        DataStreamSource&lt;SensorReading&gt; inputDataStream = env.addSource(new SourceFromCustom.CustomSource());
+        SingleOutputStreamOperator&lt;SensorReading&gt; resultDataStream = inputDataStream.keyBy(&quot;id&quot;)
+                .countWindow(3)
+                .maxBy(&quot;temperature&quot;);
+        resultDataStream.print();
+        env.execute();
+    }
+}
+</code></pre>
+<p>2 滑动窗口</p>
+<p style="text-indent:2em">滑动窗口和滚动窗口的函数名是完全一致的， 只是在传参数时需要传入两个参数， 一个是 window_size， 一个是 sliding_size。</p>
+<p style="text-indent:2em">下面代码中的 sliding_size 设置为了 2， 也就是说， 每收到两个相同 key 的数据就计算一次， 每一次计算的 window 范围是 10 个元素。</p>
+<pre><code class="language-java">import com.tan.flink.bean.SensorReading;
+import com.tan.flink.source.SourceFromCustom;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+public class CountWindow_Sliding {
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        DataStreamSource&lt;SensorReading&gt; inputDataStream = env.addSource(new SourceFromCustom.CustomSource());
+        SingleOutputStreamOperator&lt;SensorReading&gt; resultDataStream = inputDataStream.keyBy(&quot;id&quot;)
+                .countWindow(10, 2)
+                .minBy(&quot;temperature&quot;);
+        resultDataStream.print();
+        env.execute();
+    }
+}
+</code></pre>
+<h3 id="window-function">window function</h3>
+<p>window function 定义了要对窗口中收集的数据做的计算操作， 主要可以分为两<br>
+类：</p>
+<ol>
+<li>增量聚合函数（ incremental aggregation functions）<br>
+每条数据到来就进行计算， 保持一个简单的状态。 典型的增量聚合函数有<br>
+ReduceFunction, AggregateFunction。</li>
+<li>全窗口函数（ full window functions）<br>
+先把窗口所有数据收集起来， 等到计算的时候会遍历所有数据。<br>
+ProcessWindowFunction 就是一个全窗口函数。</li>
+</ol>
+<h3 id="其它可选-api">其它可选 API</h3>
+<ol>
+<li>trigger() —— 触发器<br>
+定义 window 什么时候关闭， 触发计算并输出结果</li>
+<li>evitor() —— 移除器,定义移除某些数据的逻辑</li>
+<li>allowedLateness() —— 允许处理迟到的数据</li>
+<li>sideOutputLateData() —— 将迟到的数据放入侧输出流</li>
+<li>getSideOutput() —— 获取侧输出</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1618472074436.png" alt="" loading="lazy"></figure>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#window">Window</a>
+<ul>
+<li><a href="#window-%E6%A6%82%E8%BF%B0">Window 概述</a></li>
+<li><a href="#window-%E7%B1%BB%E5%9E%8B">Window 类型</a>
+<ul>
+<li><a href="#%E6%BB%9A%E5%8A%A8%E7%AA%97%E5%8F%A3tumbling-windows">滚动窗口（Tumbling Windows）</a></li>
+<li><a href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3sliding-windows">滑动窗口（Sliding Windows）</a></li>
+<li><a href="#%E4%BC%9A%E8%AF%9D%E7%AA%97%E5%8F%A3session-windows">会话窗口（Session Windows）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#window-api">Window API</a>
+<ul>
+<li><a href="#timewindow">TimeWindow</a></li>
+<li><a href="#countwindow">CountWindow</a></li>
+<li><a href="#window-function">window function</a></li>
+<li><a href="#%E5%85%B6%E5%AE%83%E5%8F%AF%E9%80%89-api">其它可选 API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/lvf921hnA/">
+                  <span class="post-title">
+                    第五章 Flink 流处理 API&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/5uA_yv-aO/">
+                   <span class="post-title">
+                     第六章 Flink 的Window 操作&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

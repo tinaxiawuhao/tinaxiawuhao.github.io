@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>第三章 Flink 部署 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="第三章 Flink 部署 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="第三章 Flink 部署" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/aPsJFkgVZ/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
+                
+              </span>
+              <h1>第三章 Flink 部署</h1>
+              <span class="meta">
+                Posted on
+                2021-04-09，5 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/aPsJFkgVZ.png" alt="封面图">
+          </img>
+          
+          <h2 id="standalone-模式">Standalone 模式</h2>
+<h3 id="安装">安装</h3>
+<p>解压缩 flink-1.10.1-bin-scala_2.12.tgz， 进入 conf 目录中。</p>
+<ol>
+<li>修改 flink/conf/flink-conf.yaml 文件：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953255377.png" alt="" loading="lazy"></li>
+<li>修改 /conf/slaves 文件：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953264929.png" alt="" loading="lazy"></li>
+<li>分发给另外两台机子：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953282098.png" alt="" loading="lazy"></li>
+<li>启动<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953292985.png" alt="" loading="lazy"><br>
+访问 http://localhost:8081 可以对 flink 集群和任务进行监控管理。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953298218.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="提交任务">提交任务</h3>
+<ol>
+<li>准备数据文件（ 如果需要）<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953344217.png" alt="" loading="lazy"></li>
+<li>把含数据文件的文件夹， 分发到 taskmanage 机器中<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953351280.png" alt="" loading="lazy"></li>
+</ol>
+<p style="text-indent:2em">如 果 从 文 件 中 读 取 数 据 ， 由 于 是 从 本 地 磁 盘 读 取 ， 实 际 任 务 会 被 分 发 到taskmanage 的机器中， 所以要把目标文件分发。</p>
+<ol start="3">
+<li>执行程序</li>
+</ol>
+<pre><code class="language-sh">./flink run -c com.atguigu.wc.StreamWordCount –p 2
+FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar --host lcoalhost –port 7777
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1617953534756.png" alt="" loading="lazy"></figure>
+<ol start="4">
+<li>到目标文件夹中查看计算结果<br>
+注 意 ： 如 果 计 算 结 果 输 出 到 文 件 ， 会 保 存 到 taskmanage 的 机 器 下 ， 不 会 在jobmanage 下。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953549746.png" alt="" loading="lazy"></li>
+<li>在 webui 控制台查看计算过程<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953465087.png" alt="" loading="lazy"></li>
+</ol>
+<h2 id="yarn-模式">Yarn 模式</h2>
+<p style="text-indent:2em">以 Yarn 模式部署 Flink 任务时， 要求 Flink 是有 Hadoop 支持的版本， Hadoop环境需要保证版本在 2.2 以上， 并且集群中安装有 HDFS 服务</p>
+<h3 id="flink-on-yarn">Flink on Yarn</h3>
+<p style="text-indent:2em">Flink 提供了两种在 yarn 上运行的模式， 分别为 Session-Cluster 和 Per-Job-Cluster模式。</p>
+<ol>
+<li>
+<p>Session-cluster 模式：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1617953616812.png" alt="" loading="lazy"></figure>
+</li>
+</ol>
+<p style="text-indent:2em">Session-Cluster 模式需要先启动集群， 然后再提交作业， 接着会向 yarn 申请一块空间后， 资源永远保持不变。 如果资源满了， 下一个作业就无法提交， 只能等到
+yarn 中的其中一个作业执行完成后， 释放了资源， 下个作业才会正常提交。 所有作
+业共享 Dispatcher 和 ResourceManager； 共享资源； 适合规模小执行时间短的作业。
+<p style="text-indent:2em">在 yarn 中初始化一个 flink 集群， 开辟指定的资源， 以后提交任务都向这里提交。 这个 flink 集群会常驻在 yarn 集群中， 除非手工停止。</p>
+<ol>
+<li>Per-Job-Cluster 模式：</li>
+</ol>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1617953630802.png" alt="" loading="lazy"></figure>
+<p style="text-indent:2em">一个 Job 会对应一个集群， 每提交一个作业会根据自身的情况， 都会单独向 yarn申请资源， 直到作业执行完成， 一个作业的失败与否并不会影响下一个作业的正常
+提交和运行。 独享 Dispatcher 和 ResourceManager， 按需接受资源申请； 适合规模大
+长时间运行的作业。
+<p style="text-indent:2em">每次提交都会创建一个新的 flink 集群， 任务之间互相独立， 互不影响， 方便管理。 任务执行完成之后创建的集群也会消失。</p>
+<h3 id="session-cluster">Session Cluster</h3>
+<ol>
+<li>启动 hadoop 集群（ 略）</li>
+<li>启动 yarn-session</li>
+</ol>
+<pre><code class="language-sh">./yarn-session.sh -n 2 -s 2 -jm 1024 -tm 1024 -nm test -d
+</code></pre>
+<p>其中：</p>
+<blockquote>
+<p>-n(--container)： TaskManager 的数量。<br>
+-s(--slots)： 每个 TaskManager 的 slot 数量， 默认一个 slot 一个 core， 默认每个<br>
+taskmanager 的 slot 的个数为 1， 有时可以多一些 taskmanager， 做冗余。<br>
+-jm： JobManager 的内存（ 单位 MB)。<br>
+-tm： 每个 taskmanager 的内存（ 单位 MB)。<br>
+-nm： yarn 的 appName(现在 yarn 的 ui 上的名字)。<br>
+-d： 后台执行。</p>
+</blockquote>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1617953810515.png" alt="" loading="lazy"></figure>
+<ol start="3">
+<li>执行任务</li>
+</ol>
+<pre><code class="language-sh">./flink run -c com.atguigu.wc.StreamWordCount
+FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar --host lcoalhost –port 7777
+</code></pre>
+<ol start="4">
+<li>去 yarn 控制台查看任务状态</li>
+</ol>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1617953816721.png" alt="" loading="lazy"></figure>
+<ol start="5">
+<li>取消 yarn-session</li>
+</ol>
+<pre><code class="language-sh">yarn application --kill application_1577588252906_0001
+3.2.2 Per Job Cluster
+</code></pre>
+<ol start="6">
+<li>启动 hadoop 集群（ 略）</li>
+<li>不启动 yarn-session， 直接执行 job</li>
+</ol>
+<pre><code class="language-sh">./flink run –m yarn-cluster -c com.atguigu.wc.StreamWordCount
+FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar --host lcoalhost –port
+7777
+</code></pre>
+<h2 id="kubernetes-部署">Kubernetes 部署</h2>
+<p style="text-indent:2em">容器化部署时目前业界很流行的一项技术， 基于 Docker 镜像运行能够让用户更加 方 便 地 对 应 用 进 行 管 理 和 运 维 。 容 器 管 理 工 具 中 最 为 流 行 的 就 是 Kubernetes（ k8s） ， 而 Flink 也在最近的版本中支持了 k8s 部署模式。</p>
+<ol>
+<li>搭建 Kubernetes 集群（ 略）</li>
+<li>配置各组件的 yaml 文件</li>
+</ol>
+<p style="text-indent:2em">在 k8s 上构建 Flink Session Cluster， 需要将 Flink 集群的组件对应的 docker 镜像分别在 k8s 上启动， 包括 JobManager、 TaskManager、 JobManagerService 三个镜像服务。 每个镜像服务都可以从中央镜像仓库中获取。</p>
+<ol start="3">
+<li>启动 Flink Session Cluster</li>
+</ol>
+<pre><code class="language-sh">// 启动 jobmanager-service 服务
+kubectl create -f jobmanager-service.yaml
+// 启动 jobmanager-deployment 服务
+kubectl create -f jobmanager-deployment.yaml
+// 启动 taskmanager-deployment 服务
+kubectl create -f taskmanager-deployment.yaml
+</code></pre>
+<ol start="4">
+<li>访问 Flink UI 页面</li>
+</ol>
+<p style="text-indent:2em">集群启动后， 就可以通过 JobManagerServicers 中配置的 WebUI 端口， 用浏览器输入以下 url 来访问 Flink UI 页面了：</p>
+<pre><code>http://{JobManagerHost:Port}/api/v1/namespaces/default/services/flink-jobmanager:ui/proxy
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#standalone-%E6%A8%A1%E5%BC%8F">Standalone 模式</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E4%BB%BB%E5%8A%A1">提交任务</a></li>
+</ul>
+</li>
+<li><a href="#yarn-%E6%A8%A1%E5%BC%8F">Yarn 模式</a>
+<ul>
+<li><a href="#flink-on-yarn">Flink on Yarn</a></li>
+<li><a href="#session-cluster">Session Cluster</a></li>
+</ul>
+</li>
+<li><a href="#kubernetes-%E9%83%A8%E7%BD%B2">Kubernetes 部署</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/pQQ9j5lFD/">
+                  <span class="post-title">
+                    第二章 快速上手&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/4_EhGqVjY/">
+                   <span class="post-title">
+                     第四章 Flink 运行架构&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

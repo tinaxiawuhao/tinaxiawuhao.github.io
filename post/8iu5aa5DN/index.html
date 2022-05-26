@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title> JVM 的核心知识梳理 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title=" JVM 的核心知识梳理 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content=" JVM 的核心知识梳理" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/8iu5aa5DN/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1> JVM 的核心知识梳理</h1>
+              <span class="meta">
+                Posted on
+                2021-04-27，23 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/8iu5aa5DN.png" alt="封面图">
+          </img>
+          
+          <h2 id="前言">前言</h2>
+<h2 id="运行时数据区域">运行时数据区域</h2>
+<h3 id="java虚拟机运行时有哪些数据区域他们都有什么用途">java虚拟机运行时有哪些数据区域，他们都有什么用途？</h3>
+<p>有<code>程序计数器</code>、<code>java虚拟机栈</code>、<code>本地方法栈</code>、<code>堆</code>和<code>方法区</code>五大模块。请看下图：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619321084766.png" alt="" loading="lazy"></p>
+<h3 id="程序计数器">程序计数器</h3>
+<p>程序计数器是一块较小的内存空间，他可以看做是当期线程所执行的字节码的行号指令器。字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。在任何一个确定的时刻，一个处理器都只会执行一条线程中的指令。因此，为了线程切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器，各个线程之间互不影响，独立存储，所以程序计数器是“线程私有的”。另外，程序计数器是唯一一个在java虚拟机规范中没有规定OOM的区域。</p>
+<h3 id="java虚拟机栈">Java虚拟机栈</h3>
+<p>Java虚拟机栈也是线程私有的，它的生命周期与线程相同，虚拟机栈描述的是Java方法执行的内存模型，每个方法在执行的同时都会创建一个栈帧用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用直至执行完成的过程，对应着一个栈帧在虚拟机栈中入栈到出栈的过程。（程序员经常会把Java内存划分为堆内存和栈内存，这种说法比较粗糙，其中的栈内存就是指虚拟机栈，或者说是虚拟机栈中的局部变量表的部分）</p>
+<p>在Java虚拟机规范中，对这个区域规定了两种异常：如果线程请求的栈深度大于虚拟机所允许的深度，将抛出StackOverFlowError异常。如果虚拟机栈可以动态扩展，如果扩展时无法申请到足够的内存，就会抛出OOM异常。</p>
+<h3 id="本地方法栈">本地方法栈</h3>
+<p>本地方法栈与虚拟机栈作用类似，他们之间的区别不过是虚拟机栈是为虚拟机执行Java方法（也就是字节码）服务，而本地方法栈则为虚拟机使用到的Native方法服务。与虚拟机栈一样，本地方法栈也会抛出StackOverFlowError异常和OOM异常。</p>
+<h3 id="堆">堆</h3>
+<p>Java堆是Java虚拟机管理的最大的一块内存，是所有线程共享的区域，在虚拟机启动时就创建。堆用来存放对象实例，几乎所有的对象实例都在这里分配内存（注意是几乎所有）。这一点在Java虚拟机规范中描述为：所有的对象实例以及数组都要在堆上分配，但随着JIT编译器的发展和逃逸分析技术的成熟，栈上分配、标量替换技术将会导致一些微妙的变化发生，所有对象都分配在堆上也不是那么绝对了。</p>
+<p>如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，将会抛出OOM异常。</p>
+<h3 id="方法区">方法区</h3>
+<p>方法区与Java堆一样，是各个线程共享的区域，它用来存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。根据Java虚拟机规范，当方法区无法满足内存分配的 需求时，将抛出OOM异常。</p>
+<p>运行时常量池是方法区的一部分，用于存放编译器生成的各种字面量和符号引用。运行时常量池相对于Class文件常量池的另外一个重要特征就是具备动态性。也就是说运行期间也可能将新的常量 放入池中，这种特性被利用的比较多的就是String类的intern()方法。</p>
+<h3 id="直接内存">直接内存</h3>
+<p>直接内存并不是运行时数据区的一部分，也不是Java虚拟机定义的内存区域。本机直接内存的分配不受Java堆大小的限制，但是受本机总内存大小以及处理器寻址空间的限制。</p>
+<h2 id="内存溢出">内存溢出</h2>
+<h3 id="堆内存溢出">堆内存溢出</h3>
+<p>Java堆用于存储对象实例，只要不断创建对象，并且保证GC Roots到对象之间有可达路径来避免垃圾回收机制清除这些对象，那么在对象数量达到最大堆容量限制后就会OOM。（轻易不要运行）</p>
+<pre><code class="language-java">public class HeapOOMTest {
+    
+    static class OOMObject {
+        
+    }
+    
+    public static void main(String [] args) {
+        List&lt;OOMObject&gt; list = new ArrayList&lt;&gt;();
+        while (true) {
+            list.add(new OOMObject());
+        }
+    }
+}
+</code></pre>
+<p>Java堆内存的OOM异常是实际应用中最常见的内存溢出，当出现了咋办？一般的手段是先通过内存映像分析工具对Dump出来的堆转储快照进行分析，重点是确认内存中的对象是否是必要的，也就是确认是内存泄露还是内存溢出。</p>
+<p>如果是内存泄露，可进一步通过工具查看泄露对象到GCRoots的引用链，找到为什么垃圾收集器无法回收它们。如果不存在泄露，就是内存中的对象必须都存活，那就要检查虚拟机的堆内存是否可以调大，从代码上检查是否某些对象生命周期过长，减少内存消耗，优化代码。</p>
+<h3 id="虚拟机栈溢出">虚拟机栈溢出</h3>
+<p>关于虚拟机栈，在java虚拟机规范中描述了两种异常：</p>
+<p>（1）如果线程请求的栈深度大于虚拟机所允许的最大深度，将抛出StackOverFlowError异常。</p>
+<p>（2）如果虚拟机在扩展栈时无法申请到足够的内存空间，则抛出OutOdMemoryError异常。</p>
+<p>这里描述的两种情况实际上有些重叠：当栈空间无法继续分配的时候，到底是内存太小导致的，还是已使用的栈空间太大，本质上是一样的。</p>
+<pre><code class="language-java">public class StackSOFTest {
+
+    private int stackLength = -1;
+
+    public void stackLeak() {
+        stackLength++;
+        stackLeak();
+    }
+
+    public static void main(String [] args) throws Throwable {
+        StackSOFTest oom = new StackSOFTest();
+        try {
+            oom.stackLeak();
+        } catch (Throwable e) {
+            System.out.println(&quot;stack length:&quot;+oom.stackLength);
+            throw e;
+        }
+    }
+}
+</code></pre>
+<p>运行结果：</p>
+<pre><code class="language-java">tack length:13980
+Exception in thread &quot;main&quot; java.lang.StackOverflowError
+    at oom.StackSOFTest.stackLeak(StackSOFTest.java:14)
+    at oom.StackSOFTest.stackLeak(StackSOFTest.java:14)
+    at oom.StackSOFTest.stackLeak(StackSOFTest.java:14)
+    ...后续省略
+</code></pre>
+<p>实验结果表明：在单个线程下，无论是由于栈帧太大还是虚拟机栈容量太小，当内存无法分配时，虚拟机抛出的都是StackOverflowError异常。</p>
+<h3 id="哪些内存需要回收">哪些内存需要回收？</h3>
+<p>猿们都知道JVM的内存结构包括五大区域：程序计数器、虚拟机栈、本地方法栈、堆区、方法区。其中程序计数器、虚拟机栈、本地方法栈3个区域随线程而生、随线程而灭，因此这几个区域的内存分配和回收都具备确定性，就不需要过多考虑回收的问题，因为方法结束或者线程结束时，内存自然就跟随着回收了。而Java堆区和方法区则不一样、不一样!(怎么不一样说的朗朗上口)，这部分内存的分配和回收是动态的，正是垃圾收集器所需关注的部分。</p>
+<p>垃圾收集器在对堆区和方法区进行回收前，首先要确定这些区域的对象哪些可以被回收，哪些暂时还不能回收，这就要用到判断对象是否存活的算法！（面试官肯定没少问你吧）</p>
+<h4 id="21-引用计数算法">2.1 引用计数算法</h4>
+<p><strong>2.1.1 算法分析</strong></p>
+<p>引用计数是垃圾收集器中的早期策略。在这种方法中，堆中每个对象实例都有一个引用计数。当一个对象被创建时，就将该对象实例分配给一个变量，该变量计数设置为1。当任何其它变量被赋值为这个对象的引用时，计数加1（a = b,则b引用的对象实例的计数器+1），但当一个对象实例的某个引用超过了生命周期或者被设置为一个新值时，对象实例的引用计数器减1。任何引用计数器为0的对象实例可以被当作垃圾收集。当一个对象实例被垃圾收集时，它引用的任何对象实例的引用计数器减1。</p>
+<p><strong>2.1.2 优缺点</strong></p>
+<p><strong>优点</strong>：引用计数收集器可以很快的执行，交织在程序运行中。对程序需要不被长时间打断的实时环境比较有利。</p>
+<p><strong>缺点</strong>：无法检测出循环引用。如父对象有一个对子对象的引用，子对象反过来引用父对象。这样，他们的引用计数永远不可能为0。</p>
+<p><strong>2.1.3 是不是很无趣，来段代码压压惊</strong></p>
+<pre><code class="language-java">public class ReferenceFindTest {
+    public static void main(String[] args) {
+        MyObject object1 = new MyObject();
+        MyObject object2 = new MyObject();
+          
+        object1.object = object2;
+        object2.object = object1;
+          
+        object1 = null;
+        object2 = null;
+    }
+}
+</code></pre>
+<p>这段代码是用来验证引用计数算法不能检测出循环引用。最后面两句将object1和object2赋值为null，也就是说object1和object2指向的对象已经不可能再被访问，但是由于它们互相引用对方，导致它们的引用计数器都不为0，那么垃圾收集器就永远不会回收它们。</p>
+<h4 id="22-可达性分析算法">2.2 可达性分析算法</h4>
+<p>可达性分析算法是从离散数学中的图论引入的，程序把所有的引用关系看作一张图，从一个节点GC ROOT开始，寻找对应的引用节点，找到这个节点以后，继续寻找这个节点的引用节点，当所有的引用节点寻找完毕之后，剩余的节点则被认为是没有被引用到的节点，即无用的节点，无用的节点将会被判定为是可回收的对象。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1631165973388.jpeg" alt="" loading="lazy"></figure>
+<p>在Java语言中，可作为GC Roots的对象包括下面几种：</p>
+<p>a) 虚拟机栈中引用的对象（栈帧中的本地变量表）；</p>
+<p>b) 方法区中类静态属性引用的对象；</p>
+<p>c) 方法区中常量引用的对象；</p>
+<p>d) 本地方法栈中JNI（Native方法）引用的对象。</p>
+<h2 id="对象是生是死">对象是“生”是“死</h2>
+<h3 id="对象的四种引用">对象的四种引用</h3>
+<p>引用分为<code>强引用</code>，<code>软引用</code>，<code>弱引用</code>和<code>虚引用</code>四种，这四种引用强度依次逐渐减弱。</p>
+<h4 id="强引用">强引用</h4>
+<blockquote>
+<p>强引用就是指在程序代码中普遍存在的，是指创建一个对象并把这个对象赋给一个引用变量，类似Object obj = new Object()这类的引用，只要强引用还存在，垃圾收集器就永远不会回收被引用的对象。如果想中断强引用和某个对象之间的关联，可以显示的将引用赋值为null，这样jvm在合适的时间就会回收该对象。</p>
+</blockquote>
+<h4 id="软引用">软引用</h4>
+<blockquote>
+<p>软引用是用来描述一些还有用但并非必需的对象。对于软引用关联着的对象，在系统将会发生内存溢出异常之前，将会把这些对象列进回收范围之中进行第二次回收。SoftReference的特点是它的一个实例保存对一个Java对象的软引用，该软引用的存在不妨碍垃圾收集器线程对该Java对象的回收。</p>
+</blockquote>
+<h4 id="弱引用">弱引用</h4>
+<blockquote>
+<p>弱引用也是用来描述非必需对象的。当JVM进行垃圾回收时，无论内存是否充足，都会回收被弱引用关联的对象。在java中，用java.lang.ref.WeakReference类来表示。</p>
+</blockquote>
+<h4 id="虚引用">虚引用</h4>
+<blockquote>
+<p>虚引用和前面的软引用和弱引用不同，它并不影响对象的生命周期。在java中使用PhantomReference类来表示。如果一个对象与虚引用关联，跟没有引用与之关联一样，任何时候都可能被回收。要注意的是，虚引用必须和引用队列关联使用。当垃圾收集器准备回收一个对象时，如果发现它还有虚引用，就会把这个虚引用加入到与之关联的引用队列中。为对象设置虚引用的唯一目的就是能在这个对象被垃圾收集器回收时收到一个系统通知。</p>
+</blockquote>
+<h3 id="引用计数法的缺陷">引用计数法的缺陷</h3>
+<p>引用计数法就是给对象添加一个引用计数器，每当有一个地方引用它时，计数器值就加1.当引用失效时，计数器的值就减一。任何时刻计数器值为0的对象就是不可能再被使用的。</p>
+<p>优缺点：实现简单，判断效率高，大部分情况下是个很不错的算法。但是致命问题是没办法解决对象之间相互循环引用的问题。</p>
+<pre><code class="language-java">public class ReferenceCountingGC {
+
+    private Object instance = null;
+
+    private static final int _1MB = 1024*1024;
+
+    private byte[] bigSize = new byte[2*_1MB];
+
+    public static void main(String [] args) {
+
+        ReferenceCountingGC objA = new ReferenceCountingGC();
+        ReferenceCountingGC objB = new ReferenceCountingGC();
+        objA.instance = objB;
+        objB.instance = objA;
+
+        objA = null;
+        objB = null;
+
+        //假设在这行发生GC，ObjA和ObjB是否能被回收
+        System.gc();
+    }
+}
+</code></pre>
+<p>观察GC日志可以看出GC发生了内存回收，意味着虚拟机并没有因为这两个对象相互引用就不回收它们，这也从侧面说明虚拟机并没有采用引用计数法来判断对象是否存活。</p>
+<h3 id="可达性分析">可达性分析</h3>
+<p>这个算法的基本思想是通过一系列被称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索走过的路径叫做引用链，当一个对象到GC Roots没有任何引用链相连 （用图论的话来说就是从GC Roots到这个对象不可达），则证明此对象是不可用的。</p>
+<p><strong>在 Java语言中，可作为GC Roots的对象包括以下几种</strong></p>
+<p>（1）虚拟机栈（栈帧中的本地变量表）中引用的对象。</p>
+<p>（2）方法区中类静态属性引用的对象。</p>
+<p>（3）方法区中常量引用的对象。</p>
+<p>（4）本地方法栈中JNI（即一般说的Native方法）引用的对象。</p>
+<p><strong>对象是生存还是死亡？</strong></p>
+<p>即使在可达性分析法中不可达的对象，也并非“非死不可”，他们还有拯救自己的机会。要宣告一个对象死亡，至少要经历两次标记过程：如果对象在进行可达性分析后没有与GC Roots的引用链，那么它将会被第一次标记，并且此时需要判断是否有必要执行finalize()方法。没有必要的话，那么这个对象就宣告死亡，可以回收了。</p>
+<p>如果有必要执行，那么这个对象会被放置在一个叫做F-Queue的队列中，并在稍后由虚拟机自动建立的低优先级的Finalizer线程去执行它。finalize()是对象拯救自己的最后一次机会-只要重新与引用链上的 任何一个对象建立关联即可（譬如把自己赋值给某个类变量或者对象的成员变量），那么在第二次标记时它将被移除“可回收”的集合，如果对象还没有逃脱，基本上就真的被回收了。</p>
+<p>具体的过程见下图：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619321104140.png" alt="" loading="lazy"></figure>
+<h2 id="垃圾收集算法">垃圾收集算法</h2>
+<h3 id="标记清除算法">标记清除算法</h3>
+<p>标记-清除算法是最基础的算法，分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收。</p>
+<p>它的主要不足有两个：一是效率问题，标记和清除两个过程的效率都不高；另一个是空间问题，标记清楚之后会产生大量不连续的内存碎片。</p>
+<p>标记-清除算法的执行过程见下图：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619321111512.png" alt="" loading="lazy"></figure>
+<h3 id="复制算法">复制算法</h3>
+<p>为了解决效率问题，“复制”算法出现了。它将内存空间划分为大小相等的两块，每次只使用其中的一块，当这一块的内存用完了，就将还存活的对象复制到另外一块上，然后再把已使用的的内存空间一次性清理掉。</p>
+<p>这样每次都是对整个半区进行内存回收，内存分配时也就不用考虑内存碎片等复杂情况，只要移动堆顶指针，按顺序分配内存即可，实现简单，运行高效。但是这种算法的代码是将内存空间缩小为原来的一半。</p>
+<p>复制算法的执行过程见下图：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1619321118627.png" alt="" loading="lazy"></figure>
+<h3 id="标记-整理算法">标记-整理算法</h3>
+<p>标记过程仍然与标记-清除算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向一端移动，然后直接清理掉边界以外的内存。</p>
+<p>标记-整理算法的执行过程见下图：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1619321125289.png" alt="" loading="lazy"></figure>
+<h3 id="分代收集算法">分代收集算法</h3>
+<p>分代收集算法是目前大部分JVM的垃圾收集器采用的算法。它的核心思想是根据对象存活的生命周期将内存划分为若干个不同的区域。一般情况下将堆区划分为老年代（Tenured Generation）和新生代（Young Generation），在堆区之外还有一个代就是永久代（Permanet Generation）。老年代的特点是每次垃圾收集时只有少量对象需要被回收，而新生代的特点是每次垃圾回收时都有大量的对象需要被回收，那么就可以根据不同代的特点采取最适合的收集算法。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1631166010532.jpeg" alt="" loading="lazy"></figure>
+<p><strong>3.4.1 年轻代（Young Generation）的回收算法</strong></p>
+<p>a) 所有新生成的对象首先都是放在年轻代的。年轻代的目标就是尽可能快速的收集掉那些生命周期短的对象。</p>
+<p>b) 新生代内存按照8:1:1的比例分为一个eden区和两个survivor(survivor0,survivor1)区。一个Eden区，两个 Survivor区(一般而言)。大部分对象在Eden区中生成。回收时先将eden区存活对象复制到一个survivor0区，然后清空eden区，当这个survivor0区也存放满了时，则将eden区和survivor0区存活对象复制到另一个survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后将survivor0区和survivor1区交换，即保持survivor1区为空， 如此往复。</p>
+<p>c) 当survivor1区不足以存放 eden和survivor0的存活对象时，就将存活对象直接存放到老年代。若是老年代也满了就会触发一次Full GC，也就是新生代、老年代都进行回收。</p>
+<p>d) 新生代发生的GC也叫做Minor GC，MinorGC发生频率比较高(不一定等Eden区满了才触发)。</p>
+<p><strong>3.4.2 年老代（Old Generation）的回收算法</strong></p>
+<p>a) 在年轻代中经历了N次垃圾回收后仍然存活的对象，就会被放到年老代中。因此，可以认为年老代中存放的都是一些生命周期较长的对象。</p>
+<p>b) 内存比新生代也大很多(大概比例是1:2)，当老年代内存满时触发Major GC即Full GC，Full GC发生频率比较低，老年代对象存活时间比较长，存活率标记高。</p>
+<p><strong>3.4.3 持久代（Permanent Generation）的回收算法</strong></p>
+<p>用于存放静态文件，如Java类、方法等。持久代对垃圾回收没有显著影响，但是有些应用可能动态生成或者调用一些class，例如Hibernate 等，在这种时候需要设置一个比较大的持久代空间来存放这些运行过程中新增的类。持久代也称方法区，</p>
+<h2 id="垃圾收集器">垃圾收集器</h2>
+<p>堆内存是垃圾收集器主要回收垃圾对象的地方，堆内存可以根据对象生命周期的不同分为新生代和老年代，分代收集，新生代使用复制算法，老年代使用标记清除或者标记整理算法。</p>
+<p>HotSpot虚拟机提供了7种垃圾收集器，其中新生代三种：Serial/ParNew/Parallel Scavenge收集器，老年代三种：Serial Old/Parallel Old/CMS，都适用的是G1收集器。所有垃圾收集器组合 情况如下图：</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1619321134376.webp" alt="" loading="lazy"></figure>
+<h3 id="serial收集器">Serial收集器</h3>
+<p>最基本也是发展历史最长的垃圾收集器，在进行垃圾收集时，必须Stop The World(暂停其他工作线程)，直到收集结束。只使用一条线程完成垃圾收集，但是效率高，因为没有线程交互的开销，拥有更高的单线程收集效率。发生在新生代区域，使用复制算法。</p>
+<h3 id="parnew收集器">ParNew收集器</h3>
+<p>Serial收集器的多线程版本。在进行垃圾收集时同样需要Stop The World（暂停其他工作线程），直到收集结束。使用多条线程进行垃圾收集（由于存在线程交互的开销，所以在单CPU的环境下，性能差于Serial收集器）。目前，只有Parnew收集器能与CMS收集器配合工作。发生在新生代区域，使用复制算法。</p>
+<h3 id="parallel-scavenge收集器">Parallel Scavenge收集器</h3>
+<p>ParNew收集器的升级版，具备ParNew收集器并发多线程收集的特点，以达到可控制吞吐量为目标。（吞吐量：CPU用于运行用户代码的时间与CPU总消耗时间（运行用户代码时间+垃圾收集时间）的比值）。该垃圾收集器能根据当前系统运行情况，动态调整自身参数，从而达到最大吞吐量的目标。（该特性成为GC自适应的调节策略）。发生在新生代，使用复制算法。</p>
+<h3 id="serial-old收集器">Serial Old收集器</h3>
+<p>Serial 收集器应用在老年代的版本。并发、单线程、效率高。使用标记整理算法。</p>
+<h3 id="parallel-old收集器">Parallel Old收集器</h3>
+<p>是Parallel Scavenge应用在老年代的版本，以达到可控制吞吐量、自适应调节和多线程收集为目标，使用标记整理算法。</p>
+<h3 id="cms收集器">CMS收集器</h3>
+<p>CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。使用这类收集器的应用重视服务的响应速度，希望系统停顿时间最短，以带来更好的用户体验。</p>
+<p>使用标记清除算法，一共四个步骤：初始标记、并发标记、重新标记和并发清除。详情见下表：</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1619321143708.webp" alt="" loading="lazy"></figure>
+<p>下面说下CMS的优缺点：</p>
+<h4 id="优点">优点：</h4>
+<p>（1）并行：用户线程和垃圾收集线程同时进行。</p>
+<p>（2）单线程收集：只使用一条线程完成垃圾收集。</p>
+<p>（3）垃圾收集停顿时间短：获取最短的回收停顿时间，即希望系统停顿的时间最短，提高响应速度。</p>
+<h4 id="缺点">缺点：</h4>
+<p>（1）总吞吐量会降低：因为该收集器对CPU资源非常敏感，在并发阶段不会导致停顿用户线程，但会因为占用部分线程（CPU资源）导致应用程序变慢，总吞吐量会降低。</p>
+<p>（2）无法处理浮动垃圾：由于并发清理时用户线程还在运行，所以会有新的垃圾不断产生，只能等到下一次GC时再清理。（因为这一部分垃圾出现在标记过程之后，所以CMS 无法在当次GC中处理他们，因此CMS无法等到老年代填满再进行Full GC，CMS需要预留一部分空间）。</p>
+<p>（3）垃圾收集后会产生大量的内存碎片：因为CMS收集器是使用标记-清除算法的。</p>
+<p>下面一张图了解下CMS的工作过程：<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619321151348.png" alt="" loading="lazy"></p>
+<h3 id="g1收集器">G1收集器</h3>
+<p>G1收集器是最新最前沿的垃圾收集器。特点如下：</p>
+<p>（1）并行：用户线程和垃圾收集线程同时进行。</p>
+<p>（2）多线程：即使用多条垃圾收集线程进行垃圾回收。（并发和并行充分利用多CPU和多核环境的硬件优势来缩短垃圾收集的停顿时间）</p>
+<p>（3）垃圾收集效率高：G1收集器是针对性对Java堆内存区域进行垃圾收集，而非每次都对整个区域进行收集。即G1除了将Java堆内存分为新生代和老年代之外，还会细分为许多个 大小相等的独立区域（Region），然后G1收集器会跟踪每个Region里的垃圾代价值大小，并在后台维护一个列表。每次回收时，会根据允许的垃圾收集时间优先回收价值最大的 Region，从而避免了对整个Java堆内存区域的回收，提高了效率。因为上述机制，G1收集器还能建立可预测的时间模型：即让使用者明确执行一个长度为M毫秒的时间片段，消耗在 垃圾收集上的时间不得超出N毫秒。即具备实时性。</p>
+<p>（4）不会产生内存碎片。从整理上看，G1收集器是基于标记-整理算法的，从局部看是基于复制算法的。在新生代使用复制算法，在老年代使用标记-整理算法。</p>
+<p>下面了解下工作流程，跟CMS有点像。</p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1619321159419.png" alt="" loading="lazy"></figure>
+<p>下面是G1的工作过程：</p>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1619321168987.webp" alt="" loading="lazy"></figure>
+<h2 id="总结">总结</h2>
+<p>本文讲解了运行时数据区域，内存溢出，如何判断对象是否存活，垃圾回收算法和垃圾收集器几个方面，涵盖jvm的核心考点，希望你有所收获。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F">运行时数据区域</a>
+<ul>
+<li><a href="#java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9C%89%E5%93%AA%E4%BA%9B%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F%E4%BB%96%E4%BB%AC%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%E9%80%94">java虚拟机运行时有哪些数据区域，他们都有什么用途？</a></li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8">程序计数器</a></li>
+<li><a href="#java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88">Java虚拟机栈</a></li>
+<li><a href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88">本地方法栈</a></li>
+<li><a href="#%E5%A0%86">堆</a></li>
+<li><a href="#%E6%96%B9%E6%B3%95%E5%8C%BA">方法区</a></li>
+<li><a href="#%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98">直接内存</a></li>
+</ul>
+</li>
+<li><a href="#%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA">内存溢出</a>
+<ul>
+<li><a href="#%E5%A0%86%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA">堆内存溢出</a></li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88%E6%BA%A2%E5%87%BA">虚拟机栈溢出</a></li>
+<li><a href="#%E5%93%AA%E4%BA%9B%E5%86%85%E5%AD%98%E9%9C%80%E8%A6%81%E5%9B%9E%E6%94%B6">哪些内存需要回收？</a>
+<ul>
+<li><a href="#21-%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E7%AE%97%E6%B3%95">2.1 引用计数算法</a></li>
+<li><a href="#22-%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95">2.2 可达性分析算法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E6%98%AF%E7%94%9F%E6%98%AF%E6%AD%BB">对象是“生”是“死</a>
+<ul>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8">对象的四种引用</a>
+<ul>
+<li><a href="#%E5%BC%BA%E5%BC%95%E7%94%A8">强引用</a></li>
+<li><a href="#%E8%BD%AF%E5%BC%95%E7%94%A8">软引用</a></li>
+<li><a href="#%E5%BC%B1%E5%BC%95%E7%94%A8">弱引用</a></li>
+<li><a href="#%E8%99%9A%E5%BC%95%E7%94%A8">虚引用</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95%E7%9A%84%E7%BC%BA%E9%99%B7">引用计数法的缺陷</a></li>
+<li><a href="#%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90">可达性分析</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95">垃圾收集算法</a>
+<ul>
+<li><a href="#%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95">标记清除算法</a></li>
+<li><a href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95">复制算法</a></li>
+<li><a href="#%E6%A0%87%E8%AE%B0-%E6%95%B4%E7%90%86%E7%AE%97%E6%B3%95">标记-整理算法</a></li>
+<li><a href="#%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95">分代收集算法</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8">垃圾收集器</a>
+<ul>
+<li><a href="#serial%E6%94%B6%E9%9B%86%E5%99%A8">Serial收集器</a></li>
+<li><a href="#parnew%E6%94%B6%E9%9B%86%E5%99%A8">ParNew收集器</a></li>
+<li><a href="#parallel-scavenge%E6%94%B6%E9%9B%86%E5%99%A8">Parallel Scavenge收集器</a></li>
+<li><a href="#serial-old%E6%94%B6%E9%9B%86%E5%99%A8">Serial Old收集器</a></li>
+<li><a href="#parallel-old%E6%94%B6%E9%9B%86%E5%99%A8">Parallel Old收集器</a></li>
+<li><a href="#cms%E6%94%B6%E9%9B%86%E5%99%A8">CMS收集器</a>
+<ul>
+<li><a href="#%E4%BC%98%E7%82%B9">优点：</a></li>
+<li><a href="#%E7%BC%BA%E7%82%B9">缺点：</a></li>
+</ul>
+</li>
+<li><a href="#g1%E6%94%B6%E9%9B%86%E5%99%A8">G1收集器</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/nxmi3zjCk/">
+                  <span class="post-title">
+                    Java内存结构JVM&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/rNVfAh0Yb/">
+                   <span class="post-title">
+                     Java内存模型JMM&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

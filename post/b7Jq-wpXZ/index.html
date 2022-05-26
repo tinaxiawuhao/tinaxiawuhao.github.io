@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>多线程基础概念四 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="多线程基础概念四 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="多线程基础概念四" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/b7Jq-wpXZ/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>多线程基础概念四</h1>
+              <span class="meta">
+                Posted on
+                2021-05-12，30 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/b7Jq-wpXZ.png" alt="封面图">
+          </img>
+          
+          <h3 id="lock-接口lock-interface简介">Lock 接口(Lock interface)简介</h3>
+<blockquote>
+<p>Lock 接口比同步方法和同步块提供了更具扩展性的锁操作。他们允许更灵活的结构，可以具有完全不同的性质，并且可以支持多个相关类的条件对象。</p>
+</blockquote>
+<p><strong>优势</strong><br>
+它的优势有：</p>
+<p>（1）可以使锁更公平</p>
+<p>（2）可以使线程在等待锁的时候响应中断</p>
+<p>（3）可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间</p>
+<p>（4）可以在不同的范围，以不同的顺序获取和释放锁</p>
+<p>整体上来说 Lock 是 synchronized 的扩展版，Lock 提供了无条件的、可轮询的(tryLock 方法)、定时的(tryLock 带参方法)、可中断的(lockInterruptibly)、可多条件队列的(newCondition 方法)锁操作。另外 Lock 的实现类基本都支持非公平锁(默认)和公平锁，synchronized 只支持非公平锁，当然，在大部分情况下，非公平锁是高效的选择。</p>
+<h4 id="乐观锁和悲观锁">乐观锁和悲观锁</h4>
+<p>悲观锁：总是假设最坏的情况，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会阻塞直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。再比如 Java 里面的同步原语 <code>synchronized</code> 关键字的实现也是悲观锁。</p>
+<p>乐观锁：顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量，像数据库提供的类似于 write_condition 机制，其实都是提供的乐观锁。在 Java中 <code>java.util.concurrent.atomic</code> 包下面的原子变量类就是使用了乐观锁的一种实现方式 <code>CAS</code> 实现的。</p>
+<h5 id="乐观锁的实现方式">乐观锁的实现方式：</h5>
+<p>1、使用版本标识来确定读到的数据与提交时的数据是否一致。提交后修改版本标识，不一致时可以采取丢弃和再次尝试的策略。</p>
+<p>2、java 中的 Compare and Swap 即 CAS ，当多个线程尝试使用 CAS 同时更新同一个变量时，只有其中一个线程能更新变量的值，而其它线程都失败，失败的线程并不会被挂起，而是被告知这次竞争中失败，并可以再次尝试。 CAS 操作中包含三个操作数 —— 需要读写的内存位置（V），进行比较的预期原值（A）和拟写入的新值(B)。如果内存位置 V 的值与预期原值 A 相匹配，那么处理器会自动将该位置值更新为新值 B。否则处理器不做任何操作。</p>
+<h5 id="cas">CAS</h5>
+<p>CAS 是 compare and swap 的缩写，即我们所说的比较交换。</p>
+<p>CAS 是一种基于锁的操作，而且是乐观锁。在 java 中锁分为乐观锁和悲观锁。悲观锁是将资源锁住，等一个之前获得锁的线程释放锁之后，下一个线程才可以访问。而乐观锁采取了一种宽泛的态度，通过某种方式不加锁来处理资源，比如通过给记录加 version 来获取数据，性能较悲观锁有很大的提高。</p>
+<p>CAS 操作包含三个操作数 —— 内存位置（V）、预期原值（A）和新值(B)。如果内存地址里面的值和 A 的值是一样的，那么就将内存里面的值更新成 B。CAS是通过无限循环来获取数据的，若果在第一轮循环中，a 线程获取地址里面的值被b 线程修改了，那么 a 线程需要自旋，到下次循环才有可能机会执行。</p>
+<p><code>java.util.concurrent.atomic</code> 包下的类大多是使用 CAS 操作来实现的(<code>AtomicInteger</code>,<code>AtomicBoolean</code>,<code>AtomicLong</code>)。</p>
+<h6 id="cas产生的问题">CAS产生的问题</h6>
+<ol>
+<li>
+<p>ABA 问题：</p>
+<p>比如说一个线程 one 从内存位置 V 中取出 A，这时候另一个线程 two 也从内存中取出 A，并且 two 进行了一些操作变成了 B，然后 two 又将 V 位置的数据变成 A，这时候线程 one 进行 CAS 操作发现内存中仍然是 A，然后 one 操作成功。尽管线程 one 的 CAS 操作成功，但可能存在潜藏的问题。从 Java1.5 开始 JDK 的 atomic包里提供了一个类<code>AtomicStampedReference</code> 来解决 ABA 问题。</p>
+</li>
+<li>
+<p>循环时间长开销大：</p>
+<p>对于资源竞争严重（线程冲突严重）的情况，CAS 自旋的概率会比较大，从而浪费更多的 CPU 资源，效率低于 synchronized。</p>
+</li>
+<li>
+<p>只能保证一个共享变量的原子操作：</p>
+<p>当对一个共享变量执行操作时，我们可以使用循环 CAS 的方式来保证原子操作，但是对多个共享变量操作时，循环 CAS 就无法保证操作的原子性，这个时候就可以用锁。</p>
+</li>
+</ol>
+<h4 id="公平锁锁和非公平锁">公平锁锁和非公平锁</h4>
+<p>公平锁：多个线程按照申请锁的顺序去获得锁，线程会直接进入队列去排队，永远都是队列的第一位才能得到锁。</p>
+<ul>
+<li>优点：所有的线程都能得到资源，不会饿死在队列中。</li>
+<li>缺点：吞吐量会下降很多，队列里面除了第一个线程，其他的线程都会阻塞，cpu唤醒阻塞线程的开销会很大。</li>
+</ul>
+<p>非公平锁：多个线程去获取锁的时候，会直接去尝试获取，获取不到，再去进入等待队列，如果能获取到，就直接获取到锁。</p>
+<ul>
+<li>优点：可以减少CPU唤醒线程的开销，整体的吞吐效率会高点，CPU也不必取唤醒所有线程，会减少唤起线程的数量。</li>
+<li>缺点：你们可能也发现了，这样可能导致队列中间的线程一直获取不到锁或者长时间获取不到锁，导致饿死。</li>
+</ul>
+<h4 id="伪共享">伪共享</h4>
+<p><strong>一、伪共享的定义：</strong></p>
+<blockquote>
+<p>缓存系统中是以缓存行（cache line）为单位存储的，当多线程修改互相独立的变量时，如果这些变量共享同一个缓存行，就会无意中影响彼此的性能，这就是伪共享。</p>
+</blockquote>
+<p><strong>二、CPU缓存机制</strong></p>
+<blockquote>
+<p>CPU 缓存（Cache Memory）是位于 CPU 与内存之间的临时存储器，它的容量比内存小的多但是交换速度却比内存要快得多。<br>
+高速缓存的出现主要是为了解决 CPU 运算速度与内存读写速度不匹配的矛盾，因为 CPU 运算速度要比内存读写速度快很多，这样会使 CPU 花费很长时间等待数据到来或把数据写入内存。<br>
+在缓存中的数据是内存中的一小部分，但这一小部分是短时间内 CPU 即将访问的，当 CPU 调用大量数据时，就可避开内存直接从缓存中调用，从而加快读取速度。</p>
+</blockquote>
+<p>CPU 和主内存之间有好几层缓存，因为即使直接访问主内存也是非常慢的。如果你正在多次对一块数据做相同的运算，那么在执行运算的时候把它加载到离 CPU 很近的地方就有意义了。</p>
+<p>按照数据读取顺序和与 CPU 结合的紧密程度，CPU 缓存可以分为一级缓存，二级缓存，部分高端 CPU 还具有三级缓存。每一级缓存中所储存的全部数据都是下一级缓存的一部分，越靠近 CPU 的缓存越快也越小。所以 L1 缓存很小但很快(译注：L1 表示一级缓存)，并且紧靠着在使用它的 CPU 内核。L2 大一些，也慢一些，并且仍然只能被一个单独的 CPU 核使用。L3 在现代多核机器中更普遍，仍然更大，更慢，并且被单个插槽上的所有 CPU 核共享。最后，你拥有一块主存，由全部插槽上的所有 CPU 核共享。拥有三级缓存的的 CPU，到三级缓存时能够达到 95% 的命中率，只有不到 5% 的数据需要从内存中查询。</p>
+<p>多核机器的存储结构如下图所示：</p>
+<figure data-type="image" tabindex="1"><img src="https://images2015.cnblogs.com/blog/897247/201608/897247-20160823201221667-1059026925.png" alt="img" loading="lazy"></figure>
+<p>当 CPU 执行运算的时候，它先去 L1 查找所需的数据，再去 L2，然后是 L3，最后如果这些缓存中都没有，所需的数据就要去主内存拿。走得越远，运算耗费的时间就越长。所以如果你在做一些很频繁的事，你要确保数据在 L1 缓存中。</p>
+<p>Martin Thompson 给出了一些缓存未命中的消耗数据，如下所示：</p>
+<figure data-type="image" tabindex="2"><img src="https://images2015.cnblogs.com/blog/897247/201608/897247-20160823201305464-895015043.png" alt="img" loading="lazy"></figure>
+<p><strong>三、缓存行</strong></p>
+<p>缓存系统中是以缓存行（cache line）为单位存储的。缓存行通常是 64 字节（译注：本文基于 64 字节，其他长度的如 32 字节等不适本文讨论的重点），并且它有效地引用主内存中的一块地址。例如一个 的 long 类型是 8 字节，因此在一个缓存行中可以存 8 个 long 类型的变量。所以，如果你访问一个 long 数组，当数组中的一个值被加载到缓存中，它会额外加载另外 7 个，以致你能非常快地遍历这个数组。事实上，你可以非常快速的遍历在连续的内存块中分配的任意数据结构。而如果你在数据结构中的项在内存中不是彼此相邻的（如链表），你将得不到免费缓存加载所带来的优势，并且在这些数据结构中的每一个项都可能会出现缓存未命中。</p>
+<p>如果存在这样的场景，有多个线程操作不同的成员变量，但是相同的缓存行，这个时候会发生什么？。没错，伪共享（False Sharing）问题就发生了！有张 Disruptor 项目的经典示例图，如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://images2015.cnblogs.com/blog/897247/201608/897247-20160823202002573-736704844.png" alt="img" loading="lazy"></figure>
+<p>上图中，一个运行在处理器 core1上的线程想要更新变量 X 的值，同时另外一个运行在处理器 core2 上的线程想要更新变量 Y 的值。但是，这两个频繁改动的变量都处于同一条缓存行。两个线程就会轮番发送 RFO 消息，占得此缓存行的拥有权。当 core1 取得了拥有权开始更新 X，则 core2 对应的缓存行需要设为 I 状态。当 core2 取得了拥有权开始更新 Y，则 core1 对应的缓存行需要设为 I 状态(失效态)。轮番夺取拥有权不但带来大量的 RFO 消息，而且如果某个线程需要读此行数据时，L1 和 L2 缓存上都是失效数据，只有 L3 缓存上是同步好的数据。从前一篇我们知道，读 L3 的数据非常影响性能。更坏的情况是跨槽读取，L3 都要 miss，只能从内存上加载。</p>
+<p>表面上 X 和 Y 都是被独立线程操作的，而且两操作之间也没有任何关系。只不过它们共享了一个缓存行，但所有竞争冲突都是来源于共享。</p>
+<p>因此，当两个以上CPU都要访问同一个缓存行大小的内存区域时，就会引起冲突，这种情况就叫“共享”。但是，这种情况里面又包含了“其实不是共享”的“伪共享”情况。比如，两个处理器各要访问一个word，这两个word却存在于同一个cache line大小的区域里，这时，从应用逻辑层面说，这两个处理器并没有共享内存，因为他们访问的是不同的内容（不同的word）。但是因为cache line的存在和限制，这两个CPU要访问这两个不同的word时，却一定要访问同一个cache line块，产生了事实上的“共享”。显然，由于cache line大小限制带来的这种“伪共享”是我们不想要的，会浪费系统资源。</p>
+<p><strong>四、如何避免伪共享</strong>？</p>
+<p>1）让不同线程操作的对象处于不同的缓存行。</p>
+<p>可以进行缓存行填充（Padding） 。例如，如果一条缓存行有 64 字节，而 Java 程序的对象头固定占 8 字节(32位系统)或 12 字节( 64 位系统默认开启压缩, 不开压缩为 16 字节)，所以我们只需要填 6 个无用的长整型补上6*8=48字节，让不同的 VolatileLong 对象处于不同的缓存行，就避免了伪共享( 64 位系统超过缓存行的 64 字节也无所谓，只要保证不同线程不操作同一缓存行就可以)。</p>
+<p>2）使用编译指示，强制使每一个变量对齐。</p>
+<p>强制使对象按照缓存行的边界对齐。例如可以使数据按64位对齐，那么一个缓存行只有一个可操作对象，这样发生伪共享之后，也只是对应缓存行的数据变化，并不影响其他的对象。</p>
+<h4 id="无锁队列">无锁队列</h4>
+<pre><code class="language-java">import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReferenceArray;
+ 
+ 
+/**
+ * 用数组实现无锁有界队列
+ */
+ 
+public class LockFreeQueue {
+ 
+    private AtomicReferenceArray atomicReferenceArray;
+    //代表为空，没有元素
+    private static final  Integer EMPTY = null;
+    //头指针,尾指针
+    AtomicInteger head,tail;
+ 
+ 
+    public LockFreeQueue(int size){
+        atomicReferenceArray = new AtomicReferenceArray(new Integer[size + 1]);
+        head = new AtomicInteger(0);
+        tail = new AtomicInteger(0);
+    }
+ 
+    /**
+     * 入队
+     * @param element
+     * @return
+     */
+    public boolean add(Integer element){
+        int index = (tail.get() + 1) % atomicReferenceArray.length();
+        if( index == head.get() % atomicReferenceArray.length()){
+            System.out.println(&quot;当前队列已满,&quot;+ element+&quot;无法入队!&quot;);
+            return false;
+        }
+        while(!atomicReferenceArray.compareAndSet(index,EMPTY,element)){
+            return add(element);
+        }
+        tail.incrementAndGet(); //移动尾指针
+        System.out.println(&quot;入队成功!&quot; + element);
+        return true;
+    }
+ 
+    /**
+     * 出队
+     * @return
+     */
+    public Integer poll(){
+        if(head.get() == tail.get()){
+            System.out.println(&quot;当前队列为空&quot;);
+            return null;
+        }
+        int index = (head.get() + 1) % atomicReferenceArray.length();
+        Integer ele = (Integer) atomicReferenceArray.get(index);
+        if(ele == null){ //有可能其它线程也在出队
+            return poll();
+        }
+        while(!atomicReferenceArray.compareAndSet(index,ele,EMPTY)){
+            return poll();
+        }
+        head.incrementAndGet();
+        System.out.println(&quot;出队成功!&quot; + ele);
+        return ele;
+    }
+ 
+    public void print(){
+       StringBuffer buffer = new StringBuffer(&quot;[&quot;);
+       for(int i = 0; i &lt; atomicReferenceArray.length() ; i++){
+           if(i == head.get() || atomicReferenceArray.get(i) == null){
+               continue;
+           }
+           buffer.append(atomicReferenceArray.get(i) + &quot;,&quot;);
+       }
+       buffer.deleteCharAt(buffer.length() - 1);
+       buffer.append(&quot;]&quot;);
+       System.out.println(&quot;队列内容:&quot;    +buffer.toString());
+ 
+    }
+ 
+}
+</code></pre>
+<h4 id="死锁">死锁</h4>
+<p>当线程 A 持有独占锁a，并尝试去获取独占锁 b 的同时，线程 B 持有独占锁 b，并尝试获取独占锁 a 的情况下，就会发生 AB 两个线程由于互相持有对方需要的锁，而发生的阻塞现象，我们称为死锁。</p>
+<h5 id="1-产生死锁的条件和防止死锁">1. 产生死锁的条件和防止死锁</h5>
+<p>**互斥 请求与保持 不可剥夺 循环等待 **</p>
+<p>产生死锁的必要条件：</p>
+<ol>
+<li>
+<p>互斥条件：所谓互斥就是进程在某一时间内独占资源。</p>
+</li>
+<li>
+<p>请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。</p>
+</li>
+<li>
+<p>不可剥夺条件：进程已获得资源，在末使用完之前，不能强行剥夺。</p>
+</li>
+<li>
+<p>循环等待条件：若干进程之间形成一种头尾相接的循环等待资源关系。</p>
+</li>
+</ol>
+<p>这四个条件是死锁的必要条件，只要系统发生死锁，这些条件必然成立，而只要上述条件之 一不满足，就不会发生死锁。</p>
+<p>理解了死锁的原因，尤其是产生死锁的四个必要条件，就可以最大可能地避免、预防和 解除死锁。</p>
+<p>防止死锁可以采用以下的方法：</p>
+<ul>
+<li>尽量使用 <code>tryLock(long timeout, TimeUnit unit)</code>的方法<code>(ReentrantLock、ReentrantReadWriteLock)</code>，设置超时时间，超时可以退出防止死锁。</li>
+<li>尽量使用 <code>Java. util. concurrent</code> 并发类代替自己手写锁。</li>
+<li>尽量降低锁的使用粒度，尽量不要几个功能用同一把锁。</li>
+<li>尽量减少同步的代码块。</li>
+</ul>
+<pre><code class="language-java">import lombok.SneakyThrows;
+import java.util.concurrent.TimeUnit;
+
+class HoldLockThread implements Runnable{
+    private String lockOne;
+    private String lockTwo;
+
+    public HoldLockThread(String lockOne, String lockTwo) {
+        this.lockOne = lockOne;
+        this.lockTwo = lockTwo;
+    }
+
+    @Override
+    @SneakyThrows
+    public void run(){
+        synchronized (lockOne){
+            System.out.println(Thread.currentThread().getName()+&quot;自己获取&quot;+lockOne+&quot;尝试获取&quot;+lockTwo);
+            TimeUnit.SECONDS.sleep(2L);
+            synchronized (lockTwo){
+                System.out.println(Thread.currentThread().getName()+&quot;自己获取&quot;+lockTwo+&quot;尝试获取&quot;+lockOne);
+            }
+        }
+    }
+}
+public class DeadLockDemo {
+    public static void main(String[] args) {
+        String lockA=&quot;lockA&quot;;
+        String lockB=&quot;lockB&quot;;
+
+        new Thread(new HoldLockThread(lockA,lockB),&quot;ThreadAAA&quot;).start();
+        new Thread(new HoldLockThread(lockB,lockA),&quot;ThreadBBB&quot;).start();
+    }
+}
+</code></pre>
+<h5 id="2-死锁与活锁与饥饿的区别">2. 死锁与活锁与饥饿的区别</h5>
+<p>死锁：是指两个或两个以上的进程（或线程）在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去。</p>
+<p>活锁：任务或者执行者没有被阻塞，由于某些条件没有满足，导致一直重复尝试，失败，尝试，失败。</p>
+<p>活锁和死锁的区别在于，处于活锁的实体是在不断的改变状态，这就是所谓的“活”， 而处于死锁的实体表现为等待；活锁有可能自行解开，死锁则不能。</p>
+<p>饥饿：一个或者多个线程因为种种原因无法获得所需要的资源，导致一直无法执行的状态。</p>
+<p>Java 中导致饥饿的原因：</p>
+<p>1、高优先级线程吞噬所有的低优先级线程的 CPU 时间。</p>
+<p>2、线程被永久堵塞在一个等待进入同步块的状态，因为其他线程总是能在它之前持续地对该同步块进行访问。</p>
+<p>3、线程在等待一个本身也处于永久等待完成的对象(比如调用这个对象的 wait 方法)，因为其他线程总是被持续地获得唤醒。</p>
+<h3 id="reentrantlock重入锁">ReentrantLock(重入锁)</h3>
+<p><code>ReentrantLock</code>重入锁，是实现Lock接口的一个类，也是在实际编程中使用频率很高的一个锁，支持重入性，表示能够对共享资源能够重复加锁，即当前线程获取该锁再次获取不会被阻塞。</p>
+<p>在java关键字synchronized隐式支持重入性，synchronized通过获取自增，释放自减的方式实现重入。与此同时，ReentrantLock还支持公平锁和非公平锁两种方式。那么，要想完完全全的弄懂ReentrantLock的话，主要也就是ReentrantLock同步语义的学习：</p>
+<ol>
+<li>重入性的实现原理；</li>
+<li>公平锁和非公平锁</li>
+</ol>
+<h4 id="1-重入性的实现原理">1. 重入性的实现原理</h4>
+<p>要想支持重入性，就要解决两个问题：</p>
+<p><strong>1. 在线程获取锁的时候，如果已经获取锁的线程是当前线程的话则直接再次获取成功；</strong></p>
+<p><strong>2. 由于锁会被获取n次，那么只有锁在被释放同样的n次之后，该锁才算是完全释放成功</strong>。</p>
+<p>ReentrantLock支持两种锁：<strong>公平锁</strong>和<strong>非公平锁</strong>。<strong>何谓公平性，是针对获取锁而言的，如果一个锁是公平的，那么锁的获取顺序就应该符合请求上的绝对时间顺序，满足FIFO</strong>。</p>
+<h4 id="2-reentrantlock使用">2. ReentrantLock使用</h4>
+<pre><code class="language-java">class Bank{
+      /**
+       * volatile实现
+       */
+      private  int count=0;
+      /**
+       * 使用可重入锁
+       */
+      private Lock lock=new ReentrantLock();
+
+      public void getCount(){
+            System.out.println(&quot;账户余额为：&quot;+count);
+      }
+      /**
+       * 同步方法实现存钱
+       * @param money
+       */
+      public void save(int money){
+            lock.lock();
+            try {
+                  count+=money;
+                  System.out.println(System.currentTimeMillis()+&quot;存进：&quot;+money);
+            } catch (Exception e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+            }finally {
+                  lock.unlock();//释放锁
+            }
+      }
+      /**
+       * 同步代码块实现取钱
+       * @param money
+       */
+      public  void remove(int money){
+            if (count-money&lt;0) {
+                  System.err.println(&quot;余额不足。&quot;);
+                  return;
+            }
+                lock.lock();
+                  try {
+                        count-=money;
+                        System.err.println(System.currentTimeMillis()+&quot;取出：&quot;+money);
+                  } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                  }finally {
+                        lock.unlock();
+                  }
+
+      }
+}
+</code></pre>
+<h4 id="读写锁reentrantreadwritelock">读写锁ReentrantReadWriteLock</h4>
+<p>首先明确一下，不是说 ReentrantLock 不好，只是 ReentrantLock 某些时候有局限。如果使用 ReentrantLock，可能本身是为了防止线程 A 在写数据、线程 B 在读数据造成的数据不一致，但这样，如果线程 C 在读数据、线程 D 也在读数据，读数据是不会改变数据的，没有必要加锁，但是还是加锁了，降低了程序的性能。因为这个，才诞生了读写锁 ReadWriteLock。</p>
+<p>ReadWriteLock 是一个读写锁接口，读写锁是用来提升并发程序性能的锁分离技术，ReentrantReadWriteLock 是 ReadWriteLock 接口的一个具体实现，实现了读写的分离，读锁是共享的，写锁是独占的，读和读之间不会互斥，读和写、写和读、写和写之间才会互斥，提升了读写的性能。</p>
+<p>而读写锁有以下三个重要的特性：</p>
+<p>（1）公平选择性：支持非公平（默认）和公平的锁获取方式，吞吐量还是非公平优于公平。</p>
+<p>（2）重进入：读锁和写锁都支持线程重进入。</p>
+<h3 id="并发容器">并发容器</h3>
+<h4 id="1-concurrenthashmap">1. ConcurrentHashMap</h4>
+<p><code>ConcurrentHashMap</code>是Java中的一个<strong>线程安全且高效的HashMap实现</strong>。平时涉及高并发如果要用map结构，那第一时间想到的就是它。相对于hashmap来说，<code>ConcurrentHashMap</code>就是线程安全的map，其中利用了锁分段的思想提高了并发度。</p>
+<p>那么它到底是如何实现线程安全的？</p>
+<p>JDK 1.6版本关键要素：</p>
+<ul>
+<li>segment继承了<code>ReentrantLock</code>充当锁的角色，为每一个segment提供了线程安全的保障；</li>
+<li>segment维护了哈希散列表的若干个桶，每个桶由<code>HashEntry</code>构成的链表。</li>
+</ul>
+<p>JDK1.8后，<code>ConcurrentHashMap</code>抛弃了原有的<strong>Segment 分段锁，而采用了 CAS + synchronized 来保证并发安全性</strong>。</p>
+<h5 id="11-concurrenthashmap-的并发度">1.1 ConcurrentHashMap 的并发度</h5>
+<p><code>ConcurrentHashMap</code> 把实际 map 划分成若干部分来实现它的可扩展性和线程安全。这种划分是使用并发度获得的，它是 <code>ConcurrentHashMap</code> 类构造函数的一个可选参数，默认值为 16，这样在多线程情况下就能避免争用。</p>
+<p>在 JDK8 后，它摒弃了 Segment（锁段）的概念，而是启用了一种全新的方式实现,利用 CAS 算法。同时加入了更多的辅助变量来提高并发度，</p>
+<h5 id="12-并发容器的实现">1.2 并发容器的实现</h5>
+<p>何为同步容器：可以简单地理解为通过 synchronized 来实现同步的容器，如果有多个线程调用同步容器的方法，它们将会串行执行。比如<code>Vector</code>，<code>Hashtable</code>，以及 <code>Collections.synchronizedSet</code>，<code>synchronizedList</code> 等方法返回的容器。可以通过查看 <code>Vector</code>，<code>Hashtable</code>等这些同步容器的实现代码，可以看到这些容器实现线程安全的方式就是将它们的状态封装起来，并在需要同步的方法上加上关键字 synchronized。</p>
+<p>并发容器使用了与同步容器完全不同的加锁策略来提供更高的并发性和伸缩性，例如在 <code>ConcurrentHashMap</code> 中采用了一种粒度更细的加锁机制，可以称为分段锁，在这种锁机制下，允许任意数量的读线程并发地访问 map，并且执行读操作的线程和写操作的线程也可以并发的访问 map，同时允许一定数量的写操作线程并发地修改 map，所以它可以在并发环境下实现更高的吞吐量。</p>
+<h5 id="13-同步集合与并发集合区别">1.3 同步集合与并发集合区别</h5>
+<p>同步集合与并发集合都为多线程和并发提供了合适的线程安全的集合，不过并发集合的可扩展性更高。在 Java1.5 之前程序员们只有同步集合来用且在多线程并发的时候会导致争用，阻碍了系统的扩展性。Java5 介绍了并发集合像<code>ConcurrentHashMap</code>，不仅提供线程安全还用锁分离和内部分区等现代技术提高了可扩展性。</p>
+<h5 id="14-synchronizedmap-和-concurrenthashmap-比较">1.4 SynchronizedMap 和 ConcurrentHashMap 比较</h5>
+<p><code>SynchronizedMap</code> 一次锁住整张表来保证线程安全，所以每次只能有一个线程来访为 map。</p>
+<p><code>ConcurrentHashMap</code> 使用分段锁来保证在多线程下的性能。</p>
+<p><code>ConcurrentHashMap</code> 中则是一次锁住一个桶。<code>ConcurrentHashMap</code> 默认将hash 表分为 16 个桶，诸如 get，put，remove 等常用操作只锁当前需要用到的桶。</p>
+<p>这样，原来只能一个线程进入，现在却能同时有 16 个写线程执行，并发性能的提升是显而易见的。</p>
+<p>另外 <code>ConcurrentHashMap</code> 使用了一种不同的迭代方式。在这种迭代方式中，当iterator 被创建后集合再发生改变就不再是抛出<code>ConcurrentModificationException</code>，取而代之的是在改变时 new 新的数据从而不影响原有的数据，iterator 完成后再将头指针替换为新的数据 ，这样 iterator线程可以使用原来老的数据，而写线程也可以并发的完成改变。</p>
+<h4 id="2-copyonwritearraylist">2. CopyOnWriteArrayList</h4>
+<p><code>CopyOnWriteArrayList</code> 是一个并发容器。有很多人称它是线程安全的，我认为这句话不严谨，缺少一个前提条件，那就是非复合场景下操作它是线程安全的。</p>
+<p><code>CopyOnWriteArrayList</code>(免锁容器)的好处之一是当多个迭代器同时遍历和修改这个列表时，不会抛出<code>ConcurrentModificationException</code>。在<code>CopyOnWriteArrayList</code> 中，写入将导致创建整个底层数组的副本，而源数组将保留在原地，使得复制的数组在被修改时，读取操作可以安全地执行。</p>
+<p><code>CopyOnWriteArrayList</code> 的使用场景</p>
+<p>通过源码分析，我们看出它的优缺点比较明显，所以使用场景也就比较明显。就是合适读多写少的场景。</p>
+<p><code>CopyOnWriteArrayList</code> 的缺点</p>
+<ol>
+<li>由于写操作的时候，需要拷贝数组，会消耗内存，如果原数组的内容比较多的情况下，可能导致 young gc 或者 full gc。</li>
+<li>不能用于实时读的场景，像拷贝数组、新增元素都需要时间，所以调用一个 set 操作后，读取到数据可能还是旧的，虽然<code>CopyOnWriteArrayList</code> 能做到最终一致性,但是还是没法满足实时性要求。</li>
+<li>由于实际使用中可能没法保证 <code>CopyOnWriteArrayList</code> 到底要放置多少数据，万一数据稍微有点多，每次 add/set 都要重新复制数组，这个代价实在太高昂了。在高性能的互联网应用中，这种操作分分钟引起故障。</li>
+</ol>
+<p><code>CopyOnWriteArrayList</code> 的设计思想</p>
+<ol>
+<li>读写分离，读和写分开</li>
+<li>最终一致性</li>
+<li>使用另外开辟空间的思路，来解决并发冲突</li>
+</ol>
+<h4 id="3-threadlocal">3. ThreadLocal</h4>
+<p>ThreadLocal 是一个本地线程副本变量工具类，在每个线程中都创建了一个 ThreadLocalMap 对象，简单说 ThreadLocal 就是一种以空间换时间的做法，每个线程可以访问自己内部 ThreadLocalMap 对象内的 value。通过这种方式，避免资源在多线程间共享。</p>
+<p>原理：线程局部变量是局限于线程内部的变量，属于线程自身所有，不在多个线程间共享。Java提供ThreadLocal类来支持线程局部变量，是一种实现线程安全的方式。但是在管理环境下（如 web 服务器）使用线程局部变量的时候要特别小心，在这种情况下，工作线程的生命周期比任何应用变量的生命周期都要长。任何线程局部变量一旦在工作完成后没有释放，Java 应用就存在内存泄露的风险。</p>
+<p>经典的使用场景是为每个线程分配一个 JDBC 连接 Connection。这样就可以保证每个线程的都在各自的 Connection 上进行数据库的操作，不会出现 A 线程关了 B线程正在使用的 Connection； 还有 Session 管理 等问题。</p>
+<p>ThreadLocal 使用例子：</p>
+<pre><code class="language-java">public class TestThreadLocal {
+    
+    //线程本地存储变量
+    private static final ThreadLocal&lt;Integer&gt; THREAD_LOCAL_NUM 
+        = new ThreadLocal&lt;Integer&gt;() {
+        @Override
+        protected Integer initialValue() {
+            return 0;
+        }
+    };
+ 
+    public static void main(String[] args) {
+        for (int i = 0; i &lt;3; i++) {//启动三个线程
+            Thread t = new Thread() {
+                @Override
+                public void run() {
+                    add10ByThreadLocal();
+                }
+            };
+            t.start();
+        }
+    }
+    
+    /**
+     * 线程本地存储变量加 5
+     */
+    private static void add10ByThreadLocal() {
+        for (int i = 0; i &lt;5; i++) {
+            Integer n = THREAD_LOCAL_NUM.get();
+            n += 1;
+            THREAD_LOCAL_NUM.set(n);
+            System.out.println(Thread.currentThread().getName() + &quot; : ThreadLocal num=&quot; + n);
+        }
+    }
+    
+}
+</code></pre>
+<p>打印结果：启动了 3 个线程，每个线程最后都打印到 “ThreadLocal num=5”，而不是 num 一直在累加直到值等于 15</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1620459942353.png" alt="" loading="lazy"></figure>
+<h5 id="31什么是线程局部变量">3.1什么是线程局部变量？</h5>
+<p>线程局部变量是局限于线程内部的变量，属于线程自身所有，不在多个线程间共享。Java 提供 ThreadLocal 类来支持线程局部变量，是一种实现线程安全的方式。但是在管理环境下（如 web 服务器）使用线程局部变量的时候要特别小心，在这种情况下，工作线程的生命周期比任何应用变量的生命周期都要长。任何线程局部变量一旦在工作完成后没有释放，Java 应用就存在内存泄露的风险。</p>
+<h5 id="32-threadlocal内存泄漏分析与解决方案">3.2 ThreadLocal内存泄漏分析与解决方案</h5>
+<p><strong>ThreadLocal造成内存泄漏的原因？</strong></p>
+<p>ThreadLocalMap 中使用的 key 为 ThreadLocal 的弱引用,而 value 是强引用。所以，如果 ThreadLocal 没有被外部强引用的情况下，在垃圾回收的时候，key 会被清理掉，而 value 不会被清理掉。这样一来，ThreadLocalMap 中就会出现key为null的Entry。假如我们不做任何措施的话，value 永远无法被GC 回收，这个时候就可能会产生内存泄露。ThreadLocalMap实现中已经考虑了这种情况，在调用 set()、get()、remove() 方法的时候，会清理掉 key 为 null 的记录。使用完 ThreadLocal方法后 最好手动调用remove()方法</p>
+<p><strong>ThreadLocal内存泄漏解决方案？</strong></p>
+<ul>
+<li>每次使用完ThreadLocal，都调用它的remove()方法，清除数据。</li>
+<li>在使用线程池的情况下，没有及时清理ThreadLocal，不仅是内存泄漏的问题，更严重的是可能导致业务逻辑出现问题。所以，使用ThreadLocal就跟加锁完要解锁一样，用完就清理。</li>
+</ul>
+<h4 id="4-blockingqueue">4. BlockingQueue</h4>
+<p><code>阻塞队列（BlockingQueue）</code>是一个支持两个附加操作的队列。</p>
+<p>这两个附加的操作是：在队列为空时，获取元素的线程会等待队列变为非空。当队列满时，存储元素的线程会等待队列可用。</p>
+<p>阻塞队列常用于生产者和消费者的场景，生产者是往队列里添加元素的线程，消费者是从队列里拿元素的线程。阻塞队列就是生产者存放元素的容器，而消费者也只从容器里拿元素。</p>
+<p>JDK7 提供了 7 个阻塞队列。分别是：</p>
+<p><code>ArrayBlockingQueue</code> ：一个由数组结构组成的有界阻塞队列。</p>
+<p><code>LinkedBlockingQueue</code> ：一个由链表结构组成的有界阻塞队列。</p>
+<p><code>PriorityBlockingQueue</code> ：一个支持优先级排序的无界阻塞队列。</p>
+<p><code>DelayQueue</code>：一个使用优先级队列实现的无界阻塞队列。</p>
+<p><code>SynchronousQueue</code>：一个不存储元素的阻塞队列。</p>
+<p><code>LinkedTransferQueue</code>：一个由链表结构组成的无界阻塞队列。</p>
+<p><code>LinkedBlockingDeque</code>：一个由链表结构组成的双向阻塞队列。</p>
+<p>Java 5 之前实现同步存取时，可以使用普通的一个集合，然后在使用线程的协作和线程同步可以实现生产者，消费者模式，主要的技术就是用好，<code>wait</code>,<code>notify</code>,<code>notifyAll</code>,<code>sychronized</code> 这些关键字。而在 java 5 之后，可以使用阻塞队列来实现，此方式大大简少了代码量，使得多线程编程更加容易，安全方面也有保障。</p>
+<p><code>BlockingQueue</code> 接口是 Queue 的子接口，它的主要用途并不是作为容器，而是作为线程同步的的工具，因此他具有一个很明显的特性，当生产者线程试图向 <code>BlockingQueue</code> 放入元素时，如果队列已满，则线程被阻塞，当消费者线程试图从中取出一个元素时，如果队列为空，则该线程会被阻塞，正是因为它所具有这个特性，所以在程序中多个线程交替向 BlockingQueue 中放入元素，取出元素，它可以很好的控制线程之间的通信。</p>
+<p>阻塞队列使用最经典的场景就是 socket 客户端数据的读取和解析，读取数据的线程不断将数据放入队列，然后解析线程不断从队列取数据解析。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#lock-%E6%8E%A5%E5%8F%A3lock-interface%E7%AE%80%E4%BB%8B">Lock 接口(Lock interface)简介</a>
+<ul>
+<li><a href="#%E4%B9%90%E8%A7%82%E9%94%81%E5%92%8C%E6%82%B2%E8%A7%82%E9%94%81">乐观锁和悲观锁</a>
+<ul>
+<li><a href="#%E4%B9%90%E8%A7%82%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F">乐观锁的实现方式：</a></li>
+<li><a href="#cas">CAS</a>
+<ul>
+<li><a href="#cas%E4%BA%A7%E7%94%9F%E7%9A%84%E9%97%AE%E9%A2%98">CAS产生的问题</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%85%AC%E5%B9%B3%E9%94%81%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81">公平锁锁和非公平锁</a></li>
+<li><a href="#%E4%BC%AA%E5%85%B1%E4%BA%AB">伪共享</a></li>
+<li><a href="#%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97">无锁队列</a></li>
+<li><a href="#%E6%AD%BB%E9%94%81">死锁</a>
+<ul>
+<li><a href="#1-%E4%BA%A7%E7%94%9F%E6%AD%BB%E9%94%81%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%92%8C%E9%98%B2%E6%AD%A2%E6%AD%BB%E9%94%81">1. 产生死锁的条件和防止死锁</a></li>
+<li><a href="#2-%E6%AD%BB%E9%94%81%E4%B8%8E%E6%B4%BB%E9%94%81%E4%B8%8E%E9%A5%A5%E9%A5%BF%E7%9A%84%E5%8C%BA%E5%88%AB">2. 死锁与活锁与饥饿的区别</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#reentrantlock%E9%87%8D%E5%85%A5%E9%94%81">ReentrantLock(重入锁)</a>
+<ul>
+<li><a href="#1-%E9%87%8D%E5%85%A5%E6%80%A7%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">1. 重入性的实现原理</a></li>
+<li><a href="#2-reentrantlock%E4%BD%BF%E7%94%A8">2. ReentrantLock使用</a></li>
+<li><a href="#%E8%AF%BB%E5%86%99%E9%94%81reentrantreadwritelock">读写锁ReentrantReadWriteLock</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8">并发容器</a>
+<ul>
+<li><a href="#1-concurrenthashmap">1. ConcurrentHashMap</a>
+<ul>
+<li><a href="#11-concurrenthashmap-%E7%9A%84%E5%B9%B6%E5%8F%91%E5%BA%A6">1.1 ConcurrentHashMap 的并发度</a></li>
+<li><a href="#12-%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0">1.2 并发容器的实现</a></li>
+<li><a href="#13-%E5%90%8C%E6%AD%A5%E9%9B%86%E5%90%88%E4%B8%8E%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88%E5%8C%BA%E5%88%AB">1.3 同步集合与并发集合区别</a></li>
+<li><a href="#14-synchronizedmap-%E5%92%8C-concurrenthashmap-%E6%AF%94%E8%BE%83">1.4 SynchronizedMap 和 ConcurrentHashMap 比较</a></li>
+</ul>
+</li>
+<li><a href="#2-copyonwritearraylist">2. CopyOnWriteArrayList</a></li>
+<li><a href="#3-threadlocal">3. ThreadLocal</a>
+<ul>
+<li><a href="#31%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F">3.1什么是线程局部变量？</a></li>
+<li><a href="#32-threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">3.2 ThreadLocal内存泄漏分析与解决方案</a></li>
+</ul>
+</li>
+<li><a href="#4-blockingqueue">4. BlockingQueue</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/c-lkdzfwM/">
+                  <span class="post-title">
+                    多线程基础概念三&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/7i0HRwy0e/">
+                   <span class="post-title">
+                     redis概述一&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

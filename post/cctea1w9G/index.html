@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>第八章 ProcessFunction API（底层 API） | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="第八章 ProcessFunction API（底层 API） | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="第八章 ProcessFunction API（底层 API）" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/cctea1w9G/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653564268895"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
+                
+              </span>
+              <h1>第八章 ProcessFunction API（底层 API）</h1>
+              <span class="meta">
+                Posted on
+                2021-04-15，6 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/cctea1w9G.png" alt="封面图">
+          </img>
+          
+          <p style="text-indent:2em">我们之前学习的转换算子是无法访问事件的时间戳信息和水位线信息的。 而这在一些应用场景下， 极为重要。 例如 MapFunction 这样的 map 转换算子就无法访问
+时间戳或者当前事件的事件时间。</p>
+<p style="text-indent:2em">基于此， DataStream API 提供了一系列的 Low-Level 转换算子。 可以访问时间戳、 watermark 以及注册定时事件。 还可以输出特定的一些事件， 例如超时事件等。Process Function 用来构建事件驱动的应用以及实现自定义的业务逻辑(使用之前的
+window 函数和转换算子无法实现)。 例如， Flink SQL 就是使用 Process Function 实
+现的。</p>
+<p>Flink 提供了 8 个 Process Function：</p>
+<ol>
+<li>ProcessFunction</li>
+<li>KeyedProcessFunction</li>
+<li>CoProcessFunction</li>
+<li>ProcessJoinFunction</li>
+<li>BroadcastProcessFunction</li>
+<li>KeyedBroadcastProcessFunction</li>
+<li>ProcessWindowFunction</li>
+<li>ProcessAllWindowFunction</li>
+</ol>
+<h2 id="keyedprocessfunction">KeyedProcessFunction</h2>
+<p>这里我们重点介绍 KeyedProcessFunction。</p>
+<p style="text-indent:2em">KeyedProcessFunction 用来操作 KeyedStream。 KeyedProcessFunction 会处理流的每一个元素， 输出为 0 个、 1 个或者多个元素。 所有的 Process Function 都继承自RichFunction 接口， 所以都有 open()、 close()和 getRuntimeContext()等方法。 而KeyedProcessFunction[KEY, IN, OUT]还额外提供了两个方法:</p>
+<ul>
+<li>processElement(v: IN, ctx: Context, out: Collector[OUT]), 流中的每一个元素<br>
+都会调用这个方法， 调用结果将会放在 Collector 数据类型中输出。 Context<br>
+可以访问元素的时间戳， 元素的 key， 以及 TimerService 时间服务。 Context<br>
+还可以将结果输出到别的流(side outputs)。</li>
+<li>onTimer(timestamp: Long, ctx: OnTimerContext, out: Collector[OUT])是一个回<br>
+调函数。 当之前注册的定时器触发时调用。 参数 timestamp 为定时器所设定<br>
+的触发的时间戳。 Collector 为输出结果的集合。 OnTimerContext 和<br>
+processElement 的 Context 参数一样， 提供了上下文的一些信息， 例如定时器<br>
+触发的时间信息(事件时间或者处理时间)。</li>
+</ul>
+<h2 id="timerservice-和-定时器timers">TimerService 和 定时器（Timers）</h2>
+<p>Context 和 OnTimerContext 所持有的 TimerService 对象拥有以下方法:</p>
+<ol>
+<li>currentProcessingTime(): Long 返回当前处理时间</li>
+<li>currentWatermark(): Long 返回当前 watermark 的时间戳</li>
+<li>registerProcessingTimeTimer(timestamp: Long): Unit 会注册当前 key 的processing time 的定时器。 当 processing time 到达定时时间时， 触发 timer。</li>
+<li>registerEventTimeTimer(timestamp: Long): Unit 会注册当前 key 的 event time<br>
+定时器。 当水位线大于等于定时器注册的时间时， 触发定时器执行回调函数。</li>
+<li>deleteProcessingTimeTimer(timestamp: Long): Unit 删除之前注册处理时间定<br>
+时器。 如果没有这个时间戳的定时器， 则不执行。</li>
+<li>deleteEventTimeTimer(timestamp: Long): Unit 删除之前注册的事件时间定时<br>
+器， 如果没有此时间戳的定时器， 则不执行。<br>
+当定时器 timer 触发时， 会执行回调函数 onTimer()。 注意定时器 timer 只能在<br>
+keyed streams 上面使用。<br>
+下面举个例子说明 KeyedProcessFunction 如何操作 KeyedStream。<br>
+需求： 监控温度传感器的温度值， 如果温度值在一秒钟之内(processing time)连<br>
+续上升， 则报警。</li>
+</ol>
+<pre><code class="language-java">val warnings = readings
+    .keyBy(_.id)
+    .process(new TempIncreaseAlertFunction)
+</code></pre>
+<p>看一下 TempIncreaseAlertFunction 如何实现, 程序中使用了 ValueState 这样一个<br>
+状态变量。</p>
+<pre><code class="language-java">class TempIncreaseAlertFunction extends KeyedProcessFunction[String, SensorReading, String] {
+    // 保存上一个传感器温度值
+    lazy val lastTemp: ValueState[Double] = getRuntimeContext.getState(
+        new ValueStateDescriptor[Double](&quot;lastTemp&quot;, Types.of[Double])
+    ) 
+    //保存注册的定时器的时间戳
+    lazy val currentTimer: ValueState[Long] = getRuntimeContext.getState(
+        new ValueStateDescriptor[Long](&quot;timer&quot;, Types.of[Long])
+    ) 
+    override def processElement(r: SensorReading,
+    ctx: KeyedProcessFunction[String, SensorReading, String]#Context,
+    out: Collector[String]): Unit = {
+        // 取出上一次的温度
+        val prevTemp = lastTemp.value()
+        // 将当前温度更新到上一次的温度这个变量中
+        lastTemp.update(r.temperature)
+        val curTimerTimestamp = currentTimer.value()
+        if (prevTemp == 0.0 || r.temperature &lt; prevTemp) {
+            // 温度下降或者是第一个温度值， 删除定时器
+            ctx.timerService().deleteProcessingTimeTimer(curTimerTimestamp)
+            // 清空状态变量
+            currentTimer.clear()
+        } else if (r.temperature &gt; prevTemp &amp;&amp; curTimerTimestamp == 0) {
+            // 温度上升且我们并没有设置定时器
+            val timerTs = ctx.timerService().currentProcessingTime() + 1000
+            ctx.timerService().registerProcessingTimeTimer(timerTs)
+            currentTimer.update(timerTs)
+        }
+    } 
+    override def onTimer(ts: Long,
+    ctx: KeyedProcessFunction[String, SensorReading, String]#OnTimerContext,
+    out: Collector[String]): Unit = {
+        out.collect(&quot;传感器 id 为: &quot; + ctx.getCurrentKey + &quot;的传感器温度值已经连续 1s 上升了。 &quot;)
+        currentTimer.clear()
+    }
+}
+</code></pre>
+<h2 id="侧输出流sideoutput">侧输出流（SideOutput）</h2>
+<p style="text-indent:2em">大部分的 DataStream API 的算子的输出是单一输出， 也就是某种数据类型的流。
+除了 split 算子， 可以将一条流分成多条流， 这些流的数据类型也都相同。 process
+function 的 side outputs 功能可以产生多条流， 并且这些流的数据类型可以不一样。
+一个 side output 可以定义为 OutputTag[X]对象， X 是输出流的数据类型。 process
+function 可以通过 Context 对象发射一个事件到一个或者多个 side outputs。
+下面是一个示例程序：</p>
+<pre><code class="language-java">val monitoredReadings: DataStream[SensorReading] = readings
+    .process(new FreezingMonitor)
+    monitoredReadings
+    .getSideOutput(new OutputTag[String](&quot;freezing-alarms&quot;))
+    .print()
+readings.print()
+</code></pre>
+<p style="text-indent:2em">接下来我们实现 FreezingMonitor 函数， 用来监控传感器温度值， 将温度值低于32F 的温度输出到 side output。</p>
+<pre><code class="language-java">class FreezingMonitor extends ProcessFunction[SensorReading, SensorReading] {
+    // 定义一个侧输出标签
+    lazy val freezingAlarmOutput: OutputTag[String] =
+    new OutputTag[String](&quot;freezing-alarms&quot;)
+    override def processElement(r: SensorReading,
+    ctx: ProcessFunction[SensorReading, SensorReading]#Context,
+    out: Collector[SensorReading]): Unit = {
+        // 温度在 32F 以下时， 输出警告信息
+        if (r.temperature &lt; 32.0) {
+            output(freezingAlarmOutput, s&quot;Freezing Alarm for ${r.id}&quot;)
+        } 
+        //所有数据直接常规输出到主流
+        out.collect(r)
+    }
+} 
+</code></pre>
+<h2 id="coprocessfunction">CoProcessFunction</h2>
+<p style="text-indent:2em">对于两条输入流， DataStream API 提供了 CoProcessFunction 这样的 low-level操作。 CoProcessFunction 提供了操作每一个输入流的方法: processElement1()和processElement2()。</p>
+<p style="text-indent:2em">类似于 ProcessFunction， 这两种方法都通过 Context 对象来调用。 这个 Context对象可以访问事件数据， 定时器时间戳， TimerService， 以及 side outputs。CoProcessFunction 也提供了 onTimer()回调函数</p>
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#keyedprocessfunction">KeyedProcessFunction</a></li>
+<li><a href="#timerservice-%E5%92%8C-%E5%AE%9A%E6%97%B6%E5%99%A8timers">TimerService 和 定时器（Timers）</a></li>
+<li><a href="#%E4%BE%A7%E8%BE%93%E5%87%BA%E6%B5%81sideoutput">侧输出流（SideOutput）</a></li>
+<li><a href="#coprocessfunction">CoProcessFunction</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/GzZxLdaVh/">
+                  <span class="post-title">
+                    第七章 时间语义与 Wartermark&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/rxadb61B8/">
+                   <span class="post-title">
+                     第九章 状态编程和容错机制&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
