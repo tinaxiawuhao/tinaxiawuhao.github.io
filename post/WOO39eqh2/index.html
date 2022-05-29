@@ -10,10 +10,10 @@
 <meta name="keywords" content="">
 <meta name="description" content="欢迎访问[tianxia]的个人博客">
 <meta name="author" content="kveln">
-<title>java | tianxia</title>
+<title>harbor自建镜像仓库 | tianxia</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
-<link rel="alternate" type="application/rss+xml" title="java | tianxia » Feed"
+<link rel="alternate" type="application/rss+xml" title="harbor自建镜像仓库 | tianxia » Feed"
   href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
@@ -26,9 +26,66 @@
 
 <script>hljs.initHighlightingOnLoad();</script>
 
+  <meta property="og:description" content="harbor自建镜像仓库" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/WOO39eqh2/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
 </head>
 
 <body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653832415555"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
     <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
@@ -86,9 +143,18 @@
         
           <!-- 没Title为其他页面Header -->
           
-            <!-- 其他页面（archives、tags、about...）Header -->
-            <div class="sub-site-heading">
-              <h1 class="tag-tl">#java</h1>
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/f6exx1YLd/" class="tag">k8s</a>
+                
+              </span>
+              <h1>harbor自建镜像仓库</h1>
+              <span class="meta">
+                Posted on
+                2022-05-29，3 min read
+              </span>
             </div>
           
         
@@ -96,193 +162,130 @@
     </div>
   </div>
 </header>
-  <div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-md-10 mx-auto">
-      
-      <!-- 每行的总容器 -->
-      <div class="post-row-container">
-        <!-- 第0层；标题 -->
-        <div class="title-floor">
-          <div class="post-title-container">
-            
-            <a href="https://tinaxiawuhao.github.io/post/nxmi3zjCk/">
-              <h2 class="post-title">
-                Java内存结构JVM
-              </h2>
-            </a>
-          </div>
-        </div>
-        <!-- 第一层：包含文章描述、时间信息、封面图 -->
-        <div class="post-row-first-floor">
-          <div class="post-preview">
-            <h3 class="post-subtitle">
-              
-            </h3>
-            <p class="post-meta">
-              <span class="time">2021-04-26</span>
-              <span>,</span>
-              <span class="post-stats">10 min read</span>
-            </p>
-          </div>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <a href="https://tinaxiawuhao.github.io/post/nxmi3zjCk/" class="post-feature-image" style="background-image: url('https://tinaxiawuhao.github.io/post-images/nxmi3zjCk.png')">
-          </a>
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/WOO39eqh2.png" alt="封面图">
+          </img>
           
-        </div>
-        <!-- 第二层：下划线、占位标签、tags -->
-        <div class="post-row-sec-floor">
-          <hr>
-          <div class="clearfix"></div>
-          
-          <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="post-tag">
-            java
-          </a>
-          
-        </div>
-      </div>
-      </>
-      
-      <!-- 每行的总容器 -->
-      <div class="post-row-container">
-        <!-- 第0层；标题 -->
-        <div class="title-floor">
-          <div class="post-title-container">
-            
-            <a href="https://tinaxiawuhao.github.io/post/0BBhLzjWl/">
-              <h2 class="post-title">
-                数据结构常见的八大排序算法
-              </h2>
-            </a>
-          </div>
-        </div>
-        <!-- 第一层：包含文章描述、时间信息、封面图 -->
-        <div class="post-row-first-floor">
-          <div class="post-preview">
-            <h3 class="post-subtitle">
-              
-            </h3>
-            <p class="post-meta">
-              <span class="time">2021-04-25</span>
-              <span>,</span>
-              <span class="post-stats">22 min read</span>
-            </p>
-          </div>
-          
-          <a href="https://tinaxiawuhao.github.io/post/0BBhLzjWl/" class="post-feature-image" style="background-image: url('https://tinaxiawuhao.github.io/post-images/0BBhLzjWl.png')">
-          </a>
-          
-        </div>
-        <!-- 第二层：下划线、占位标签、tags -->
-        <div class="post-row-sec-floor">
-          <hr>
-          <div class="clearfix"></div>
-          
-          <a href="https://tinaxiawuhao.github.io/tag/3wn3aAbld/" class="post-tag">
-            算法
-          </a>
-          
-          <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="post-tag">
-            java
-          </a>
-          
-        </div>
-      </div>
-      </>
-      
-      <!-- 每行的总容器 -->
-      <div class="post-row-container">
-        <!-- 第0层；标题 -->
-        <div class="title-floor">
-          <div class="post-title-container">
-            
-            <a href="https://tinaxiawuhao.github.io/post/HEMJYLqMW/">
-              <h2 class="post-title">
-                JVM调优
-              </h2>
-            </a>
-          </div>
-        </div>
-        <!-- 第一层：包含文章描述、时间信息、封面图 -->
-        <div class="post-row-first-floor">
-          <div class="post-preview">
-            <h3 class="post-subtitle">
-              
-            </h3>
-            <p class="post-meta">
-              <span class="time">2021-04-24</span>
-              <span>,</span>
-              <span class="post-stats">12 min read</span>
-            </p>
-          </div>
-          
-          <a href="https://tinaxiawuhao.github.io/post/HEMJYLqMW/" class="post-feature-image" style="background-image: url('https://tinaxiawuhao.github.io/post-images/HEMJYLqMW.png')">
-          </a>
-          
-        </div>
-        <!-- 第二层：下划线、占位标签、tags -->
-        <div class="post-row-sec-floor">
-          <hr>
-          <div class="clearfix"></div>
-          
-          <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="post-tag">
-            java
-          </a>
-          
-        </div>
-      </div>
-      </>
-      
-      <!-- 每行的总容器 -->
-      <div class="post-row-container">
-        <!-- 第0层；标题 -->
-        <div class="title-floor">
-          <div class="post-title-container">
-            
-            <a href="https://tinaxiawuhao.github.io/post/nRZ1sLPT7/">
-              <h2 class="post-title">
-                Java的值传递
-              </h2>
-            </a>
-          </div>
-        </div>
-        <!-- 第一层：包含文章描述、时间信息、封面图 -->
-        <div class="post-row-first-floor">
-          <div class="post-preview">
-            <h3 class="post-subtitle">
-              
-            </h3>
-            <p class="post-meta">
-              <span class="time">2021-04-23</span>
-              <span>,</span>
-              <span class="post-stats">18 min read</span>
-            </p>
-          </div>
-          
-          <a href="https://tinaxiawuhao.github.io/post/nRZ1sLPT7/" class="post-feature-image" style="background-image: url('https://tinaxiawuhao.github.io/post-images/nRZ1sLPT7.png')">
-          </a>
-          
-        </div>
-        <!-- 第二层：下划线、占位标签、tags -->
-        <div class="post-row-sec-floor">
-          <hr>
-          <div class="clearfix"></div>
-          
-          <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="post-tag">
-            java
-          </a>
-          
-        </div>
-      </div>
-      </>
-      
-      
-      <a class="btn btn-primary float-left" href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/page/3/">&#9664; 上一页</a>
-      
-      
-    </div>
-  </div>
+          <h2 id="centos网络配置">centos网络配置</h2>
+<pre><code>vi /etc/sysconfig/network-scripts/ifcfg-ens33 
+</code></pre>
+<p><strong>内容替换如下：</strong></p>
+<pre><code>BOOTPROTO=static #静态连接
+ONBOOT=yes #网络设备开机启动
+IPADDR=192.168.40.131 #192.168.40.132,192.168.40.133.
+NETMASK=255.255.255.0 #子网掩码
+GATEWAY=192.168.40.2 #网关
+DNS1=114.114.114.114 #DNS解析
+</code></pre>
+<p><strong>网络服务重启</strong></p>
+<pre><code>service network restart
+</code></pre>
+<h2 id="安装环境">安装环境</h2>
+<h3 id="1安装docker-ce">1.安装Docker-CE</h3>
+<pre><code class="language-shell"># 卸载旧版本
+yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine  
+# 安装所需的软件包
+yum install -y yum-utils device-mapper-persistent-data lvm2    
+# 添加docker存储库
+yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo     
+#安装最新版的docker-ce
+yum install -y docker-ce docker-ce-cli containerd.io    
+#启动docker并设置为开机自启动
+systemctl enable --now docker    
+</code></pre>
+<h3 id="2配置docker镜像加速器">2.配置Docker镜像加速器</h3>
+<pre><code class="language-bash">tee /etc/docker/daemon.json &lt;&lt;-'EOF'
+{
+  &quot;registry-mirrors&quot;: [&quot;https://hub-mirror.c.163.com/&quot;],
+  &quot;insecure-registries&quot;: [&quot;192.168.40.150.81&quot;]
+}
+EOF
+# 重启
+systemctl daemon-reload &amp;&amp; systemctl restart docker
+</code></pre>
+<h3 id="3安装docker-compose">3.安装docker-compose</h3>
+<pre><code class="language-shell">#1、安装pip
+yum -y install epel-release
+yum install python3-pip
+pip3 install --upgrade pip
+#2、安装docker-compose
+pip3 install docker-compose
+#3、查看版本
+docker-compose version
+</code></pre>
+<h3 id="4下载harbor安装包并解压">4.下载Harbor安装包并解压</h3>
+<blockquote>
+<p>链接：https://pan.baidu.com/s/1AUEw0Qw3w9lZP-rnAYaWjA<br>
+提取码：qutg</p>
+</blockquote>
+<pre><code class="language-undefined">wget https://github.com/goharbor/harbor/releases/download/v2.5.0/harbor-offline-installer-v2.5.0.tgz
+tar zxvf harbor-offline-installer-v2.5.0.tgz
+</code></pre>
+<h3 id="5配置harborcfg和安装harbor">5.配置harbor.cfg和安装Harbor</h3>
+<pre><code class="language-bash">vim harbor.yml
+</code></pre>
+<blockquote>
+<p>修改以下三处，其它的不动<br>
+1.修改主机名<br>
+hostname = 192.169.40.150</p>
+<p>2.修改端口号</p>
+<p>port: 8081</p>
+<p>3.注释掉关于https部分</p>
+</blockquote>
+<p>接下来运行install.sh安装和启动harbor</p>
+<pre><code class="language-undefined">./prepare
+./install.sh
+</code></pre>
+<h3 id="6登录">6.登录</h3>
+<pre><code>http://192.168.40.150:81/harbor/sign-in
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">centos网络配置</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85%E7%8E%AF%E5%A2%83">安装环境</a>
+<ul>
+<li><a href="#1%E5%AE%89%E8%A3%85docker-ce">1.安装Docker-CE</a></li>
+<li><a href="#2%E9%85%8D%E7%BD%AEdocker%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E5%99%A8">2.配置Docker镜像加速器</a></li>
+<li><a href="#3%E5%AE%89%E8%A3%85docker-compose">3.安装docker-compose</a></li>
+<li><a href="#4%E4%B8%8B%E8%BD%BDharbor%E5%AE%89%E8%A3%85%E5%8C%85%E5%B9%B6%E8%A7%A3%E5%8E%8B">4.下载Harbor安装包并解压</a></li>
+<li><a href="#5%E9%85%8D%E7%BD%AEharborcfg%E5%92%8C%E5%AE%89%E8%A3%85harbor">5.配置harbor.cfg和安装Harbor</a></li>
+<li><a href="#6%E7%99%BB%E5%BD%95">6.登录</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/oqAZb-4wU/">
+                  <span class="post-title">
+                    k8s1.19.3安装（基于Centos 7）&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
   <!-- Footer -->
   <footer>
     <div class="container">
@@ -361,7 +364,7 @@
     }
   })(this));</script>
   
-    <div id="landlord-parent">
+  <div id="landlord-parent">
     <div id="landlord">
         <div class="message" style="opacity:0"></div>
         <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
@@ -402,6 +405,7 @@
     }
 </script>
   
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>
