@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1653832415555"
+            <form id="gridea-search-form" style="position: relative" data-update="1653892425169"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1653832415555"
+            <form id="gridea-search-form" style="position: relative" data-update="1653892425169"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -178,39 +178,39 @@
 <p>为避免出现不可预知的问题，提升centos 7内核到最新版本</p>
 <h4 id="联网升级内核">联网升级内核</h4>
 <h5 id="1-查看内核版本">1. 查看内核版本</h5>
-<pre><code>uname -r
+<pre><code class="language-shell">uname -r
 </code></pre>
 <h5 id="2-导入elrepo软件仓库的公共秘钥">2. 导入ELRepo软件仓库的公共秘钥</h5>
-<pre><code>rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+<pre><code class="language-shell">rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 </code></pre>
 <h5 id="3-安装elrepo软件仓库的yum源">3. 安装ELRepo软件仓库的yum源</h5>
-<pre><code>rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+<pre><code class="language-shell">rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
 </code></pre>
 <h5 id="4-启用-elrepo-软件源并下载安装最新稳定版内核">4. 启用 elrepo 软件源并下载安装最新稳定版内核</h5>
-<pre><code>yum --enablerepo=elrepo-kernel install kernel-ml -y
+<pre><code class="language-shell">yum --enablerepo=elrepo-kernel install kernel-ml -y
 </code></pre>
 <h5 id="5-查看系统可用内核并设置内核启动顺序">5. 查看系统可用内核，并设置内核启动顺序</h5>
-<pre><code>sudo awk -F\' '$1==&quot;menuentry &quot; {print i++ &quot; : &quot; $2}' /etc/grub2.cfg
+<pre><code class="language-shell">sudo awk -F\' '$1==&quot;menuentry &quot; {print i++ &quot; : &quot; $2}' /etc/grub2.cfg
 </code></pre>
 <h5 id="6-生成-grub-配置文件">6. 生成 grub 配置文件</h5>
 <p>机器上存在多个内核，我们要使用最新版本，可以通过 grub2-set-default 0 命令生成 grub 配置文件</p>
-<pre><code>grub2-set-default 0 　　#初始化页面的第一个内核将作为默认内核
+<pre><code class="language-shell">grub2-set-default 0 　　#初始化页面的第一个内核将作为默认内核
 grub2-mkconfig -o /boot/grub2/grub.cfg　　#重新创建内核配置
 </code></pre>
 <h5 id="7-重启系统并验证">7. 重启系统并验证</h5>
-<pre><code>yum update
+<pre><code class="language-shell">yum update
 reboot
 uname -r
 </code></pre>
 <h5 id="8-删除旧内核">8. 删除旧内核</h5>
-<pre><code>yum -y remove kernel kernel-tools
+<pre><code class="language-shell">yum -y remove kernel kernel-tools
 </code></pre>
 <h3 id="2centos网络配置文件">2.centos网络配置文件</h3>
 <p>网络配置文件名可能会有不同，在输入到ifcfg时，可以连续按两下tab键，获取提示，比如我的机器 为 ifcfg-ens33</p>
-<pre><code>vi /etc/sysconfig/network-scripts/ifcfg-ens33 
+<pre><code class="language-shell">vi /etc/sysconfig/network-scripts/ifcfg-ens33 
 </code></pre>
 <h4 id="1内容替换如下">1.内容替换如下：</h4>
-<pre><code>BOOTPROTO=static #静态连接
+<pre><code class="language-shell">BOOTPROTO=static #静态连接
 ONBOOT=yes #网络设备开机启动
 IPADDR=192.168.40.131 #192.168.40.132,192.168.40.133.
 NETMASK=255.255.255.0 #子网掩码
@@ -218,22 +218,22 @@ GATEWAY=192.168.40.2 #网关
 DNS1=114.114.114.114 #DNS解析
 </code></pre>
 <h4 id="2网络服务重启">2.网络服务重启</h4>
-<pre><code>service network restart
+<pre><code class="language-shell">service network restart
 </code></pre>
 <h4 id="3查看ip地址">3.查看IP地址</h4>
 <figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1653818770568.png" alt="" loading="lazy"></figure>
 <h3 id="3安装依赖包">3.安装依赖包</h3>
-<pre><code>yum install -y  wget 
+<pre><code class="language-shell">yum install -y  wget 
 </code></pre>
 <h3 id="4修改yum源视网络情况操作">4.修改yum源（视网络情况操作）</h3>
 <h4 id="1备份">1.备份</h4>
 <pre><code class="language-shell">cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
 </code></pre>
 <h4 id="2下载">2.下载</h4>
-<pre><code>wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+<pre><code class="language-shell">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 </code></pre>
 <p>或者使用清华大学站</p>
-<pre><code>sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://mirror.centos.org/$contentdir|baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos|g' -i.bak /etc/yum.repos.d/CentOS-Base.repo
+<pre><code class="language-shell">sudo sed -e 's|^mirrorlist=|#mirrorlist=|g' -e 's|^#baseurl=http://mirror.centos.org/$contentdir|baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos|g' -i.bak /etc/yum.repos.d/CentOS-Base.repo
 </code></pre>
 <h4 id="3清除生成缓存">3.清除生成缓存</h4>
 <pre><code class="language-shell">yum clean all     # 清除系统所有的yum缓存
@@ -250,13 +250,13 @@ hostnamectl set-hostname k8s-node2
 <pre><code class="language-shell">echo -e &quot;192.168.40.131 k8s-master\n192.168.40.132 k8s-node1\n192.168.40.133 k8s-node2&quot; &gt;&gt; /etc/hosts
 </code></pre>
 <h3 id="7关闭防火墙firewalld">7.关闭防火墙firewalld</h3>
-<pre><code>systemctl stop firewalld &amp;&amp; systemctl disable firewalld
+<pre><code class="language-shell">systemctl stop firewalld &amp;&amp; systemctl disable firewalld
 </code></pre>
 <h3 id="8关闭selinux">8.关闭selinux</h3>
-<pre><code>setenforce 0 &amp;&amp; sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+<pre><code class="language-shell">setenforce 0 &amp;&amp; sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
 </code></pre>
 <h3 id="9关闭swap分区交换">9.关闭swap分区交换</h3>
-<pre><code>swapoff -a &amp;&amp; sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+<pre><code class="language-shell">swapoff -a &amp;&amp; sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 </code></pre>
 <h3 id="10配置内核参数">10.配置内核参数</h3>
 <p><strong>将桥接的IPv4流量传递倒iptables的链</strong></p>
@@ -289,12 +289,12 @@ EOF
 systemctl restart rsyslog &amp;&amp; systemctl restart crond
 </code></pre>
 <h3 id="12安装iptables设置空表">12.安装iptables，设置空表</h3>
-<pre><code>yum -y install iptables-services &amp;&amp; systemctl start iptables &amp;&amp; systemctl enable iptables &amp;&amp; iptables -F &amp;&amp; service iptables save
+<pre><code class="language-shell">yum -y install iptables-services &amp;&amp; systemctl start iptables &amp;&amp; systemctl enable iptables &amp;&amp; iptables -F &amp;&amp; service iptables save
 </code></pre>
 <p>检查服务的的规则：<code>iptables -L -n</code></p>
 <h3 id="13开启ipvs">13.开启IPVS</h3>
 <p><strong>由于ipvs已经加入到了内核的主干，所以为kube-proxy开启ipvs的前提需要加载以下的内核模块</strong></p>
-<pre><code>cat &gt; /etc/sysconfig/modules/ipvs.modules &lt;&lt;EOF
+<pre><code class="language-shell">cat &gt; /etc/sysconfig/modules/ipvs.modules &lt;&lt;EOF
 #！/bin/bash
 modprobe -- ip_vs
 modprobe -- ip_vs_rr
@@ -304,10 +304,10 @@ modprobe -- nf_conntrack_ipv4
 EOF
 </code></pre>
 <h4 id="授权启动">授权启动</h4>
-<pre><code>chmod 755 /etc/sysconfig/modules/ipvs.modules &amp;&amp; bash /etc/sysconfig/modules/ipvs.modules &amp;&amp; lsmod 
+<pre><code class="language-shell">chmod 755 /etc/sysconfig/modules/ipvs.modules &amp;&amp; bash /etc/sysconfig/modules/ipvs.modules &amp;&amp; lsmod 
 </code></pre>
 <p><strong>接下来还需要确保各个节点上已经安装了ipset软件包。 为了便于查看ipvs的代理规则，最好安装一下管理工具ipvsadm。</strong></p>
-<pre><code>yum install ipset ipvsadm -y
+<pre><code class="language-shell">yum install ipset ipvsadm -y
 </code></pre>
 <blockquote>
 <p>service底层实现主要由两个网络模式组成：iptables与IPVS。他们都是有kube-proxy维护</p>
@@ -346,7 +346,7 @@ Containerd 是一个行业标准的容器运行时，强调简单性、健壮性
 <pre><code class="language-shell">yum -y install docker-ce
 </code></pre>
 <h4 id="5设置docker">5.设置docker</h4>
-<pre><code>cat &gt; /etc/docker/daemon.conf &lt;&lt;EOF
+<pre><code class="language-shell">cat &gt; /etc/docker/daemon.conf &lt;&lt;EOF
 {
   &quot;registry-mirrors&quot;: [&quot;https://registry.docker-cn.com&quot;,&quot;https://docker.mirrors.ustc.edu.cn&quot;,&quot;docker.io/mirrorgooglecontainers&quot;,&quot;https://heusyzko.mirror.aliyuncs.com&quot;]
   &quot;exec-opts&quot;:[&quot;native.cgroupdriver=systemd&quot;],
@@ -365,7 +365,7 @@ mkdir -p /etc/systemd/system/docker.service.d
 systemctl daemon-reload &amp;&amp; systemctl restart docker 
 </code></pre>
 <p>以下的NO_PROXY表示对这些网段的服务器不使用代理，如果不需要用到代理服务器，以下的配置可以不写，注意，以下的代理是不通的。不建议使用代理，因为国内有资源可以访问到gcr.io需要的镜像，下文会介绍</p>
-<pre><code>#放在Type=notify下面
+<pre><code class="language-shell">#放在Type=notify下面
 vi /usr/lib/systemd/system/docker.service
 Environment=&quot;HTTPS_PROXY=http://www.ik8s.io:10080&quot;
 Environment=&quot;HTTP_PROXY=http://www.ik8s.io:10080&quot;
@@ -380,7 +380,7 @@ systemctl restart docker
 #设置开机启动
 systemctl enable docker.service
 </code></pre>
-<pre><code>#想要删除容器，则要先停止所有容器（当然，也可以加-f强制删除，但是不推荐）：
+<pre><code class="language-shell">#想要删除容器，则要先停止所有容器（当然，也可以加-f强制删除，但是不推荐）：
 docker stop $(docker ps -a -q)
 #删除所有容器
 docker  rm $(docker ps -a -q)
@@ -390,41 +390,41 @@ docker rmi $(docker images -q)
 <h3 id="15部署-containerd20以上版本">15.部署 containerd(20以上版本)</h3>
 <h4 id="1安装containerd">1.安装containerd</h4>
 <p><strong>创建配置文件</strong></p>
-<pre><code>mkdir /etc/modules-load.d/containerd.conf 
+<pre><code class="language-shell">mkdir /etc/modules-load.d/containerd.conf 
 </code></pre>
 <p><strong>创建完配置文件执行以下命令</strong></p>
-<pre><code>modprobe overlay &amp;&amp; modprobe br_netfilter
+<pre><code class="language-shell">modprobe overlay &amp;&amp; modprobe br_netfilter
 </code></pre>
 <p><strong>立即生效</strong></p>
-<pre><code>sysctl --system
+<pre><code class="language-shell">sysctl --system
 </code></pre>
 <p><strong>下载 docker-ce 源</strong></p>
-<pre><code>wget http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+<pre><code class="language-shell">wget http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 或者
 yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 </code></pre>
 <p><strong>安装 containerd 服务并加入开机启动</strong></p>
-<pre><code>yum install -y containerd.io
+<pre><code class="language-shell">yum install -y containerd.io
 systemctl enable containerd &amp;&amp; systemctl start containerd
 </code></pre>
 <h4 id="2配置-containerd">2.配置 containerd</h4>
 <p><strong>创建路径</strong></p>
-<pre><code>mkdir -p /etc/containerd
+<pre><code class="language-shell">mkdir -p /etc/containerd
 </code></pre>
 <p><strong>获取默认配置文件</strong></p>
-<pre><code>containerd config default | sudo tee /etc/containerd/config.toml
+<pre><code class="language-shell">containerd config default | sudo tee /etc/containerd/config.toml
 </code></pre>
 <p><strong>修改配置文件，新增 &quot;SystemdCgroup = true&quot;，使用 systemd 作为 cgroup 驱动程序</strong></p>
-<pre><code>[root@master1 ~]# vi /etc/containerd/config.toml 
+<pre><code class="language-shell">[root@master1 ~]# vi /etc/containerd/config.toml 
 #修改以下内容
 [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]
      SystemdCgroup = true                               ## 修改为true
 </code></pre>
 <p><strong>重启 containerd</strong></p>
-<pre><code>systemctl restart containerd
+<pre><code class="language-shell">systemctl restart containerd
 </code></pre>
 <p><strong>查看 containerd 运行状态(以下状态视为正常)</strong></p>
-<pre><code>[root@master1 ~]# systemctl status containerd
+<pre><code class="language-shell">[root@master1 ~]# systemctl status containerd
 ● containerd.service - containerd container runtime
    Loaded: loaded (/usr/lib/systemd/system/containerd.service; enabled; vendor preset: disabled)
    Active: active (running) since Sun 2022-03-06 08:09:00 CST; 1h 43min ago
@@ -438,7 +438,7 @@ systemctl enable containerd &amp;&amp; systemctl start containerd
 </code></pre>
 <h3 id="16安装kubeadm-kubelet-kubectl">16.安装kubeadm、kubelet、kubectl</h3>
 <h4 id="1配置文件修改">1.配置文件修改</h4>
-<pre><code>cat &lt;&lt;EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+<pre><code class="language-shell">cat &lt;&lt;EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
@@ -449,21 +449,21 @@ gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.a
 EOF
 </code></pre>
 <h4 id="2安装启用">2.安装启用</h4>
-<pre><code>sudo yum install -y kubelet-1.19.3 kubeadm-1.19.3 kubectl-1.19.3 --disableexcludes=kubernetes 
+<pre><code class="language-shell">sudo yum install -y kubelet-1.19.3 kubeadm-1.19.3 kubectl-1.19.3 --disableexcludes=kubernetes 
 sudo systemctl enable kubelet &amp;&amp; systemctl start kubelet
 </code></pre>
 <h4 id="3修改kubelet的配置文件">3.修改kubelet的配置文件</h4>
 <p>先查看配置文件位置</p>
-<pre><code>systemctl status kubelet
+<pre><code class="language-shell">systemctl status kubelet
 </code></pre>
 <figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1653818855680.png" alt="" loading="lazy"></figure>
-<pre><code>vi /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+<pre><code class="language-shell">vi /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
 </code></pre>
 <p>并添加以下内容(使用和docker相同的cgroup-driver)。</p>
-<pre><code>Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=cgroupfs&quot;
+<pre><code class="language-shell">Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=cgroupfs&quot;
 </code></pre>
 <h4 id="4重启kubelet">4.重启kubelet</h4>
-<pre><code>systemctl daemon-reload &amp;&amp; systemctl restart kubelet
+<pre><code class="language-shell">systemctl daemon-reload &amp;&amp; systemctl restart kubelet
 </code></pre>
 <h3 id="17获取k8s镜像可忽略">17.获取K8S镜像（可忽略）</h3>
 <h4 id="1获取镜像列表">1.获取镜像列表</h4>
@@ -472,7 +472,7 @@ sudo systemctl enable kubelet &amp;&amp; systemctl start kubelet
 <pre><code class="language-bash">kubeadm config images list
 </code></pre>
 <p>获取镜像列表后可以通过下面的脚本从阿里云获取：</p>
-<pre><code>vi /usr/local/k8s/k8s-images.sh
+<pre><code class="language-shell">vi /usr/local/k8s/k8s-images.sh
 </code></pre>
 <blockquote>
 <p>下面的镜像应该去除&quot;k8s.gcr.io/&quot;的前缀，版本换成上面获取到的版本</p>
@@ -494,15 +494,15 @@ for imageName in ${images[@]} ; do
 done
 </code></pre>
 <h4 id="2赋权执行">2.赋权执行**</h4>
-<pre><code>chmod +x k8s-images.sh &amp;&amp; ./k8s-images.sh
+<pre><code class="language-shell">chmod +x k8s-images.sh &amp;&amp; ./k8s-images.sh
 </code></pre>
 <p><strong>以上操作在所有机器执行</strong></p>
 <h3 id="18初始化环境master操作">18.初始化环境（master操作）</h3>
 <h4 id="1安装镜像">1.安装镜像</h4>
 <p><strong>k8s1.20之后会弃用docker,kubeadm init采用模板配置文件加载为好</strong></p>
-<pre><code>kubeadm config print init-defaults  &gt; kubeadm-config.yaml
+<pre><code class="language-shell">kubeadm config print init-defaults  &gt; kubeadm-config.yaml
 </code></pre>
-<pre><code>
+<pre><code class="language-yaml">
 [root@master1 ~]# cat kubeadm-config.yaml 
 apiVersion: kubeadm.k8s.io/v1beta2
 bootstrapTokens:
@@ -553,7 +553,7 @@ featureGates:
 mode: ipvs
 </code></pre>
 <h4 id="2查看kubeadm版本修改命令参数">2.查看kubeadm版本，修改命令参数</h4>
-<pre><code>kubeadm version
+<pre><code class="language-shell">kubeadm version
 </code></pre>
 <p>这个就很简单了，只需要简单的一个命令：</p>
 <pre><code class="language-bash">#直接使用已经下载好的镜像
@@ -577,7 +577,7 @@ kubeadm init --config kubeadm-config.yaml
 </code></pre>
 <p>关闭版本探测，因为它的默认值是stable-1，会导致从https://dl.k8s.io/release/stable-1.txt下载最新的版本号，我们可以将其指定为固定版本（最新版：v1.24.1）来跳过网络请求。</p>
 <h4 id="4错误启动重置">4.错误启动重置</h4>
-<pre><code>kubeadm reset
+<pre><code class="language-shell">kubeadm reset
 </code></pre>
 <h4 id="5初始化成功后为顺利使用kubectl执行以下命令">5.初始化成功后，为顺利使用kubectl，执行以下命令：</h4>
 <pre><code class="language-shell">mkdir -p $HOME/.kube
@@ -585,22 +585,25 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 </code></pre>
 <h4 id="6添加节点">6.添加节点</h4>
-<pre><code>kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
 </code></pre>
 <h4 id="7执行kubectl-get-nodes查看master节点状态">7.执行kubectl get nodes，查看master节点状态：</h4>
-<pre><code>kubectl get node
+<pre><code class="language-shell">kubectl get node
 </code></pre>
 <h4 id="8通过如下命令查看kubelet状态">8.通过如下命令查看kubelet状态：</h4>
 <pre><code class="language-bash">journalctl -xef -u kubelet -n 20
 </code></pre>
 <p>提示未安装cni 网络插件。</p>
 <h3 id="19安装flannel网络插件cni">19.安装flannel网络插件(CNI)</h3>
-<p>执行以下命令安装flannel即可：</p>
+<p>master执行以下命令安装flannel即可：</p>
 <pre><code class="language-shell">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+</code></pre>
+<p>node安装</p>
+<pre><code class="language-shell">yum install  flannel -y
 </code></pre>
 <p><strong>输入命令kubectl get pods -n kube-system,等待所有插件为running状态</strong>。</p>
 <p><strong>待所有pod status为Running的时候，再次执行kubectl get nodes：</strong></p>
-<pre><code>[root@k8s-master ~]# kubectl get node
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
 NAME         STATUS   ROLES    AGE   VERSION
 k8s-master   Ready    master   16m   v1.19.3
 </code></pre>
@@ -609,7 +612,7 @@ k8s-master   Ready    master   16m   v1.19.3
 <p><strong>1、在k8s-node1、k8s-node2等两台虚拟机中重复执行上面的步骤，安装好docker、kubelet、kubectl、kubeadm。</strong></p>
 <h4 id="1node节点加入集群">1.node节点加入集群</h4>
 <p>在上面第初始化master节点成功后，输出了下面的kubeadm join命令：</p>
-<pre><code>kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
 </code></pre>
 <p>该命令就是node加入集群的命令，分别在k8s-node1、k8s-node2上执行该命令加入集群。</p>
 <p>如果忘记该命令，可以通过以下命令重新生成：</p>
@@ -618,7 +621,7 @@ k8s-master   Ready    master   16m   v1.19.3
 <h4 id="2在master节点执行下面命令查看集群状态">2.在master节点执行下面命令查看集群状态：</h4>
 <pre><code class="language-shell">kubectl get nodes
 </code></pre>
-<pre><code>[root@k8s-master ~]# kubectl get node
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
 NAME         STATUS   ROLES    AGE     VERSION
 k8s-master   Ready    master   24m     v1.19.3
 k8s-node1    Ready    &lt;none&gt;   5m50s   v1.19.3
