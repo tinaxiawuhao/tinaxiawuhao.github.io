@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>k8s界面kubesphere安装 | tianxia</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="k8s界面kubesphere安装 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="k8s界面kubesphere安装" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/ULtZ5rQXA/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653892425169"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1653892425169"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/f6exx1YLd/" class="tag">k8s</a>
+                
+              </span>
+              <h1>k8s界面kubesphere安装</h1>
+              <span class="meta">
+                Posted on
+                2022-05-30，19 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/ULtZ5rQXA.png" alt="封面图">
+          </img>
+          
+          <h3 id="1-搭建nfs作为默认sc所有节点">1 搭建NFS作为默认sc（所有节点）</h3>
+<h4 id="11-配置nfs服务器">1.1   配置NFS服务器</h4>
+<pre><code class="language-shell">yum install -y nfs-utils rpcbind  echo &quot;/nfs/data/ *(insecure,rw,sync,no_root_squash)&quot; &gt; /etc/exports
+</code></pre>
+<h4 id="12-创建nfs服务器目录主节点作为服务器主节点操作">1.2   创建nfs服务器目录（主节点作为服务器，主节点操作）</h4>
+<pre><code class="language-shell">mkdir -p /nfs/data
+</code></pre>
+<h4 id="13-启动rpcbindnfs服务命令">1.3   启动rpcbind,nfs服务命令</h4>
+<pre><code class="language-shell">systemctl restart rpcbind &amp;&amp; systemctl enable rpcbind
+systemctl restart nfs-server &amp;&amp; systemctl enable nfs-server
+</code></pre>
+<h4 id="14-检查配置是否生效">1.4   检查配置是否生效</h4>
+<pre><code class="language-shell">exportfs -r
+</code></pre>
+<h4 id="15-测试pod直接挂载nfs了主节点操作">1.5   测试Pod直接挂载NFS了（主节点操作）</h4>
+<h5 id="151-在opt目录下创建一个nginxyaml的文件">1.5.1     在opt目录下创建一个nginx.yaml的文件</h5>
+<pre><code class="language-shell">vi nginx.yaml
+</code></pre>
+<h5 id="152-写入以下的命令">1.5.2     写入以下的命令</h5>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: vol-nfs
+  namespace: default
+spec:
+  volumes:
+  - name: html
+    nfs:
+      path: /nfs/data   #1000G
+      server: 192.168.40.131 #自己的nfs服务器地址
+  containers:
+  - name: myapp
+    image: nginx
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html/
+</code></pre>
+<h5 id="153-应用该yaml的pod服务">1.5.3     应用该yaml的pod服务</h5>
+<pre><code class="language-shell">kubectl apply -f nginx.yaml
+</code></pre>
+<h5 id="154-检查该pod是否允许状态">1.5.4     检查该pod是否允许状态</h5>
+<pre><code class="language-shell">kubectl get pod
+</code></pre>
+<pre><code class="language-shell">kubectl get pods -A
+</code></pre>
+<p>这里需要注意的是，必须等所有的状态为Runing才能进行下一步操作。</p>
+<h3 id="2-搭建nfs-client">2   搭建NFS-Client</h3>
+<p>服务器端防火墙开放111、662、875、892、2049的 tcp / udp 允许，否则远端客户无法连接。</p>
+<h4 id="21-安装客户端工具node节点操作">2.1  安装客户端工具（node节点操作）</h4>
+<pre><code class="language-shell">showmount -e 192.168.142.144
+</code></pre>
+<h4 id="22-创建同步文件夹">2.2  创建同步文件夹</h4>
+<pre><code class="language-shell">mkdir /nfs/data/
+</code></pre>
+<h4 id="23-将客户端的rootnfsmount和nfsdata做同步node节点操作">2.3  将客户端的/root/nfsmount和/nfs/data/做同步（node节点操作）</h4>
+<pre><code class="language-shell">mount -t nfs 192.168.40.131:/nfs/ /nfs/data/
+</code></pre>
+<p>192.168.40.131：是nfs的服务器的地址，这里是master的IP地址。</p>
+<h3 id="3-设置动态供应">3   设置动态供应</h3>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1653892179794.png" alt="" loading="lazy"></figure>
+<h4 id="31-创建provisionernfs环境前面已经搭好">3.1  创建provisioner（NFS环境前面已经搭好）</h4>
+<table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>填入内容</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名称</td>
+<td>nfs-storage</td>
+<td>自定义存储类名称</td>
+</tr>
+<tr>
+<td>NFS Server</td>
+<td>192.168.142.147</td>
+<td>NFS服务的IP地址</td>
+</tr>
+<tr>
+<td>NFS Path</td>
+<td>/nfs/data</td>
+<td>NFS服务所共享的路径</td>
+</tr>
+</tbody>
+</table>
+<h5 id="311-先创建授权master节点操作">3.1.1   先创建授权（master节点操作）</h5>
+<pre><code class="language-shell">vim nfs-rbac.yaml  #在opt目录下
+</code></pre>
+<p>新建内容如下：</p>
+<pre><code class="language-yaml">---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nfs-provisioner
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+   name: nfs-provisioner-runner
+rules:
+   -  apiGroups: [&quot;&quot;]
+      resources: [&quot;persistentvolumes&quot;]
+      verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;delete&quot;]
+   -  apiGroups: [&quot;&quot;]
+      resources: [&quot;persistentvolumeclaims&quot;]
+      verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;update&quot;]
+   -  apiGroups: [&quot;storage.k8s.io&quot;]
+      resources: [&quot;storageclasses&quot;]
+      verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+   -  apiGroups: [&quot;&quot;]
+      resources: [&quot;events&quot;]
+      verbs: [&quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;]
+   -  apiGroups: [&quot;&quot;]
+      resources: [&quot;services&quot;, &quot;endpoints&quot;]
+      verbs: [&quot;get&quot;,&quot;create&quot;,&quot;list&quot;, &quot;watch&quot;,&quot;update&quot;]
+   -  apiGroups: [&quot;extensions&quot;]
+      resources: [&quot;podsecuritypolicies&quot;]
+      resourceNames: [&quot;nfs-provisioner&quot;]
+      verbs: [&quot;use&quot;]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: run-nfs-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: nfs-provisioner
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: nfs-provisioner-runner
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+   name: nfs-client-provisioner
+spec:
+   replicas: 1
+   strategy:
+     type: Recreate
+   selector:
+     matchLabels:
+        app: nfs-client-provisioner
+   template:
+      metadata:
+         labels:
+            app: nfs-client-provisioner
+      spec:
+         serviceAccount: nfs-provisioner
+         containers:
+            -  name: nfs-client-provisioner
+               image: lizhenliang/nfs-client-provisioner
+               volumeMounts:
+                 -  name: nfs-client-root
+                    mountPath:  /persistentvolumes
+               env:
+                 -  name: PROVISIONER_NAME
+                    value: storage.pri/nfs
+                 -  name: NFS_SERVER
+                    value: 192.168.40.131
+                 -  name: NFS_PATH
+                    value: /nfs
+         volumes:
+           - name: nfs-client-root
+             nfs:
+               server: 192.168.142.144
+               path: /nfs
+</code></pre>
+<p>这个镜像中volume的mountPath默认为/persistentvolumes，不能修改，否则运行时会报错。ip的必须是自己的master的IP地址。</p>
+<h5 id="312-执行创建nfs的yaml文件信息">3.1.2   执行创建nfs的yaml文件信息</h5>
+<pre><code class="language-shell">kubectl apply -f nfs-rbac.yaml
+</code></pre>
+<h5 id="313-如果发现pod有问题想删除pod进行重新kubectl-apply-f-nfs-rbacyaml的话可以参照这个博客文档">3.1.3   如果发现pod有问题，想删除pod进行重新kubectl apply-f nfs-rbac.yaml的话，可以参照这个博客文档：</h5>
+<p>https://blog.csdn.net/qq_43542988/article/details/101277263?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param</p>
+<h5 id="314-查看pod的状态信息">3.1.4   查看pod的状态信息</h5>
+<pre><code class="language-shell">kubectl get pods -A
+# 如果报错：查看报错信息，这个命令：
+kubectl describe pod xxx -n kube-system
+</code></pre>
+<h5 id="315-创建storageclassmaster节点操作">3.1.5   创建storageclass（master节点操作）</h5>
+<pre><code class="language-yaml">vim storageclass-nfs.yaml
+ 
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-nfs
+provisioner: storage.pri/nfs
+reclaimPolicy: Delete
+</code></pre>
+<h5 id="316-应用storageclass-nfsyaml文件">3.1.6   应用storageclass-nfs.yaml文件</h5>
+<pre><code class="language-shell">kubectl apply -f storageclass-nfs.yaml
+</code></pre>
+<h5 id="317-修改默认的驱动">3.1.7   修改默认的驱动</h5>
+<pre><code class="language-shell">kubectl patch storageclass storage-nfs -p '{&quot;metadata&quot;: {&quot;annotations&quot;:{&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;true&quot;}}}'
+</code></pre>
+<pre><code>kubectl get sc
+</code></pre>
+<h3 id="4-安装metrics-server">4   安装metrics-server</h3>
+<h4 id="41-准备metrics-serveryaml文件主节点操作">4.1  准备metrics-server.yaml文件（主节点操作）</h4>
+<pre><code class="language-shell">vim metrics-server.yaml
+</code></pre>
+<h4 id="42-编写以下的内容">4.2  编写以下的内容</h4>
+<pre><code class="language-yaml">---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: system:aggregated-metrics-reader
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-view: &quot;true&quot;
+    rbac.authorization.k8s.io/aggregate-to-edit: &quot;true&quot;
+    rbac.authorization.k8s.io/aggregate-to-admin: &quot;true&quot;
+rules:
+- apiGroups: [&quot;metrics.k8s.io&quot;]
+  resources: [&quot;pods&quot;, &quot;nodes&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metrics-server:system:auth-delegator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: metrics-server
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metrics-server-auth-reader
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: metrics-server
+  namespace: kube-system
+---
+apiVersion: apiregistration.k8s.io/v1beta1
+kind: APIService
+metadata:
+  name: v1beta1.metrics.k8s.io
+spec:
+  service:
+    name: metrics-server
+    namespace: kube-system
+  group: metrics.k8s.io
+  version: v1beta1
+  insecureSkipTLSVerify: true
+  groupPriorityMinimum: 100
+  versionPriority: 100
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metrics-server
+  namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-server
+  namespace: kube-system
+  labels:
+    k8s-app: metrics-server
+spec:
+  selector:
+    matchLabels:
+      k8s-app: metrics-server
+  template:
+    metadata:
+      name: metrics-server
+      labels:
+        k8s-app: metrics-server
+    spec:
+      serviceAccountName: metrics-server
+      volumes:
+      # mount in tmp so we can safely use from-scratch images and/or read-only containers
+      - name: tmp-dir
+        emptyDir: {}
+      containers:
+      - name: metrics-server
+        image: mirrorgooglecontainers/metrics-server-amd64:v0.3.6
+        imagePullPolicy: IfNotPresent
+        args:
+          - --cert-dir=/tmp
+          - --secure-port=4443
+          - --kubelet-insecure-tls
+          - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        ports:
+        - name: main-port
+          containerPort: 4443
+          protocol: TCP
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+        volumeMounts:
+        - name: tmp-dir
+          mountPath: /tmp
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: &quot;amd64&quot;
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics-server
+  namespace: kube-system
+  labels:
+    kubernetes.io/name: &quot;Metrics-server&quot;
+    kubernetes.io/cluster-service: &quot;true&quot;
+spec:
+  selector:
+    k8s-app: metrics-server
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: main-port
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: system:metrics-server
+rules:
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - pods
+  - nodes
+  - nodes/stats
+  - namespaces
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:metrics-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:metrics-server
+subjects:
+- kind: ServiceAccount
+  name: metrics-server
+  namespace: kube-system
+</code></pre>
+<h4 id="43-应用该文件pod">4.3  应用该文件pod</h4>
+<pre><code class="language-shell">kubectl apply -f metrics-server.yaml
+</code></pre>
+<h4 id="44-查看部署的应用信息状态">4.4  查看部署的应用信息状态</h4>
+<pre><code class="language-shell">kubectl get pod -A
+</code></pre>
+<h4 id="45-查看系统的监控状态">4.5  查看系统的监控状态</h4>
+<pre><code class="language-shell">kubectl top nodes
+ 
+如果运行kubectl top nodes这个命令，爆metrics not available yet 这个命令还没有用，那就稍等一会，就能用了
+</code></pre>
+<p>这里，kubesphere3.0的前置环境全部结束。</p>
+<h2 id="5-安装kubesphere-v300">5 安装kubesphere v3.0.0</h2>
+<h3 id="51-文档地址">5.1 文档地址</h3>
+<p>https://kubesphere.com.cn/</p>
+<h3 id="152-部署文档地址">1.5.2 部署文档地址</h3>
+<p>https://kubesphere.com.cn/docs/quick-start/minimal-kubesphere-on-k8s/</p>
+<h3 id="153-安装步骤说明master节点">1.5.3 安装步骤说明（master节点）</h3>
+<h4 id="1531-安装集群配置文件">1.5.3.1   安装集群配置文件</h4>
+<h5 id="15311-准备配置文件cluster-configurationyaml">1.5.3.1.1     准备配置文件cluster-configuration.yaml</h5>
+<pre><code class="language-shell">vim cluster-configuration.yaml
+</code></pre>
+<h5 id="15312-编写以下的内容配置">1.5.3.1.2     编写以下的内容配置</h5>
+<pre><code class="language-yaml">---
+apiVersion: installer.kubesphere.io/v1alpha1
+kind: ClusterConfiguration
+metadata:
+  name: ks-installer
+  namespace: kubesphere-system
+  labels:
+    version: v3.0.0
+spec:
+  persistence:
+    storageClass: &quot;&quot;        # If there is not a default StorageClass in your cluster, you need to specify an existing StorageClass here.
+  authentication:
+    jwtSecret: &quot;&quot;           # Keep the jwtSecret consistent with the host cluster. Retrive the jwtSecret by executing &quot;kubectl -n kubesphere-system get cm kubesphere-config -o yaml | grep -v &quot;apiVersion&quot; | grep jwtSecret&quot; on the host cluster.
+  etcd:
+    monitoring: true       # Whether to enable etcd monitoring dashboard installation. You have to create a secret for etcd before you enable it.
+    endpointIps: 192.168.40.131  # etcd cluster EndpointIps, it can be a bunch of IPs here.
+    port: 2379              # etcd port
+    tlsEnable: true
+  common:
+    mysqlVolumeSize: 20Gi # MySQL PVC size.
+    minioVolumeSize: 20Gi # Minio PVC size.
+    etcdVolumeSize: 20Gi  # etcd PVC size.
+    openldapVolumeSize: 2Gi   # openldap PVC size.
+    redisVolumSize: 2Gi # Redis PVC size.
+    es:   # Storage backend for logging, events and auditing.
+      # elasticsearchMasterReplicas: 1   # total number of master nodes, it's not allowed to use even number
+      # elasticsearchDataReplicas: 1     # total number of data nodes.
+      elasticsearchMasterVolumeSize: 4Gi   # Volume size of Elasticsearch master nodes.
+      elasticsearchDataVolumeSize: 20Gi    # Volume size of Elasticsearch data nodes.
+      logMaxAge: 7                     # Log retention time in built-in Elasticsearch, it is 7 days by default.
+      elkPrefix: logstash              # The string making up index names. The index name will be formatted as ks-&lt;elk_prefix&gt;-log.
+  console:
+    enableMultiLogin: true  # enable/disable multiple sing on, it allows an account can be used by different users at the same time.
+    port: 30880
+  alerting:                # (CPU: 0.3 Core, Memory: 300 MiB) Whether to install KubeSphere alerting system. It enables Users to customize alerting policies to send messages to receivers in time with different time intervals and alerting levels to choose from.
+    enabled: true
+  auditing:                # Whether to install KubeSphere audit log system. It provides a security-relevant chronological set of records，recording the sequence of activities happened in platform, initiated by different tenants.
+    enabled: true
+  devops:                  # (CPU: 0.47 Core, Memory: 8.6 G) Whether to install KubeSphere DevOps System. It provides out-of-box CI/CD system based on Jenkins, and automated workflow tools including Source-to-Image &amp; Binary-to-Image.
+    enabled: true
+    jenkinsMemoryLim: 2Gi      # Jenkins memory limit.
+    jenkinsMemoryReq: 1500Mi   # Jenkins memory request.
+    jenkinsVolumeSize: 8Gi     # Jenkins volume size.
+    jenkinsJavaOpts_Xms: 512m  # The following three fields are JVM parameters.
+    jenkinsJavaOpts_Xmx: 512m
+    jenkinsJavaOpts_MaxRAM: 2g
+  events:                  # Whether to install KubeSphere events system. It provides a graphical web console for Kubernetes Events exporting, filtering and alerting in multi-tenant Kubernetes clusters.
+    enabled: true
+    ruler:
+      enabled: true
+      replicas: 2
+  logging:                 # (CPU: 57 m, Memory: 2.76 G) Whether to install KubeSphere logging system. Flexible logging functions are provided for log query, collection and management in a unified console. Additional log collectors can be added, such as Elasticsearch, Kafka and Fluentd.
+    enabled: true
+    logsidecarReplicas: 2
+  metrics_server:                    # (CPU: 56 m, Memory: 44.35 MiB) Whether to install metrics-server. IT enables HPA (Horizontal Pod Autoscaler).
+    enabled: false
+  monitoring:
+    # prometheusReplicas: 1            # Prometheus replicas are responsible for monitoring different segments of data source and provide high availability as well.
+    prometheusMemoryRequest: 400Mi   # Prometheus request memory.
+    prometheusVolumeSize: 20Gi       # Prometheus PVC size.
+    # alertmanagerReplicas: 1          # AlertManager Replicas.
+  multicluster:
+    clusterRole: none  # host | member | none  # You can install a solo cluster, or specify it as the role of host or member cluster.
+  networkpolicy:       # Network policies allow network isolation within the same cluster, which means firewalls can be set up between certain instances (Pods).
+    # Make sure that the CNI network plugin used by the cluster supports NetworkPolicy. There are a number of CNI network plugins that support NetworkPolicy, including Calico, Cilium, Kube-router, Romana and Weave Net.
+    enabled: true
+  notification:        # Email Notification support for the legacy alerting system, should be enabled/disabled together with the above alerting option.
+    enabled: true
+  openpitrix:          # (2 Core, 3.6 G) Whether to install KubeSphere Application Store. It provides an application store for Helm-based applications, and offer application lifecycle management.
+    enabled: true
+  servicemesh:         # (0.3 Core, 300 MiB) Whether to install KubeSphere Service Mesh (Istio-based). It provides fine-grained traffic management, observability and tracing, and offer visualization for traffic topology.
+    enabled: true
+</code></pre>
+<p>endpointIps: 192.168.40.131：master节点的地址。</p>
+<h5 id="15313-准备配置文件kubesphere-installeryaml">1.5.3.1.3     准备配置文件kubesphere-installer.yaml</h5>
+<pre><code class="language-shell">vim cluster-configuration.yaml
+</code></pre>
+<h5 id="15314-编写以下的内容配置">1.5.3.1.4    编写以下的内容配置</h5>
+<pre><code class="language-yaml">---
+apiVersion: installer.kubesphere.io/v1alpha1
+kind: ClusterConfiguration
+metadata:
+  name: ks-installer
+  namespace: kubesphere-system
+  labels:
+    version: v3.0.0
+spec:
+  persistence:
+    storageClass: &quot;&quot;        # If there is not a default StorageClass in your cluster, you need to specify an existing StorageClass here.
+  authentication:
+    jwtSecret: &quot;&quot;           # Keep the jwtSecret consistent with the host cluster. Retrive the jwtSecret by executing &quot;kubectl -n kubesphere-system get cm kubesphere-config -o yaml | grep -v &quot;apiVersion&quot; | grep jwtSecret&quot; on the host cluster.
+  etcd:
+    monitoring: true       # Whether to enable etcd monitoring dashboard installation. You have to create a secret for etcd before you enable it.
+    endpointIps: 192.168.40.131  # etcd cluster EndpointIps, it can be a bunch of IPs here.
+    port: 2379              # etcd port
+    tlsEnable: true
+  common:
+    mysqlVolumeSize: 20Gi # MySQL PVC size.
+    minioVolumeSize: 20Gi # Minio PVC size.
+    etcdVolumeSize: 20Gi  # etcd PVC size.
+    openldapVolumeSize: 2Gi   # openldap PVC size.
+    redisVolumSize: 2Gi # Redis PVC size.
+    es:   # Storage backend for logging, events and auditing.
+      # elasticsearchMasterReplicas: 1   # total number of master nodes, it's not allowed to use even number
+      # elasticsearchDataReplicas: 1     # total number of data nodes.
+      elasticsearchMasterVolumeSize: 4Gi   # Volume size of Elasticsearch master nodes.
+      elasticsearchDataVolumeSize: 20Gi    # Volume size of Elasticsearch data nodes.
+      logMaxAge: 7                     # Log retention time in built-in Elasticsearch, it is 7 days by default.
+      elkPrefix: logstash              # The string making up index names. The index name will be formatted as ks-&lt;elk_prefix&gt;-log.
+  console:
+    enableMultiLogin: true  # enable/disable multiple sing on, it allows an account can be used by different users at the same time.
+    port: 30880
+  alerting:                # (CPU: 0.3 Core, Memory: 300 MiB) Whether to install KubeSphere alerting system. It enables Users to customize alerting policies to send messages to receivers in time with different time intervals and alerting levels to choose from.
+    enabled: true
+  auditing:                # Whether to install KubeSphere audit log system. It provides a security-relevant chronological set of records，recording the sequence of activities happened in platform, initiated by different tenants.
+    enabled: true
+  devops:                  # (CPU: 0.47 Core, Memory: 8.6 G) Whether to install KubeSphere DevOps System. It provides out-of-box CI/CD system based on Jenkins, and automated workflow tools including Source-to-Image &amp; Binary-to-Image.
+    enabled: true
+    jenkinsMemoryLim: 2Gi      # Jenkins memory limit.
+    jenkinsMemoryReq: 1500Mi   # Jenkins memory request.
+    jenkinsVolumeSize: 8Gi     # Jenkins volume size.
+    jenkinsJavaOpts_Xms: 512m  # The following three fields are JVM parameters.
+    jenkinsJavaOpts_Xmx: 512m
+    jenkinsJavaOpts_MaxRAM: 2g
+  events:                  # Whether to install KubeSphere events system. It provides a graphical web console for Kubernetes Events exporting, filtering and alerting in multi-tenant Kubernetes clusters.
+    enabled: true
+    ruler:
+      enabled: true
+      replicas: 2
+  logging:                 # (CPU: 57 m, Memory: 2.76 G) Whether to install KubeSphere logging system. Flexible logging functions are provided for log query, collection and management in a unified console. Additional log collectors can be added, such as Elasticsearch, Kafka and Fluentd.
+    enabled: true
+    logsidecarReplicas: 2
+  metrics_server:                    # (CPU: 56 m, Memory: 44.35 MiB) Whether to install metrics-server. IT enables HPA (Horizontal Pod Autoscaler).
+    enabled: false
+  monitoring:
+    # prometheusReplicas: 1            # Prometheus replicas are responsible for monitoring different segments of data source and provide high availability as well.
+    prometheusMemoryRequest: 400Mi   # Prometheus request memory.
+    prometheusVolumeSize: 20Gi       # Prometheus PVC size.
+    # alertmanagerReplicas: 1          # AlertManager Replicas.
+  multicluster:
+    clusterRole: none  # host | member | none  # You can install a solo cluster, or specify it as the role of host or member cluster.
+  networkpolicy:       # Network policies allow network isolation within the same cluster, which means firewalls can be set up between certain instances (Pods).
+    # Make sure that the CNI network plugin used by the cluster supports NetworkPolicy. There are a number of CNI network plugins that support NetworkPolicy, including Calico, Cilium, Kube-router, Romana and Weave Net.
+    enabled: true
+  notification:        # Email Notification support for the legacy alerting system, should be enabled/disabled together with the above alerting option.
+    enabled: true
+  openpitrix:          # (2 Core, 3.6 G) Whether to install KubeSphere Application Store. It provides an application store for Helm-based applications, and offer application lifecycle management.
+    enabled: true
+  servicemesh:         # (0.3 Core, 300 MiB) Whether to install KubeSphere Service Mesh (Istio-based). It provides fine-grained traffic management, observability and tracing, and offer visualization for traffic topology.
+    enabled: true
+</code></pre>
+<h5 id="15315-分别执行两个文件">1.5.3.1.5     分别执行两个文件</h5>
+<pre><code class="language-shell">kubectl apply -f kubesphere-installer.yaml
+kubectl apply -f cluster-configuration.yaml
+#或者直接用网络文件安装
+kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3.2.1/kubesphere-installer.yaml
+   
+kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3.2.1/cluster-configuration.yaml
+</code></pre>
+<h5 id="15316-监控安装的日志信息">1.5.3.1.6     监控安装的日志信息</h5>
+<pre><code class="language-shell">kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l app=ks-install -o jsonpath='{.items[0].metadata.name}') -f
+</code></pre>
+<h5 id="15317-查看pod启动状态信息">1.5.3.1.7     查看pod启动状态信息</h5>
+<pre><code class="language-shell">kubectl get pods -A
+</code></pre>
+<p>需要等待漫长的时间。</p>
+<h3 id="154-访问验证是否安装成功">1.5.4 访问验证是否安装成功</h3>
+<p>访问地址：</p>
+<p>http://192.168.40.131:30880/login</p>
+<p>帐号：admin</p>
+<p>密码：P@88w0rd</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-%E6%90%AD%E5%BB%BAnfs%E4%BD%9C%E4%B8%BA%E9%BB%98%E8%AE%A4sc%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9">1 搭建NFS作为默认sc（所有节点）</a>
+<ul>
+<li><a href="#11-%E9%85%8D%E7%BD%AEnfs%E6%9C%8D%E5%8A%A1%E5%99%A8">1.1   配置NFS服务器</a></li>
+<li><a href="#12-%E5%88%9B%E5%BB%BAnfs%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9B%AE%E5%BD%95%E4%B8%BB%E8%8A%82%E7%82%B9%E4%BD%9C%E4%B8%BA%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%BB%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C">1.2   创建nfs服务器目录（主节点作为服务器，主节点操作）</a></li>
+<li><a href="#13-%E5%90%AF%E5%8A%A8rpcbindnfs%E6%9C%8D%E5%8A%A1%E5%91%BD%E4%BB%A4">1.3   启动rpcbind,nfs服务命令</a></li>
+<li><a href="#14-%E6%A3%80%E6%9F%A5%E9%85%8D%E7%BD%AE%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88">1.4   检查配置是否生效</a></li>
+<li><a href="#15-%E6%B5%8B%E8%AF%95pod%E7%9B%B4%E6%8E%A5%E6%8C%82%E8%BD%BDnfs%E4%BA%86%E4%B8%BB%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C">1.5   测试Pod直接挂载NFS了（主节点操作）</a>
+<ul>
+<li><a href="#151-%E5%9C%A8opt%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAnginxyaml%E7%9A%84%E6%96%87%E4%BB%B6">1.5.1     在opt目录下创建一个nginx.yaml的文件</a></li>
+<li><a href="#152-%E5%86%99%E5%85%A5%E4%BB%A5%E4%B8%8B%E7%9A%84%E5%91%BD%E4%BB%A4">1.5.2     写入以下的命令</a></li>
+<li><a href="#153-%E5%BA%94%E7%94%A8%E8%AF%A5yaml%E7%9A%84pod%E6%9C%8D%E5%8A%A1">1.5.3     应用该yaml的pod服务</a></li>
+<li><a href="#154-%E6%A3%80%E6%9F%A5%E8%AF%A5pod%E6%98%AF%E5%90%A6%E5%85%81%E8%AE%B8%E7%8A%B6%E6%80%81">1.5.4     检查该pod是否允许状态</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2-%E6%90%AD%E5%BB%BAnfs-client">2   搭建NFS-Client</a>
+<ul>
+<li><a href="#21-%E5%AE%89%E8%A3%85%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B7%A5%E5%85%B7node%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C">2.1  安装客户端工具（node节点操作）</a></li>
+<li><a href="#22-%E5%88%9B%E5%BB%BA%E5%90%8C%E6%AD%A5%E6%96%87%E4%BB%B6%E5%A4%B9">2.2  创建同步文件夹</a></li>
+<li><a href="#23-%E5%B0%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84rootnfsmount%E5%92%8Cnfsdata%E5%81%9A%E5%90%8C%E6%AD%A5node%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C">2.3  将客户端的/root/nfsmount和/nfs/data/做同步（node节点操作）</a></li>
+</ul>
+</li>
+<li><a href="#3-%E8%AE%BE%E7%BD%AE%E5%8A%A8%E6%80%81%E4%BE%9B%E5%BA%94">3   设置动态供应</a>
+<ul>
+<li><a href="#31-%E5%88%9B%E5%BB%BAprovisionernfs%E7%8E%AF%E5%A2%83%E5%89%8D%E9%9D%A2%E5%B7%B2%E7%BB%8F%E6%90%AD%E5%A5%BD">3.1  创建provisioner（NFS环境前面已经搭好）</a>
+<ul>
+<li><a href="#311-%E5%85%88%E5%88%9B%E5%BB%BA%E6%8E%88%E6%9D%83master%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C">3.1.1   先创建授权（master节点操作）</a></li>
+<li><a href="#312-%E6%89%A7%E8%A1%8C%E5%88%9B%E5%BB%BAnfs%E7%9A%84yaml%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF">3.1.2   执行创建nfs的yaml文件信息</a></li>
+<li><a href="#313-%E5%A6%82%E6%9E%9C%E5%8F%91%E7%8E%B0pod%E6%9C%89%E9%97%AE%E9%A2%98%E6%83%B3%E5%88%A0%E9%99%A4pod%E8%BF%9B%E8%A1%8C%E9%87%8D%E6%96%B0kubectl-apply-f-nfs-rbacyaml%E7%9A%84%E8%AF%9D%E5%8F%AF%E4%BB%A5%E5%8F%82%E7%85%A7%E8%BF%99%E4%B8%AA%E5%8D%9A%E5%AE%A2%E6%96%87%E6%A1%A3">3.1.3   如果发现pod有问题，想删除pod进行重新kubectl apply-f nfs-rbac.yaml的话，可以参照这个博客文档：</a></li>
+<li><a href="#314-%E6%9F%A5%E7%9C%8Bpod%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%A1%E6%81%AF">3.1.4   查看pod的状态信息</a></li>
+<li><a href="#315-%E5%88%9B%E5%BB%BAstorageclassmaster%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C">3.1.5   创建storageclass（master节点操作）</a></li>
+<li><a href="#316-%E5%BA%94%E7%94%A8storageclass-nfsyaml%E6%96%87%E4%BB%B6">3.1.6   应用storageclass-nfs.yaml文件</a></li>
+<li><a href="#317-%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E7%9A%84%E9%A9%B1%E5%8A%A8">3.1.7   修改默认的驱动</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4-%E5%AE%89%E8%A3%85metrics-server">4   安装metrics-server</a>
+<ul>
+<li><a href="#41-%E5%87%86%E5%A4%87metrics-serveryaml%E6%96%87%E4%BB%B6%E4%B8%BB%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C">4.1  准备metrics-server.yaml文件（主节点操作）</a></li>
+<li><a href="#42-%E7%BC%96%E5%86%99%E4%BB%A5%E4%B8%8B%E7%9A%84%E5%86%85%E5%AE%B9">4.2  编写以下的内容</a></li>
+<li><a href="#43-%E5%BA%94%E7%94%A8%E8%AF%A5%E6%96%87%E4%BB%B6pod">4.3  应用该文件pod</a></li>
+<li><a href="#44-%E6%9F%A5%E7%9C%8B%E9%83%A8%E7%BD%B2%E7%9A%84%E5%BA%94%E7%94%A8%E4%BF%A1%E6%81%AF%E7%8A%B6%E6%80%81">4.4  查看部署的应用信息状态</a></li>
+<li><a href="#45-%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%9B%91%E6%8E%A7%E7%8A%B6%E6%80%81">4.5  查看系统的监控状态</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#5-%E5%AE%89%E8%A3%85kubesphere-v300">5 安装kubesphere v3.0.0</a>
+<ul>
+<li><a href="#51-%E6%96%87%E6%A1%A3%E5%9C%B0%E5%9D%80">5.1 文档地址</a></li>
+<li><a href="#152-%E9%83%A8%E7%BD%B2%E6%96%87%E6%A1%A3%E5%9C%B0%E5%9D%80">1.5.2 部署文档地址</a></li>
+<li><a href="#153-%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4%E8%AF%B4%E6%98%8Emaster%E8%8A%82%E7%82%B9">1.5.3 安装步骤说明（master节点）</a>
+<ul>
+<li><a href="#1531-%E5%AE%89%E8%A3%85%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">1.5.3.1   安装集群配置文件</a>
+<ul>
+<li><a href="#15311-%E5%87%86%E5%A4%87%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6cluster-configurationyaml">1.5.3.1.1     准备配置文件cluster-configuration.yaml</a></li>
+<li><a href="#15312-%E7%BC%96%E5%86%99%E4%BB%A5%E4%B8%8B%E7%9A%84%E5%86%85%E5%AE%B9%E9%85%8D%E7%BD%AE">1.5.3.1.2     编写以下的内容配置</a></li>
+<li><a href="#15313-%E5%87%86%E5%A4%87%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6kubesphere-installeryaml">1.5.3.1.3     准备配置文件kubesphere-installer.yaml</a></li>
+<li><a href="#15314-%E7%BC%96%E5%86%99%E4%BB%A5%E4%B8%8B%E7%9A%84%E5%86%85%E5%AE%B9%E9%85%8D%E7%BD%AE">1.5.3.1.4    编写以下的内容配置</a></li>
+<li><a href="#15315-%E5%88%86%E5%88%AB%E6%89%A7%E8%A1%8C%E4%B8%A4%E4%B8%AA%E6%96%87%E4%BB%B6">1.5.3.1.5     分别执行两个文件</a></li>
+<li><a href="#15316-%E7%9B%91%E6%8E%A7%E5%AE%89%E8%A3%85%E7%9A%84%E6%97%A5%E5%BF%97%E4%BF%A1%E6%81%AF">1.5.3.1.6     监控安装的日志信息</a></li>
+<li><a href="#15317-%E6%9F%A5%E7%9C%8Bpod%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81%E4%BF%A1%E6%81%AF">1.5.3.1.7     查看pod启动状态信息</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#154-%E8%AE%BF%E9%97%AE%E9%AA%8C%E8%AF%81%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F">1.5.4 访问验证是否安装成功</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/WOO39eqh2/">
+                  <span class="post-title">
+                    harbor自建镜像仓库&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
