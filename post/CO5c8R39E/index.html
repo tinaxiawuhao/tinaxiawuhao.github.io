@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="代理模式 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="代理模式" />
-  <meta property="og:url" content="http://localhost:4000/post/CO5c8R39E/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/CO5c8R39E/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,9 +147,9 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/RvlbUayk-/" class="tag">spring</a>
+                <a href="https://tinaxiawuhao.github.io/tag/RvlbUayk-/" class="tag">spring</a>
                 
-                <a href="http://localhost:4000/tag/gvtXj5hZZ/" class="tag">java</a>
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
                 
               </span>
               <h1>代理模式</h1>
@@ -170,7 +170,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/CO5c8R39E.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/CO5c8R39E.png" alt="封面图">
           </img>
           
           <p>静态代理、JDK动态代理以及CGLIB动态代理<br>
@@ -179,7 +179,7 @@
 <h2 id="静态代理">静态代理</h2>
 <p>静态代理其实就是在程序运行之前，提前写好被代理方法的代理类，编译后运行。在程序运行之前，class已经存在。<br>
 下面我们实现一个静态代理demo:</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1634527030816.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1634527030816.png" alt="" loading="lazy"></figure>
 <p>定义一个接口Target</p>
 <pre><code class="language-java">package com.test.proxy;
 
@@ -249,7 +249,7 @@ execute</p>
 <h2 id="动态代理">动态代理</h2>
 <h3 id="jdk代理">jdk代理</h3>
 <p>动态代理主要是通过反射机制，在运行时动态生成所需代理的class.</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1634527039701.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1634527039701.png" alt="" loading="lazy"></figure>
 <p>接口</p>
 <pre><code class="language-java">package com.test.dynamic;
 
@@ -324,7 +324,7 @@ execute</p>
 <p>无论是动态代理还是静态带领，都需要定义接口，然后才能实现代理功能。这同样存在局限性，因此，为了解决这个问题，出现了第三种代理方式：cglib代理。</p>
 <h3 id="cglib代理">cglib代理</h3>
 <p>CGLib采用了非常底层的字节码技术，其原理是通过字节码技术为一个类创建子类，并在子类中采用方法拦截的技术拦截所有父类方法的调用，顺势织入横切逻辑。JDK动态代理与CGLib动态代理均是实现Spring AOP的基础。</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1634527048720.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1634527048720.png" alt="" loading="lazy"></figure>
 <p>目标类</p>
 <pre><code class="language-java">package com.test.cglib;
 
@@ -418,7 +418,7 @@ result</p>
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/QvbaHSogu/">
+                <a href="https://tinaxiawuhao.github.io/post/QvbaHSogu/">
                   <span class="post-title">
                     OOM&rarr;
                   </span>
@@ -428,7 +428,7 @@ result</p>
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/2nzKhQbUe/">
+                 <a href="https://tinaxiawuhao.github.io/post/2nzKhQbUe/">
                    <span class="post-title">
                      CAS/ABA/AtomicReference&rarr;
                    </span>
@@ -475,7 +475,7 @@ result</p>
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -490,10 +490,10 @@ result</p>
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -538,11 +538,11 @@ result</p>
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -563,7 +563,7 @@ result</p>
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

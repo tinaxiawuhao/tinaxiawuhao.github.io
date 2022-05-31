@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="第三章 Flink 部署 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="第三章 Flink 部署" />
-  <meta property="og:url" content="http://localhost:4000/post/aPsJFkgVZ/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/aPsJFkgVZ/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/1WJzfk7Hi/" class="tag">flink</a>
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
                 
               </span>
               <h1>第三章 Flink 部署</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/aPsJFkgVZ.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/aPsJFkgVZ.png" alt="封面图">
           </img>
           
           <h2 id="standalone-模式">Standalone 模式</h2>
@@ -176,22 +176,22 @@
 <p>解压缩 flink-1.10.1-bin-scala_2.12.tgz， 进入 conf 目录中。</p>
 <ol>
 <li>修改 flink/conf/flink-conf.yaml 文件：<br>
-<img src="http://localhost:4000/post-images/1617953255377.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953255377.png" alt="" loading="lazy"></li>
 <li>修改 /conf/slaves 文件：<br>
-<img src="http://localhost:4000/post-images/1617953264929.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953264929.png" alt="" loading="lazy"></li>
 <li>分发给另外两台机子：<br>
-<img src="http://localhost:4000/post-images/1617953282098.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953282098.png" alt="" loading="lazy"></li>
 <li>启动<br>
-<img src="http://localhost:4000/post-images/1617953292985.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953292985.png" alt="" loading="lazy"><br>
 访问 http://localhost:8081 可以对 flink 集群和任务进行监控管理。<br>
-<img src="http://localhost:4000/post-images/1617953298218.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953298218.png" alt="" loading="lazy"></li>
 </ol>
 <h3 id="提交任务">提交任务</h3>
 <ol>
 <li>准备数据文件（ 如果需要）<br>
-<img src="http://localhost:4000/post-images/1617953344217.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953344217.png" alt="" loading="lazy"></li>
 <li>把含数据文件的文件夹， 分发到 taskmanage 机器中<br>
-<img src="http://localhost:4000/post-images/1617953351280.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953351280.png" alt="" loading="lazy"></li>
 </ol>
 <p style="text-indent:2em">如 果 从 文 件 中 读 取 数 据 ， 由 于 是 从 本 地 磁 盘 读 取 ， 实 际 任 务 会 被 分 发 到taskmanage 的机器中， 所以要把目标文件分发。</p>
 <ol start="3">
@@ -200,13 +200,13 @@
 <pre><code class="language-sh">./flink run -c com.atguigu.wc.StreamWordCount –p 2
 FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar --host lcoalhost –port 7777
 </code></pre>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1617953534756.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1617953534756.png" alt="" loading="lazy"></figure>
 <ol start="4">
 <li>到目标文件夹中查看计算结果<br>
 注 意 ： 如 果 计 算 结 果 输 出 到 文 件 ， 会 保 存 到 taskmanage 的 机 器 下 ， 不 会 在jobmanage 下。<br>
-<img src="http://localhost:4000/post-images/1617953549746.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953549746.png" alt="" loading="lazy"></li>
 <li>在 webui 控制台查看计算过程<br>
-<img src="http://localhost:4000/post-images/1617953465087.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1617953465087.png" alt="" loading="lazy"></li>
 </ol>
 <h2 id="yarn-模式">Yarn 模式</h2>
 <p style="text-indent:2em">以 Yarn 模式部署 Flink 任务时， 要求 Flink 是有 Hadoop 支持的版本， Hadoop环境需要保证版本在 2.2 以上， 并且集群中安装有 HDFS 服务</p>
@@ -215,7 +215,7 @@ FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar --host lcoalhost –port 77
 <ol>
 <li>
 <p>Session-cluster 模式：</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1617953616812.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1617953616812.png" alt="" loading="lazy"></figure>
 </li>
 </ol>
 <p style="text-indent:2em">Session-Cluster 模式需要先启动集群， 然后再提交作业， 接着会向 yarn 申请一块空间后， 资源永远保持不变。 如果资源满了， 下一个作业就无法提交， 只能等到
@@ -225,7 +225,7 @@ yarn 中的其中一个作业执行完成后， 释放了资源， 下个作业�
 <ol>
 <li>Per-Job-Cluster 模式：</li>
 </ol>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1617953630802.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1617953630802.png" alt="" loading="lazy"></figure>
 <p style="text-indent:2em">一个 Job 会对应一个集群， 每提交一个作业会根据自身的情况， 都会单独向 yarn申请资源， 直到作业执行完成， 一个作业的失败与否并不会影响下一个作业的正常
 提交和运行。 独享 Dispatcher 和 ResourceManager， 按需接受资源申请； 适合规模大
 长时间运行的作业。
@@ -247,7 +247,7 @@ taskmanager 的 slot 的个数为 1， 有时可以多一些 taskmanager， 做�
 -nm： yarn 的 appName(现在 yarn 的 ui 上的名字)。<br>
 -d： 后台执行。</p>
 </blockquote>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1617953810515.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1617953810515.png" alt="" loading="lazy"></figure>
 <ol start="3">
 <li>执行任务</li>
 </ol>
@@ -257,7 +257,7 @@ FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar --host lcoalhost –port 77
 <ol start="4">
 <li>去 yarn 控制台查看任务状态</li>
 </ol>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1617953816721.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1617953816721.png" alt="" loading="lazy"></figure>
 <ol start="5">
 <li>取消 yarn-session</li>
 </ol>
@@ -322,7 +322,7 @@ kubectl create -f taskmanager-deployment.yaml
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/pQQ9j5lFD/">
+                <a href="https://tinaxiawuhao.github.io/post/pQQ9j5lFD/">
                   <span class="post-title">
                     第二章 快速上手&rarr;
                   </span>
@@ -332,7 +332,7 @@ kubectl create -f taskmanager-deployment.yaml
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/4_EhGqVjY/">
+                 <a href="https://tinaxiawuhao.github.io/post/4_EhGqVjY/">
                    <span class="post-title">
                      第四章 Flink 运行架构&rarr;
                    </span>
@@ -379,7 +379,7 @@ kubectl create -f taskmanager-deployment.yaml
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -394,10 +394,10 @@ kubectl create -f taskmanager-deployment.yaml
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -442,11 +442,11 @@ kubectl create -f taskmanager-deployment.yaml
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -467,7 +467,7 @@ kubectl create -f taskmanager-deployment.yaml
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

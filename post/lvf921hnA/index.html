@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="第五章 Flink 流处理 API | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="第五章 Flink 流处理 API" />
-  <meta property="og:url" content="http://localhost:4000/post/lvf921hnA/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/lvf921hnA/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/1WJzfk7Hi/" class="tag">flink</a>
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
                 
               </span>
               <h1>第五章 Flink 流处理 API</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/lvf921hnA.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/lvf921hnA.png" alt="封面图">
           </img>
           
           <h2 id="environment">Environment</h2>
@@ -183,7 +183,7 @@ ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment()
 StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment()
 </code></pre>
 <p>如果没有设置并行度， 会以 flink-conf.yaml 中的配置为准， 默认是 1。<br>
-<img src="http://localhost:4000/post-images/1618450455593.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1618450455593.png" alt="" loading="lazy"></p>
 <h3 id="createlocalenvironment">createLocalEnvironment</h3>
 <p>返回本地执行环境， 需要在调用时指定默认的并行度。</p>
 <pre><code class="language-java"> LocalStreamEnvironment localEnvironment = StreamExecutionEnvironment.createLocalEnvironment(1);
@@ -246,7 +246,7 @@ public class SourceReading_Collection {
     }
 }
 </code></pre>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1618820709627.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1618820709627.png" alt="" loading="lazy"></figure>
 <h3 id="从文件读取数据">从文件读取数据</h3>
 <pre><code class="language-java">public class SourceReading_File {
     public static void main(String[] args) throws Exception {
@@ -313,7 +313,7 @@ public class StreamingKafkaSource {
     }
 }
 </code></pre>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1618821668432.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1618821668432.png" alt="" loading="lazy"></figure>
 <h3 id="自定义-source">自定义 Source</h3>
 <p style="text-indent:2em">除了以上的 source 数据来源， 我们还可以自定义 source。 需要做的， 只是传入一个 SourceFunction 就可以。 具体调用如下：</p>
 <pre><code class="language-java"> env.addSource( new MySensorSource() )
@@ -389,7 +389,7 @@ public class MySelfSourceTest01 {
 <h2 id="transform">Transform</h2>
 <p>转换算子</p>
 <h3 id="map">map</h3>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1618450860405.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1618450860405.png" alt="" loading="lazy"></figure>
 <pre><code class="language-java">stream.map { x =&gt; x * 2 }
 // 1.map.把string转化成长度输出
 //参数T  R
@@ -424,7 +424,7 @@ DataStream&lt;String&gt; flatMapStream = stringDataStream.flatMap(new FlatMapFun
 
 </code></pre>
 <h3 id="filter">Filter</h3>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1618450868563.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1618450868563.png" alt="" loading="lazy"></figure>
 <pre><code class="language-java">stream.filter{
     x =&gt; x == 1
 }
@@ -437,7 +437,7 @@ DataStream&lt;String&gt; filterStream = stringDataStream.filter(new FilterFuncti
 });
 </code></pre>
 <h3 id="keyby">KeyBy</h3>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1618450909734.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1618450909734.png" alt="" loading="lazy"></figure>
 <p><code>DataStream → KeyedStream</code>： 逻辑地将一个流拆分成不相交的分区， 每个分区包含具有相同 key 的元素， 在内部以 hash 的形式实现的。</p>
 <pre><code class="language-java"> DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; windowCounts = text
                 .flatMap(new FlatMapFunction&lt;String, Tuple2&lt;String, Integer&gt;&gt;() {
@@ -476,12 +476,12 @@ DataStream&lt;String&gt; filterStream = stringDataStream.filter(new FilterFuncti
 </code></pre>
 <h3 id="split-和-select">Split 和 Select</h3>
 <p>Split<br>
-<img src="http://localhost:4000/post-images/1618450986439.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1618450986439.png" alt="" loading="lazy"><br>
 图 Split<br>
 <code>DataStream → SplitStream</code>： 根据某些特征把一个 DataStream 拆分成两个或者<br>
 多个 DataStream。<br>
 Select<br>
-<img src="http://localhost:4000/post-images/1618450993631.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1618450993631.png" alt="" loading="lazy"><br>
 图 Select<br>
 <code>SplitStream→ DataStream</code>： 从一个 SplitStream 中获取一个或者多个<br>
 DataStream。<br>
@@ -512,13 +512,13 @@ DataStream。<br>
     }
 </code></pre>
 <h3 id="connect-和-comap">Connect 和 CoMap</h3>
-<p><img src="http://localhost:4000/post-images/1618451022910.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618451022910.png" alt="" loading="lazy"><br>
 图 Connect 算子<br>
 <code>DataStream,DataStream → ConnectedStreams</code>： 连接两个保持他们类型的数<br>
 据流， 两个数据流被 Connect 之后， 只是被放在了一个同一个流中， 内部依然保持<br>
 各自的数据和形式不发生任何变化， 两个流相互独立。</p>
 <p><code>CoMap</code>,<code>CoFlatMap</code><br>
-<img src="http://localhost:4000/post-images/1618451082833.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1618451082833.png" alt="" loading="lazy"><br>
 图 CoMap/CoFlatMap</p>
 <p><code>ConnectedStreams → DataStream</code>： 作用于 ConnectedStreams 上， 功能与 map<br>
 和 flatMap 一样， 对 ConnectedStreams 中的每一个 Stream 分别进行 map 和 flatMap<br>
@@ -532,7 +532,7 @@ DataStream coMap = connected.map(
 )
 </code></pre>
 <h3 id="union">Union</h3>
-<p><img src="http://localhost:4000/post-images/1618451109858.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618451109858.png" alt="" loading="lazy"><br>
 图 Union<br>
 <code>DataStream → DataStream</code>： 对两个或者两个以上的 DataStream 进行 union 操<br>
 作， 产生一个包含所有 DataStream 元素的新 DataStream。</p>
@@ -696,7 +696,7 @@ DataStream&lt;String&gt; flinkTweets = tweets.filter((value) -&gt;value.contains
 输出操作都要利用 Sink 完成。 最后通过类似如下方式完成整个任务最终输出操作。
 stream.addSink(new MySink(xxxx))
 官方提供了一部分的框架的 sink。 除此以外， 需要用户自定义实现 sink。</p>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1618451579569.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1618451579569.png" alt="" loading="lazy"></figure>
 <h3 id="kafka">Kafka</h3>
 <pre><code class="language-java">pom.xml
 &lt;!--
@@ -876,7 +876,7 @@ dataStream.addSink( esSinkBuilder.build() )
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/4_EhGqVjY/">
+                <a href="https://tinaxiawuhao.github.io/post/4_EhGqVjY/">
                   <span class="post-title">
                     第四章 Flink 运行架构&rarr;
                   </span>
@@ -886,7 +886,7 @@ dataStream.addSink( esSinkBuilder.build() )
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/FnbZ5kiHQ/">
+                 <a href="https://tinaxiawuhao.github.io/post/FnbZ5kiHQ/">
                    <span class="post-title">
                      第六章 Flink 中的 Window&rarr;
                    </span>
@@ -933,7 +933,7 @@ dataStream.addSink( esSinkBuilder.build() )
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -948,10 +948,10 @@ dataStream.addSink( esSinkBuilder.build() )
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -996,11 +996,11 @@ dataStream.addSink( esSinkBuilder.build() )
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -1021,7 +1021,7 @@ dataStream.addSink( esSinkBuilder.build() )
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="第四章 Flink 运行架构 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="第四章 Flink 运行架构" />
-  <meta property="og:url" content="http://localhost:4000/post/4_EhGqVjY/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/4_EhGqVjY/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/1WJzfk7Hi/" class="tag">flink</a>
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
                 
               </span>
               <h1>第四章 Flink 运行架构</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/4_EhGqVjY.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/4_EhGqVjY.png" alt="封面图">
           </img>
           
           <h2 id="flink-运行时的组件">Flink 运行时的组件</h2>
@@ -199,17 +199,17 @@ YARN、 Mesos、 K8s， 以及 standalone 部署。 当 JobManager 申请插槽�
 用提交运行的方式。</p>
 <h2 id="任务提交流程">任务提交流程</h2>
 <p>我们来看看当一个应用提交执行时， Flink 的各个组件是如何交互协作的：</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1618219646371.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1618219646371.png" alt="" loading="lazy"></figure>
 <p>图 任务提交和组件交互流程</p>
 <p style="text-indent:2em">上图是从一个较为高层级的视角， 来看应用中各组件的交互协作。 如果部署的集群环境
 不同（例如 YARN， Mesos， Kubernetes， standalone 等） ， 其中一些步骤可以被省略， 或是
 有些组件会运行在同一个 JVM 进程中。</p>
 <p style="text-indent:2em">具体地， 如果我们将 Flink 集群部署到 YARN 上， 那么就会有如下的提交流程：</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1618219672649.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1618219672649.png" alt="" loading="lazy"></figure>
 <p>图 Yarn 模式任务提交流程</p>
 <p style="text-indent:2em">Flink 任 务 提 交 后 ， Client 向 HDFS 上 传 Flink 的 Jar 包 和 配 置 ， 之 后 向 YarnResourceManager 提 交 任 务 ， ResourceManager 分 配 Container 资 源 并 通 知 对 应 的NodeManager 启动 ApplicationMaster， ApplicationMaster 启动后加载 Flink 的 Jar 包和配置构建环境， 然后启动 JobManager， 之后 ApplicationMaster 向 ResourceManager申 请 资 源 启 动 TaskManager ， ResourceManager 分 配 Container 资 源 后 ， 由ApplicationMaster 通 知 资 源 所 在 节 点 的 NodeManager 启 动 TaskManager ，NodeManager 加载 Flink 的 Jar 包和配置构建环境并启动 TaskManager， TaskManager启动后向 JobManager 发送心跳包， 并等待 JobManager 向其分配任务。</p>
 <h2 id="任务调度原理">任务调度原理</h2>
-<p><img src="http://localhost:4000/post-images/1618219735041.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618219735041.png" alt="" loading="lazy"><br>
 图 任务调度原理</p>
 <p style="text-indent:2em">客 户 端 不 是 运 行 时 和 程 序 执 行 的 一 部 分 ， 但 它 用 于 准 备 并 发 送
 dataflow(JobGraph)给 Master(JobManager)， 然后， 客户端断开连接或者维持连接以
@@ -233,22 +233,22 @@ TaskManager 一个 slot， 那将意味着每个 task group 运行在独立的 J
 subtask 可以共享同一个 JVM。 而在同一个 JVM 进程中的 task 将共享 TCP 连接（ 基
 于多路复用） 和心跳消息。 它们也可能共享数据集和数据结构， 因此这减少了每个
 task 的负载。</p>
-<p><img src="http://localhost:4000/post-images/1618219822454.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618219822454.png" alt="" loading="lazy"><br>
 图 TaskManager 与 Slot<br>
 图 子任务共享</p>
 <p style="text-indent:2em">默认情况下， Flink 允许子任务共享 slot， 即使它们是不同任务的子任务（ 前提是它们来自同一个 job） 。 这样的结果是， 一个 slot 可以保存作业的整个管道。</p>
 <p style="text-indent:2em">Task Slot 是静态的概念， 是指 TaskManager 具有的并发执行能力， 可以通过参数 taskmanager.numberOfTaskSlots 进行配置； 而并行度 parallelism 是动态概念，即 TaskManager 运行程序时实际使用的并发能力， 可以通过参数 parallelism.default
 进行配置。</p>
 <p style="text-indent:2em">也就是说， 假设一共有 3 个 TaskManager， 每一个 TaskManager 中的分配 3 个TaskSlot， 也就是每个 TaskManager 可以接收 3 个 task， 一共 9 个 TaskSlot， 如果我们设置 parallelism.default=1， 即运行程序默认的并行度为 1， 9 个 TaskSlot 只用了 1个， 有 8 个空闲， 因此， 设置合适的并行度才能提高效率。</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1618219838522.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1618219838522.png" alt="" loading="lazy"></figure>
 <h3 id="程序与数据流dataflow">程序与数据流（DataFlow）</h3>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1618219930935.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1618219930935.png" alt="" loading="lazy"></figure>
 <p style="text-indent:2em">所有的 Flink 程序都是由三部分组成的： `Source` 、 `Transformation` 和 `Sink`。</p>
 <p style="text-indent:2em">Source 负责读取数据源， Transformation 利用各种算子进行处理加工， Sink 负责输出。</p>
 <p style="text-indent:2em">在运行时， Flink 上运行的程序会被映射成“ 逻辑数据流” （ dataflows） ， 它包含了这三部分。 每一个 dataflow 以一个或多个 sources 开始以一个或多个 sinks 结束。 dataflow 类似于任意的有向无环图（ DAG） 。 在大部分情况下， 程序中的转换
 运算（ transformations） 跟 dataflow 中的算子（ operator） 是一一对应的关系， 但有
 时候， 一个 transformation 可能对应多个 operator。</p>
-<p><img src="http://localhost:4000/post-images/1618219939601.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618219939601.png" alt="" loading="lazy"><br>
 图 程序与数据流</p>
 <h3 id="执行图executiongraph">执行图（ExecutionGraph）</h3>
 <p style="text-indent:2em">由 Flink 程序直接映射成的数据流图是 StreamGraph， 也被称为逻辑流图， 因为它们表示的是计算逻辑的高级视图。 为了执行一个流处理程序， Flink 需要将逻辑流
@@ -259,7 +259,7 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
 <code>JobGraph</code>： StreamGraph 经过优化后生成了 JobGraph， 提交给 JobManager 的数据结构。 主要的优化为， 将多个符合条件的节点 chain 在一起作为一个节点， 这样可以减少数据在节点之间流动所需要的序列化/反序列化/传输消耗。<br>
 <code>ExecutionGraph</code> ： JobManager 根 据 JobGraph 生 成 ExecutionGraph 。<code>ExecutionGraph</code> 是 JobGraph 的并行化版本， 是调度层最核心的数据结构。<br>
 <code>物理执行图</code>： JobManager 根据 ExecutionGraph 对 Job 进行调度后， 在各个TaskManager 上部署 Task 后形成的“ 图” ， 并不是一个具体的数据结构。</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1618219998246.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1618219998246.png" alt="" loading="lazy"></figure>
 <h3 id="并行度parallelism">并行度（Parallelism）</h3>
 <p style="text-indent:2em">Flink 程序的执行具有并行、 分布式的特性。</p>
 <p style="text-indent:2em">在执行过程中， 一个流（ stream） 包含一个或多个分区（ stream partition） ， 而
@@ -268,7 +268,7 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
 <p style="text-indent:2em">一个特定算子的子任务（ subtask） 的个数被称之为其并行度（ parallelism） 。
 一般情况下， 一个流程序的并行度， 可以认为就是其所有算子中最大的并行度。 一
 个程序中， 不同的算子可能具有不同的并行度。</p>
-<p><img src="http://localhost:4000/post-images/1618220010684.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618220010684.png" alt="" loading="lazy"><br>
 图 并行数据流</p>
 <p style="text-indent:2em">Stream 在算子之间传输数据的形式可以是 one-to-one(forwarding)的模式也可以是 redistributing 的模式， 具体是哪一种形式， 取决于算子的种类。</p>
 <p><code>One-to-one</code>： stream(比如在 source 和 map operator 之间)维护着分区以及元素的<br>
@@ -285,7 +285,7 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
 <h3 id="任务链operator-chains">任务链（Operator Chains）</h3>
 <p style="text-indent:2em">相同并行度的 one to one 操作， Flink 这样相连的算子链接在一起形成一个 task，原来的算子成为里面的一部分。 将算子链接成 task 是非常有效的优化： 它能减少线程之间的切换和基于缓存区的数据交换， 在减少时延的同时提升吞吐量。 链接的行
 为可以在编程 API 中进行指定。</p>
-<p><img src="http://localhost:4000/post-images/1618220048787.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618220048787.png" alt="" loading="lazy"><br>
 图 task 与 operator chains</p>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
@@ -312,7 +312,7 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/aPsJFkgVZ/">
+                <a href="https://tinaxiawuhao.github.io/post/aPsJFkgVZ/">
                   <span class="post-title">
                     第三章 Flink 部署&rarr;
                   </span>
@@ -322,7 +322,7 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/lvf921hnA/">
+                 <a href="https://tinaxiawuhao.github.io/post/lvf921hnA/">
                    <span class="post-title">
                      第五章 Flink 流处理 API&rarr;
                    </span>
@@ -369,7 +369,7 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -384,10 +384,10 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -432,11 +432,11 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -457,7 +457,7 @@ Flink 中的执行图可以分成四层： StreamGraph -> JobGraph -> ExecutionG
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

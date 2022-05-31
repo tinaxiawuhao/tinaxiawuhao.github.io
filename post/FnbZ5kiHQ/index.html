@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="第六章 Flink 中的 Window | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="第六章 Flink 中的 Window" />
-  <meta property="og:url" content="http://localhost:4000/post/FnbZ5kiHQ/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/FnbZ5kiHQ/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/1WJzfk7Hi/" class="tag">flink</a>
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
                 
               </span>
               <h1>第六章 Flink 中的 Window</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/FnbZ5kiHQ.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/FnbZ5kiHQ.png" alt="封面图">
           </img>
           
           <h2 id="window">Window</h2>
@@ -188,7 +188,7 @@
 特点： <code>时间对齐</code>， <code>窗口长度固定</code>， <code>没有重叠</code>。</p>
 <p style="text-indent:2em">滚动窗口分配器将每个元素分配到一个指定窗口大小的窗口中， 滚动窗口有一个固定的大小， 并且不会出现重叠。 例如： 如果你指定了一个 5 分钟大小的滚动窗
 口， 窗口的创建如下图所示：</p>
-<p><img src="http://localhost:4000/post-images/1618471104246.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618471104246.png" alt="" loading="lazy"><br>
 图 滚动窗口<br>
 适用场景： 适合做 BI 统计等（ 做每个时间段的聚合计算） 。</p>
 <h4 id="滑动窗口sliding-windows">滑动窗口（Sliding Windows）</h4>
@@ -197,7 +197,7 @@
 <p style="text-indent:2em">滑动窗口分配器将元素分配到固定长度的窗口中， 与滚动窗口类似， 窗口的大小由窗口大小参数来配置， 另一个窗口滑动参数控制滑动窗口开始的频率。 因此，
 滑动窗口如果滑动参数小于窗口大小的话， 窗口是可以重叠的， 在这种情况下元素会被分配到多个窗口中。</p>
 <p style="text-indent:2em">例如， 你有 10 分钟的窗口和 5 分钟的滑动， 那么每个窗口中 5 分钟的窗口里包含着上个 10 分钟产生的数据， 如下图所示：</p>
-<p><img src="http://localhost:4000/post-images/1618471120950.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618471120950.png" alt="" loading="lazy"><br>
 图 滑动窗口<br>
 适用场景： 对最近一个时间段内的统计（ 求某接口最近 5min 的失败率来决定是<br>
 否要报警） 。</p>
@@ -208,7 +208,7 @@
 闭。 一个 session 窗口通过一个 session 间隔来配置， 这个 session 间隔定义了非活跃
 周期的长度， 当这个非活跃周期产生， 那么当前的 session 将关闭并且后续的元素将
 被分配到新的 session 窗口中去。</p>
-<p><img src="http://localhost:4000/post-images/1618471406934.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618471406934.png" alt="" loading="lazy"><br>
 图 会话窗口</p>
 <h2 id="window-api">Window API</h2>
 <h3 id="timewindow">TimeWindow</h3>
@@ -331,7 +331,7 @@ ProcessWindowFunction 就是一个全窗口函数。</li>
 <li>sideOutputLateData() —— 将迟到的数据放入侧输出流</li>
 <li>getSideOutput() —— 获取侧输出</li>
 </ol>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1618472074436.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1618472074436.png" alt="" loading="lazy"></figure>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
@@ -366,7 +366,7 @@ ProcessWindowFunction 就是一个全窗口函数。</li>
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/lvf921hnA/">
+                <a href="https://tinaxiawuhao.github.io/post/lvf921hnA/">
                   <span class="post-title">
                     第五章 Flink 流处理 API&rarr;
                   </span>
@@ -376,7 +376,7 @@ ProcessWindowFunction 就是一个全窗口函数。</li>
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/5uA_yv-aO/">
+                 <a href="https://tinaxiawuhao.github.io/post/5uA_yv-aO/">
                    <span class="post-title">
                      第六章 Flink 的Window 操作&rarr;
                    </span>
@@ -423,7 +423,7 @@ ProcessWindowFunction 就是一个全窗口函数。</li>
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -438,10 +438,10 @@ ProcessWindowFunction 就是一个全窗口函数。</li>
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -486,11 +486,11 @@ ProcessWindowFunction 就是一个全窗口函数。</li>
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -511,7 +511,7 @@ ProcessWindowFunction 就是一个全窗口函数。</li>
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

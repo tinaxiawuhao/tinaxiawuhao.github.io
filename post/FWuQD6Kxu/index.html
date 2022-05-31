@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="redis概述四 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="redis概述四" />
-  <meta property="og:url" content="http://localhost:4000/post/FWuQD6Kxu/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/FWuQD6Kxu/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/nWrs6l_iw/" class="tag">redis</a>
+                <a href="https://tinaxiawuhao.github.io/tag/nWrs6l_iw/" class="tag">redis</a>
                 
               </span>
               <h1>redis概述四</h1>
@@ -168,13 +168,13 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/FWuQD6Kxu.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/FWuQD6Kxu.png" alt="封面图">
           </img>
           
           <h3 id="集群方案">集群方案</h3>
 <h4 id="1redis-主从架构">1，Redis 主从架构</h4>
 <p>单机的 redis，能够承载的 QPS 大概就在上万到几万不等。对于缓存来说，一般都是用来支撑<strong>读高并发</strong>的。因此架构做成主从(master-slave)架构，一主多从，主负责写，并且将数据复制到其它的 slave 节点，从节点负责读。所有的<strong>读请求全部走从节点</strong>。这样也可以很轻松实现水平扩容，<strong>支撑读高并发</strong>。</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1620717339756.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620717339756.png" alt="" loading="lazy"></figure>
 <p>redis replication -&gt; 主从架构 -&gt; 读写分离 -&gt; 水平扩容支撑读高并发</p>
 <p><strong>redis replication 的核心机制</strong></p>
 <ul>
@@ -193,7 +193,7 @@
 <p>同时还会将从客户端 client 新收到的所有写命令缓存在内存中。RDB 文件生成完毕后， master 会将这个 RDB 发送给 slave，slave 会先<strong>写入本地磁盘，然后再从本地磁盘加载到内存</strong>中，</p>
 <p>接着 master 会将内存中缓存的写命令发送到 slave，slave 也会同步这些数据。</p>
 <p>slave node 如果跟 master node 有网络故障，断开了连接，会自动重连，连接之后 master node 仅会复制给 slave 部分缺少的数据。</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1620717355448.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620717355448.png" alt="" loading="lazy"></figure>
 <p><strong>过程原理</strong></p>
 <ol>
 <li>当从库和主库建立MS关系后，会向主数据库发送SYNC命令</li>
@@ -205,7 +205,7 @@
 <p><strong>缺点</strong></p>
 <p>所有的slave节点数据的复制和同步都由master节点来处理，会照成master节点压力太大，使用主从从结构来解决</p>
 <h4 id="2哨兵模式">2，哨兵模式</h4>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1620716695309.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1620716695309.png" alt="" loading="lazy"></figure>
 <p><strong>哨兵的介绍</strong></p>
 <p>sentinel，中文名是哨兵。哨兵是 redis 集群机构中非常重要的一个组件，主要有以下功能：</p>
 <ul>
@@ -224,32 +224,32 @@
 <li>哨兵至少需要 3 个实例，来保证自己的健壮性。</li>
 <li>哨兵 + redis 主从的部署架构，是<strong>不保证数据零丢失</strong>的，只能保证 redis 集群的高可用性。</li>
 <li>对于哨兵 + redis 主从这种复杂的部署架构，尽量在测试环境和生产环境，都进行充足的测试和演练。<br>
-<img src="http://localhost:4000/post-images/1620717166180.png" alt="" loading="lazy"></li>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717166180.png" alt="" loading="lazy"></li>
 </ul>
 <h4 id="分布式和哨兵">分布式和哨兵</h4>
 <p>Redis主从复制模式下， 一旦主节点出现了故障不可达， 需要人工干预进行故障转移， 无论对于Redis的应用方还是运维方都带来了很大的不便。对于应用方来说无法及时感知到主节点的变化， 必然会造成一定的写数据丢失和读数据错误， 甚至可能造成应用方服务不可用。 对于Redis的运维方来说， 整个故障转移的过程是需要人工来介入的， 故障转移实时性和准确性上都无法得到保障。考虑到这点， 有些公司把上述流程自动化了， 但是仍然存在如下问题： 第一， 判断节点不可达的机制是否健全和标准。 第二， 如果有多个从节点， 怎样保证只有一个被晋升为主节点。 第三，通知客户端新的主节点机制是否足够健壮。 Redis Sentinel正是用于解决这些问题<br>
-<img src="http://localhost:4000/post-images/1620716970068.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620716970068.png" alt="" loading="lazy"><br>
 Redis Sentinel是一个分布式架构， 其中包含若干个Sentinel节点和Redis数据节点， 每个Sentinel节点会对数据节点和其余Sentinel节点进行监控， 当它发现节点不可达时， 会对节点做下线标识。 如果被标识的是主节点， 它还会和其他Sentinel节点进行“协商”， 当大多数Sentinel节点都认为主节点不可达时， 它们会选举出一个Sentinel节点来完成自动故障转移的工作， 同时会将这个变化实时通知给Redis应用方。 整个过程完全是自动的， 不需要人工来介入， 所以这套方案很有效地解决了Redis的高可用问题<br>
-<img src="http://localhost:4000/post-images/1620716982305.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1620716982305.png" alt="" loading="lazy"></p>
 <h4 id="哨兵的监控与选举">哨兵的监控与选举</h4>
 <h5 id="哨兵的定时监控">哨兵的定时监控</h5>
 <p>任务1：每个哨兵节点每10秒会向主节点和从节点发送info命令获取最拓扑结构图，哨兵配置时只要配置对主节点的监控即可，通过向主节点发送info，获取从节点的信息，并当有新的从节点加入时可以马上感知到</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1634888807687.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1634888807687.png" alt="" loading="lazy"></figure>
 <p>任务2：每个哨兵节点每隔2秒会向redis数据节点的指定频道上发送该哨兵节点对于主节点的判断以及当前哨兵节点的信息，同时每个哨兵节点也会订阅该频道，来了解其它哨兵节点的信息及对主节点的判断，其实就是通过消息publish和subscribe来完成的</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1634888824561.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1634888824561.png" alt="" loading="lazy"></figure>
 <p>任务3：每隔1秒每个哨兵会向主节点、从节点及其余哨兵节点发送一次ping命令做一次心跳检测，这个也是哨兵用来判断节点是否正常的重要依据</p>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1634888834049.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1634888834049.png" alt="" loading="lazy"></figure>
 <p><strong>主观下线</strong>：所谓主观下线，就是单个sentinel认为某个服务下线（有可能是接收不到订阅，之间的网络不通等等原因）。</p>
 <p>sentinel会以每秒一次的频率向所有与其建立了命令连接的实例（master，从服务，其他sentinel）发ping命令，通过判断ping回复是有效回复，还是无效回复来判断实例时候在线（对该sentinel来说是“主观在线”）。</p>
 <p>sentinel配置文件中的down-after-milliseconds设置了判断主观下线的时间长度，如果实例在down-after-milliseconds毫秒内，返回的都是无效回复，那么sentinel回认为该实例已（主观）下线，修改其flags状态为SRI_S_DOWN。如果多个sentinel监视一个服务，有可能存在多个sentinel的down-after-milliseconds配置不同，这个在实际生产中要注意。</p>
 <p><strong>客观下线</strong>：当主观下线的节点是主节点时，此时该哨兵3节点会通过指令sentinel is-masterdown-by-addr寻求其它哨兵节点对主节点的判断，如果其他的哨兵也认为主节点主观线下了，则当认为主观下线的票数超过了quorum（选举）个数，此时哨兵节点则认为该主节点确实有问题，这样就客观下线了，大部分哨兵节点都同意下线操作，也就说是客观下线</p>
-<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1634888843652.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1634888843652.png" alt="" loading="lazy"></figure>
 <h5 id="哨兵lerder选举流程">哨兵lerder选举流程</h5>
 <p>如果主节点被判定为客观下线之后，就要选取一个哨兵节点来完成后面的故障转移工作，选举出一个leader的流程如下:</p>
 <p>a)每个在线的哨兵节点都可以成为领导者，当它确认（比如哨兵3）主节点下线时，会向其它哨兵发is-master-down-by-addr命令，征求判断并要求将自己设置为领导者，由领导者处理故障转移；<br>
 b)当其它哨兵收到此命令时，可以同意或者拒绝它成为领导者；<br>
 c)如果哨兵3发现自己在选举的票数大于等于num(sentinels)/2+1时，将成为领导者，如果没有超过，继续选举…………</p>
-<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1634888851210.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1634888851210.png" alt="" loading="lazy"></figure>
 <h5 id="自动故障转移机制">自动故障转移机制</h5>
 <h6 id="在从节点中选择新的主节点">在从节点中选择新的主节点</h6>
 <p>sentinel状态数据结构中保存了主服务的所有从服务信息，领头sentinel按照如下的规则从从服务列表中挑选出新的主服务</p>
@@ -259,13 +259,13 @@ c)如果哨兵3发现自己在选举的票数大于等于num(sentinels)/2+1时�
 <li>选择出复制偏移量最大的系节点，因为复制便宜量越大则数据复制的越完整，如果由就返回了，没有就继续</li>
 <li>选择run_id最小的节点</li>
 </ol>
-<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1634889047008.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1634889047008.png" alt="" loading="lazy"></figure>
 <h6 id="更新主从状态">更新主从状态</h6>
 <p>通过slaveof no one命令，让选出来的从节点成为主节点；并通过slaveof命令让其他节点成为其从节点。</p>
 <p><strong>将已下线的主节点设置成新的主节点的从节点，当其回复正常时，复制新的主节点，变成新的主节点的从节点</strong></p>
 <p>同理，当已下线的服务重新上线时，sentinel会向其发送slaveof命令，让其成为新主的从</p>
 <h4 id="3官方redis-cluster-方案服务端路由查询">3，官方Redis Cluster 方案(服务端路由查询)</h4>
-<figure data-type="image" tabindex="10"><img src="http://localhost:4000/post-images/1620717452848.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1620717452848.png" alt="" loading="lazy"></figure>
 <p><strong>简介</strong></p>
 <p>Redis Cluster是一种服务端Sharding技术，3.0版本开始正式提供。Redis Cluster并没有使用一致性hash，而是采用slot(槽)的概念，一共分成16384个槽。将请求发送到任意节点，接收到请求的节点会将查询请求发送到正确的节点上执行</p>
 <p><strong>方案说明</strong></p>
@@ -288,12 +288,12 @@ c)如果哨兵3发现自己在选举的票数大于等于num(sentinels)/2+1时�
 <p>hash 算法（大量缓存重建）</p>
 <p>使用特定的数据， 如Redis的键或用户ID， 再根据节点数量N使用公式：hash（key） %N计算出哈希值， 用来决定数据映射到哪一个节点上。 这种方案存在一个问题： 当节点数量变化时， 如扩容或收缩节点， 数据节点映射关系需要重新计算， 会导致数据的重新迁移。<br>
 这种方式的突出优点是简单性， 常用于数据库的分库分表规则， 一般采用预分区的方式， 提前根据数据量规划好分区数， 比如划分为512或1024张表， 保证可支撑未来一段时间的数据量， 再根据负载情况将表迁移到其他数据库中。 扩容时通常采用翻倍扩容， 避免数据映射全部被打乱导致全量迁移的情况， 如图所示。<br>
-<img src="http://localhost:4000/post-images/1620717081847.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717081847.png" alt="" loading="lazy"></p>
 </li>
 <li>
 <p>一致性 hash 算法（自动缓存迁移）+ 虚拟节点（自动负载均衡）</p>
 <p>一致性哈希分区（Distributed Hash Table） 实现思路是为系统中每个节点分配一个token， 范围一般在0~232， 这些token构成一个哈希环。 数据读写执行节点查找操作时， 先根据key计算hash值， 然后顺时针找到第一个大于等于该哈希值的token节点， 如图所示。<br>
-<img src="http://localhost:4000/post-images/1620717088124.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717088124.png" alt="" loading="lazy"><br>
 这种方式相比节点取余最大的好处在于加入和删除节点只影响哈希环中相邻的节点， 对其他节点无影响。 但一致性哈希分区存在几个问题：</p>
 <ol>
 <li>
@@ -310,9 +310,9 @@ c)如果哨兵3发现自己在选举的票数大于等于num(sentinels)/2+1时�
 <li>
 <p>redis cluster 的 hash slot 算法</p>
 <p>虚拟槽分区巧妙地使用了哈希空间， 使用分散度良好的哈希函数把所有数据映射到一个固定范围的整数集合中， 整数定义为槽（slot）。 这个范围一般远远大于节点数， 比如Redis Cluster槽范围是0~16383。 槽是集群内数据管理和迁移的基本单位。 采用大范围槽的主要目的是为了方便数据拆分和集群扩展。 每个节点会负责一定数量的槽， 如图所示。<br>
-<img src="http://localhost:4000/post-images/1620717095963.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717095963.png" alt="" loading="lazy"><br>
 Redis Cluser采用虚拟槽分区， 所有的键根据哈希函数映射到0~16383整数槽内， 计算公式： slot=CRC16（key） &amp;16383。 每一个节点负责维护一部分槽以及槽所映射的键值数据， 如图所示<br>
-<img src="http://localhost:4000/post-images/1620717101176.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717101176.png" alt="" loading="lazy"><br>
 Redis虚拟槽分区的特点：</p>
 <ol>
 <li>
@@ -365,7 +365,7 @@ Redis虚拟槽分区的特点：</p>
 <h4 id="redis集群之间是如何复制的">Redis集群之间是如何复制的？</h4>
 <p>在从节点执行slaveof命令后， 复制过程便开始运作， 下面详细介绍建立复制的完整流程， 如图所示。<br>
 从图中可以看出复制过程大致分为6个过程：<br>
-<img src="http://localhost:4000/post-images/1620717243838.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717243838.png" alt="" loading="lazy"></p>
 <ol>
 <li>
 <p>保存主节点（master） 信息。执行slaveof后从节点只保存主节点的地址信息便直接返回， 这时建立复制流程还没有开始， 在从节点6380执行info replication可以看到如下信息：</p>
@@ -380,14 +380,14 @@ master_link_status:down
 </li>
 <li>
 <p>从节点（slave） 内部通过每秒运行的定时任务维护复制相关逻辑，当定时任务发现存在新的主节点后， 会尝试与该节点建立网络连接， 如图所示。<br>
-<img src="http://localhost:4000/post-images/1620717266049.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717266049.png" alt="" loading="lazy"><br>
 从节点会建立一个socket套接字， 例如图6-8中从节点建立了一个端口为24555的套接字， 专门用于接受主节点发送的复制命令。 从节点连接成功后<br>
 打印如下日志：</p>
 <pre><code class="language-sh">\* Connecting to MASTER 127.0.0.1:6379
 \* MASTER &lt;-&gt; SLAVE sync started
 </code></pre>
 <p>如果从节点无法建立连接， 定时任务会无限重试直到连接成功或者执行slaveof no one取消复制， 如图所示。<br>
-<img src="http://localhost:4000/post-images/1620717276476.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717276476.png" alt="" loading="lazy"><br>
 关于连接失败， 可以在从节点执行info replication查看master_link_down_since_seconds指标， 它会记录与主节点连接失败的系统时<br>
 间。 从节点连接主节点失败时也会每秒打印如下日志， 方便运维人员发现问题：</p>
 <pre><code class="language-sh">\# Error condition on socket for SYNC: {socket_error_reason}
@@ -400,7 +400,7 @@ master_link_status:down
 ·检测主节点当前是否可接受处理命令。<br>
 如果发送ping命令后， 从节点没有收到主节点的pong回复或者超时， 比如网络超时或者主节点正在阻塞无法响应命令， 从节点会断开复制连接， 下<br>
 次定时任务会发起重连， 如图所示。<br>
-<img src="http://localhost:4000/post-images/1620717286026.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1620717286026.png" alt="" loading="lazy"><br>
 从节点发送的ping命令成功返回， Redis打印如下日志， 并继续后续复制流程：</p>
 <pre><code class="language-sh">Master replied to PING, replication can continue...
 </code></pre>
@@ -472,7 +472,7 @@ master_link_status:down
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/WAG-fYk_l/">
+                <a href="https://tinaxiawuhao.github.io/post/WAG-fYk_l/">
                   <span class="post-title">
                     redis概述三&rarr;
                   </span>
@@ -482,7 +482,7 @@ master_link_status:down
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/Sjb64Uy0k/">
+                 <a href="https://tinaxiawuhao.github.io/post/Sjb64Uy0k/">
                    <span class="post-title">
                      redis概述五&rarr;
                    </span>
@@ -529,7 +529,7 @@ master_link_status:down
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -544,10 +544,10 @@ master_link_status:down
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -592,11 +592,11 @@ master_link_status:down
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -617,7 +617,7 @@ master_link_status:down
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>
