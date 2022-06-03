@@ -10,10 +10,10 @@
 <meta name="keywords" content="">
 <meta name="description" content="欢迎访问[tianxia]的个人博客">
 <meta name="author" content="kveln">
-<title>k8s1.19.3安装（基于Centos 7） | tianxia</title>
+<title>k8s1.24.1安装（基于Centos 7） | tianxia</title>
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
-<link rel="alternate" type="application/rss+xml" title="k8s1.19.3安装（基于Centos 7） | tianxia » Feed"
+<link rel="alternate" type="application/rss+xml" title="k8s1.24.1安装（基于Centos 7） | tianxia » Feed"
   href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
@@ -26,7 +26,7 @@
 
 <script>hljs.initHighlightingOnLoad();</script>
 
-  <meta property="og:description" content="k8s1.19.3安装（基于Centos 7）" />
+  <meta property="og:description" content="k8s1.24.1安装（基于Centos 7）" />
   <meta property="og:url" content="https://tinaxiawuhao.github.io/post/oqAZb-4wU/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1653998295598"
+            <form id="gridea-search-form" style="position: relative" data-update="1654221786163"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1653998295598"
+            <form id="gridea-search-form" style="position: relative" data-update="1654221786163"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -150,10 +150,10 @@
                 <a href="https://tinaxiawuhao.github.io/tag/f6exx1YLd/" class="tag">k8s</a>
                 
               </span>
-              <h1>k8s1.19.3安装（基于Centos 7）</h1>
+              <h1>k8s1.24.1安装（基于Centos 7）</h1>
               <span class="meta">
                 Posted on
-                2022-05-28，17 min read
+                2022-05-28，26 min read
               </span>
             </div>
           
@@ -319,11 +319,19 @@ EOF
 <p><strong>• 工作在内核态，有更好的性能</strong></p>
 <p><strong>• 调度算法丰富：rr，wrr，lc，wlc，ip hash</strong></p>
 </blockquote>
+<p>等集群部署成功，mode由空值修改成ipvs模式</p>
+<pre><code>kubectl edit configmap kube-proxy -n kube-system configmap/kube-proxy edited
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="C:%5CUsers%5Ctianx%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1654171143818.png" alt="1654171143818" loading="lazy"></figure>
+<p><strong>删除所有kube-proxy的pod,等待重启</strong></p>
+<pre><code>kubectl delete pod/kube-proxy-84p9n -n kube-system
+# 查看ipvs相关规则
+ipvsadm
+</code></pre>
+<h3 id="14安装docker软件">14.安装docker软件</h3>
 <blockquote>
-<p>k8s 版本1.20以后会弃用 <a href="https://so.csdn.net/so/search?q=docker&amp;spm=1001.2101.3001.7020">docker</a>，但是也可以用。但最好还是替换成解决方案中的Containerd 。<br>
-Containerd 是一个行业标准的容器运行时，强调简单性、健壮性和可移植性</p>
+<p>自1.20版本被弃用之后，dockershim组件终于在1.24的kubelet中被删除。从1.24开始，大家需要使用其他受到支持的运行时选项（例如containerd或CRI-O）；如果您选择Docker Engine作为运行时，则需要使用cri-dockerd。</p>
 </blockquote>
-<h3 id="14安装docker-ce软件20以下版本">14.安装docker-ce软件（20以下版本）</h3>
 <h4 id="1删除自带的docker">1.删除自带的docker</h4>
 <pre><code class="language-shell">yum remove docker \
                   docker-client \
@@ -387,7 +395,144 @@ docker  rm $(docker ps -a -q)
 #.删除所有镜像（慎重）
 docker rmi $(docker images -q)
 </code></pre>
-<h3 id="15部署-containerd20以上版本">15.部署 containerd(20以上版本)</h3>
+<h3 id="142cri-dockerd安装">14.2.cri-dockerd安装</h3>
+<p><strong>CRI-Dockerd 其实就是从被移除的 Docker Shim 中，独立出来的一个项目，用于解决历史遗留的节点升级 Kubernetes 的问题。</strong></p>
+<blockquote>
+<p>kubelet并没有直接和dockerd交互，而是通过了一个dockershim的组件间接操作dockerd。dockershim提供了一个标准的接口，让kubelet能够专注于容器调度逻辑本身，而不用去适配dockerd的接口变动。而其他实现了相同标准接口的容器技术也可以被kubelet集成使用，这个接口称作CRI。dockershim和CRI的出现也是容器生态系统演化的历史产物。在k8s最早期的版本中是不存在dockershim的，kubelet直接和dockerd交互。但为了支持更多不同的容器技术（避免完全被docker控制容器技术市场），kubelet在之后的版本开始支持另一种容器技术rkt。这给kubelet的维护工作造成了巨大的挑战，因为两种容器技术没有统一的接口和使用逻辑，kubelet同时支持两种技术的使用还要保证一致的容器功能表现，对代码逻辑和功能可靠性都有很大的影响。为了解决这个问题，k8s提出了一个统一接口CRI，kubelet统一通过这个接口来调用容器功能。但是dockerd并不支持CRI，k8s就自己实现了配套的dockershim将CRI接口调用转换成dockerd接口调用来支持CRI。因此，dockershim并不是docker技术的一部分，而是k8s系统的一部分</p>
+</blockquote>
+<p><strong>使用 CRI-Dockerd 项目</strong></p>
+<pre><code class="language-html">项目地址：https://github.com/Mirantis/cri-dockerd
+</code></pre>
+<h4 id="1下载cri-dockerd二进制包或者源码自己编译">1.下载cri-dockerd二进制包或者源码自己编译</h4>
+<pre><code class="language-shell"># 下载文件
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.2.0/cri-dockerd-v0.2.0-linux-amd64.tar.gz
+# 解压文件
+tar -xvf cri-dockerd-v0.2.0-linux-amd64.tar.gz
+# 复制二进制文件到指定目录
+cp cri-dockerd /usr/bin/
+</code></pre>
+<h4 id="2配置启动文件">2.配置启动文件</h4>
+<pre><code class="language-shell">vi /usr/lib/systemd/system/cri-docker.service
+[Unit]
+Description=CRI Interface for Docker Application Container Engine
+Documentation=https://docs.mirantis.com
+After=network-online.target firewalld.service docker.service
+Wants=network-online.target
+Requires=cri-docker.socket
+
+[Service]
+Type=notify
+
+ExecStart=/usr/bin/cri-dockerd --container-runtime-endpoint=unix:///var/run/cri-docker.sock --network-plugin=cni --cni-bin-dir=/opt/cni/bin \
+          --cni-conf-dir=/etc/cni/net.d --image-pull-progress-deadline=30s --pod-infra-container-image=docker.io/juestnow/pause:3.6 \
+          --docker-endpoint=unix:///var/run/docker.sock --cri-dockerd-root-directory=/var/lib/docker
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+
+# Note that StartLimit* options were moved from &quot;Service&quot; to &quot;Unit&quot; in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+Delegate=yes
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<pre><code class="language-shell"># 生成socket 文件
+vi /usr/lib/systemd/system/cri-docker.socket
+[Unit]
+Description=CRI Docker Socket for the API
+PartOf=cri-docker.service
+
+[Socket]
+ListenStream=/var/run/cri-dockerd.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup=docker
+
+[Install]
+WantedBy=sockets.target
+</code></pre>
+<pre><code class="language-shell"># 启动 cri-dockerd
+systemctl daemon-reload
+systemctl start cri-docker
+#设置开机启动
+systemctl enable cri-docker
+# 查看启动状态
+systemctl status cri-docker
+</code></pre>
+<h4 id="3下载cri-tools验证cri-docker-是否正常">3.下载cri-tools验证cri-docker 是否正常</h4>
+<pre><code class="language-shell"># 下载二进制文件
+wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.24.0/crictl-v1.24.0-linux-amd64.tar.gz
+# 解压
+tar -xvf crictl-v1.24.0-linux-amd64.tar.gz
+# 复制二进制文件到指定目录
+cp crictl /usr/bin/
+# 创建配置文件
+vim /etc/crictl.yaml
+runtime-endpoint: &quot;unix:///var/run/cri-docker.sock&quot;
+image-endpoint: &quot;unix:///var/run/cri-docker.sock&quot;
+timeout: 10
+debug: false
+pull-image-on-create: true
+disable-pull-on-run: false
+# 测试能否访问docker
+# 查看运行的容器
+crictl ps
+# 查看拉取的镜像
+ crictl images
+ # 拉取镜像
+ crictl pull busybox
+ [root@k8s-node-4 ~]# crictl pull busybox
+Image is up to date for busybox@sha256:5ecba83a746c7608ed511dc1533b87c737a0b0fb730301639a0179f9344b13448
+返回一切正常cri-dockerd接入docker完整
+</code></pre>
+<h3 id="15部署-containerdk8s-124版本以上">15.部署 containerd(k8s-1.24版本以上)</h3>
+<p><strong>服务版本</strong></p>
+<table>
+<thead>
+<tr>
+<th>服务名称</th>
+<th>版本号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内核</td>
+<td>5.14.3-1.el7.elrepo.x86_64</td>
+</tr>
+<tr>
+<td>containerd</td>
+<td>v1.6.4（加入）</td>
+</tr>
+<tr>
+<td>ctr</td>
+<td>v1.6.4</td>
+</tr>
+<tr>
+<td>k8s</td>
+<td>1.24</td>
+</tr>
+</tbody>
+</table>
 <h4 id="1安装containerd">1.安装containerd</h4>
 <p><strong>创建配置文件</strong></p>
 <pre><code class="language-shell">mkdir /etc/modules-load.d/containerd.conf 
@@ -420,6 +565,11 @@ systemctl enable containerd &amp;&amp; systemctl start containerd
 [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]
      SystemdCgroup = true                               ## 修改为true
 </code></pre>
+<p><strong>替换默认pause镜像地址</strong></p>
+<p>默认情况下k8s.gcr.io无法访问，所以使用阿里云镜像仓库地址即可</p>
+<pre><code class="language-shell"># 所有节点更换默认镜像地址
+sed -i 's/k8s.gcr.io/registry.cn-beijing.aliyuncs.com\/abcdocker/' /etc/containerd/config.toml 
+</code></pre>
 <p><strong>重启 containerd</strong></p>
 <pre><code class="language-shell">systemctl restart containerd
 </code></pre>
@@ -449,14 +599,14 @@ gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.a
 EOF
 </code></pre>
 <h4 id="2安装启用">2.安装启用</h4>
-<pre><code class="language-shell">sudo yum install -y kubelet-1.19.3 kubeadm-1.19.3 kubectl-1.19.3 --disableexcludes=kubernetes 
+<pre><code class="language-shell">sudo yum install -y kubelet-1.24.1 kubeadm-1.24.1 kubectl-1.24.1 --disableexcludes=kubernetes 
 sudo systemctl enable kubelet &amp;&amp; systemctl start kubelet
 </code></pre>
 <h4 id="3修改kubelet的配置文件">3.修改kubelet的配置文件</h4>
 <p>先查看配置文件位置</p>
 <pre><code class="language-shell">systemctl status kubelet
 </code></pre>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1653818855680.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1653818855680.png" alt="" loading="lazy"></figure>
 <pre><code class="language-shell">vi /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
 </code></pre>
 <p>并添加以下内容(使用和docker相同的cgroup-driver)。</p>
@@ -499,7 +649,7 @@ done
 <p><strong>以上操作在所有机器执行</strong></p>
 <h3 id="18初始化环境master操作">18.初始化环境（master操作）</h3>
 <h4 id="1安装镜像">1.安装镜像</h4>
-<p><strong>k8s1.20之后会弃用docker,kubeadm init采用模板配置文件加载为好</strong></p>
+<p><strong>采用模板配置文件加载</strong></p>
 <pre><code class="language-shell">kubeadm config print init-defaults  &gt; kubeadm-config.yaml
 </code></pre>
 <pre><code class="language-yaml">
@@ -518,7 +668,8 @@ localAPIEndpoint:
   advertiseAddress: 192.168.200.3     # 本机IP
   bindPort: 6443
 nodeRegistration:
-  criSocket: /run/containerd/containerd.sock      # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  criSocket: /var/run/cri-docker.sock  # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  #criSocket: /run/containerd/containerd.sock      # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
   name: master1        # 本主机名
   taints:
   - effect: NoSchedule
@@ -538,10 +689,10 @@ etcd:
     dataDir: /var/lib/etcd
 imageRepository: registry.aliyuncs.com/google_containers    # 镜像仓库源要根据自己实际情况修改
 kind: ClusterConfiguration
-kubernetesVersion: v1.22.0     # k8s版本
+kubernetesVersion: v1.24.1     # k8s版本
 networking:
   dnsDomain: cluster.local
-  podSubnet: &quot;10.244.0.0/16&quot;
+  podSubnet: &quot;10.244.0.0/16&quot;   #设置网段，和下面网络插件对应
   serviceSubnet: 10.96.0.0/12
 scheduler: {}
  
@@ -557,10 +708,10 @@ mode: ipvs
 </code></pre>
 <p>这个就很简单了，只需要简单的一个命令：</p>
 <pre><code class="language-bash">#直接使用已经下载好的镜像
-kubeadm init --kubernetes-version=v1.19.3 --apiserver-advertise-address=192.168.40.131 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap | tee kubeadm-init.log
+kubeadm init --kubernetes-version=v1.24.1 --apiserver-advertise-address=192.168.40.131 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap  --cri-socket unix:///var/run/cri-docker.sock | tee kubeadm-init.log
 #或者采用aliyuncs镜像下载
-kubeadm init --kubernetes-version=v1.19.3 --apiserver-advertise-address=192.168.40.131 --image-repository  registry.aliyuncs.com/google_containers  --service-cidr=10.1.0.0/16 --pod-network-cidr=10.244.0.0/16 | tee kubeadm-init.log
-#1.20后使用Containerd,使用配置文件加载为佳
+kubeadm init --kubernetes-version=v1.24.1 --apiserver-advertise-address=192.168.40.131 --image-repository  registry.aliyuncs.com/google_containers  --service-cidr=10.1.0.0/16 --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/cri-docker.sock| tee kubeadm-init.log
+#使用上面系统生成配置文件加载
 kubeadm init --config kubeadm-config.yaml
 </code></pre>
 <h4 id="3初始化命令说明">3.初始化命令说明：</h4>
@@ -582,7 +733,12 @@ kubeadm init --config kubeadm-config.yaml
 <blockquote>
 <p>关闭版本探测，因为它的默认值是stable-1，会导致从https://dl.k8s.io/release/stable-1.txt下载最新的版本号，我们可以将其指定为固定版本（最新版：v1.24.1）来跳过网络请求。</p>
 </blockquote>
-<pre><code class="language-bash">--kubernetes-version=v1.19.3 
+<pre><code class="language-bash">--kubernetes-version=v1.24.1 
+</code></pre>
+<blockquote>
+<p>指定启动时使用cri-docker调用docker</p>
+</blockquote>
+<pre><code class="language-shell">--cri-socket unix:///var/run/cri-docker.sock 
 </code></pre>
 <h4 id="4错误启动重置">4.错误启动重置</h4>
 <pre><code class="language-shell">kubeadm reset
@@ -593,7 +749,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 </code></pre>
 <h4 id="6添加节点">6.添加节点</h4>
-<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5 --cri-socket unix:///var/run/cri-docker.sock 
 </code></pre>
 <h4 id="7执行kubectl-get-nodes查看master节点状态">7.执行kubectl get nodes，查看master节点状态：</h4>
 <pre><code class="language-shell">kubectl get node
@@ -602,13 +758,11 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 <pre><code class="language-bash">journalctl -xef -u kubelet -n 20
 </code></pre>
 <p>提示未安装cni 网络插件。</p>
-<h3 id="19安装flannel网络插件cni">19.安装flannel网络插件(CNI)</h3>
+<h3 id="191安装flannel网络插件cni">19.1安装flannel网络插件(CNI)</h3>
 <p>master执行以下命令安装flannel即可：</p>
 <pre><code class="language-shell">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 </code></pre>
-<p>node安装</p>
-<pre><code class="language-shell">yum install  flannel -y
-</code></pre>
+<p>kube-flannel.yaml文件中的net-conf.json-&gt;Network地址默认为命令中–pod-network-cidr=值相同</p>
 <p><strong>输入命令kubectl get pods -n kube-system,等待所有插件为running状态</strong>。</p>
 <p><strong>待所有pod status为Running的时候，再次执行kubectl get nodes：</strong></p>
 <pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
@@ -616,11 +770,65 @@ NAME         STATUS   ROLES    AGE   VERSION
 k8s-master   Ready    master   16m   v1.19.3
 </code></pre>
 <p><strong>如上所示，master状态变为，表明Master节点部署成功！</strong></p>
+<h3 id="192安装calico网络功能更完善">19.2安装calico网络(功能更完善)</h3>
+<h4 id="1在master上下载配置calico网络的yaml">1.在master上下载配置calico网络的yaml。</h4>
+<pre><code class="language-shell">wget https://docs.projectcalico.org/v3.14/manifests/calico.yaml --no-check-certificate
+# anaconda-ks.cfg  calico.yaml
+</code></pre>
+<h4 id="2修改calicoyaml里的pod网段">2.修改calico.yaml里的pod网段。</h4>
+<pre><code class="language-bash">#把calico.yaml里pod所在网段改成kubeadm init时选项--pod-network-cidr所指定的网段，
+#直接用vi编辑打开此文件查找192，按如下标记进行修改：
+
+# no effect. This should fall within `--cluster-cidr`.
+# - name: CALICO_IPV4POOL_CIDR
+#   value: &quot;192.168.0.0/16&quot;
+# Disable file logging so `kubectl logs` works.
+- name: CALICO_DISABLE_FILE_LOGGING
+value: &quot;true&quot;
+
+# 把两个#及#后面的空格去掉，并把192.168.0.0/16改成10.244.0.0/16
+
+# no effect. This should fall within `--cluster-cidr`.
+- name: CALICO_IPV4POOL_CIDR
+value: &quot;10.244.0.0/16&quot;
+# Disable file logging so `kubectl logs` works.
+- name: CALICO_DISABLE_FILE_LOGGING
+value: &quot;true&quot;
+</code></pre>
+<blockquote>
+<p>改的时候请看清缩进关系，即这里的对齐关系。</p>
+</blockquote>
+<h4 id="3提前下载所需要的镜像">3.提前下载所需要的镜像。</h4>
+<pre><code class="language-shell"># 查看此文件用哪些镜像：
+[root@k8s-master ~]# grep image calico.yaml
+image: calico/cni:v3.14.0
+image: calico/cni:v3.14.0
+image: calico/pod2daemon-flexvol:v3.14.0
+image: calico/node:v3.14.0
+image: calico/kube-controllers:v3.14.0
+</code></pre>
+<blockquote>
+<p>在所有节点（包括master）上把这些镜像下载下来：</p>
+</blockquote>
+<pre><code class="language-shell">[root@master01 ~]# for i in calico/cni:v3.14.0 calico/pod2daemon-flexvol:v3.14.0 calico/node:v3.14.0 calico/kube-controllers:v3.14.0 ; do docker pull $i ; done
+</code></pre>
+<h4 id="4安装calico网络">4.安装calico网络。</h4>
+<p>在master上执行如下命令：</p>
+<pre><code class="language-csharp">kubectl apply -f calico.yaml
+</code></pre>
+<h4 id="5验证结果">5.验证结果。</h4>
+<p>再次在master上运行命令 kubectl get nodes查看运行结果：</p>
+<pre><code class="language-css">[root@k8s-master ~]# kubectl get nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+master01   Ready    control-plane,master   21h   v1.23.4
+worker01   Ready    &lt;none&gt;                 16h   v1.23.4
+worker02   Ready    &lt;none&gt;                 16h   v1.23.4
+</code></pre>
 <h3 id="20部署k8s-node1-k8s-node2集群">20.部署k8s-node1、k8s-node2集群</h3>
 <p><strong>1、在k8s-node1、k8s-node2等两台虚拟机中重复执行上面的步骤，安装好docker、kubelet、kubectl、kubeadm。</strong></p>
 <h4 id="1node节点加入集群">1.node节点加入集群</h4>
 <p>在上面第初始化master节点成功后，输出了下面的kubeadm join命令：</p>
-<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5 --cri-socket unix:///var/run/cri-docker.sock 
 </code></pre>
 <p>该命令就是node加入集群的命令，分别在k8s-node1、k8s-node2上执行该命令加入集群。</p>
 <p>如果忘记该命令，可以通过以下命令重新生成：</p>
@@ -637,6 +845,24 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
 
 </code></pre>
 <p>如上所示，所有节点都为ready，集群搭建成功。</p>
+<h2 id="卸载集群命令">卸载集群命令</h2>
+<pre><code class="language-shell">#建议所有服务器都执行
+#!/bin/bash
+kubeadm reset -f
+modprobe -r ipip
+lsmod
+rm -rf ~/.kube/
+rm -rf /etc/kubernetes/
+rm -rf /etc/systemd/system/kubelet.service.d
+rm -rf /etc/systemd/system/kubelet.service
+rm -rf /usr/bin/kube*
+rm -rf /etc/cni
+rm -rf /opt/cni
+rm -rf /var/lib/etcd
+rm -rf /var/etcd
+yum -y remove kubeadm* kubectl* kubelet* docker*
+reboot
+</code></pre>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
@@ -697,7 +923,7 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
 <li><a href="#%E6%8E%88%E6%9D%83%E5%90%AF%E5%8A%A8">授权启动</a></li>
 </ul>
 </li>
-<li><a href="#14%E5%AE%89%E8%A3%85docker-ce%E8%BD%AF%E4%BB%B620%E4%BB%A5%E4%B8%8B%E7%89%88%E6%9C%AC">14.安装docker-ce软件（20以下版本）</a>
+<li><a href="#14%E5%AE%89%E8%A3%85docker%E8%BD%AF%E4%BB%B6">14.安装docker软件</a>
 <ul>
 <li><a href="#1%E5%88%A0%E9%99%A4%E8%87%AA%E5%B8%A6%E7%9A%84docker">1.删除自带的docker</a></li>
 <li><a href="#2%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85">2.安装依赖包</a></li>
@@ -707,7 +933,14 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
 <li><a href="#6%E9%87%8D%E5%90%AFdocker%E6%9C%8D%E5%8A%A1">6.重启docker服务</a></li>
 </ul>
 </li>
-<li><a href="#15%E9%83%A8%E7%BD%B2-containerd20%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC">15.部署 containerd(20以上版本)</a>
+<li><a href="#142cri-dockerd%E5%AE%89%E8%A3%85">14.2.cri-dockerd安装</a>
+<ul>
+<li><a href="#1%E4%B8%8B%E8%BD%BDcri-dockerd%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8C%85%E6%88%96%E8%80%85%E6%BA%90%E7%A0%81%E8%87%AA%E5%B7%B1%E7%BC%96%E8%AF%91">1.下载cri-dockerd二进制包或者源码自己编译</a></li>
+<li><a href="#2%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6">2.配置启动文件</a></li>
+<li><a href="#3%E4%B8%8B%E8%BD%BDcri-tools%E9%AA%8C%E8%AF%81cri-docker-%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8">3.下载cri-tools验证cri-docker 是否正常</a></li>
+</ul>
+</li>
+<li><a href="#15%E9%83%A8%E7%BD%B2-containerdk8s-124%E7%89%88%E6%9C%AC%E4%BB%A5%E4%B8%8A">15.部署 containerd(k8s-1.24版本以上)</a>
 <ul>
 <li><a href="#1%E5%AE%89%E8%A3%85containerd">1.安装containerd</a></li>
 <li><a href="#2%E9%85%8D%E7%BD%AE-containerd">2.配置 containerd</a></li>
@@ -739,7 +972,16 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
 <li><a href="#8%E9%80%9A%E8%BF%87%E5%A6%82%E4%B8%8B%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8Bkubelet%E7%8A%B6%E6%80%81">8.通过如下命令查看kubelet状态：</a></li>
 </ul>
 </li>
-<li><a href="#19%E5%AE%89%E8%A3%85flannel%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6cni">19.安装flannel网络插件(CNI)</a></li>
+<li><a href="#191%E5%AE%89%E8%A3%85flannel%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6cni">19.1安装flannel网络插件(CNI)</a></li>
+<li><a href="#192%E5%AE%89%E8%A3%85calico%E7%BD%91%E7%BB%9C%E5%8A%9F%E8%83%BD%E6%9B%B4%E5%AE%8C%E5%96%84">19.2安装calico网络(功能更完善)</a>
+<ul>
+<li><a href="#1%E5%9C%A8master%E4%B8%8A%E4%B8%8B%E8%BD%BD%E9%85%8D%E7%BD%AEcalico%E7%BD%91%E7%BB%9C%E7%9A%84yaml">1.在master上下载配置calico网络的yaml。</a></li>
+<li><a href="#2%E4%BF%AE%E6%94%B9calicoyaml%E9%87%8C%E7%9A%84pod%E7%BD%91%E6%AE%B5">2.修改calico.yaml里的pod网段。</a></li>
+<li><a href="#3%E6%8F%90%E5%89%8D%E4%B8%8B%E8%BD%BD%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E9%95%9C%E5%83%8F">3.提前下载所需要的镜像。</a></li>
+<li><a href="#4%E5%AE%89%E8%A3%85calico%E7%BD%91%E7%BB%9C">4.安装calico网络。</a></li>
+<li><a href="#5%E9%AA%8C%E8%AF%81%E7%BB%93%E6%9E%9C">5.验证结果。</a></li>
+</ul>
+</li>
 <li><a href="#20%E9%83%A8%E7%BD%B2k8s-node1-k8s-node2%E9%9B%86%E7%BE%A4">20.部署k8s-node1、k8s-node2集群</a>
 <ul>
 <li><a href="#1node%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4">1.node节点加入集群</a></li>
@@ -748,6 +990,7 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
 </li>
 </ul>
 </li>
+<li><a href="#%E5%8D%B8%E8%BD%BD%E9%9B%86%E7%BE%A4%E5%91%BD%E4%BB%A4">卸载集群命令</a></li>
 </ul>
 </li>
 </ul>
@@ -832,7 +1075,7 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
   <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
-  <script src="https://tinaxiawuhao.github.io/resource/clean-blog.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
   <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
@@ -876,7 +1119,7 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
     } else {
         console.log("------ PC端 " + navigator.userAgent);
 
-        addScript("https://tinaxiawuhao.github.io/resource/live2d.js", () => {
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
             loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });

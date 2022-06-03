@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-05-31T11:58:30.480Z</updated>
+    <updated>2022-06-03T02:03:31.087Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -10,6 +10,1164 @@
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, tianxia</rights>
+    <entry>
+        <title type="html"><![CDATA[k8s-ingress安装使用]]></title>
+        <id>https://tinaxiawuhao.github.io/post/TX9ZIPxbq/</id>
+        <link href="https://tinaxiawuhao.github.io/post/TX9ZIPxbq/">
+        </link>
+        <updated>2022-06-03T02:00:45.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="1nginx-ingress安装">1.Nginx ingress安装</h2>
+<p>首先需要安装Nginx Ingress Controller控制器，控制器安装方式包含两种：DaemonSets和Deployments。</p>
+<ul>
+<li>DaemonSets通过hostPort的方式暴露80和443端口，可通过Node的调度由专门的节点实现部署</li>
+<li>Deployments则通过NodePort的方式实现控制器端口的暴露，借助外部负载均衡实现高可用负载均衡</li>
+</ul>
+<p>除此之外，还需要部署Namespace，ServiceAccount，RBAC，Secrets，Custom Resource Definitions等资源，如下开始部署。</p>
+<h3 id="11-基础依赖环境准备">1.1 基础依赖环境准备</h3>
+<p><strong>1、github中下载源码包,安装部署文件在kubernetes-ingress/deployments/目录下</strong></p>
+<pre><code class="language-shell">git clone https://github.com/nginxinc/kubernetes-ingress.git
+</code></pre>
+<pre><code class="language-js">kubernetes-ingress/deployments/
+├── common
+│   ├── custom-resource-definitions.yaml  自定义资源
+│   ├── default-server-secret.yaml        Secrets
+│   ├── nginx-config.yaml
+│   └── ns-and-sa.yaml                    Namspace+ServiceAccount
+├── daemon-set
+│   ├── nginx-ingress.yaml                DaemonSets控制器
+│   └── nginx-plus-ingress.yaml
+├── deployment
+│   ├── nginx-ingress.yaml                Deployments控制器
+│   └── nginx-plus-ingress.yaml
+├── helm-chart                            Helm安装包
+│   ├── chart-icon.png
+│   ├── Chart.yaml
+│   ├── README.md
+│   ├── templates
+│   │   ├── controller-configmap.yaml
+│   │   ├── controller-custom-resources.yaml
+│   │   ├── controller-daemonset.yaml
+│   │   ├── controller-deployment.yaml
+│   │   ├── controller-leader-election-configmap.yaml
+│   │   ├── controller-secret.yaml
+│   │   ├── controller-serviceaccount.yaml
+│   │   ├── controller-service.yaml
+│   │   ├── controller-wildcard-secret.yaml
+│   │   ├── _helpers.tpl
+│   │   ├── NOTES.txt
+│   │   └── rbac.yaml
+│   ├── values-icp.yaml
+│   ├── values-plus.yaml
+│   └── values.yaml
+├── rbac                                RBAC认证授权
+│   └── rbac.yaml
+├── README.md
+└── service                            Service定义
+    ├── loadbalancer-aws-elb.yaml
+    ├── loadbalancer.yaml              DaemonSets暴露服务方式
+    └── nodeport.yaml                  Deployments暴露服务方式
+</code></pre>
+<p>**2、创建Namespace和ServiceAccount **</p>
+<pre><code class="language-yaml">cat common/ns-and-sa.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-ingress 
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-ingress 
+  namespace: nginx-ingress
+</code></pre>
+<pre><code class="language-shell">kubectl apply -f common/ns-and-sa.yaml
+</code></pre>
+<p><strong>3、创建Secrets自签名证书</strong></p>
+<pre><code>kubectl apply -f common/default-server-secret.yaml
+</code></pre>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: default-server-secret
+  namespace: nginx-ingress
+type: Opaque
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN2akNDQWFZQ0NRREFPRjl0THNhWFhEQU5CZ2txaGtpRzl3MEJBUXNGQURBaE1SOHdIUVlEVlFRRERCWk8KUjBsT1dFbHVaM0psYzNORGIyNTBjbTlzYkdWeU1CNFhEVEU0TURreE1qRTRNRE16TlZvWERUSXpNRGt4TVRFNApNRE16TlZvd0lURWZNQjBHQTFVRUF3d1dUa2RKVGxoSmJtZHlaWE56UTI5dWRISnZiR3hsY2pDQ0FTSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUwvN2hIUEtFWGRMdjNyaUM3QlBrMTNpWkt5eTlyQ08KR2xZUXYyK2EzUDF0azIrS3YwVGF5aGRCbDRrcnNUcTZzZm8vWUk1Y2Vhbkw4WGM3U1pyQkVRYm9EN2REbWs1Qgo4eDZLS2xHWU5IWlg0Rm5UZ0VPaStlM2ptTFFxRlBSY1kzVnNPazFFeUZBL0JnWlJVbkNHZUtGeERSN0tQdGhyCmtqSXVuektURXUyaDU4Tlp0S21ScUJHdDEwcTNRYzhZT3ExM2FnbmovUWRjc0ZYYTJnMjB1K1lYZDdoZ3krZksKWk4vVUkxQUQ0YzZyM1lma1ZWUmVHd1lxQVp1WXN2V0RKbW1GNWRwdEMzN011cDBPRUxVTExSakZJOTZXNXIwSAo1TmdPc25NWFJNV1hYVlpiNWRxT3R0SmRtS3FhZ25TZ1JQQVpQN2MwQjFQU2FqYzZjNGZRVXpNQ0F3RUFBVEFOCkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQWpLb2tRdGRPcEsrTzhibWVPc3lySmdJSXJycVFVY2ZOUitjb0hZVUoKdGhrYnhITFMzR3VBTWI5dm15VExPY2xxeC9aYzJPblEwMEJCLzlTb0swcitFZ1U2UlVrRWtWcitTTFA3NTdUWgozZWI4dmdPdEduMS9ienM3bzNBaS9kclkrcUI5Q2k1S3lPc3FHTG1US2xFaUtOYkcyR1ZyTWxjS0ZYQU80YTY3Cklnc1hzYktNbTQwV1U3cG9mcGltU1ZmaXFSdkV5YmN3N0NYODF6cFErUyt1eHRYK2VBZ3V0NHh3VlI5d2IyVXYKelhuZk9HbWhWNThDd1dIQnNKa0kxNXhaa2VUWXdSN0diaEFMSkZUUkk3dkhvQXprTWIzbjAxQjQyWjNrN3RXNQpJUDFmTlpIOFUvOWxiUHNoT21FRFZkdjF5ZytVRVJxbStGSis2R0oxeFJGcGZnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBdi91RWM4b1JkMHUvZXVJTHNFK1RYZUprckxMMnNJNGFWaEMvYjVyYy9XMlRiNHEvClJOcktGMEdYaVN1eE9ycXgrajlnamx4NXFjdnhkenRKbXNFUkJ1Z1B0ME9hVGtIekhvb3FVWmcwZGxmZ1dkT0EKUTZMNTdlT1l0Q29VOUZ4amRXdzZUVVRJVUQ4R0JsRlNjSVo0b1hFTkhzbysyR3VTTWk2Zk1wTVM3YUhudzFtMApxWkdvRWEzWFNyZEJ6eGc2clhkcUNlUDlCMXl3VmRyYURiUzc1aGQzdUdETDU4cGszOVFqVUFQaHpxdmRoK1JWClZGNGJCaW9CbTVpeTlZTW1hWVhsMm0wTGZzeTZuUTRRdFFzdEdNVWozcGJtdlFmazJBNnljeGRFeFpkZFZsdmwKMm82MjBsMllxcHFDZEtCRThCay90elFIVTlKcU56cHpoOUJUTXdJREFRQUJBb0lCQVFDZklHbXowOHhRVmorNwpLZnZJUXQwQ0YzR2MxNld6eDhVNml4MHg4Mm15d1kxUUNlL3BzWE9LZlRxT1h1SENyUlp5TnUvZ2IvUUQ4bUFOCmxOMjRZTWl0TWRJODg5TEZoTkp3QU5OODJDeTczckM5bzVvUDlkazAvYzRIbjAzSkVYNzZ5QjgzQm9rR1FvYksKMjhMNk0rdHUzUmFqNjd6Vmc2d2szaEhrU0pXSzBwV1YrSjdrUkRWYmhDYUZhNk5nMUZNRWxhTlozVDhhUUtyQgpDUDNDeEFTdjYxWTk5TEI4KzNXWVFIK3NYaTVGM01pYVNBZ1BkQUk3WEh1dXFET1lvMU5PL0JoSGt1aVg2QnRtCnorNTZud2pZMy8yUytSRmNBc3JMTnIwMDJZZi9oY0IraVlDNzVWYmcydVd6WTY3TWdOTGQ5VW9RU3BDRkYrVm4KM0cyUnhybnhBb0dCQU40U3M0ZVlPU2huMVpQQjdhTUZsY0k2RHR2S2ErTGZTTXFyY2pOZjJlSEpZNnhubmxKdgpGenpGL2RiVWVTbWxSekR0WkdlcXZXaHFISy9iTjIyeWJhOU1WMDlRQ0JFTk5jNmtWajJTVHpUWkJVbEx4QzYrCk93Z0wyZHhKendWelU0VC84ajdHalRUN05BZVpFS2FvRHFyRG5BYWkyaW5oZU1JVWZHRXFGKzJyQW9HQkFOMVAKK0tZL0lsS3RWRzRKSklQNzBjUis3RmpyeXJpY05iWCtQVzUvOXFHaWxnY2grZ3l4b25BWlBpd2NpeDN3QVpGdwpaZC96ZFB2aTBkWEppc1BSZjRMazg5b2pCUmpiRmRmc2l5UmJYbyt3TFU4NUhRU2NGMnN5aUFPaTVBRHdVU0FkCm45YWFweUNweEFkREtERHdObit3ZFhtaTZ0OHRpSFRkK3RoVDhkaVpBb0dCQUt6Wis1bG9OOTBtYlF4VVh5YUwKMjFSUm9tMGJjcndsTmVCaWNFSmlzaEhYa2xpSVVxZ3hSZklNM2hhUVRUcklKZENFaHFsV01aV0xPb2I2NTNyZgo3aFlMSXM1ZUtka3o0aFRVdnpldm9TMHVXcm9CV2xOVHlGanIrSWhKZnZUc0hpOGdsU3FkbXgySkJhZUFVWUNXCndNdlQ4NmNLclNyNkQrZG8wS05FZzFsL0FvR0FlMkFVdHVFbFNqLzBmRzgrV3hHc1RFV1JqclRNUzRSUjhRWXQKeXdjdFA4aDZxTGxKUTRCWGxQU05rMXZLTmtOUkxIb2pZT2pCQTViYjhibXNVU1BlV09NNENoaFJ4QnlHbmR2eAphYkJDRkFwY0IvbEg4d1R0alVZYlN5T294ZGt5OEp0ek90ajJhS0FiZHd6NlArWDZDODhjZmxYVFo5MWpYL3RMCjF3TmRKS2tDZ1lCbyt0UzB5TzJ2SWFmK2UwSkN5TGhzVDQ5cTN3Zis2QWVqWGx2WDJ1VnRYejN5QTZnbXo5aCsKcDNlK2JMRUxwb3B0WFhNdUFRR0xhUkcrYlNNcjR5dERYbE5ZSndUeThXczNKY3dlSTdqZVp2b0ZpbmNvVlVIMwphdmxoTUVCRGYxSjltSDB5cDBwWUNaS2ROdHNvZEZtQktzVEtQMjJhTmtsVVhCS3gyZzR6cFE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+</code></pre>
+<p><strong>4、创建ConfigMap自定义配置文</strong></p>
+<pre><code class="language-shell">kubectl apply -f common/nginx-config.yaml 
+</code></pre>
+<pre><code class="language-yaml">kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-config
+  namespace: nginx-ingress
+data:
+</code></pre>
+<p><strong>5、为主机和主机路由定义自定义资源，支持自定义主机和路由</strong></p>
+<pre><code class="language-shell">kubectl apply -f common/custom-resource-definitions.yaml
+</code></pre>
+<pre><code class="language-yaml">apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: virtualservers.k8s.nginx.org
+spec:
+  group: k8s.nginx.org
+  versions:
+  - name: v1
+    served: true
+    storage: true
+  scope: Namespaced
+  names:
+    plural: virtualservers
+    singular: virtualserver
+    kind: VirtualServer
+    shortNames:
+    - vs
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: virtualserverroutes.k8s.nginx.org
+spec:
+  group: k8s.nginx.org
+  versions:
+  - name: v1
+    served: true
+    storage: true
+  scope: Namespaced
+  names:
+    plural: virtualserverroutes
+    singular: virtualserverroute
+    kind: VirtualServerRoute
+    shortNames:
+    - vsr
+</code></pre>
+<p><strong>6、配置RBAC认证授权，实现ingress控制器访问集群中的其他资源</strong></p>
+<pre><code class="language-shell">kubectl apply -f rbac/rbac.yaml
+</code></pre>
+<pre><code class="language-yaml">kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: nginx-ingress
+rules:
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - services
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - create
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - pods
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - list
+  - watch
+  - get
+- apiGroups:
+  - &quot;extensions&quot;
+  resources:
+  - ingresses/status
+  verbs:
+  - update
+- apiGroups:
+  - k8s.nginx.org
+  resources:
+  - virtualservers
+  - virtualserverroutes
+  verbs:
+  - list
+  - watch
+  - get
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: nginx-ingress
+subjects:
+- kind: ServiceAccount
+  name: nginx-ingress
+  namespace: nginx-ingress
+roleRef:
+  kind: ClusterRole
+  name: nginx-ingress
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+<h3 id="12-部署ingress控制器">1.2 部署Ingress控制器</h3>
+<p><strong>1、 部署控制器，控制器可以DaemonSets和Deployment的形式部署，如下是DaemonSets的配置文件</strong></p>
+<pre><code class="language-js">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+spec:
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+     #annotations:
+       #prometheus.io/scrape: &quot;true&quot;
+       #prometheus.io/port: &quot;9113&quot;
+    spec:
+      serviceAccountName: nginx-ingress
+      containers:
+      - image: nginx/nginx-ingress:edge
+        imagePullPolicy: Always
+        name: nginx-ingress
+        ports:
+        - name: http
+          containerPort: 80
+          hostPort: 80            #通过hostPort的方式暴露端口
+        - name: https
+          containerPort: 443
+          hostPort: 443
+       #- name: prometheus
+         #containerPort: 9113
+        securityContext:
+          allowPrivilegeEscalation: true
+          runAsUser: 101 #nginx
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        args:
+          - -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
+          - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
+         #- -v=3 # Enables extensive logging. Useful for troubleshooting.
+         #- -report-ingress-status
+         #- -external-service=nginx-ingress
+         #- -enable-leader-election
+         #- -enable-prometheus-metrics
+</code></pre>
+<p><strong>Deployments的配置文件</strong></p>
+<pre><code class="language-js">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+spec:
+  replicas: 1                  #副本的个数
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+     #annotations:
+       #prometheus.io/scrape: &quot;true&quot;
+       #prometheus.io/port: &quot;9113&quot;
+    spec:
+      serviceAccountName: nginx-ingress
+      containers:
+      - image: nginx/nginx-ingress:edge
+        imagePullPolicy: Always
+        name: nginx-ingress
+        ports:                #内部暴露的服务端口，需要通过NodePort的方式暴露给外部
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+       #- name: prometheus
+         #containerPort: 9113
+        securityContext:
+          allowPrivilegeEscalation: true
+          runAsUser: 101 #nginx
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        args:
+          - -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
+          - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
+         #- -v=3 # Enables extensive logging. Useful for troubleshooting.
+         #- -report-ingress-status
+         #- -external-service=nginx-ingress
+         #- -enable-leader-election
+         #- -enable-prometheus-metrics
+</code></pre>
+<p><strong>2、我们以DaemonSets的方式部署，DaemonSet部署集群中各个节点都是对等，如果有外部LoadBalancer则通过外部负载均衡路由至Ingress中</strong></p>
+<pre><code class="language-shell">[root@node-1 deployments]# kubectl apply -f daemon-set/nginx-ingress.yaml 
+daemonset.apps/nginx-ingress created
+[root@node-1 deployments]# kubectl get daemonsets -n nginx-ingress
+NAME            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+nginx-ingress   3         3         3       3            3           &lt;none&gt;          15s
+
+[root@node-1 ~]# kubectl get pods -n nginx-ingress -o wide 
+NAME                  READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+nginx-ingress-7mpfc   1/1     Running   0          2m44s   10.244.0.50    node-1   &lt;none&gt;           &lt;none&gt;
+nginx-ingress-l2rtj   1/1     Running   0          2m44s   10.244.1.144   node-2   &lt;none&gt;           &lt;none&gt;
+nginx-ingress-tgf6r   1/1     Running   0          2m44s   10.244.2.160   node-3   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+<p><strong>3、校验Nginx Ingress安装情况</strong></p>
+<p>此时三个节点均是对等，即访问任意一个节点均能实现相同的效果，统一入口则通过外部负载均衡，如果在云环境下执行<code>kubectl apply -f service/loadbalancer.yaml</code>创建外部负载均衡实现入口调度，自建的可以通过lvs或nginx等负载均衡实现接入。</p>
+<figure data-type="image" tabindex="1"><img src="https://ask.qcloudimg.com/draft/4405893/88fb7v82cj.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p><strong>备注说明</strong>：如果以Deployments的方式部署，则需要执行service/nodeport.yaml创建NodePort类型的Service，实现的效果和DaemonSets类似。</p>
+<h2 id="2-ingress资源定义">2. Ingress资源定义</h2>
+<p>上面的已安装了一个Nginx Ingress Controller控制器，有了Ingress控制器后，我们就可以定义Ingress资源来实现七层负载转发了，大体上Ingress支持三种使用方式：1. 基于虚拟主机转发，2. 基于虚拟机主机URI转发，3. 支持TLS加密转发。</p>
+<h3 id="21-ingress定义">2.1 Ingress定义</h3>
+<p><strong>1、环境准备，先创建一个nginx的Deployment应用，包含2个副本</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl run ingress-demo --image=nginx:1.7.9 --port=80 --replicas=2
+[root@node-1 ~]# kubectl get deployments
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-demo   2/2     2            2           116s
+</code></pre>
+<p><strong>2、以service方式暴露服务端口</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl expose deployment ingress-demo --port=80 --protocol=TCP --target-port=80
+service/ingress-demo exposed
+[root@node-1 ~]# kubectl get services 
+NAME           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+ingress-demo   ClusterIP   10.109.33.91   &lt;none&gt;        80/TCP    2m15s
+</code></pre>
+<p><strong>3、上述两个步骤已创建了一个service，如下我们定义一个ingress对象将流量转发至ingress-demo这个service，通过ingress.class指定控制器的类型为nginx</strong></p>
+<pre><code class="language-yaml">[root@node-1 nginx-ingress]# cat nginx-ingress-demo.yaml 
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+spec:
+  rules:
+  - host: www.test.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ingress-demo
+          servicePort: 80
+</code></pre>
+<p><strong>4、创建ingress对象</strong></p>
+<pre><code class="language-shell">[root@node-1 nginx-ingress]# kubectl apply -f nginx-ingress-demo.yaml 
+ingress.extensions/nginx-ingress-demo created
+
+查看ingress资源列表
+[root@node-1 nginx-ingress]# kubectl get ingresses
+NAME                 HOSTS                ADDRESS   PORTS   AGE
+nginx-ingress-demo   www.test.cn             80      4m4s
+</code></pre>
+<p><strong>5、查看ingress详情，可以在Rules规则中看到后端Pod的列表，自动发现和关联相关Pod</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl describe ingresses nginx-ingress-demo 
+Name:             nginx-ingress-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+Rules:
+  Host                Path  Backends
+  ----                ----  --------
+  www.test.cn  
+                      /   ingress-demo:80 (10.244.1.146:80,10.244.2.162:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;www.happylaulab.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;ingress-demo&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}}]}}
+
+  kubernets.io/ingress.class:  nginx
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  9m7s  nginx-ingress-controller  Configuration for default/nginx-ingress-demo was added or updated
+  Normal  AddedOrUpdated  9m7s  nginx-ingress-controller  Configuration for default/nginx-ingress-demo was added or updated
+  Normal  AddedOrUpdated  9m7s  nginx-ingress-controller  Configuration for default/nginx-ingress-demo was added or updated
+</code></pre>
+<p><strong>6、测试验证</strong></p>
+<p>ingress规则的配置信息已注入到Ingress Controller中，环境中Ingress Controller是以DaemonSets的方式部署在集群中，如果有外部的负载均衡，则将www.test.cn域名的地址解析为负载均衡VIP。由于测试环境没有搭建负载均衡，将hosts解析执行node-1，node-2或者node-3任意一个IP都能实现相同的功能。</p>
+<figure data-type="image" tabindex="2"><img src="https://ask.qcloudimg.com/draft/4405893/47noa95oaa.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>上述测试解析正常，当然也可以解析为node-1和node-2的IP，如下：</p>
+<pre><code class="language-shell">[root@node-1 ~]# curl -I http://www.happylau.cn --resolve www.happylau.cn:80:10.254.100.101
+HTTP/1.1 200 OK
+Server: nginx/1.17.6
+Date: Tue, 24 Dec 2019 10:32:22 GMT
+Content-Type: text/html
+Content-Length: 612
+Connection: keep-alive
+Last-Modified: Tue, 23 Dec 2014 16:25:09 GMT
+ETag: &quot;54999765-264&quot;
+Accept-Ranges: bytes
+
+[root@node-1 ~]# curl -I http://www.happylau.cn --resolve www.happylau.cn:80:10.254.100.102
+HTTP/1.1 200 OK
+Server: nginx/1.17.6
+Date: Tue, 24 Dec 2019 10:32:24 GMT
+Content-Type: text/html
+Content-Length: 612
+Connection: keep-alive
+Last-Modified: Tue, 23 Dec 2014 16:25:09 GMT
+ETag: &quot;54999765-264&quot;
+Accept-Ranges: bytes
+</code></pre>
+<h2 id="3-ingress动态配置">3 Ingress动态配置</h2>
+<p>上面介绍了ingress资源对象的申明配置，这里我们探究一下Nginx Ingress Controller的实现机制和动态配置更新机制，以方便了解Ingress控制器的工作机制。</p>
+<p><strong>1、 查看Nginx Controller控制器的配置文件，在nginx-ingress pod中存储着ingress的配置文件</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl get pods -n nginx-ingress 
+NAME                  READY   STATUS    RESTARTS   AGE
+nginx-ingress-7mpfc   1/1     Running   0          6h15m
+nginx-ingress-l2rtj   1/1     Running   0          6h15m
+nginx-ingress-tgf6r   1/1     Running   0          6h15m
+
+#查看配置文件，每个ingress生成一个配置文件，文件名为：命名空间-ingres名称.conf
+[root@node-1 ~]# kubectl exec -it nginx-ingress-7mpfc -n nginx-ingress -- ls -l /etc/nginx/conf.d
+total 4
+-rw-r--r-- 1 nginx nginx 1005 Dec 24 10:06 default-nginx-ingress-demo.conf
+
+#查看配置文件
+[root@node-1 ~]# kubectl exec -it nginx-ingress-7mpfc -n nginx-ingress -- cat /etc/nginx/conf.d/default-nginx-ingress-demo.conf
+# configuration for default/nginx-ingress-demo
+
+#upstream的配置，会用least_conn算法，通过service服务发现机制动态识别到后端的Pod
+upstream default-nginx-ingress-demo-www.test.cn-ingress-demo-80 {
+	zone default-nginx-ingress-demo-www.test.cn-ingress-demo-80 256k;
+	random two least_conn;
+	server 10.244.1.146:80 max_fails=1 fail_timeout=10s max_conns=0;
+	server 10.244.2.162:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+server {
+	listen 80;
+	server_tokens on;
+	server_name www.test.cn;
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		proxy_pass http://default-nginx-ingress-demo-www.test.cn-ingress-demo-80;	#调用upstream实现代理
+	}
+}
+</code></pre>
+<p>通过上述查看配置文件可得知，Nginx Ingress Controller实际是根据ingress规则生成对应的nginx配置文件，以实现代理转发的功能，加入Deployments的副本数变更后nginx的配置文件会发生什么改变呢？</p>
+<p><strong>2、更新控制器的副本数，由2个Pod副本扩容至3个</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl scale --replicas=3 deployment ingress-demo 
+deployment.extensions/ingress-demo scaled
+[root@node-1 ~]# kubectl get deployments
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-demo   3/3     3            3           123m
+</code></pre>
+<p><strong>3、再次查看nginx的配置文件，ingress借助于service的服务发现机制，将加入的Pod自动加入到nginx upstream中</strong></p>
+<figure data-type="image" tabindex="3"><img src="https://ask.qcloudimg.com/draft/4405893/14725qbjdh.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p><strong>4、查看nginx pod的日志（kubectl logs nginx-ingress-7mpfc -n nginx-ingress），有reload优雅重启的记录，即通过更新配置文件+reload实现配置动态更新。</strong></p>
+<figure data-type="image" tabindex="4"><img src="https://ask.qcloudimg.com/draft/4405893/lilxwe1u13.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>通过上述的配置可知，ingress调用kubernetes api去感知kubernetes集群中的变化情况，Pod的增加或减少这些变化，然后动态更新nginx ingress controller的配置文件，并重新载入配置。当集群规模越大时，会频繁涉及到配置文件的变动和重载，因此nginx这方面会存在先天的劣势，专门为微服务负载均衡应运而生，如Traefik，Envoy，Istio，这些负载均衡工具能够提供大规模，频繁动态更新的场景，但性能相比Nginx，HAproxy还存在一定的劣势。</p>
+<h2 id="4-ingress路径转发">4 Ingress路径转发</h2>
+<p>Ingress支持URI格式的转发方式，同时支持URL重写，如下以两个service为例演示，service-1安装nginx，service-2安装httpd，分别用http://demo.happylau.cn/news和http://demo.happylau.cn/sports转发到两个不同的service</p>
+<p><strong>1、环境准备，创建两个应用并实现service暴露，创建deployments时指定--explose创建service</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl run service-1 --image=nginx:1.7.9 --port=80 --replicas=1 --expose=true 
+service/service-1 created
+deployment.apps/service-1 created
+
+[root@node-1 ~]# kubectl run service-2 --image=httpd --port=80 --replicas=1 --expose=true 
+service/service-2 created
+deployment.apps/service-2 created
+
+查看deployment状态
+[root@node-1 ~]# kubectl get deployments 
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-demo   4/4     4            4           4h36m
+service-1      1/1     1            1           65s
+service-2      1/1     1            1           52s
+
+查看service状态，服务已经正常
+[root@node-1 ~]# kubectl get services 
+NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+ingress-demo   ClusterIP   10.109.33.91     &lt;none&gt;        80/TCP    4h36m
+kubernetes     ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP   101d
+service-1      ClusterIP   10.106.245.71    &lt;none&gt;        80/TCP    68s
+service-2      ClusterIP   10.104.204.158   &lt;none&gt;        80/TCP    55s
+</code></pre>
+<p><strong>2、创建ingress对象，通过一个域名将请求转发至后端两个service</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# cat nginx-ingress-uri-demo.yaml 
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-uri-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: 
+    http:
+      paths:
+      - path: /news
+        backend:
+          serviceName: service-1 
+          servicePort: 80
+      - path: /sports
+        backend:
+          serviceName: service-2
+          servicePort: 80
+</code></pre>
+<p><strong>3、创建ingress规则，查看详情</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# kubectl apply -f nginx-ingress-uri-demo.yaml 
+ingress.extensions/nginx-ingress-uri-demo created
+
+#查看详情
+[root@node-1 nginx-ingress]# kubectl get ingresses.
+NAME                     HOSTS              ADDRESS   PORTS   AGE
+nginx-ingress-demo       www.happylau.cn              80      4h35m
+nginx-ingress-uri-demo   demo.happylau.cn             80      4s
+[root@node-1 nginx-ingress]# kubectl describe ingresses nginx-ingress-uri-demo 
+Name:             nginx-ingress-uri-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+Rules:              #对应的转发url规则
+  Host              Path  Backends
+  ----              ----  --------
+  demo.happylau.cn  
+                    /news     service-1:80 (10.244.2.163:80)
+                    /sports   service-2:80 (10.244.1.148:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;,&quot;nginx.ingress.kubernetes.io/rewrite-target&quot;:&quot;/&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-uri-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;demo.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-1&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/news&quot;},{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-2&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/sports&quot;}]}}]}}
+
+  kubernets.io/ingress.class:                  nginx
+  nginx.ingress.kubernetes.io/rewrite-target:  /
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  11s   nginx-ingress-controller  Configuration for default/nginx-ingress-uri-demo was added or updated
+  Normal  AddedOrUpdated  11s   nginx-ingress-controller  Configuration for default/nginx-ingress-uri-demo was added or updated
+  Normal  AddedOrUpdated  11s   nginx-ingress-controller  Configuration for default/nginx-ingress-uri-demo was added or updated
+</code></pre>
+<p><strong>4、准备测试，站点中创建对应的路径</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl exec -it service-1-7b66bf758f-xj9jh /bin/bash
+root@service-1-7b66bf758f-xj9jh:/# echo &quot;service-1 website page&quot; &gt;/usr/share/nginx/html/news
+
+[root@node-1 ~]# kubectl exec -it service-2-7c7444684d-w9cv9 /bin/bash
+root@service-2-7c7444684d-w9cv9:/usr/local/apache2# echo &quot;service-2 website page&quot; &gt;/usr/local/apache2/htdocs/sports
+</code></pre>
+<p><strong>5、测试验证</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# curl http://demo.happylau.cn/news --resolve demo.happylau.cn:80:10.254.100.101
+service-1 website page
+[root@node-1 ~]# curl http://demo.happylau.cn/sports --resolve demo.happylau.cn:80:10.254.100.101
+service-2 website page
+</code></pre>
+<p><strong>6、总结</strong></p>
+<p>通过上述的验证测试可以得知，ingress支持URI的路由方式转发，其对应在ingress中的配置文件内容是怎样的呢，我们看下ingress controller生成对应的nginx配置文件内容，实际是通过ingress的location来实现，将不同的localtion转发至不同的upstream以实现service的关联，配置文件如下：</p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl exec -it nginx-ingress-7mpfc -n nginx-ingress /bin/bash
+nginx@nginx-ingress-7mpfc:/$ cat /etc/nginx/conf.d/default-nginx-ingress-uri-demo.conf |grep -v &quot;^$&quot;
+# configuration for default/nginx-ingress-uri-demo
+#定义两个upstream和后端的service关联
+upstream default-nginx-ingress-uri-demo-demo.happylau.cn-service-1-80 {
+	zone default-nginx-ingress-uri-demo-demo.happylau.cn-service-1-80 256k;
+	random two least_conn;
+	server 10.244.2.163:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+upstream default-nginx-ingress-uri-demo-demo.happylau.cn-service-2-80 {
+	zone default-nginx-ingress-uri-demo-demo.happylau.cn-service-2-80 256k;
+	random two least_conn;
+	server 10.244.1.148:80 max_fails=1 fail_timeout=10s max_conns=0;	
+}
+
+server {
+	listen 80;
+	server_tokens on;
+	server_name demo.happylau.cn;
+	
+  #定义location实现代理，通过proxy_pass和后端的service关联
+	location /news {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		proxy_pass http://default-nginx-ingress-uri-demo-demo.happylau.cn-service-1-80;
+	}
+
+	location /sports {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		proxy_pass http://default-nginx-ingress-uri-demo-demo.happylau.cn-service-2-80;	
+	}	
+}
+</code></pre>
+<h2 id="5-ingress虚拟主机">5 Ingress虚拟主机</h2>
+<p>ingress支持基于名称的虚拟主机，实现单个IP多个域名转发的需求，通过请求头部携带主机名方式区分开，将上个章节的ingress删除，使用service-1和service-2两个service来做演示。</p>
+<p><strong>1、创建ingress规则，通过主机名实现转发规则</strong></p>
+<pre><code class="language-js">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-virtualname-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+spec:
+  rules:
+  - host: news.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-1 
+          servicePort: 80
+  - host: sports.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-2 
+          servicePort: 80
+</code></pre>
+<p><strong>2、生成ingress规则并查看详情，一个ingress对应两个HOSTS</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# kubectl apply -f nginx-ingress-virtualname.yaml 
+ingress.extensions/nginx-ingress-virtualname-demo created
+
+#查看列表
+[root@node-1 nginx-ingress]# kubectl get ingresses nginx-ingress-virtualname-demo 
+NAME                             HOSTS                                 ADDRESS   PORTS   AGE
+nginx-ingress-virtualname-demo   news.happylau.cn,sports.happylau.cn             80      12s
+
+#查看详情
+[root@node-1 nginx-ingress]# kubectl describe ingresses nginx-ingress-virtualname-demo
+Name:             nginx-ingress-virtualname-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+Rules:
+  Host                Path  Backends
+  ----                ----  --------
+  news.happylau.cn    
+                      /   service-1:80 (10.244.2.163:80)
+  sports.happylau.cn  
+                      /   service-2:80 (10.244.1.148:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-virtualname-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;news.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-1&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}},{&quot;host&quot;:&quot;sports.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-2&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}}]}}
+
+  kubernets.io/ingress.class:  nginx
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  28s   nginx-ingress-controller  Configuration for default/nginx-ingress-virtualname-demo was added or updated
+  Normal  AddedOrUpdated  28s   nginx-ingress-controller  Configuration for default/nginx-ingress-virtualname-demo was added or updated
+  Normal  AddedOrUpdated  28s   nginx-ingress-controller  Configuration for default/nginx-ingress-virtualname-demo was added or updated
+</code></pre>
+<p><strong>3、准备测试数据并测试</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl exec -it service-1-7b66bf758f-xj9jh /bin/bash
+root@service-1-7b66bf758f-xj9jh:/# echo &quot;news demo&quot; &gt;/usr/share/nginx/html/index.html
+
+[root@node-1 ~]# kubectl exec -it service-2-7c7444684d-w9cv9 /bin/bash  
+root@service-2-7c7444684d-w9cv9:/usr/local/apache2# echo &quot;sports demo&quot;  &gt;/usr/local/apache2/htdocs/index.html
+</code></pre>
+<p><strong>测试：</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# curl http://news.happylau.cn --resolve news.happylau.cn:80:10.254.100.102
+news demo
+[root@node-1 ~]# curl http://sports.happylau.cn --resolve sports.happylau.cn:80:10.254.100.102
+sports demo
+</code></pre>
+<p><strong>4、查看nginx的配置文件内容，通过在server中定义不同的server_name以区分，代理到不同的upstream以实现service的代理。</strong></p>
+<pre><code class="language-js"># configuration for default/nginx-ingress-virtualname-demo
+upstream default-nginx-ingress-virtualname-demo-news.happylau.cn-service-1-80 {
+	zone default-nginx-ingress-virtualname-demo-news.happylau.cn-service-1-80 256k;
+	random two least_conn;
+	server 10.244.2.163:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+upstream default-nginx-ingress-virtualname-demo-sports.happylau.cn-service-2-80 {
+	zone default-nginx-ingress-virtualname-demo-sports.happylau.cn-service-2-80 256k;
+	random two least_conn;
+	server 10.244.1.148:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+server {
+	listen 80;
+	server_tokens on;
+	server_name news.happylau.cn;
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-virtualname-demo-news.happylau.cn-service-1-80;
+	
+  }
+}
+server {
+	listen 80;	
+	server_tokens on;
+	server_name sports.happylau.cn;
+
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-virtualname-demo-sports.happylau.cn-service-2-80;	
+
+	}	
+}
+</code></pre>
+<h2 id="6-ingress-tls加密">6 Ingress TLS加密</h2>
+<p>四层的负载均衡无法支持https请求，当前大部分业务都要求以https方式接入，Ingress能支持https的方式接入，通过Secrets存储证书+私钥，实现https接入，同时还能支持http跳转功能。对于用户的请求流量来说，客户端到ingress controller是https流量，ingress controller到后端service则是http，提高用户访问性能，如下介绍ingress TLS功能实现步骤。</p>
+<p><strong>1、生成自签名证书和私钥</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# openssl req -x509 -newkey rsa:2048 -nodes -days 365 -keyout tls.key -out tls.crt
+Generating a 2048 bit RSA private key
+....................................................+++
+........................................+++
+writing new private key to 'tls.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN        #国家
+State or Province Name (full name) []:GD    #省份
+Locality Name (eg, city) [Default City]:ShenZhen  #城市
+Organization Name (eg, company) [Default Company Ltd]:Tencent    #公司 
+Organizational Unit Name (eg, section) []:HappyLau  #组织
+Common Name (eg, your name or your server's hostname) []:www.happylau.cn  #域名
+Email Address []:573302346@qq.com       #邮箱地址
+
+
+#tls.crt为证书，tls.key为私钥
+[root@node-1 ~]# ls tls.* -l
+-rw-r--r-- 1 root root 1428 12月 26 13:21 tls.crt
+-rw-r--r-- 1 root root 1708 12月 26 13:21 tls.key
+</code></pre>
+<p><strong>2、配置Secrets，将证书和私钥配置到Secrets中</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl create secret tls happylau-sslkey --cert=tls.crt --key=tls.key 
+secret/happylau-sslkey created
+
+查看Secrets详情,证书和私要包含在data中，文件名为两个不同的key：tls.crt和tls.key
+[root@node-1 ~]# kubectl describe secrets happylau-sslkey 
+Name:         happylau-sslkey
+Namespace:    default
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+
+Type:  kubernetes.io/tls
+
+Data
+====
+tls.crt:  1428 bytes
+tls.key:  1708 bytes
+</code></pre>
+<p><strong>3、配置ingress调用Secrets实现SSL证书加密</strong></p>
+<pre><code class="language-js">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-tls-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - news.happylau.cn
+    - sports.happylau.cn
+    secretName: happylau-sslkey
+  rules:
+  - host: news.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-1 
+          servicePort: 80
+  - host: sports.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-2 
+          servicePort: 80
+</code></pre>
+<p><strong>4、创建ingress并查看ingress详情</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# kubectl describe ingresses nginx-ingress-tls-demo 
+Name:             nginx-ingress-tls-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+TLS:
+  happylau-sslkey terminates news.happylau.cn,sports.happylau.cn
+Rules:
+  Host                Path  Backends
+  ----                ----  --------
+  news.happylau.cn    
+                      /   service-1:80 (10.244.2.163:80)
+  sports.happylau.cn  
+                      /   service-2:80 (10.244.1.148:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-tls-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;news.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-1&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}},{&quot;host&quot;:&quot;sports.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-2&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}}],&quot;tls&quot;:[{&quot;hosts&quot;:[&quot;news.happylau.cn&quot;,&quot;sports.happylau.cn&quot;],&quot;secretName&quot;:&quot;happylau-sslkey&quot;}]}}
+
+  kubernets.io/ingress.class:  nginx
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  22s   nginx-ingress-controller  Configuration for default/nginx-ingress-tls-demo was added or updated
+  Normal  AddedOrUpdated  22s   nginx-ingress-controller  Configuration for default/nginx-ingress-tls-demo was added or updated
+  Normal  AddedOrUpdated  22s   nginx-ingress-controller  Configuration for default/nginx-ingress-tls-demo was added or updated
+</code></pre>
+<p><strong>5、访问</strong></p>
+<p>将news.happylau.cn和sports.happylau.cn写入到hosts文件中，并通过<a href="https://news.happylau.cn/">https://news.happylau.cn</a> 的方式访问，浏览器访问内容提示证书如下，信任证书即可访问到站点内容。</p>
+<figure data-type="image" tabindex="5"><img src="https://ask.qcloudimg.com/draft/4405893/ijw044j6yx.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>查看证书详情，正是我们制作的自签名证书，生产实际使用时，推荐使用CA机构颁发签名证书。</p>
+<figure data-type="image" tabindex="6"><img src="https://ask.qcloudimg.com/draft/4405893/t3clag54i5.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p><strong>6、接下来查看一下tls配置https的nginx配置文件内容，可以看到在server块启用了https并配置证书，同时配置了http跳转，因此直接访问http也能够实现自动跳转到https功能。</strong></p>
+<pre><code class="language-shell"># configuration for default/nginx-ingress-tls-demo
+upstream default-nginx-ingress-tls-demo-news.happylau.cn-service-1-80 {
+	zone default-nginx-ingress-tls-demo-news.happylau.cn-service-1-80 256k;
+	random two least_conn;
+	server 10.244.2.163:80 max_fails=1 fail_timeout=10s max_conns=0;	
+}
+
+upstream default-nginx-ingress-tls-demo-sports.happylau.cn-service-2-80 {
+	zone default-nginx-ingress-tls-demo-sports.happylau.cn-service-2-80 256k;
+	random two least_conn;
+	server 10.244.1.148:80 max_fails=1 fail_timeout=10s max_conns=0;	
+}
+
+server {
+	listen 80;
+
+	listen 443 ssl;     #https监听端口，证书和key，实现和Secrets关联
+	ssl_certificate /etc/nginx/secrets/default-happylau-sslkey;
+	ssl_certificate_key /etc/nginx/secrets/default-happylau-sslkey;
+
+	server_tokens on;
+	server_name news.happylau.cn;
+	
+  #http跳转功能，即访问http会自动跳转至https
+	if ($scheme = http) {
+		return 301 https://$host:443$request_uri;
+	}
+	
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-tls-demo-news.happylau.cn-service-1-80;	
+  }	
+}
+
+server {
+	listen 80;
+	listen 443 ssl;
+	ssl_certificate /etc/nginx/secrets/default-happylau-sslkey;
+	ssl_certificate_key /etc/nginx/secrets/default-happylau-sslkey;
+
+	server_tokens on;
+	server_name sports.happylau.cn;
+
+	if ($scheme = http) {
+		return 301 https://$host:443$request_uri;
+	}
+
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-tls-demo-sports.happylau.cn-service-2-80;	
+	}	
+}
+</code></pre>
+<h2 id="7-nginx-ingress高级功能">7. Nginx Ingress高级功能</h2>
+<h3 id="71-定制化参数">7.1 定制化参数</h3>
+<p>ingress controller提供了基础反向代理的功能，如果需要定制化nginx的特性或参数，需要通过ConfigMap和Annotations来实现，两者实现的方式有所不同，ConfigMap用于指定整个ingress集群资源的基本参数，修改后会被所有的ingress对象所继承；Annotations则被某个具体的ingress对象所使用，修改只会影响某个具体的ingress资源，冲突时其优先级高于ConfigMap。</p>
+<h4 id="711-configmap自定义参数">7.1.1 ConfigMap自定义参数</h4>
+<p>安装nginx ingress controller时默认会包含一个空的ConfigMap，可以通过ConfigMap来自定义nginx controller的默认参数，如下以修改一些参数为例：</p>
+<p><strong>1、 定义ConfigMap参数</strong></p>
+<pre><code class="language-yaml">kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-config
+  namespace: nginx-ingress
+data:
+  proxy-connect-timeout: &quot;10s&quot;
+  proxy-read-timeout: &quot;10s&quot;
+  proxy-send-timeout: &quot;10&quot;
+  client-max-body-size: &quot;3m&quot;
+</code></pre>
+<p><strong>2、 应用配置并查看ConfigMap配置</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl get configmaps -n nginx-ingress nginx-config -o yaml
+apiVersion: v1
+data:
+  client-max-body-size: 3m
+  proxy-connect-timeout: 10s
+  proxy-read-timeout: 10s
+  proxy-send-timeout: 10s
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {&quot;apiVersion&quot;:&quot;v1&quot;,&quot;data&quot;:{&quot;client-max-body-size&quot;:&quot;3m&quot;,&quot;proxy-connect-timeout&quot;:&quot;10s&quot;,&quot;proxy-read-timeout&quot;:&quot;10s&quot;,&quot;proxy-send-timeout&quot;:&quot;10&quot;},&quot;kind&quot;:&quot;ConfigMap&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;name&quot;:&quot;nginx-config&quot;,&quot;namespace&quot;:&quot;nginx-ingress&quot;}}
+  creationTimestamp: &quot;2019-12-24T04:39:23Z&quot;
+  name: nginx-config
+  namespace: nginx-ingress
+  resourceVersion: &quot;13845543&quot;
+  selfLink: /api/v1/namespaces/nginx-ingress/configmaps/nginx-config
+  uid: 9313ae47-a0f0-463e-a25a-1658f1ca0d57
+</code></pre>
+<p><strong>3 、此时，ConfigMap定义的配置参数会被集群中所有的Ingress资源继承（除了annotations定义之外）</strong></p>
+<figure data-type="image" tabindex="7"><img src="https://ask.qcloudimg.com/draft/4405893/w3dcxxnxfa.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>有很多参数可以定义，详情配置可参考方文档说明：https://github.com/nginxinc/kubernetes-ingress/blob/master/docs/configmap-and-annotations.md#Summary-of-ConfigMap-and-Annotations</p>
+<h4 id="712-annotations自定义参数">7.1.2 Annotations自定义参数</h4>
+<p>ConfigMap定义的是全局的配置参数，修改后所有的配置都会受影响，如果想针对某个具体的ingress资源自定义参数，则可以通过Annotations来实现，下面开始以实际的例子演示Annotations的使用。</p>
+<p><strong>1、修改ingress资源，添加annotations的定义,通过nginx.org组修改了一些参数，如proxy-connect-timeout，调度算法为round_robin（默认为least _conn）</strong></p>
+<pre><code class="language-yaml">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+    nginx.org/proxy-connect-timeout: &quot;30s&quot;
+    nginx.org/proxy-send-timeout: &quot;20s&quot;
+    nginx.org/proxy-read-timeout: &quot;20s&quot;
+    nginx.org/client-max-body-size: &quot;2m&quot;
+    nginx.org/fail-timeout: &quot;5s&quot;
+    nginx.org/lb-method: &quot;round_robin&quot; 
+spec:
+  rules:
+  - host: www.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ingress-demo
+          servicePort: 80
+</code></pre>
+<p><strong>2、 重新应用ingress对象并查看参数配置情况</strong></p>
+<figure data-type="image" tabindex="8"><img src="https://ask.qcloudimg.com/draft/4405893/b02oqllujm.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>由上面的演示可得知，Annotations的优先级高于ConfigMapMap，Annotations修改参数只会影响到某一个具体的ingress资源，其定义的方法和ConfigMap相相近似，但又有差别，部分ConfigMap的参数Annotations无法支持，反过来Annotations定义的参数ConfigMap也不一定支持，下图列举一下常规支持参数情况：</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/9uco9v1rs6.png?imageView2/2/w/1620" alt="img" loading="lazy">通用参数</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/kvbsl1udm3.png?imageView2/2/w/1620" alt="img" loading="lazy">日志支持</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/2bexxnq0b4.png?imageView2/2/w/1620" alt="img" loading="lazy">请求头部</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/hbfmi960e9.png?imageView2/2/w/1620" alt="img" loading="lazy">认证和安全</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/0h2kio34c5.png?imageView2/2/w/1620" alt="img" loading="lazy">upstream支持</p>
+<h3 id="72-虚拟主机和路由">7.2 虚拟主机和路由</h3>
+<p>安装nginx ingress时我们安装了一个customresourcedefinitions自定义资源，其能够提供除了默认ingress功能之外的一些高级特性如</p>
+<ul>
+<li>虚拟主机VirtualServer</li>
+<li>虚拟路由VirtualServerRoute</li>
+<li>健康检查Healthcheck</li>
+<li>流量切割Split</li>
+<li>会话保持SessionCookie</li>
+<li>重定向Redirect</li>
+</ul>
+<p>这些功能大部分依赖于Nginx Plus高级版本的支持，社区版本仅支持部分，对于企业级开发而言，丰富更多的功能可以购买企业级Nginx Plus版本。如下以通过VirtualServer和VirtualServerRoute定义upstream配置为例演示功能使用。</p>
+<p><strong>1、定义VirtualServer资源,其配置和ingress资源对象类似，能支持的功能会更丰富一点</strong></p>
+<pre><code class="language-yaml">apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: cafe
+spec:
+  host: cafe.example.com
+  tls:
+    secret: cafe-secret
+  upstreams:
+  - name: tea
+    service: tea-svc
+    port: 80
+    name: tea
+    service: ingress-demo 
+    subselector:
+    version: canary
+    lb-method: round_robin
+    fail-timeout: 10s
+    max-fails: 1
+    max-conns: 32
+    keepalive: 32
+    connect-timeout: 30s
+    read-timeout: 30s
+    send-timeout: 30s
+    next-upstream: &quot;error timeout non_idempotent&quot;
+    next-upstream-timeout: 5s
+    next-upstream-tries: 10
+    client-max-body-size: 2m
+    tls:
+      enable: true
+  routes:
+  - path: /tea
+    action:
+      pass: tea
+</code></pre>
+<p><strong>2、 应用资源并查看VirtualServer资源列表</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl apply -f vs.yaml 
+virtualserver.k8s.nginx.org/cafe unchanged
+[root@node-1 ~]# kubectl get virtualserver
+NAME                 AGE
+cafe                 2m52s
+</code></pre>
+<p><strong>3、检查ingress控制器的配置文件情况,生成的配置和upstream定义一致</strong></p>
+<pre><code class="language-shell">nginx@nginx-ingress-7mpfc:/etc/nginx/conf.d$ cat vs_default_cafe.conf 
+upstream vs_default_cafe_tea {
+    zone vs_default_cafe_tea 256k;
+    server 10.244.0.51:80 max_fails=1 fail_timeout=10s max_conns=32;
+    server 10.244.1.146:80 max_fails=1 fail_timeout=10s max_conns=32;
+    server 10.244.1.147:80 max_fails=1 fail_timeout=10s max_conns=32;
+    server 10.244.2.162:80 max_fails=1 fail_timeout=10s max_conns=32;
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    server_name cafe.example.com;
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/secrets/default;
+    ssl_certificate_key /etc/nginx/secrets/default;
+    ssl_ciphers NULL;
+    server_tokens &quot;on&quot;;
+
+    location /tea {
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
+        client_max_body_size 2m;
+        proxy_max_temp_file_size 1024m;
+        proxy_buffering on;
+        proxy_http_version 1.1;
+        set $default_connection_header &quot;&quot;;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $vs_connection_header;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_pass https://vs_default_cafe_tea;
+        proxy_next_upstream error timeout non_idempotent;
+        proxy_next_upstream_timeout 5s;
+        proxy_next_upstream_tries 10;   
+    }   
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[k8s界面kubesphere安装]]></title>
         <id>https://tinaxiawuhao.github.io/post/ULtZ5rQXA/</id>
@@ -654,7 +1812,7 @@ hostname = 192.169.40.150</p>
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[k8s1.19.3安装（基于Centos 7）]]></title>
+        <title type="html"><![CDATA[k8s1.24.1安装（基于Centos 7）]]></title>
         <id>https://tinaxiawuhao.github.io/post/oqAZb-4wU/</id>
         <link href="https://tinaxiawuhao.github.io/post/oqAZb-4wU/">
         </link>
@@ -807,11 +1965,19 @@ EOF
 <p><strong>• 工作在内核态，有更好的性能</strong></p>
 <p><strong>• 调度算法丰富：rr，wrr，lc，wlc，ip hash</strong></p>
 </blockquote>
+<p>等集群部署成功，mode由空值修改成ipvs模式</p>
+<pre><code>kubectl edit configmap kube-proxy -n kube-system configmap/kube-proxy edited
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="C:%5CUsers%5Ctianx%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1654171143818.png" alt="1654171143818" loading="lazy"></figure>
+<p><strong>删除所有kube-proxy的pod,等待重启</strong></p>
+<pre><code>kubectl delete pod/kube-proxy-84p9n -n kube-system
+# 查看ipvs相关规则
+ipvsadm
+</code></pre>
+<h3 id="14安装docker软件">14.安装docker软件</h3>
 <blockquote>
-<p>k8s 版本1.20以后会弃用 <a href="https://so.csdn.net/so/search?q=docker&amp;spm=1001.2101.3001.7020">docker</a>，但是也可以用。但最好还是替换成解决方案中的Containerd 。<br>
-Containerd 是一个行业标准的容器运行时，强调简单性、健壮性和可移植性</p>
+<p>自1.20版本被弃用之后，dockershim组件终于在1.24的kubelet中被删除。从1.24开始，大家需要使用其他受到支持的运行时选项（例如containerd或CRI-O）；如果您选择Docker Engine作为运行时，则需要使用cri-dockerd。</p>
 </blockquote>
-<h3 id="14安装docker-ce软件20以下版本">14.安装docker-ce软件（20以下版本）</h3>
 <h4 id="1删除自带的docker">1.删除自带的docker</h4>
 <pre><code class="language-shell">yum remove docker \
                   docker-client \
@@ -875,7 +2041,144 @@ docker  rm $(docker ps -a -q)
 #.删除所有镜像（慎重）
 docker rmi $(docker images -q)
 </code></pre>
-<h3 id="15部署-containerd20以上版本">15.部署 containerd(20以上版本)</h3>
+<h3 id="142cri-dockerd安装">14.2.cri-dockerd安装</h3>
+<p><strong>CRI-Dockerd 其实就是从被移除的 Docker Shim 中，独立出来的一个项目，用于解决历史遗留的节点升级 Kubernetes 的问题。</strong></p>
+<blockquote>
+<p>kubelet并没有直接和dockerd交互，而是通过了一个dockershim的组件间接操作dockerd。dockershim提供了一个标准的接口，让kubelet能够专注于容器调度逻辑本身，而不用去适配dockerd的接口变动。而其他实现了相同标准接口的容器技术也可以被kubelet集成使用，这个接口称作CRI。dockershim和CRI的出现也是容器生态系统演化的历史产物。在k8s最早期的版本中是不存在dockershim的，kubelet直接和dockerd交互。但为了支持更多不同的容器技术（避免完全被docker控制容器技术市场），kubelet在之后的版本开始支持另一种容器技术rkt。这给kubelet的维护工作造成了巨大的挑战，因为两种容器技术没有统一的接口和使用逻辑，kubelet同时支持两种技术的使用还要保证一致的容器功能表现，对代码逻辑和功能可靠性都有很大的影响。为了解决这个问题，k8s提出了一个统一接口CRI，kubelet统一通过这个接口来调用容器功能。但是dockerd并不支持CRI，k8s就自己实现了配套的dockershim将CRI接口调用转换成dockerd接口调用来支持CRI。因此，dockershim并不是docker技术的一部分，而是k8s系统的一部分</p>
+</blockquote>
+<p><strong>使用 CRI-Dockerd 项目</strong></p>
+<pre><code class="language-html">项目地址：https://github.com/Mirantis/cri-dockerd
+</code></pre>
+<h4 id="1下载cri-dockerd二进制包或者源码自己编译">1.下载cri-dockerd二进制包或者源码自己编译</h4>
+<pre><code class="language-shell"># 下载文件
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.2.0/cri-dockerd-v0.2.0-linux-amd64.tar.gz
+# 解压文件
+tar -xvf cri-dockerd-v0.2.0-linux-amd64.tar.gz
+# 复制二进制文件到指定目录
+cp cri-dockerd /usr/bin/
+</code></pre>
+<h4 id="2配置启动文件">2.配置启动文件</h4>
+<pre><code class="language-shell">vi /usr/lib/systemd/system/cri-docker.service
+[Unit]
+Description=CRI Interface for Docker Application Container Engine
+Documentation=https://docs.mirantis.com
+After=network-online.target firewalld.service docker.service
+Wants=network-online.target
+Requires=cri-docker.socket
+
+[Service]
+Type=notify
+
+ExecStart=/usr/bin/cri-dockerd --container-runtime-endpoint=unix:///var/run/cri-docker.sock --network-plugin=cni --cni-bin-dir=/opt/cni/bin \
+          --cni-conf-dir=/etc/cni/net.d --image-pull-progress-deadline=30s --pod-infra-container-image=docker.io/juestnow/pause:3.6 \
+          --docker-endpoint=unix:///var/run/docker.sock --cri-dockerd-root-directory=/var/lib/docker
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+
+# Note that StartLimit* options were moved from &quot;Service&quot; to &quot;Unit&quot; in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+Delegate=yes
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<pre><code class="language-shell"># 生成socket 文件
+vi /usr/lib/systemd/system/cri-docker.socket
+[Unit]
+Description=CRI Docker Socket for the API
+PartOf=cri-docker.service
+
+[Socket]
+ListenStream=/var/run/cri-dockerd.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup=docker
+
+[Install]
+WantedBy=sockets.target
+</code></pre>
+<pre><code class="language-shell"># 启动 cri-dockerd
+systemctl daemon-reload
+systemctl start cri-docker
+#设置开机启动
+systemctl enable cri-docker
+# 查看启动状态
+systemctl status cri-docker
+</code></pre>
+<h4 id="3下载cri-tools验证cri-docker-是否正常">3.下载cri-tools验证cri-docker 是否正常</h4>
+<pre><code class="language-shell"># 下载二进制文件
+wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.24.0/crictl-v1.24.0-linux-amd64.tar.gz
+# 解压
+tar -xvf crictl-v1.24.0-linux-amd64.tar.gz
+# 复制二进制文件到指定目录
+cp crictl /usr/bin/
+# 创建配置文件
+vim /etc/crictl.yaml
+runtime-endpoint: &quot;unix:///var/run/cri-docker.sock&quot;
+image-endpoint: &quot;unix:///var/run/cri-docker.sock&quot;
+timeout: 10
+debug: false
+pull-image-on-create: true
+disable-pull-on-run: false
+# 测试能否访问docker
+# 查看运行的容器
+crictl ps
+# 查看拉取的镜像
+ crictl images
+ # 拉取镜像
+ crictl pull busybox
+ [root@k8s-node-4 ~]# crictl pull busybox
+Image is up to date for busybox@sha256:5ecba83a746c7608ed511dc1533b87c737a0b0fb730301639a0179f9344b13448
+返回一切正常cri-dockerd接入docker完整
+</code></pre>
+<h3 id="15部署-containerdk8s-124版本以上">15.部署 containerd(k8s-1.24版本以上)</h3>
+<p><strong>服务版本</strong></p>
+<table>
+<thead>
+<tr>
+<th>服务名称</th>
+<th>版本号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内核</td>
+<td>5.14.3-1.el7.elrepo.x86_64</td>
+</tr>
+<tr>
+<td>containerd</td>
+<td>v1.6.4（加入）</td>
+</tr>
+<tr>
+<td>ctr</td>
+<td>v1.6.4</td>
+</tr>
+<tr>
+<td>k8s</td>
+<td>1.24</td>
+</tr>
+</tbody>
+</table>
 <h4 id="1安装containerd">1.安装containerd</h4>
 <p><strong>创建配置文件</strong></p>
 <pre><code class="language-shell">mkdir /etc/modules-load.d/containerd.conf 
@@ -908,6 +2211,11 @@ systemctl enable containerd &amp;&amp; systemctl start containerd
 [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]
      SystemdCgroup = true                               ## 修改为true
 </code></pre>
+<p><strong>替换默认pause镜像地址</strong></p>
+<p>默认情况下k8s.gcr.io无法访问，所以使用阿里云镜像仓库地址即可</p>
+<pre><code class="language-shell"># 所有节点更换默认镜像地址
+sed -i 's/k8s.gcr.io/registry.cn-beijing.aliyuncs.com\/abcdocker/' /etc/containerd/config.toml 
+</code></pre>
 <p><strong>重启 containerd</strong></p>
 <pre><code class="language-shell">systemctl restart containerd
 </code></pre>
@@ -937,14 +2245,14 @@ gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.a
 EOF
 </code></pre>
 <h4 id="2安装启用">2.安装启用</h4>
-<pre><code class="language-shell">sudo yum install -y kubelet-1.19.3 kubeadm-1.19.3 kubectl-1.19.3 --disableexcludes=kubernetes 
+<pre><code class="language-shell">sudo yum install -y kubelet-1.24.1 kubeadm-1.24.1 kubectl-1.24.1 --disableexcludes=kubernetes 
 sudo systemctl enable kubelet &amp;&amp; systemctl start kubelet
 </code></pre>
 <h4 id="3修改kubelet的配置文件">3.修改kubelet的配置文件</h4>
 <p>先查看配置文件位置</p>
 <pre><code class="language-shell">systemctl status kubelet
 </code></pre>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1653818855680.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1653818855680.png" alt="" loading="lazy"></figure>
 <pre><code class="language-shell">vi /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
 </code></pre>
 <p>并添加以下内容(使用和docker相同的cgroup-driver)。</p>
@@ -987,7 +2295,7 @@ done
 <p><strong>以上操作在所有机器执行</strong></p>
 <h3 id="18初始化环境master操作">18.初始化环境（master操作）</h3>
 <h4 id="1安装镜像">1.安装镜像</h4>
-<p><strong>k8s1.20之后会弃用docker,kubeadm init采用模板配置文件加载为好</strong></p>
+<p><strong>采用模板配置文件加载</strong></p>
 <pre><code class="language-shell">kubeadm config print init-defaults  &gt; kubeadm-config.yaml
 </code></pre>
 <pre><code class="language-yaml">
@@ -1006,7 +2314,8 @@ localAPIEndpoint:
   advertiseAddress: 192.168.200.3     # 本机IP
   bindPort: 6443
 nodeRegistration:
-  criSocket: /run/containerd/containerd.sock      # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  criSocket: /var/run/cri-docker.sock  # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  #criSocket: /run/containerd/containerd.sock      # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
   name: master1        # 本主机名
   taints:
   - effect: NoSchedule
@@ -1026,10 +2335,10 @@ etcd:
     dataDir: /var/lib/etcd
 imageRepository: registry.aliyuncs.com/google_containers    # 镜像仓库源要根据自己实际情况修改
 kind: ClusterConfiguration
-kubernetesVersion: v1.22.0     # k8s版本
+kubernetesVersion: v1.24.1     # k8s版本
 networking:
   dnsDomain: cluster.local
-  podSubnet: &quot;10.244.0.0/16&quot;
+  podSubnet: &quot;10.244.0.0/16&quot;   #设置网段，和下面网络插件对应
   serviceSubnet: 10.96.0.0/12
 scheduler: {}
  
@@ -1045,10 +2354,10 @@ mode: ipvs
 </code></pre>
 <p>这个就很简单了，只需要简单的一个命令：</p>
 <pre><code class="language-bash">#直接使用已经下载好的镜像
-kubeadm init --kubernetes-version=v1.19.3 --apiserver-advertise-address=192.168.40.131 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap | tee kubeadm-init.log
+kubeadm init --kubernetes-version=v1.24.1 --apiserver-advertise-address=192.168.40.131 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap  --cri-socket unix:///var/run/cri-docker.sock | tee kubeadm-init.log
 #或者采用aliyuncs镜像下载
-kubeadm init --kubernetes-version=v1.19.3 --apiserver-advertise-address=192.168.40.131 --image-repository  registry.aliyuncs.com/google_containers  --service-cidr=10.1.0.0/16 --pod-network-cidr=10.244.0.0/16 | tee kubeadm-init.log
-#1.20后使用Containerd,使用配置文件加载为佳
+kubeadm init --kubernetes-version=v1.24.1 --apiserver-advertise-address=192.168.40.131 --image-repository  registry.aliyuncs.com/google_containers  --service-cidr=10.1.0.0/16 --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/cri-docker.sock| tee kubeadm-init.log
+#使用上面系统生成配置文件加载
 kubeadm init --config kubeadm-config.yaml
 </code></pre>
 <h4 id="3初始化命令说明">3.初始化命令说明：</h4>
@@ -1070,7 +2379,12 @@ kubeadm init --config kubeadm-config.yaml
 <blockquote>
 <p>关闭版本探测，因为它的默认值是stable-1，会导致从https://dl.k8s.io/release/stable-1.txt下载最新的版本号，我们可以将其指定为固定版本（最新版：v1.24.1）来跳过网络请求。</p>
 </blockquote>
-<pre><code class="language-bash">--kubernetes-version=v1.19.3 
+<pre><code class="language-bash">--kubernetes-version=v1.24.1 
+</code></pre>
+<blockquote>
+<p>指定启动时使用cri-docker调用docker</p>
+</blockquote>
+<pre><code class="language-shell">--cri-socket unix:///var/run/cri-docker.sock 
 </code></pre>
 <h4 id="4错误启动重置">4.错误启动重置</h4>
 <pre><code class="language-shell">kubeadm reset
@@ -1081,7 +2395,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 </code></pre>
 <h4 id="6添加节点">6.添加节点</h4>
-<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5 --cri-socket unix:///var/run/cri-docker.sock 
 </code></pre>
 <h4 id="7执行kubectl-get-nodes查看master节点状态">7.执行kubectl get nodes，查看master节点状态：</h4>
 <pre><code class="language-shell">kubectl get node
@@ -1090,13 +2404,11 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 <pre><code class="language-bash">journalctl -xef -u kubelet -n 20
 </code></pre>
 <p>提示未安装cni 网络插件。</p>
-<h3 id="19安装flannel网络插件cni">19.安装flannel网络插件(CNI)</h3>
+<h3 id="191安装flannel网络插件cni">19.1安装flannel网络插件(CNI)</h3>
 <p>master执行以下命令安装flannel即可：</p>
 <pre><code class="language-shell">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 </code></pre>
-<p>node安装</p>
-<pre><code class="language-shell">yum install  flannel -y
-</code></pre>
+<p>kube-flannel.yaml文件中的net-conf.json-&gt;Network地址默认为命令中–pod-network-cidr=值相同</p>
 <p><strong>输入命令kubectl get pods -n kube-system,等待所有插件为running状态</strong>。</p>
 <p><strong>待所有pod status为Running的时候，再次执行kubectl get nodes：</strong></p>
 <pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
@@ -1104,11 +2416,65 @@ NAME         STATUS   ROLES    AGE   VERSION
 k8s-master   Ready    master   16m   v1.19.3
 </code></pre>
 <p><strong>如上所示，master状态变为，表明Master节点部署成功！</strong></p>
+<h3 id="192安装calico网络功能更完善">19.2安装calico网络(功能更完善)</h3>
+<h4 id="1在master上下载配置calico网络的yaml">1.在master上下载配置calico网络的yaml。</h4>
+<pre><code class="language-shell">wget https://docs.projectcalico.org/v3.14/manifests/calico.yaml --no-check-certificate
+# anaconda-ks.cfg  calico.yaml
+</code></pre>
+<h4 id="2修改calicoyaml里的pod网段">2.修改calico.yaml里的pod网段。</h4>
+<pre><code class="language-bash">#把calico.yaml里pod所在网段改成kubeadm init时选项--pod-network-cidr所指定的网段，
+#直接用vi编辑打开此文件查找192，按如下标记进行修改：
+
+# no effect. This should fall within `--cluster-cidr`.
+# - name: CALICO_IPV4POOL_CIDR
+#   value: &quot;192.168.0.0/16&quot;
+# Disable file logging so `kubectl logs` works.
+- name: CALICO_DISABLE_FILE_LOGGING
+value: &quot;true&quot;
+
+# 把两个#及#后面的空格去掉，并把192.168.0.0/16改成10.244.0.0/16
+
+# no effect. This should fall within `--cluster-cidr`.
+- name: CALICO_IPV4POOL_CIDR
+value: &quot;10.244.0.0/16&quot;
+# Disable file logging so `kubectl logs` works.
+- name: CALICO_DISABLE_FILE_LOGGING
+value: &quot;true&quot;
+</code></pre>
+<blockquote>
+<p>改的时候请看清缩进关系，即这里的对齐关系。</p>
+</blockquote>
+<h4 id="3提前下载所需要的镜像">3.提前下载所需要的镜像。</h4>
+<pre><code class="language-shell"># 查看此文件用哪些镜像：
+[root@k8s-master ~]# grep image calico.yaml
+image: calico/cni:v3.14.0
+image: calico/cni:v3.14.0
+image: calico/pod2daemon-flexvol:v3.14.0
+image: calico/node:v3.14.0
+image: calico/kube-controllers:v3.14.0
+</code></pre>
+<blockquote>
+<p>在所有节点（包括master）上把这些镜像下载下来：</p>
+</blockquote>
+<pre><code class="language-shell">[root@master01 ~]# for i in calico/cni:v3.14.0 calico/pod2daemon-flexvol:v3.14.0 calico/node:v3.14.0 calico/kube-controllers:v3.14.0 ; do docker pull $i ; done
+</code></pre>
+<h4 id="4安装calico网络">4.安装calico网络。</h4>
+<p>在master上执行如下命令：</p>
+<pre><code class="language-csharp">kubectl apply -f calico.yaml
+</code></pre>
+<h4 id="5验证结果">5.验证结果。</h4>
+<p>再次在master上运行命令 kubectl get nodes查看运行结果：</p>
+<pre><code class="language-css">[root@k8s-master ~]# kubectl get nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+master01   Ready    control-plane,master   21h   v1.23.4
+worker01   Ready    &lt;none&gt;                 16h   v1.23.4
+worker02   Ready    &lt;none&gt;                 16h   v1.23.4
+</code></pre>
 <h3 id="20部署k8s-node1-k8s-node2集群">20.部署k8s-node1、k8s-node2集群</h3>
 <p><strong>1、在k8s-node1、k8s-node2等两台虚拟机中重复执行上面的步骤，安装好docker、kubelet、kubectl、kubeadm。</strong></p>
 <h4 id="1node节点加入集群">1.node节点加入集群</h4>
 <p>在上面第初始化master节点成功后，输出了下面的kubeadm join命令：</p>
-<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5 --cri-socket unix:///var/run/cri-docker.sock 
 </code></pre>
 <p>该命令就是node加入集群的命令，分别在k8s-node1、k8s-node2上执行该命令加入集群。</p>
 <p>如果忘记该命令，可以通过以下命令重新生成：</p>
@@ -1125,6 +2491,24 @@ k8s-node2    Ready    &lt;none&gt;   5m21s   v1.19.3
 
 </code></pre>
 <p>如上所示，所有节点都为ready，集群搭建成功。</p>
+<h2 id="卸载集群命令">卸载集群命令</h2>
+<pre><code class="language-shell">#建议所有服务器都执行
+#!/bin/bash
+kubeadm reset -f
+modprobe -r ipip
+lsmod
+rm -rf ~/.kube/
+rm -rf /etc/kubernetes/
+rm -rf /etc/systemd/system/kubelet.service.d
+rm -rf /etc/systemd/system/kubelet.service
+rm -rf /usr/bin/kube*
+rm -rf /etc/cni
+rm -rf /opt/cni
+rm -rf /var/lib/etcd
+rm -rf /var/etcd
+yum -y remove kubeadm* kubectl* kubelet* docker*
+reboot
+</code></pre>
 ]]></content>
     </entry>
     <entry>
@@ -29504,320 +30888,6 @@ timeIndicator = fieldReference , &quot;.&quot; , ( &quot;proctime&quot; | &quot;
 <p><strong>时间表示</strong>：为了使用时间值，Table API支持Java SQL的日期，时间和时间戳类型。在Scala Table API中，可以使用java.sql.Date.valueOf（“ 2016-06-27”），java.sql.Time.valueOf（“ 10:10:42”）或java.sql定义文字。Timestamp.valueOf（“ 2016-06-27 10：10：42.123”）。Java和Scala表API还支持调用“ 2016-06-27” .toDate（），“ 10:10:42” .toTime（）和“ 2016-06-27 10：10：42.123” .toTimestamp（）用于将字符串转换为时间类型。注意：由于Java的时态SQL类型取决于时区，因此请确保Flink Client和所有TaskManager使用相同的时区。</p>
 <p><strong>时间间隔</strong>：时间间隔可以表示为月数（Types.INTERVAL_MONTHS）或毫秒数（Types.INTERVAL_MILLIS）。可以添加或减去相同类型的间隔（例如1.小时+ 10分钟）。可以将毫秒间隔添加到时间点（例如“ 2016-08-10” .toDate + 5.days）。</p>
 <p><strong>Scala表达式</strong>:：Scala表达式使用隐式转换。因此，请确保将通配符导入org.apache.flink.table.api.scala._添加到程序中。如果文字不被视为表达式，请使用.toExpr（如3.toExpr）强制转换文字。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[第九章 状态编程和容错机制]]></title>
-        <id>https://tinaxiawuhao.github.io/post/rxadb61B8/</id>
-        <link href="https://tinaxiawuhao.github.io/post/rxadb61B8/">
-        </link>
-        <updated>2021-04-16T08:54:53.000Z</updated>
-        <content type="html"><![CDATA[<p style="text-indent:2em">流式计算分为无状态和有状态两种情况。 无状态的计算观察每个独立事件， 并根据最后一个事件输出结果。 例如， 流处理应用程序从传感器接收温度读数， 并在
-温度超过 90 度时发出警告。 有状态的计算则会基于多个事件输出结果。 以下是一些
-例子。</p>
-<ul>
-<li>所有类型的窗口。 例如， 计算过去一小时的平均温度， 就是有状态的计算。</li>
-<li>所有用于复杂事件处理的状态机。 例如， 若在一分钟内收到两个相差 20 度<br>
-以上的温度读数， 则发出警告， 这是有状态的计算。</li>
-<li>流与流之间的所有关联操作， 以及流与静态表或动态表之间的关联操作，<br>
-都是有状态的计算。</li>
-</ul>
-<p style="text-indent:2em">下图展示了无状态流处理和有状态流处理的主要区别。 无状态流处理分别接收每条数据记录(图中的黑条)， 然后根据最新输入的数据生成输出数据(白条)。 有状态
-流处理会维护状态(根据每条输入记录进行更新)， 并基于最新输入的记录和当前的
-状态值生成输出记录(灰条)。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618478116508.png" alt="" loading="lazy"><br>
-图 无状态和有状态的流处理</p>
-<p style="text-indent:2em">上图中输入数据由黑条表示。 无状态流处理每次只转换一条输入记录， 并且仅根据最新的输入记录输出结果(白条)。 有状态 流处理维护所有已处理记录的状态
-值， 并根据每条新输入的记录更新状态， 因此输出记录(灰条)反映的是综合考虑多
-个事件之后的结果。</p>
-<p style="text-indent:2em">尽管无状态的计算很重要， 但是流处理对有状态的计算更感兴趣。 事实上， 正确地实现有状态的计算比实现无状态的计算难得多。 旧的流处理系统并不支持有状
-态的计算， 而新一代的流处理系统则将状态及其正确性视为重中之重。</p>
-<h2 id="有状态的算子和应用程序">有状态的算子和应用程序</h2>
-<p style="text-indent:2em">Flink 内置的很多算子， 数据源 source， 数据存储 sink 都是有状态的， 流中的数据都是 buffer records， 会保存一定的元素或者元数据。 例如: ProcessWindowFunction会缓存输入流的数据， ProcessFunction 会保存设置的定时器信息等等。
-在 Flink 中， 状态始终与特定算子相关联。 总的来说， 有两种类型的状态：</p>
-<ul>
-<li>算子状态（ operator state）</li>
-<li>键控状态（ keyed state）</li>
-</ul>
-<h3 id="算子状态operator-state">算子状态（operator state）</h3>
-<p style="text-indent:2em">算子状态的作用范围限定为算子任务。 这意味着由同一并行任务所处理的所有数据都可以访问到相同的状态， 状态对于同一任务而言是共享的。 算子状态不能由
-相同或不同算子的另一个任务访问。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618478177511.png" alt="" loading="lazy"><br>
-图 具有算子状态的任务<br>
-Flink 为算子状态提供三种基本数据结构：</p>
-<ol>
-<li>列表状态（List state）<br>
-将状态表示为一组数据的列表。</li>
-<li>联合列表状态（Union list state）<br>
-也将状态表示为数据的列表。 它与常规列表状态的区别在于， 在发生故障时， 或者从保<br>
-存点（savepoint） 启动应用程序时如何恢复。</li>
-<li>广播状态（Broadcast state）<br>
-如果一个算子有多项任务， 而它的每项任务状态又都相同， 那么这种特殊情况最适合应<br>
-用广播状态。</li>
-</ol>
-<h3 id="键控状态keyed-state">键控状态（keyed state）</h3>
-<p style="text-indent:2em">键控状态是根据输入数据流中定义的键（key） 来维护和访问的。 Flink 为每个键值维护一个状态实例， 并将具有相同键的所有数据， 都分区到同一个算子任务中， 这个任务会维护和处理这个 key 对应的状态。 当任务处理一条数据时， 它会自动将状态的访问范围限定为当
-前数据的 key。 因此， 具有相同 key 的所有数据都会访问相同的状态。 Keyed State 很类似于
-一个分布式的 key-value map 数据结构， 只能用于 KeyedStream（ keyBy 算子处理之后） 。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618478247650.png" alt="" loading="lazy"><br>
-图 具有键控状态的任务<br>
-Flink 的 Keyed State 支持以下数据类型：</p>
-<ol>
-<li>ValueState[T]保存单个的值， 值的类型为 T。<br>
-1.1 get 操作: ValueState.value()<br>
-1.2 set 操作: ValueState.update(value: T)</li>
-<li>ListState[T]保存一个列表， 列表里的元素的数据类型为 T。 基本操作如下：<br>
-2.1 ListState.add(value: T)<br>
-2.2 ListState.addAll(values: java.util.List[T])<br>
-2.3 ListState.get()返回 Iterable[T]<br>
-2.4 ListState.update(values: java.util.List[T])</li>
-<li>MapState[K, V]保存 Key-Value 对。<br>
-3.1 MapState.get(key: K)<br>
-3.2 MapState.put(key: K, value: V)<br>
-3.3 MapState.contains(key: K)<br>
-3.4 MapState.remove(key: K)</li>
-<li>ReducingState[T]</li>
-<li>AggregatingState[I, O]<br>
-State.clear()是清空操作。</li>
-</ol>
-<pre><code class="language-java">val sensorData: DataStream[SensorReading] = ...
-val keyedData: KeyedStream[SensorReading, String] = sensorData.keyBy(_.id)
-val alerts: DataStream[(String, Double, Double)] = keyedData
-    .flatMap(new TemperatureAlertFunction(1.7))
-class TemperatureAlertFunction(val threshold: Double) extends
-RichFlatMapFunction[SensorReading, (String, Double, Double)] {
-    private var lastTempState: ValueState[Double] = _
-    override def open(parameters: Configuration): Unit = {
-        val lastTempDescriptor = new ValueStateDescriptor[Double](&quot;lastTemp&quot;,
-        classOf[Double])
-        lastTempState = getRuntimeContext.getState[Double](lastTempDescriptor)
-    } 
-    override def flatMap(reading: SensorReading,
-    out: Collector[(String, Double, Double)]): Unit = {
-        val lastTemp = lastTempState.value()
-        val tempDiff = (reading.temperature - lastTemp).abs
-        if (tempDiff &gt; threshold) {
-            out.collect((reading.id, reading.temperature, tempDiff))
-        }
-        this.lastTempState.update(reading.temperature)
-    }
-} 
-</code></pre>
-<p style="text-indent:2em">通过 RuntimeContext 注册 StateDescriptor。 StateDescriptor 以状态 state 的名字和存储的数据类型为参数。</p>
-<p style="text-indent:2em">在 open()方法中创建 state 变量。 注意复习之前的 RichFunction 相关知识。接下来我们使用了 FlatMap with keyed ValueState 的快捷方式 flatMapWithState
-实现以上需求。</p>
-<pre><code class="language-java">val alerts: DataStream[(String, Double, Double)] = keyedSensorData
-.flatMapWithState[(String, Double, Double), Double] {
-    case (in: SensorReading, None) =&gt;
-         (List.empty, Some(in.temperature))
-    case (r: SensorReading, lastTemp: Some[Double]) =&gt;
-        val tempDiff = (r.temperature - lastTemp.get).abs
-        if (tempDiff &gt; 1.7) {
-            (List((r.id, r.temperature, tempDiff)), Some(r.temperature))
-        } else {
-            (List.empty, Some(r.temperature))
-        }
-}
-</code></pre>
-<h2 id="状态一致性">状态一致性</h2>
-<p style="text-indent:2em">当在分布式系统中引入状态时， 自然也引入了一致性问题。 一致性实际上是"正确性级别"的另一种说法， 也就是说在成功处理故障并恢复之后得到的结果， 与没
-有发生任何故障时得到的结果相比， 前者到底有多正确？ 举例来说， 假设要对最近
-一小时登录的用户计数。 在系统经历故障之后， 计数结果是多少？ 如果有偏差， 是
-有漏掉的计数还是重复计数？</p>
-<h3 id="一致性级别">一致性级别</h3>
-<p>在流处理中， 一致性可以分为 3 个级别：</p>
-<ul>
-<li>at-most-once: 这其实是没有正确性保障的委婉说法——故障发生之后， 计<br>
-数结果可能丢失。 同样的还有 udp。</li>
-<li>at-least-once: 这表示计数结果可能大于正确值， 但绝不会小于正确值。 也<br>
-就是说， 计数程序在发生故障后可能多算， 但是绝不会少算。</li>
-<li>exactly-once: 这指的是系统保证在发生故障后得到的计数结果与正确值一<br>
-致。</li>
-</ul>
-<p style="text-indent:2em">曾经， at-least-once 非常流行。 第一代流处理器(如 Storm 和 Samza)刚问世时只保证 at-least-once， 原因有二。</p>
-<ol>
-<li>保证 exactly-once 的系统实现起来更复杂。 这在基础架构层(决定什么代表<br>
-正确， 以及 exactly-once 的范围是什么)和实现层都很有挑战性。</li>
-<li>流处理系统的早期用户愿意接受框架的局限性， 并在应用层想办法弥补(例<br>
-如使应用程序具有幂等性， 或者用批量计算层再做一遍计算)。<br>
-最先保证 exactly-once 的系统(Storm Trident 和 Spark Streaming)在性能和表现力<br>
-这两个方面付出了很大的代价。 为了保证 exactly-once， 这些系统无法单独地对每条<br>
-记录运用应用逻辑， 而是同时处理多条(一批)记录， 保证对每一批的处理要么全部<br>
-成功， 要么全部失败。 这就导致在得到结果前， 必须等待一批记录处理结束。 因此，<br>
-用户经常不得不使用两个流处理框架(一个用来保证 exactly-once， 另一个用来对每<br>
-个元素做低延迟处理)， 结果使基础设施更加复杂。 曾经， 用户不得不在保证<br>
-exactly-once 与获得低延迟和效率之间权衡利弊。 Flink 避免了这种权衡。<br>
-Flink 的一个重大价值在于， 它既保证了 exactly-once， 也具有低延迟和高吞吐<br>
-的处理能力。<br>
-从根本上说， Flink 通过使自身满足所有需求来避免权衡， 它是业界的一次意义<br>
-重大的技术飞跃。 尽管这在外行看来很神奇， 但是一旦了解， 就会恍然大悟。</li>
-</ol>
-<h3 id="端到端end-to-end-状态一致性">端到端（end-to-end） 状态一致性</h3>
-<p style="text-indent:2em">目前我们看到的一致性保证都是由流处理器实现的， 也就是说都是在 Flink 流处理器内部保证的； 而在真实应用中， 流处理应用除了流处理器以外还包含了数据
-源（ 例如 Kafka） 和输出到持久化系统。</p>
-<p style="text-indent:2em">端到端的一致性保证， 意味着结果的正确性贯穿了整个流处理应用的始终； 每一个组件都保证了它自己的一致性， 整个端到端的一致性级别取决于所有组件中一
-致性最弱的组件。 具体可以划分如下：</p>
-<ul>
-<li>内部保证 —— 依赖 checkpoint</li>
-<li>source 端 —— 需要外部源可重设数据的读取位置</li>
-<li>sink 端 —— 需要保证从故障恢复时， 数据不会重复写入外部系统<br>
-而对于 sink 端， 又有两种具体的实现方式： 幂等（ Idempotent） 写入和事务性<br>
-（ Transactional） 写入。</li>
-<li>幂等写入<br>
-所谓幂等操作， 是说一个操作， 可以重复执行很多次， 但只导致一次结果更改，<br>
-也就是说， 后面再重复执行就不起作用了。</li>
-<li>事务写入<br>
-需要构建事务来写入外部系统， 构建的事务对应着 checkpoint， 等到 checkpoint<br>
-真正完成的时候， 才把所有对应的结果写入 sink 系统中。</li>
-</ul>
-<p style="text-indent:2em">对于事务性写入， 具体又有两种实现方式： 预写日志（ WAL） 和两阶段提交（ 2PC） 。 DataStream API 提供了 GenericWriteAheadSink 模板类和
-TwoPhaseCommitSinkFunction 接口， 可以方便地实现这两种方式的事务性写入。
-不同 Source 和 Sink 的一致性保证可以用下表说明：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1618538597897.png" alt="" loading="lazy"></figure>
-<h2 id="检查点checkpoint">检查点（checkpoint）</h2>
-<p style="text-indent:2em">Flink 具体如何保证 exactly-once 呢? 它使用一种被称为"检查点"（ checkpoint）的特性， 在出现故障时将系统重置回正确状态。 下面通过简单的类比来解释检查点
-的作用。</p>
-<p style="text-indent:2em">假设你和两位朋友正在数项链上有多少颗珠子， 如下图所示。 你捏住珠子， 边数边拨， 每拨过一颗珠子就给总数加一。 你的朋友也这样数他们手中的珠子。 当你
-分神忘记数到哪里时， 怎么办呢? 如果项链上有很多珠子， 你显然不想从头再数一
-遍， 尤其是当三人的速度不一样却又试图合作的时候， 更是如此(比如想记录前一分
-钟三人一共数了多少颗珠子， 回想一下一分钟滚动窗口)。</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1618538624575.png" alt="" loading="lazy"></figure>
-<p style="text-indent:2em">于是， 你想了一个更好的办法: 在项链上每隔一段就松松地系上一根有色皮筋，
-将珠子分隔开; 当珠子被拨动的时候， 皮筋也可以被拨动; 然后， 你安排一个助手，
-让他在你和朋友拨到皮筋时记录总数。 用这种方法， 当有人数错时， 就不必从头开
-始数。 相反， 你向其他人发出错误警示， 然后你们都从上一根皮筋处开始重数， 助
-手则会告诉每个人重数时的起始数值， 例如在粉色皮筋处的数值是多少。</p>
-<p style="text-indent:2em">Flink 检查点的作用就类似于皮筋标记。 数珠子这个类比的关键点是: 对于指定的皮筋而言， 珠子的相对位置是确定的; 这让皮筋成为重新计数的参考点。 总状态
-(珠子的总数)在每颗珠子被拨动之后更新一次， 助手则会保存与每根皮筋对应的检
-查点状态， 如当遇到粉色皮筋时一共数了多少珠子， 当遇到橙色皮筋时又是多少。
-当问题出现时， 这种方法使得重新计数变得简单。</p>
-<h3 id="flink-的检查点算法">Flink 的检查点算法</h3>
-<p style="text-indent:2em">Flink 检查点的核心作用是确保状态正确， 即使遇到程序中断， 也要正确。 记住这一基本点之后， 我们用一个例子来看检查点是如何运行的。 Flink 为用户提供了用
-来定义状态的工具。 例如， 以下这个 Scala 程序按照输入记录的第一个字段(一个字
-符串)进行分组并维护第二个字段的计数状态。</p>
-<pre><code class="language-java">val stream: DataStream[(String, Int)] = ...
-val counts: DataStream[(String, Int)] = stream
-    .keyBy(record =&gt; record._1)
-    .mapWithState( (in: (String, Int), state: Option[Int]) =&gt;
-    state match {
-        case Some(c) =&gt; ( (in._1, c + in._2), Some(c + in._2) )
-        case None =&gt; ( (in._1, in._2), Some(in._2) )
-    })
-</code></pre>
-<p style="text-indent:2em">该程序有两个算子: keyBy 算子用来将记录按照第一个元素(一个字符串)进行分组， 根据该 key 将数据进行重新分区， 然后将记录再发送给下一个算子: 有状态的
-map 算子(mapWithState)。 map 算子在接收到每个元素后， 将输入记录的第二个字段
-的数据加到现有总数中， 再将更新过的元素发射出去。 下图表示程序的初始状态: 输
-入流中的 6 条记录被检查点分割线(checkpoint barrier)隔开， 所有的 map 算子状态均
-为 0(计数还未开始)。 所有 key 为 a 的记录将被顶层的 map 算子处理， 所有 key 为 b
-的记录将被中间层的 map 算子处理， 所有 key 为 c 的记录则将被底层的 map 算子处
-理。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618538699318.png" alt="" loading="lazy"><br>
-图 按 key 累加计数程序初始状态</p>
-<p style="text-indent:2em">上图是程序的初始状态。 注意， a、 b、 c 三组的初始计数状态都是 0， 即三个圆柱上的值。 ckpt 表示检查点分割线（ checkpoint barriers） 。 每条记录在处理顺序上严格地遵守在检查点之前或之后的规定， 例如["b",2]在检查点之前被处理， ["a",2]
-则在检查点之后被处理。</p>
-<p style="text-indent:2em">当该程序处理输入流中的 6 条记录时， 涉及的操作遍布 3 个并行实例(节点、 CPU内核等)。 那么， 检查点该如何保证 exactly-once 呢?</p>
-<p style="text-indent:2em">检查点分割线和普通数据记录类似。 它们由算子处理， 但并不参与计算， 而是会触发与检查点相关的行为。 当读取输入流的数据源(在本例中与 keyBy 算子内联)
-遇到检查点屏障时， 它将其在输入流中的位置保存到持久化存储中。 如果输入流来
-自消息传输系统(Kafka)， 这个位置就是偏移量。 Flink 的存储机制是插件化的， 持久
-化存储可以是分布式文件系统， 如 HDFS。 下图展示了这个过程。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618538715815.png" alt="" loading="lazy"><br>
-图 遇到 checkpoint barrier 时， 保存其在输入流中的位置</p>
-<p style="text-indent:2em">当 Flink 数据源(在本例中与 keyBy 算子内联)遇到检查点分界线（ barrier） 时，它会将其在输入流中的位置保存到持久化存储中。 这让 Flink 可以根据该位置重启。检查点像普通数据记录一样在算子之间流动。 当 map 算子处理完前 3 条数据并
-收到检查点分界线时， 它们会将状态以异步的方式写入持久化存储， 如下图所示。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618538731125.png" alt="" loading="lazy"><br>
-图 保存 map 算子状态， 也就是当前各个 key 的计数值</p>
-<p style="text-indent:2em">位于检查点之前的所有记录(["b",2]、 ["b",3]和["c",1])被 map 算子处理之后的情况。 此时， 持久化存储已经备份了检查点分界线在输入流中的位置(备份操作发生在barrier 被输入算子处理的时候)。 map 算子接着开始处理检查点分界线， 并触发将状
-态异步备份到稳定存储中这个动作。</p>
-<p style="text-indent:2em">当 map 算子的状态备份和检查点分界线的位置备份被确认之后， 该检查点操作就可以被标记为完成， 如下图所示。 我们在无须停止或者阻断计算的条件下， 在一
-个逻辑时间点(对应检查点屏障在输入流中的位置)为计算状态拍了快照。 通过确保
-备份的状态和位置指向同一个逻辑时间点， 后文将解释如何基于备份恢复计算， 从
-而保证 exactly-once。 值得注意的是， 当没有出现故障时， Flink 检查点的开销极小，
-检查点操作的速度由持久化存储的可用带宽决定。 回顾数珠子的例子: 除了因为数
-错而需要用到皮筋之外， 皮筋会被很快地拨过。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618538743728.png" alt="" loading="lazy"><br>
-图 检查点操作完成， 继续处理数据</p>
-<p style="text-indent:2em">检查点操作完成， 状态和位置均已备份到稳定存储中。 输入流中的所有数据记录都已处理完成。 值得注意的是， 备份的状态值与实际的状态值是不同的。 备份反
-映的是检查点的状态。</p>
-<p style="text-indent:2em">如果检查点操作失败， Flink 可以丢弃该检查点并继续正常执行， 因为之后的某一个检查点可能会成功。 虽然恢复时间可能更长， 但是对于状态的保证依旧很有力。
-只有在一系列连续的检查点操作失败之后， Flink 才会抛出错误， 因为这通常预示着
-发生了严重且持久的错误。</p>
-<p>现在来看看下图所示的情况: 检查点操作已经完成， 但故障紧随其后。<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1618538750996.png" alt="" loading="lazy"><br>
-图 故障紧跟检查点， 导致最底部的实例丢失</p>
-<p style="text-indent:2em">在这种情况下， Flink 会重新拓扑(可能会获取新的执行资源)， 将输入流倒回到上一个检查点， 然后恢复状态值并从该处开始继续计算。 在本例中， ["a",2]、 ["a",2]和["c",2]这几条记录将被重播。</p>
-<p style="text-indent:2em">下图展示了这一重新处理过程。 从上一个检查点开始重新计算， 可以保证在剩下的记录被处理之后， 得到的 map 算子的状态值与没有发生故障时的状态值一致。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618538757680.png" alt="" loading="lazy"><br>
-图 故障时的状态恢复</p>
-<p style="text-indent:2em">Flink 将输入流倒回到上一个检查点屏障的位置， 同时恢复 map 算子的状态值。然后， Flink 从此处开始重新处理。 这样做保证了在记录被处理之后， map 算子的状
-态值与没有发生故障时的一致。</p>
-<p style="text-indent:2em">Flink 检查点算法的正式名称是异步分界线快照(asynchronous barrier snapshotting)。 该算法大致基于 Chandy-Lamport 分布式快照算法。
-检查点是 Flink 最有价值的创新之一， 因为它使 Flink 可以保证 exactly-once，
-并且不需要牺牲性能。</p>
-<h3 id="flinkkafka-如何实现端到端的-exactly-once-语义">Flink+Kafka 如何实现端到端的 exactly-once 语义</h3>
-<p style="text-indent:2em">我们知道， 端到端的状态一致性的实现， 需要每一个组件都实现， 对于 Flink +Kafka 的数据管道系统（ Kafka 进、 Kafka 出） 而言， 各组件怎样保证 exactly-once</p>
-<p>语义呢？</p>
-<ul>
-<li>内部 —— 利用 checkpoint 机制， 把状态存盘， 发生故障的时候可以恢复，<br>
-保证内部的状态一致性</li>
-<li>source —— kafka consumer 作为 source， 可以将偏移量保存下来， 如果后<br>
-续任务出现了故障， 恢复的时候可以由连接器重置偏移量， 重新消费数据，<br>
-保证一致性</li>
-<li>sink —— kafka producer 作为 sink， 采用两阶段提交 sink， 需要实现一个<br>
-TwoPhaseCommitSinkFunction</li>
-</ul>
-<p style="text-indent:2em">内部的 checkpoint 机制我们已经有了了解， 那 source 和 sink 具体又是怎样运行的呢？ 接下来我们逐步做一个分析。</p>
-<p style="text-indent:2em">我们知道 Flink 由 JobManager 协调各个 TaskManager 进行 checkpoint 存储，checkpoint 保存在 StateBackend 中， 默认 StateBackend 是内存级的， 也可以改为文件级的进行持久化保存。</p>
-<p style="text-indent:2em">当 checkpoint 启动时， JobManager 会将检查点分界线（ barrier） 注入数据流；barrier 会在算子间传递下去。</p>
-<p style="text-indent:2em">每个算子会对当前的状态做个快照， 保存到状态后端。 对于 source 任务而言，就会把当前的 offset 作为状态保存起来。 下次从 checkpoint 恢复时， source 任务可以重新提交偏移量， 从上次保存的位置开始重新消费数据。</p>
-<p style="text-indent:2em">每个内部的 transform 任务遇到 barrier 时， 都会把状态存到 checkpoint 里。sink 任务首先把数据写入外部 kafka， 这些数据都属于预提交的事务（ 还不能
-被消费） ； 当遇到 barrier 时， 把状态保存到状态后端， 并开启新的预提交事务。
-当所有算子任务的快照完成， 也就是这次的 checkpoint 完成时， JobManager 会
-向所有任务发通知， 确认这次 checkpoint 完成。</p>
-<p style="text-indent:2em">当 sink 任务收到确认通知， 就会正式提交之前的事务， kafka 中未确认的数据就改为“ 已确认” ， 数据就真正可以被消费了。</p>
-<p style="text-indent:2em">所以我们看到， 执行过程实际上是一个两段式提交， 每个算子执行完成， 会进行“ 预提交” ， 直到执行完 sink 操作， 会发起“ 确认提交” ， 如果执行失败， 预提
-交会放弃掉。</p>
-<p>具体的两阶段提交步骤总结如下：</p>
-<ol>
-<li>第一条数据来了之后， 开启一个 kafka 的事务（ transaction） ， 正常写入<br>
-kafka 分区日志但标记为未提交， 这就是“ 预提交”</li>
-<li>jobmanager 触发 checkpoint 操作， barrier 从 source 开始向下传递， 遇到<br>
-barrier 的算子将状态存入状态后端， 并通知 jobmanager</li>
-<li>sink 连接器收到 barrier， 保存当前状态， 存入 checkpoint， 通知<br>
-jobmanager， 并开启下一阶段的事务， 用于提交下个检查点的数据</li>
-<li>jobmanager 收到所有任务的通知， 发出确认信息， 表示 checkpoint 完成</li>
-<li>sink 任务收到 jobmanager 的确认信息， 正式提交这段时间的数据</li>
-<li>外部 kafka 关闭事务， 提交的数据可以正常消费了。</li>
-</ol>
-<p style="text-indent:2em">所以我们也可以看到， 如果宕机需要通过 StateBackend 进行恢复， 只能恢复所有确认提交的操作。</p>
-<h2 id="选择一个状态后端state-backend">选择一个状态后端(state backend)</h2>
-<ul>
-<li>MemoryStateBackend<br>
-内存级的状态后端， 会将键控状态作为内存中的对象进行管理， 将它们存储<br>
-在 TaskManager 的 JVM 堆上； 而将 checkpoint 存储在 JobManager 的内存中。</li>
-<li>FsStateBackend<br>
-将 checkpoint 存到远程的持久化文件系统（ FileSystem） 上。 而对于本地状态，<br>
-跟 MemoryStateBackend 一样， 也会存在 TaskManager 的 JVM 堆上。</li>
-<li>RocksDBStateBackend<br>
-将所有状态序列化后， 存入本地的 RocksDB 中存储。<br>
-注意： RocksDB 的支持并不直接包含在 flink 中， 需要引入依赖：</li>
-</ul>
-<pre><code class="language-java">&lt;dependency&gt;
-    &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
-    &lt;artifactId&gt;flink-statebackend-rocksdb_2.12&lt;/artifactId&gt;
-    &lt;version&gt;1.10.1&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<p>设置状态后端为 FsStateBackend：</p>
-<pre><code class="language-java">val env = StreamExecutionEnvironment.getExecutionEnvironment
-val checkpointPath: String = ???
-val backend = new RocksDBStateBackend(checkpointPath)
-env.setStateBackend(backend)
-env.setStateBackend(new FsStateBackend(&quot;file:///tmp/checkpoints&quot;))
-env.enableCheckpointing(1000)
-// 配置重启策略
-env.setRestartStrategy(RestartStrategies.fixedDelayRestart(60, Time.of(10,
-TimeUnit.SECONDS)))
-</code></pre>
 ]]></content>
     </entry>
 </feed>

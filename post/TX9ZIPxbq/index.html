@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>k8s-ingress安装使用 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="k8s-ingress安装使用 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="k8s-ingress安装使用" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/TX9ZIPxbq/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1654221786163"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1654221786163"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/f6exx1YLd/" class="tag">k8s</a>
+                
+              </span>
+              <h1>k8s-ingress安装使用</h1>
+              <span class="meta">
+                Posted on
+                2022-06-03，39 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/TX9ZIPxbq.png" alt="封面图">
+          </img>
+          
+          <h2 id="1nginx-ingress安装">1.Nginx ingress安装</h2>
+<p>首先需要安装Nginx Ingress Controller控制器，控制器安装方式包含两种：DaemonSets和Deployments。</p>
+<ul>
+<li>DaemonSets通过hostPort的方式暴露80和443端口，可通过Node的调度由专门的节点实现部署</li>
+<li>Deployments则通过NodePort的方式实现控制器端口的暴露，借助外部负载均衡实现高可用负载均衡</li>
+</ul>
+<p>除此之外，还需要部署Namespace，ServiceAccount，RBAC，Secrets，Custom Resource Definitions等资源，如下开始部署。</p>
+<h3 id="11-基础依赖环境准备">1.1 基础依赖环境准备</h3>
+<p><strong>1、github中下载源码包,安装部署文件在kubernetes-ingress/deployments/目录下</strong></p>
+<pre><code class="language-shell">git clone https://github.com/nginxinc/kubernetes-ingress.git
+</code></pre>
+<pre><code class="language-js">kubernetes-ingress/deployments/
+├── common
+│   ├── custom-resource-definitions.yaml  自定义资源
+│   ├── default-server-secret.yaml        Secrets
+│   ├── nginx-config.yaml
+│   └── ns-and-sa.yaml                    Namspace+ServiceAccount
+├── daemon-set
+│   ├── nginx-ingress.yaml                DaemonSets控制器
+│   └── nginx-plus-ingress.yaml
+├── deployment
+│   ├── nginx-ingress.yaml                Deployments控制器
+│   └── nginx-plus-ingress.yaml
+├── helm-chart                            Helm安装包
+│   ├── chart-icon.png
+│   ├── Chart.yaml
+│   ├── README.md
+│   ├── templates
+│   │   ├── controller-configmap.yaml
+│   │   ├── controller-custom-resources.yaml
+│   │   ├── controller-daemonset.yaml
+│   │   ├── controller-deployment.yaml
+│   │   ├── controller-leader-election-configmap.yaml
+│   │   ├── controller-secret.yaml
+│   │   ├── controller-serviceaccount.yaml
+│   │   ├── controller-service.yaml
+│   │   ├── controller-wildcard-secret.yaml
+│   │   ├── _helpers.tpl
+│   │   ├── NOTES.txt
+│   │   └── rbac.yaml
+│   ├── values-icp.yaml
+│   ├── values-plus.yaml
+│   └── values.yaml
+├── rbac                                RBAC认证授权
+│   └── rbac.yaml
+├── README.md
+└── service                            Service定义
+    ├── loadbalancer-aws-elb.yaml
+    ├── loadbalancer.yaml              DaemonSets暴露服务方式
+    └── nodeport.yaml                  Deployments暴露服务方式
+</code></pre>
+<p>**2、创建Namespace和ServiceAccount **</p>
+<pre><code class="language-yaml">cat common/ns-and-sa.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-ingress 
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-ingress 
+  namespace: nginx-ingress
+</code></pre>
+<pre><code class="language-shell">kubectl apply -f common/ns-and-sa.yaml
+</code></pre>
+<p><strong>3、创建Secrets自签名证书</strong></p>
+<pre><code>kubectl apply -f common/default-server-secret.yaml
+</code></pre>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: default-server-secret
+  namespace: nginx-ingress
+type: Opaque
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN2akNDQWFZQ0NRREFPRjl0THNhWFhEQU5CZ2txaGtpRzl3MEJBUXNGQURBaE1SOHdIUVlEVlFRRERCWk8KUjBsT1dFbHVaM0psYzNORGIyNTBjbTlzYkdWeU1CNFhEVEU0TURreE1qRTRNRE16TlZvWERUSXpNRGt4TVRFNApNRE16TlZvd0lURWZNQjBHQTFVRUF3d1dUa2RKVGxoSmJtZHlaWE56UTI5dWRISnZiR3hsY2pDQ0FTSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUwvN2hIUEtFWGRMdjNyaUM3QlBrMTNpWkt5eTlyQ08KR2xZUXYyK2EzUDF0azIrS3YwVGF5aGRCbDRrcnNUcTZzZm8vWUk1Y2Vhbkw4WGM3U1pyQkVRYm9EN2REbWs1Qgo4eDZLS2xHWU5IWlg0Rm5UZ0VPaStlM2ptTFFxRlBSY1kzVnNPazFFeUZBL0JnWlJVbkNHZUtGeERSN0tQdGhyCmtqSXVuektURXUyaDU4Tlp0S21ScUJHdDEwcTNRYzhZT3ExM2FnbmovUWRjc0ZYYTJnMjB1K1lYZDdoZ3krZksKWk4vVUkxQUQ0YzZyM1lma1ZWUmVHd1lxQVp1WXN2V0RKbW1GNWRwdEMzN011cDBPRUxVTExSakZJOTZXNXIwSAo1TmdPc25NWFJNV1hYVlpiNWRxT3R0SmRtS3FhZ25TZ1JQQVpQN2MwQjFQU2FqYzZjNGZRVXpNQ0F3RUFBVEFOCkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQWpLb2tRdGRPcEsrTzhibWVPc3lySmdJSXJycVFVY2ZOUitjb0hZVUoKdGhrYnhITFMzR3VBTWI5dm15VExPY2xxeC9aYzJPblEwMEJCLzlTb0swcitFZ1U2UlVrRWtWcitTTFA3NTdUWgozZWI4dmdPdEduMS9ienM3bzNBaS9kclkrcUI5Q2k1S3lPc3FHTG1US2xFaUtOYkcyR1ZyTWxjS0ZYQU80YTY3Cklnc1hzYktNbTQwV1U3cG9mcGltU1ZmaXFSdkV5YmN3N0NYODF6cFErUyt1eHRYK2VBZ3V0NHh3VlI5d2IyVXYKelhuZk9HbWhWNThDd1dIQnNKa0kxNXhaa2VUWXdSN0diaEFMSkZUUkk3dkhvQXprTWIzbjAxQjQyWjNrN3RXNQpJUDFmTlpIOFUvOWxiUHNoT21FRFZkdjF5ZytVRVJxbStGSis2R0oxeFJGcGZnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBdi91RWM4b1JkMHUvZXVJTHNFK1RYZUprckxMMnNJNGFWaEMvYjVyYy9XMlRiNHEvClJOcktGMEdYaVN1eE9ycXgrajlnamx4NXFjdnhkenRKbXNFUkJ1Z1B0ME9hVGtIekhvb3FVWmcwZGxmZ1dkT0EKUTZMNTdlT1l0Q29VOUZ4amRXdzZUVVRJVUQ4R0JsRlNjSVo0b1hFTkhzbysyR3VTTWk2Zk1wTVM3YUhudzFtMApxWkdvRWEzWFNyZEJ6eGc2clhkcUNlUDlCMXl3VmRyYURiUzc1aGQzdUdETDU4cGszOVFqVUFQaHpxdmRoK1JWClZGNGJCaW9CbTVpeTlZTW1hWVhsMm0wTGZzeTZuUTRRdFFzdEdNVWozcGJtdlFmazJBNnljeGRFeFpkZFZsdmwKMm82MjBsMllxcHFDZEtCRThCay90elFIVTlKcU56cHpoOUJUTXdJREFRQUJBb0lCQVFDZklHbXowOHhRVmorNwpLZnZJUXQwQ0YzR2MxNld6eDhVNml4MHg4Mm15d1kxUUNlL3BzWE9LZlRxT1h1SENyUlp5TnUvZ2IvUUQ4bUFOCmxOMjRZTWl0TWRJODg5TEZoTkp3QU5OODJDeTczckM5bzVvUDlkazAvYzRIbjAzSkVYNzZ5QjgzQm9rR1FvYksKMjhMNk0rdHUzUmFqNjd6Vmc2d2szaEhrU0pXSzBwV1YrSjdrUkRWYmhDYUZhNk5nMUZNRWxhTlozVDhhUUtyQgpDUDNDeEFTdjYxWTk5TEI4KzNXWVFIK3NYaTVGM01pYVNBZ1BkQUk3WEh1dXFET1lvMU5PL0JoSGt1aVg2QnRtCnorNTZud2pZMy8yUytSRmNBc3JMTnIwMDJZZi9oY0IraVlDNzVWYmcydVd6WTY3TWdOTGQ5VW9RU3BDRkYrVm4KM0cyUnhybnhBb0dCQU40U3M0ZVlPU2huMVpQQjdhTUZsY0k2RHR2S2ErTGZTTXFyY2pOZjJlSEpZNnhubmxKdgpGenpGL2RiVWVTbWxSekR0WkdlcXZXaHFISy9iTjIyeWJhOU1WMDlRQ0JFTk5jNmtWajJTVHpUWkJVbEx4QzYrCk93Z0wyZHhKendWelU0VC84ajdHalRUN05BZVpFS2FvRHFyRG5BYWkyaW5oZU1JVWZHRXFGKzJyQW9HQkFOMVAKK0tZL0lsS3RWRzRKSklQNzBjUis3RmpyeXJpY05iWCtQVzUvOXFHaWxnY2grZ3l4b25BWlBpd2NpeDN3QVpGdwpaZC96ZFB2aTBkWEppc1BSZjRMazg5b2pCUmpiRmRmc2l5UmJYbyt3TFU4NUhRU2NGMnN5aUFPaTVBRHdVU0FkCm45YWFweUNweEFkREtERHdObit3ZFhtaTZ0OHRpSFRkK3RoVDhkaVpBb0dCQUt6Wis1bG9OOTBtYlF4VVh5YUwKMjFSUm9tMGJjcndsTmVCaWNFSmlzaEhYa2xpSVVxZ3hSZklNM2hhUVRUcklKZENFaHFsV01aV0xPb2I2NTNyZgo3aFlMSXM1ZUtka3o0aFRVdnpldm9TMHVXcm9CV2xOVHlGanIrSWhKZnZUc0hpOGdsU3FkbXgySkJhZUFVWUNXCndNdlQ4NmNLclNyNkQrZG8wS05FZzFsL0FvR0FlMkFVdHVFbFNqLzBmRzgrV3hHc1RFV1JqclRNUzRSUjhRWXQKeXdjdFA4aDZxTGxKUTRCWGxQU05rMXZLTmtOUkxIb2pZT2pCQTViYjhibXNVU1BlV09NNENoaFJ4QnlHbmR2eAphYkJDRkFwY0IvbEg4d1R0alVZYlN5T294ZGt5OEp0ek90ajJhS0FiZHd6NlArWDZDODhjZmxYVFo5MWpYL3RMCjF3TmRKS2tDZ1lCbyt0UzB5TzJ2SWFmK2UwSkN5TGhzVDQ5cTN3Zis2QWVqWGx2WDJ1VnRYejN5QTZnbXo5aCsKcDNlK2JMRUxwb3B0WFhNdUFRR0xhUkcrYlNNcjR5dERYbE5ZSndUeThXczNKY3dlSTdqZVp2b0ZpbmNvVlVIMwphdmxoTUVCRGYxSjltSDB5cDBwWUNaS2ROdHNvZEZtQktzVEtQMjJhTmtsVVhCS3gyZzR6cFE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+</code></pre>
+<p><strong>4、创建ConfigMap自定义配置文</strong></p>
+<pre><code class="language-shell">kubectl apply -f common/nginx-config.yaml 
+</code></pre>
+<pre><code class="language-yaml">kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-config
+  namespace: nginx-ingress
+data:
+</code></pre>
+<p><strong>5、为主机和主机路由定义自定义资源，支持自定义主机和路由</strong></p>
+<pre><code class="language-shell">kubectl apply -f common/custom-resource-definitions.yaml
+</code></pre>
+<pre><code class="language-yaml">apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: virtualservers.k8s.nginx.org
+spec:
+  group: k8s.nginx.org
+  versions:
+  - name: v1
+    served: true
+    storage: true
+  scope: Namespaced
+  names:
+    plural: virtualservers
+    singular: virtualserver
+    kind: VirtualServer
+    shortNames:
+    - vs
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: virtualserverroutes.k8s.nginx.org
+spec:
+  group: k8s.nginx.org
+  versions:
+  - name: v1
+    served: true
+    storage: true
+  scope: Namespaced
+  names:
+    plural: virtualserverroutes
+    singular: virtualserverroute
+    kind: VirtualServerRoute
+    shortNames:
+    - vsr
+</code></pre>
+<p><strong>6、配置RBAC认证授权，实现ingress控制器访问集群中的其他资源</strong></p>
+<pre><code class="language-shell">kubectl apply -f rbac/rbac.yaml
+</code></pre>
+<pre><code class="language-yaml">kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: nginx-ingress
+rules:
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - services
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - create
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - pods
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs:
+  - list
+  - watch
+  - get
+- apiGroups:
+  - &quot;extensions&quot;
+  resources:
+  - ingresses/status
+  verbs:
+  - update
+- apiGroups:
+  - k8s.nginx.org
+  resources:
+  - virtualservers
+  - virtualserverroutes
+  verbs:
+  - list
+  - watch
+  - get
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: nginx-ingress
+subjects:
+- kind: ServiceAccount
+  name: nginx-ingress
+  namespace: nginx-ingress
+roleRef:
+  kind: ClusterRole
+  name: nginx-ingress
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+<h3 id="12-部署ingress控制器">1.2 部署Ingress控制器</h3>
+<p><strong>1、 部署控制器，控制器可以DaemonSets和Deployment的形式部署，如下是DaemonSets的配置文件</strong></p>
+<pre><code class="language-js">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+spec:
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+     #annotations:
+       #prometheus.io/scrape: &quot;true&quot;
+       #prometheus.io/port: &quot;9113&quot;
+    spec:
+      serviceAccountName: nginx-ingress
+      containers:
+      - image: nginx/nginx-ingress:edge
+        imagePullPolicy: Always
+        name: nginx-ingress
+        ports:
+        - name: http
+          containerPort: 80
+          hostPort: 80            #通过hostPort的方式暴露端口
+        - name: https
+          containerPort: 443
+          hostPort: 443
+       #- name: prometheus
+         #containerPort: 9113
+        securityContext:
+          allowPrivilegeEscalation: true
+          runAsUser: 101 #nginx
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        args:
+          - -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
+          - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
+         #- -v=3 # Enables extensive logging. Useful for troubleshooting.
+         #- -report-ingress-status
+         #- -external-service=nginx-ingress
+         #- -enable-leader-election
+         #- -enable-prometheus-metrics
+</code></pre>
+<p><strong>Deployments的配置文件</strong></p>
+<pre><code class="language-js">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+spec:
+  replicas: 1                  #副本的个数
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+     #annotations:
+       #prometheus.io/scrape: &quot;true&quot;
+       #prometheus.io/port: &quot;9113&quot;
+    spec:
+      serviceAccountName: nginx-ingress
+      containers:
+      - image: nginx/nginx-ingress:edge
+        imagePullPolicy: Always
+        name: nginx-ingress
+        ports:                #内部暴露的服务端口，需要通过NodePort的方式暴露给外部
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+       #- name: prometheus
+         #containerPort: 9113
+        securityContext:
+          allowPrivilegeEscalation: true
+          runAsUser: 101 #nginx
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        args:
+          - -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
+          - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
+         #- -v=3 # Enables extensive logging. Useful for troubleshooting.
+         #- -report-ingress-status
+         #- -external-service=nginx-ingress
+         #- -enable-leader-election
+         #- -enable-prometheus-metrics
+</code></pre>
+<p><strong>2、我们以DaemonSets的方式部署，DaemonSet部署集群中各个节点都是对等，如果有外部LoadBalancer则通过外部负载均衡路由至Ingress中</strong></p>
+<pre><code class="language-shell">[root@node-1 deployments]# kubectl apply -f daemon-set/nginx-ingress.yaml 
+daemonset.apps/nginx-ingress created
+[root@node-1 deployments]# kubectl get daemonsets -n nginx-ingress
+NAME            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+nginx-ingress   3         3         3       3            3           &lt;none&gt;          15s
+
+[root@node-1 ~]# kubectl get pods -n nginx-ingress -o wide 
+NAME                  READY   STATUS    RESTARTS   AGE     IP             NODE     NOMINATED NODE   READINESS GATES
+nginx-ingress-7mpfc   1/1     Running   0          2m44s   10.244.0.50    node-1   &lt;none&gt;           &lt;none&gt;
+nginx-ingress-l2rtj   1/1     Running   0          2m44s   10.244.1.144   node-2   &lt;none&gt;           &lt;none&gt;
+nginx-ingress-tgf6r   1/1     Running   0          2m44s   10.244.2.160   node-3   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+<p><strong>3、校验Nginx Ingress安装情况</strong></p>
+<p>此时三个节点均是对等，即访问任意一个节点均能实现相同的效果，统一入口则通过外部负载均衡，如果在云环境下执行<code>kubectl apply -f service/loadbalancer.yaml</code>创建外部负载均衡实现入口调度，自建的可以通过lvs或nginx等负载均衡实现接入。</p>
+<figure data-type="image" tabindex="1"><img src="https://ask.qcloudimg.com/draft/4405893/88fb7v82cj.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p><strong>备注说明</strong>：如果以Deployments的方式部署，则需要执行service/nodeport.yaml创建NodePort类型的Service，实现的效果和DaemonSets类似。</p>
+<h2 id="2-ingress资源定义">2. Ingress资源定义</h2>
+<p>上面的已安装了一个Nginx Ingress Controller控制器，有了Ingress控制器后，我们就可以定义Ingress资源来实现七层负载转发了，大体上Ingress支持三种使用方式：1. 基于虚拟主机转发，2. 基于虚拟机主机URI转发，3. 支持TLS加密转发。</p>
+<h3 id="21-ingress定义">2.1 Ingress定义</h3>
+<p><strong>1、环境准备，先创建一个nginx的Deployment应用，包含2个副本</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl run ingress-demo --image=nginx:1.7.9 --port=80 --replicas=2
+[root@node-1 ~]# kubectl get deployments
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-demo   2/2     2            2           116s
+</code></pre>
+<p><strong>2、以service方式暴露服务端口</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl expose deployment ingress-demo --port=80 --protocol=TCP --target-port=80
+service/ingress-demo exposed
+[root@node-1 ~]# kubectl get services 
+NAME           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+ingress-demo   ClusterIP   10.109.33.91   &lt;none&gt;        80/TCP    2m15s
+</code></pre>
+<p><strong>3、上述两个步骤已创建了一个service，如下我们定义一个ingress对象将流量转发至ingress-demo这个service，通过ingress.class指定控制器的类型为nginx</strong></p>
+<pre><code class="language-yaml">[root@node-1 nginx-ingress]# cat nginx-ingress-demo.yaml 
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+spec:
+  rules:
+  - host: www.test.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ingress-demo
+          servicePort: 80
+</code></pre>
+<p><strong>4、创建ingress对象</strong></p>
+<pre><code class="language-shell">[root@node-1 nginx-ingress]# kubectl apply -f nginx-ingress-demo.yaml 
+ingress.extensions/nginx-ingress-demo created
+
+查看ingress资源列表
+[root@node-1 nginx-ingress]# kubectl get ingresses
+NAME                 HOSTS                ADDRESS   PORTS   AGE
+nginx-ingress-demo   www.test.cn             80      4m4s
+</code></pre>
+<p><strong>5、查看ingress详情，可以在Rules规则中看到后端Pod的列表，自动发现和关联相关Pod</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl describe ingresses nginx-ingress-demo 
+Name:             nginx-ingress-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+Rules:
+  Host                Path  Backends
+  ----                ----  --------
+  www.test.cn  
+                      /   ingress-demo:80 (10.244.1.146:80,10.244.2.162:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;www.happylaulab.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;ingress-demo&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}}]}}
+
+  kubernets.io/ingress.class:  nginx
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  9m7s  nginx-ingress-controller  Configuration for default/nginx-ingress-demo was added or updated
+  Normal  AddedOrUpdated  9m7s  nginx-ingress-controller  Configuration for default/nginx-ingress-demo was added or updated
+  Normal  AddedOrUpdated  9m7s  nginx-ingress-controller  Configuration for default/nginx-ingress-demo was added or updated
+</code></pre>
+<p><strong>6、测试验证</strong></p>
+<p>ingress规则的配置信息已注入到Ingress Controller中，环境中Ingress Controller是以DaemonSets的方式部署在集群中，如果有外部的负载均衡，则将www.test.cn域名的地址解析为负载均衡VIP。由于测试环境没有搭建负载均衡，将hosts解析执行node-1，node-2或者node-3任意一个IP都能实现相同的功能。</p>
+<figure data-type="image" tabindex="2"><img src="https://ask.qcloudimg.com/draft/4405893/47noa95oaa.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>上述测试解析正常，当然也可以解析为node-1和node-2的IP，如下：</p>
+<pre><code class="language-shell">[root@node-1 ~]# curl -I http://www.happylau.cn --resolve www.happylau.cn:80:10.254.100.101
+HTTP/1.1 200 OK
+Server: nginx/1.17.6
+Date: Tue, 24 Dec 2019 10:32:22 GMT
+Content-Type: text/html
+Content-Length: 612
+Connection: keep-alive
+Last-Modified: Tue, 23 Dec 2014 16:25:09 GMT
+ETag: &quot;54999765-264&quot;
+Accept-Ranges: bytes
+
+[root@node-1 ~]# curl -I http://www.happylau.cn --resolve www.happylau.cn:80:10.254.100.102
+HTTP/1.1 200 OK
+Server: nginx/1.17.6
+Date: Tue, 24 Dec 2019 10:32:24 GMT
+Content-Type: text/html
+Content-Length: 612
+Connection: keep-alive
+Last-Modified: Tue, 23 Dec 2014 16:25:09 GMT
+ETag: &quot;54999765-264&quot;
+Accept-Ranges: bytes
+</code></pre>
+<h2 id="3-ingress动态配置">3 Ingress动态配置</h2>
+<p>上面介绍了ingress资源对象的申明配置，这里我们探究一下Nginx Ingress Controller的实现机制和动态配置更新机制，以方便了解Ingress控制器的工作机制。</p>
+<p><strong>1、 查看Nginx Controller控制器的配置文件，在nginx-ingress pod中存储着ingress的配置文件</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl get pods -n nginx-ingress 
+NAME                  READY   STATUS    RESTARTS   AGE
+nginx-ingress-7mpfc   1/1     Running   0          6h15m
+nginx-ingress-l2rtj   1/1     Running   0          6h15m
+nginx-ingress-tgf6r   1/1     Running   0          6h15m
+
+#查看配置文件，每个ingress生成一个配置文件，文件名为：命名空间-ingres名称.conf
+[root@node-1 ~]# kubectl exec -it nginx-ingress-7mpfc -n nginx-ingress -- ls -l /etc/nginx/conf.d
+total 4
+-rw-r--r-- 1 nginx nginx 1005 Dec 24 10:06 default-nginx-ingress-demo.conf
+
+#查看配置文件
+[root@node-1 ~]# kubectl exec -it nginx-ingress-7mpfc -n nginx-ingress -- cat /etc/nginx/conf.d/default-nginx-ingress-demo.conf
+# configuration for default/nginx-ingress-demo
+
+#upstream的配置，会用least_conn算法，通过service服务发现机制动态识别到后端的Pod
+upstream default-nginx-ingress-demo-www.test.cn-ingress-demo-80 {
+	zone default-nginx-ingress-demo-www.test.cn-ingress-demo-80 256k;
+	random two least_conn;
+	server 10.244.1.146:80 max_fails=1 fail_timeout=10s max_conns=0;
+	server 10.244.2.162:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+server {
+	listen 80;
+	server_tokens on;
+	server_name www.test.cn;
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		proxy_pass http://default-nginx-ingress-demo-www.test.cn-ingress-demo-80;	#调用upstream实现代理
+	}
+}
+</code></pre>
+<p>通过上述查看配置文件可得知，Nginx Ingress Controller实际是根据ingress规则生成对应的nginx配置文件，以实现代理转发的功能，加入Deployments的副本数变更后nginx的配置文件会发生什么改变呢？</p>
+<p><strong>2、更新控制器的副本数，由2个Pod副本扩容至3个</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl scale --replicas=3 deployment ingress-demo 
+deployment.extensions/ingress-demo scaled
+[root@node-1 ~]# kubectl get deployments
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-demo   3/3     3            3           123m
+</code></pre>
+<p><strong>3、再次查看nginx的配置文件，ingress借助于service的服务发现机制，将加入的Pod自动加入到nginx upstream中</strong></p>
+<figure data-type="image" tabindex="3"><img src="https://ask.qcloudimg.com/draft/4405893/14725qbjdh.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p><strong>4、查看nginx pod的日志（kubectl logs nginx-ingress-7mpfc -n nginx-ingress），有reload优雅重启的记录，即通过更新配置文件+reload实现配置动态更新。</strong></p>
+<figure data-type="image" tabindex="4"><img src="https://ask.qcloudimg.com/draft/4405893/lilxwe1u13.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>通过上述的配置可知，ingress调用kubernetes api去感知kubernetes集群中的变化情况，Pod的增加或减少这些变化，然后动态更新nginx ingress controller的配置文件，并重新载入配置。当集群规模越大时，会频繁涉及到配置文件的变动和重载，因此nginx这方面会存在先天的劣势，专门为微服务负载均衡应运而生，如Traefik，Envoy，Istio，这些负载均衡工具能够提供大规模，频繁动态更新的场景，但性能相比Nginx，HAproxy还存在一定的劣势。</p>
+<h2 id="4-ingress路径转发">4 Ingress路径转发</h2>
+<p>Ingress支持URI格式的转发方式，同时支持URL重写，如下以两个service为例演示，service-1安装nginx，service-2安装httpd，分别用http://demo.happylau.cn/news和http://demo.happylau.cn/sports转发到两个不同的service</p>
+<p><strong>1、环境准备，创建两个应用并实现service暴露，创建deployments时指定--explose创建service</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl run service-1 --image=nginx:1.7.9 --port=80 --replicas=1 --expose=true 
+service/service-1 created
+deployment.apps/service-1 created
+
+[root@node-1 ~]# kubectl run service-2 --image=httpd --port=80 --replicas=1 --expose=true 
+service/service-2 created
+deployment.apps/service-2 created
+
+查看deployment状态
+[root@node-1 ~]# kubectl get deployments 
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-demo   4/4     4            4           4h36m
+service-1      1/1     1            1           65s
+service-2      1/1     1            1           52s
+
+查看service状态，服务已经正常
+[root@node-1 ~]# kubectl get services 
+NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+ingress-demo   ClusterIP   10.109.33.91     &lt;none&gt;        80/TCP    4h36m
+kubernetes     ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP   101d
+service-1      ClusterIP   10.106.245.71    &lt;none&gt;        80/TCP    68s
+service-2      ClusterIP   10.104.204.158   &lt;none&gt;        80/TCP    55s
+</code></pre>
+<p><strong>2、创建ingress对象，通过一个域名将请求转发至后端两个service</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# cat nginx-ingress-uri-demo.yaml 
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-uri-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: 
+    http:
+      paths:
+      - path: /news
+        backend:
+          serviceName: service-1 
+          servicePort: 80
+      - path: /sports
+        backend:
+          serviceName: service-2
+          servicePort: 80
+</code></pre>
+<p><strong>3、创建ingress规则，查看详情</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# kubectl apply -f nginx-ingress-uri-demo.yaml 
+ingress.extensions/nginx-ingress-uri-demo created
+
+#查看详情
+[root@node-1 nginx-ingress]# kubectl get ingresses.
+NAME                     HOSTS              ADDRESS   PORTS   AGE
+nginx-ingress-demo       www.happylau.cn              80      4h35m
+nginx-ingress-uri-demo   demo.happylau.cn             80      4s
+[root@node-1 nginx-ingress]# kubectl describe ingresses nginx-ingress-uri-demo 
+Name:             nginx-ingress-uri-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+Rules:              #对应的转发url规则
+  Host              Path  Backends
+  ----              ----  --------
+  demo.happylau.cn  
+                    /news     service-1:80 (10.244.2.163:80)
+                    /sports   service-2:80 (10.244.1.148:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;,&quot;nginx.ingress.kubernetes.io/rewrite-target&quot;:&quot;/&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-uri-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;demo.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-1&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/news&quot;},{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-2&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/sports&quot;}]}}]}}
+
+  kubernets.io/ingress.class:                  nginx
+  nginx.ingress.kubernetes.io/rewrite-target:  /
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  11s   nginx-ingress-controller  Configuration for default/nginx-ingress-uri-demo was added or updated
+  Normal  AddedOrUpdated  11s   nginx-ingress-controller  Configuration for default/nginx-ingress-uri-demo was added or updated
+  Normal  AddedOrUpdated  11s   nginx-ingress-controller  Configuration for default/nginx-ingress-uri-demo was added or updated
+</code></pre>
+<p><strong>4、准备测试，站点中创建对应的路径</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl exec -it service-1-7b66bf758f-xj9jh /bin/bash
+root@service-1-7b66bf758f-xj9jh:/# echo &quot;service-1 website page&quot; &gt;/usr/share/nginx/html/news
+
+[root@node-1 ~]# kubectl exec -it service-2-7c7444684d-w9cv9 /bin/bash
+root@service-2-7c7444684d-w9cv9:/usr/local/apache2# echo &quot;service-2 website page&quot; &gt;/usr/local/apache2/htdocs/sports
+</code></pre>
+<p><strong>5、测试验证</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# curl http://demo.happylau.cn/news --resolve demo.happylau.cn:80:10.254.100.101
+service-1 website page
+[root@node-1 ~]# curl http://demo.happylau.cn/sports --resolve demo.happylau.cn:80:10.254.100.101
+service-2 website page
+</code></pre>
+<p><strong>6、总结</strong></p>
+<p>通过上述的验证测试可以得知，ingress支持URI的路由方式转发，其对应在ingress中的配置文件内容是怎样的呢，我们看下ingress controller生成对应的nginx配置文件内容，实际是通过ingress的location来实现，将不同的localtion转发至不同的upstream以实现service的关联，配置文件如下：</p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl exec -it nginx-ingress-7mpfc -n nginx-ingress /bin/bash
+nginx@nginx-ingress-7mpfc:/$ cat /etc/nginx/conf.d/default-nginx-ingress-uri-demo.conf |grep -v &quot;^$&quot;
+# configuration for default/nginx-ingress-uri-demo
+#定义两个upstream和后端的service关联
+upstream default-nginx-ingress-uri-demo-demo.happylau.cn-service-1-80 {
+	zone default-nginx-ingress-uri-demo-demo.happylau.cn-service-1-80 256k;
+	random two least_conn;
+	server 10.244.2.163:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+upstream default-nginx-ingress-uri-demo-demo.happylau.cn-service-2-80 {
+	zone default-nginx-ingress-uri-demo-demo.happylau.cn-service-2-80 256k;
+	random two least_conn;
+	server 10.244.1.148:80 max_fails=1 fail_timeout=10s max_conns=0;	
+}
+
+server {
+	listen 80;
+	server_tokens on;
+	server_name demo.happylau.cn;
+	
+  #定义location实现代理，通过proxy_pass和后端的service关联
+	location /news {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		proxy_pass http://default-nginx-ingress-uri-demo-demo.happylau.cn-service-1-80;
+	}
+
+	location /sports {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		proxy_pass http://default-nginx-ingress-uri-demo-demo.happylau.cn-service-2-80;	
+	}	
+}
+</code></pre>
+<h2 id="5-ingress虚拟主机">5 Ingress虚拟主机</h2>
+<p>ingress支持基于名称的虚拟主机，实现单个IP多个域名转发的需求，通过请求头部携带主机名方式区分开，将上个章节的ingress删除，使用service-1和service-2两个service来做演示。</p>
+<p><strong>1、创建ingress规则，通过主机名实现转发规则</strong></p>
+<pre><code class="language-js">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-virtualname-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+spec:
+  rules:
+  - host: news.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-1 
+          servicePort: 80
+  - host: sports.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-2 
+          servicePort: 80
+</code></pre>
+<p><strong>2、生成ingress规则并查看详情，一个ingress对应两个HOSTS</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# kubectl apply -f nginx-ingress-virtualname.yaml 
+ingress.extensions/nginx-ingress-virtualname-demo created
+
+#查看列表
+[root@node-1 nginx-ingress]# kubectl get ingresses nginx-ingress-virtualname-demo 
+NAME                             HOSTS                                 ADDRESS   PORTS   AGE
+nginx-ingress-virtualname-demo   news.happylau.cn,sports.happylau.cn             80      12s
+
+#查看详情
+[root@node-1 nginx-ingress]# kubectl describe ingresses nginx-ingress-virtualname-demo
+Name:             nginx-ingress-virtualname-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+Rules:
+  Host                Path  Backends
+  ----                ----  --------
+  news.happylau.cn    
+                      /   service-1:80 (10.244.2.163:80)
+  sports.happylau.cn  
+                      /   service-2:80 (10.244.1.148:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-virtualname-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;news.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-1&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}},{&quot;host&quot;:&quot;sports.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-2&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}}]}}
+
+  kubernets.io/ingress.class:  nginx
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  28s   nginx-ingress-controller  Configuration for default/nginx-ingress-virtualname-demo was added or updated
+  Normal  AddedOrUpdated  28s   nginx-ingress-controller  Configuration for default/nginx-ingress-virtualname-demo was added or updated
+  Normal  AddedOrUpdated  28s   nginx-ingress-controller  Configuration for default/nginx-ingress-virtualname-demo was added or updated
+</code></pre>
+<p><strong>3、准备测试数据并测试</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl exec -it service-1-7b66bf758f-xj9jh /bin/bash
+root@service-1-7b66bf758f-xj9jh:/# echo &quot;news demo&quot; &gt;/usr/share/nginx/html/index.html
+
+[root@node-1 ~]# kubectl exec -it service-2-7c7444684d-w9cv9 /bin/bash  
+root@service-2-7c7444684d-w9cv9:/usr/local/apache2# echo &quot;sports demo&quot;  &gt;/usr/local/apache2/htdocs/index.html
+</code></pre>
+<p><strong>测试：</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# curl http://news.happylau.cn --resolve news.happylau.cn:80:10.254.100.102
+news demo
+[root@node-1 ~]# curl http://sports.happylau.cn --resolve sports.happylau.cn:80:10.254.100.102
+sports demo
+</code></pre>
+<p><strong>4、查看nginx的配置文件内容，通过在server中定义不同的server_name以区分，代理到不同的upstream以实现service的代理。</strong></p>
+<pre><code class="language-js"># configuration for default/nginx-ingress-virtualname-demo
+upstream default-nginx-ingress-virtualname-demo-news.happylau.cn-service-1-80 {
+	zone default-nginx-ingress-virtualname-demo-news.happylau.cn-service-1-80 256k;
+	random two least_conn;
+	server 10.244.2.163:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+upstream default-nginx-ingress-virtualname-demo-sports.happylau.cn-service-2-80 {
+	zone default-nginx-ingress-virtualname-demo-sports.happylau.cn-service-2-80 256k;
+	random two least_conn;
+	server 10.244.1.148:80 max_fails=1 fail_timeout=10s max_conns=0;
+}
+
+server {
+	listen 80;
+	server_tokens on;
+	server_name news.happylau.cn;
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-virtualname-demo-news.happylau.cn-service-1-80;
+	
+  }
+}
+server {
+	listen 80;	
+	server_tokens on;
+	server_name sports.happylau.cn;
+
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-virtualname-demo-sports.happylau.cn-service-2-80;	
+
+	}	
+}
+</code></pre>
+<h2 id="6-ingress-tls加密">6 Ingress TLS加密</h2>
+<p>四层的负载均衡无法支持https请求，当前大部分业务都要求以https方式接入，Ingress能支持https的方式接入，通过Secrets存储证书+私钥，实现https接入，同时还能支持http跳转功能。对于用户的请求流量来说，客户端到ingress controller是https流量，ingress controller到后端service则是http，提高用户访问性能，如下介绍ingress TLS功能实现步骤。</p>
+<p><strong>1、生成自签名证书和私钥</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# openssl req -x509 -newkey rsa:2048 -nodes -days 365 -keyout tls.key -out tls.crt
+Generating a 2048 bit RSA private key
+....................................................+++
+........................................+++
+writing new private key to 'tls.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN        #国家
+State or Province Name (full name) []:GD    #省份
+Locality Name (eg, city) [Default City]:ShenZhen  #城市
+Organization Name (eg, company) [Default Company Ltd]:Tencent    #公司 
+Organizational Unit Name (eg, section) []:HappyLau  #组织
+Common Name (eg, your name or your server's hostname) []:www.happylau.cn  #域名
+Email Address []:573302346@qq.com       #邮箱地址
+
+
+#tls.crt为证书，tls.key为私钥
+[root@node-1 ~]# ls tls.* -l
+-rw-r--r-- 1 root root 1428 12月 26 13:21 tls.crt
+-rw-r--r-- 1 root root 1708 12月 26 13:21 tls.key
+</code></pre>
+<p><strong>2、配置Secrets，将证书和私钥配置到Secrets中</strong></p>
+<pre><code class="language-js">[root@node-1 ~]# kubectl create secret tls happylau-sslkey --cert=tls.crt --key=tls.key 
+secret/happylau-sslkey created
+
+查看Secrets详情,证书和私要包含在data中，文件名为两个不同的key：tls.crt和tls.key
+[root@node-1 ~]# kubectl describe secrets happylau-sslkey 
+Name:         happylau-sslkey
+Namespace:    default
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+
+Type:  kubernetes.io/tls
+
+Data
+====
+tls.crt:  1428 bytes
+tls.key:  1708 bytes
+</code></pre>
+<p><strong>3、配置ingress调用Secrets实现SSL证书加密</strong></p>
+<pre><code class="language-js">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-tls-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - news.happylau.cn
+    - sports.happylau.cn
+    secretName: happylau-sslkey
+  rules:
+  - host: news.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-1 
+          servicePort: 80
+  - host: sports.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: service-2 
+          servicePort: 80
+</code></pre>
+<p><strong>4、创建ingress并查看ingress详情</strong></p>
+<pre><code class="language-js">[root@node-1 nginx-ingress]# kubectl describe ingresses nginx-ingress-tls-demo 
+Name:             nginx-ingress-tls-demo
+Namespace:        default
+Address:          
+Default backend:  default-http-backend:80 (&lt;none&gt;)
+TLS:
+  happylau-sslkey terminates news.happylau.cn,sports.happylau.cn
+Rules:
+  Host                Path  Backends
+  ----                ----  --------
+  news.happylau.cn    
+                      /   service-1:80 (10.244.2.163:80)
+  sports.happylau.cn  
+                      /   service-2:80 (10.244.1.148:80)
+Annotations:
+  kubectl.kubernetes.io/last-applied-configuration:  {&quot;apiVersion&quot;:&quot;extensions/v1beta1&quot;,&quot;kind&quot;:&quot;Ingress&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;kubernets.io/ingress.class&quot;:&quot;nginx&quot;},&quot;labels&quot;:{&quot;ingres-controller&quot;:&quot;nginx&quot;},&quot;name&quot;:&quot;nginx-ingress-tls-demo&quot;,&quot;namespace&quot;:&quot;default&quot;},&quot;spec&quot;:{&quot;rules&quot;:[{&quot;host&quot;:&quot;news.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-1&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}},{&quot;host&quot;:&quot;sports.happylau.cn&quot;,&quot;http&quot;:{&quot;paths&quot;:[{&quot;backend&quot;:{&quot;serviceName&quot;:&quot;service-2&quot;,&quot;servicePort&quot;:80},&quot;path&quot;:&quot;/&quot;}]}}],&quot;tls&quot;:[{&quot;hosts&quot;:[&quot;news.happylau.cn&quot;,&quot;sports.happylau.cn&quot;],&quot;secretName&quot;:&quot;happylau-sslkey&quot;}]}}
+
+  kubernets.io/ingress.class:  nginx
+Events:
+  Type    Reason          Age   From                      Message
+  ----    ------          ----  ----                      -------
+  Normal  AddedOrUpdated  22s   nginx-ingress-controller  Configuration for default/nginx-ingress-tls-demo was added or updated
+  Normal  AddedOrUpdated  22s   nginx-ingress-controller  Configuration for default/nginx-ingress-tls-demo was added or updated
+  Normal  AddedOrUpdated  22s   nginx-ingress-controller  Configuration for default/nginx-ingress-tls-demo was added or updated
+</code></pre>
+<p><strong>5、访问</strong></p>
+<p>将news.happylau.cn和sports.happylau.cn写入到hosts文件中，并通过<a href="https://news.happylau.cn/">https://news.happylau.cn</a> 的方式访问，浏览器访问内容提示证书如下，信任证书即可访问到站点内容。</p>
+<figure data-type="image" tabindex="5"><img src="https://ask.qcloudimg.com/draft/4405893/ijw044j6yx.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>查看证书详情，正是我们制作的自签名证书，生产实际使用时，推荐使用CA机构颁发签名证书。</p>
+<figure data-type="image" tabindex="6"><img src="https://ask.qcloudimg.com/draft/4405893/t3clag54i5.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p><strong>6、接下来查看一下tls配置https的nginx配置文件内容，可以看到在server块启用了https并配置证书，同时配置了http跳转，因此直接访问http也能够实现自动跳转到https功能。</strong></p>
+<pre><code class="language-shell"># configuration for default/nginx-ingress-tls-demo
+upstream default-nginx-ingress-tls-demo-news.happylau.cn-service-1-80 {
+	zone default-nginx-ingress-tls-demo-news.happylau.cn-service-1-80 256k;
+	random two least_conn;
+	server 10.244.2.163:80 max_fails=1 fail_timeout=10s max_conns=0;	
+}
+
+upstream default-nginx-ingress-tls-demo-sports.happylau.cn-service-2-80 {
+	zone default-nginx-ingress-tls-demo-sports.happylau.cn-service-2-80 256k;
+	random two least_conn;
+	server 10.244.1.148:80 max_fails=1 fail_timeout=10s max_conns=0;	
+}
+
+server {
+	listen 80;
+
+	listen 443 ssl;     #https监听端口，证书和key，实现和Secrets关联
+	ssl_certificate /etc/nginx/secrets/default-happylau-sslkey;
+	ssl_certificate_key /etc/nginx/secrets/default-happylau-sslkey;
+
+	server_tokens on;
+	server_name news.happylau.cn;
+	
+  #http跳转功能，即访问http会自动跳转至https
+	if ($scheme = http) {
+		return 301 https://$host:443$request_uri;
+	}
+	
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-tls-demo-news.happylau.cn-service-1-80;	
+  }	
+}
+
+server {
+	listen 80;
+	listen 443 ssl;
+	ssl_certificate /etc/nginx/secrets/default-happylau-sslkey;
+	ssl_certificate_key /etc/nginx/secrets/default-happylau-sslkey;
+
+	server_tokens on;
+	server_name sports.happylau.cn;
+
+	if ($scheme = http) {
+		return 301 https://$host:443$request_uri;
+	}
+
+	location / {
+		proxy_http_version 1.1;
+		proxy_connect_timeout 60s;
+		proxy_read_timeout 60s;
+		proxy_send_timeout 60s;
+		client_max_body_size 1m;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_buffering on;
+		
+		proxy_pass http://default-nginx-ingress-tls-demo-sports.happylau.cn-service-2-80;	
+	}	
+}
+</code></pre>
+<h2 id="7-nginx-ingress高级功能">7. Nginx Ingress高级功能</h2>
+<h3 id="71-定制化参数">7.1 定制化参数</h3>
+<p>ingress controller提供了基础反向代理的功能，如果需要定制化nginx的特性或参数，需要通过ConfigMap和Annotations来实现，两者实现的方式有所不同，ConfigMap用于指定整个ingress集群资源的基本参数，修改后会被所有的ingress对象所继承；Annotations则被某个具体的ingress对象所使用，修改只会影响某个具体的ingress资源，冲突时其优先级高于ConfigMap。</p>
+<h4 id="711-configmap自定义参数">7.1.1 ConfigMap自定义参数</h4>
+<p>安装nginx ingress controller时默认会包含一个空的ConfigMap，可以通过ConfigMap来自定义nginx controller的默认参数，如下以修改一些参数为例：</p>
+<p><strong>1、 定义ConfigMap参数</strong></p>
+<pre><code class="language-yaml">kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-config
+  namespace: nginx-ingress
+data:
+  proxy-connect-timeout: &quot;10s&quot;
+  proxy-read-timeout: &quot;10s&quot;
+  proxy-send-timeout: &quot;10&quot;
+  client-max-body-size: &quot;3m&quot;
+</code></pre>
+<p><strong>2、 应用配置并查看ConfigMap配置</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl get configmaps -n nginx-ingress nginx-config -o yaml
+apiVersion: v1
+data:
+  client-max-body-size: 3m
+  proxy-connect-timeout: 10s
+  proxy-read-timeout: 10s
+  proxy-send-timeout: 10s
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {&quot;apiVersion&quot;:&quot;v1&quot;,&quot;data&quot;:{&quot;client-max-body-size&quot;:&quot;3m&quot;,&quot;proxy-connect-timeout&quot;:&quot;10s&quot;,&quot;proxy-read-timeout&quot;:&quot;10s&quot;,&quot;proxy-send-timeout&quot;:&quot;10&quot;},&quot;kind&quot;:&quot;ConfigMap&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;name&quot;:&quot;nginx-config&quot;,&quot;namespace&quot;:&quot;nginx-ingress&quot;}}
+  creationTimestamp: &quot;2019-12-24T04:39:23Z&quot;
+  name: nginx-config
+  namespace: nginx-ingress
+  resourceVersion: &quot;13845543&quot;
+  selfLink: /api/v1/namespaces/nginx-ingress/configmaps/nginx-config
+  uid: 9313ae47-a0f0-463e-a25a-1658f1ca0d57
+</code></pre>
+<p><strong>3 、此时，ConfigMap定义的配置参数会被集群中所有的Ingress资源继承（除了annotations定义之外）</strong></p>
+<figure data-type="image" tabindex="7"><img src="https://ask.qcloudimg.com/draft/4405893/w3dcxxnxfa.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>有很多参数可以定义，详情配置可参考方文档说明：https://github.com/nginxinc/kubernetes-ingress/blob/master/docs/configmap-and-annotations.md#Summary-of-ConfigMap-and-Annotations</p>
+<h4 id="712-annotations自定义参数">7.1.2 Annotations自定义参数</h4>
+<p>ConfigMap定义的是全局的配置参数，修改后所有的配置都会受影响，如果想针对某个具体的ingress资源自定义参数，则可以通过Annotations来实现，下面开始以实际的例子演示Annotations的使用。</p>
+<p><strong>1、修改ingress资源，添加annotations的定义,通过nginx.org组修改了一些参数，如proxy-connect-timeout，调度算法为round_robin（默认为least _conn）</strong></p>
+<pre><code class="language-yaml">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress-demo
+  labels:
+    ingres-controller: nginx
+  annotations:
+    kubernets.io/ingress.class: nginx
+    nginx.org/proxy-connect-timeout: &quot;30s&quot;
+    nginx.org/proxy-send-timeout: &quot;20s&quot;
+    nginx.org/proxy-read-timeout: &quot;20s&quot;
+    nginx.org/client-max-body-size: &quot;2m&quot;
+    nginx.org/fail-timeout: &quot;5s&quot;
+    nginx.org/lb-method: &quot;round_robin&quot; 
+spec:
+  rules:
+  - host: www.happylau.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ingress-demo
+          servicePort: 80
+</code></pre>
+<p><strong>2、 重新应用ingress对象并查看参数配置情况</strong></p>
+<figure data-type="image" tabindex="8"><img src="https://ask.qcloudimg.com/draft/4405893/b02oqllujm.png?imageView2/2/w/1620" alt="img" loading="lazy"></figure>
+<p>由上面的演示可得知，Annotations的优先级高于ConfigMapMap，Annotations修改参数只会影响到某一个具体的ingress资源，其定义的方法和ConfigMap相相近似，但又有差别，部分ConfigMap的参数Annotations无法支持，反过来Annotations定义的参数ConfigMap也不一定支持，下图列举一下常规支持参数情况：</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/9uco9v1rs6.png?imageView2/2/w/1620" alt="img" loading="lazy">通用参数</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/kvbsl1udm3.png?imageView2/2/w/1620" alt="img" loading="lazy">日志支持</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/2bexxnq0b4.png?imageView2/2/w/1620" alt="img" loading="lazy">请求头部</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/hbfmi960e9.png?imageView2/2/w/1620" alt="img" loading="lazy">认证和安全</p>
+<p><img src="https://ask.qcloudimg.com/draft/4405893/0h2kio34c5.png?imageView2/2/w/1620" alt="img" loading="lazy">upstream支持</p>
+<h3 id="72-虚拟主机和路由">7.2 虚拟主机和路由</h3>
+<p>安装nginx ingress时我们安装了一个customresourcedefinitions自定义资源，其能够提供除了默认ingress功能之外的一些高级特性如</p>
+<ul>
+<li>虚拟主机VirtualServer</li>
+<li>虚拟路由VirtualServerRoute</li>
+<li>健康检查Healthcheck</li>
+<li>流量切割Split</li>
+<li>会话保持SessionCookie</li>
+<li>重定向Redirect</li>
+</ul>
+<p>这些功能大部分依赖于Nginx Plus高级版本的支持，社区版本仅支持部分，对于企业级开发而言，丰富更多的功能可以购买企业级Nginx Plus版本。如下以通过VirtualServer和VirtualServerRoute定义upstream配置为例演示功能使用。</p>
+<p><strong>1、定义VirtualServer资源,其配置和ingress资源对象类似，能支持的功能会更丰富一点</strong></p>
+<pre><code class="language-yaml">apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: cafe
+spec:
+  host: cafe.example.com
+  tls:
+    secret: cafe-secret
+  upstreams:
+  - name: tea
+    service: tea-svc
+    port: 80
+    name: tea
+    service: ingress-demo 
+    subselector:
+    version: canary
+    lb-method: round_robin
+    fail-timeout: 10s
+    max-fails: 1
+    max-conns: 32
+    keepalive: 32
+    connect-timeout: 30s
+    read-timeout: 30s
+    send-timeout: 30s
+    next-upstream: &quot;error timeout non_idempotent&quot;
+    next-upstream-timeout: 5s
+    next-upstream-tries: 10
+    client-max-body-size: 2m
+    tls:
+      enable: true
+  routes:
+  - path: /tea
+    action:
+      pass: tea
+</code></pre>
+<p><strong>2、 应用资源并查看VirtualServer资源列表</strong></p>
+<pre><code class="language-shell">[root@node-1 ~]# kubectl apply -f vs.yaml 
+virtualserver.k8s.nginx.org/cafe unchanged
+[root@node-1 ~]# kubectl get virtualserver
+NAME                 AGE
+cafe                 2m52s
+</code></pre>
+<p><strong>3、检查ingress控制器的配置文件情况,生成的配置和upstream定义一致</strong></p>
+<pre><code class="language-shell">nginx@nginx-ingress-7mpfc:/etc/nginx/conf.d$ cat vs_default_cafe.conf 
+upstream vs_default_cafe_tea {
+    zone vs_default_cafe_tea 256k;
+    server 10.244.0.51:80 max_fails=1 fail_timeout=10s max_conns=32;
+    server 10.244.1.146:80 max_fails=1 fail_timeout=10s max_conns=32;
+    server 10.244.1.147:80 max_fails=1 fail_timeout=10s max_conns=32;
+    server 10.244.2.162:80 max_fails=1 fail_timeout=10s max_conns=32;
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    server_name cafe.example.com;
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/secrets/default;
+    ssl_certificate_key /etc/nginx/secrets/default;
+    ssl_ciphers NULL;
+    server_tokens &quot;on&quot;;
+
+    location /tea {
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
+        client_max_body_size 2m;
+        proxy_max_temp_file_size 1024m;
+        proxy_buffering on;
+        proxy_http_version 1.1;
+        set $default_connection_header &quot;&quot;;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $vs_connection_header;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_pass https://vs_default_cafe_tea;
+        proxy_next_upstream error timeout non_idempotent;
+        proxy_next_upstream_timeout 5s;
+        proxy_next_upstream_tries 10;   
+    }   
+}
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1nginx-ingress%E5%AE%89%E8%A3%85">1.Nginx ingress安装</a>
+<ul>
+<li><a href="#11-%E5%9F%BA%E7%A1%80%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">1.1 基础依赖环境准备</a></li>
+<li><a href="#12-%E9%83%A8%E7%BD%B2ingress%E6%8E%A7%E5%88%B6%E5%99%A8">1.2 部署Ingress控制器</a></li>
+</ul>
+</li>
+<li><a href="#2-ingress%E8%B5%84%E6%BA%90%E5%AE%9A%E4%B9%89">2. Ingress资源定义</a>
+<ul>
+<li><a href="#21-ingress%E5%AE%9A%E4%B9%89">2.1 Ingress定义</a></li>
+</ul>
+</li>
+<li><a href="#3-ingress%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE">3 Ingress动态配置</a></li>
+<li><a href="#4-ingress%E8%B7%AF%E5%BE%84%E8%BD%AC%E5%8F%91">4 Ingress路径转发</a></li>
+<li><a href="#5-ingress%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA">5 Ingress虚拟主机</a></li>
+<li><a href="#6-ingress-tls%E5%8A%A0%E5%AF%86">6 Ingress TLS加密</a></li>
+<li><a href="#7-nginx-ingress%E9%AB%98%E7%BA%A7%E5%8A%9F%E8%83%BD">7. Nginx Ingress高级功能</a>
+<ul>
+<li><a href="#71-%E5%AE%9A%E5%88%B6%E5%8C%96%E5%8F%82%E6%95%B0">7.1 定制化参数</a>
+<ul>
+<li><a href="#711-configmap%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0">7.1.1 ConfigMap自定义参数</a></li>
+<li><a href="#712-annotations%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0">7.1.2 Annotations自定义参数</a></li>
+</ul>
+</li>
+<li><a href="#72-%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%E5%92%8C%E8%B7%AF%E7%94%B1">7.2 虚拟主机和路由</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/ULtZ5rQXA/">
+                  <span class="post-title">
+                    k8s界面kubesphere安装&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
