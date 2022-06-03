@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-06-03T02:03:31.087Z</updated>
+    <updated>2022-06-03T06:28:47.594Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -1737,6 +1737,24 @@ kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3
         </link>
         <updated>2022-05-29T13:51:16.000Z</updated>
         <content type="html"><![CDATA[<h2 id="centos网络配置">centos网络配置</h2>
+<h3 id="1设置主机名">1.设置主机名</h3>
+<pre><code class="language-shell">[root@localhost ~]# hostnamectl  set-hostname harbor
+</code></pre>
+<h3 id="2添加-host-解析">2.添加 Host 解析</h3>
+<pre><code class="language-shell">[root@harbor ~]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.40.131 k8s-master
+192.168.40.132 k8s-node1
+192.168.40.133 k8s-node2
+192.168.40.150 hub.test.com
+</code></pre>
+<p><strong>k8s 集群每个节点添加解析（注意：K8s 每个节点，不是 Harbor）</strong></p>
+<pre><code class="language-shell">[root@k8s-master ~]# echo &quot;192.168.40.150 hub.test.com&quot; &gt;&gt; /etc/hosts
+[root@k8s-node1 ~]# echo &quot;192.168.40.150 hub.test.com&quot; &gt;&gt; /etc/hosts
+[root@k8s-node2 ~]# echo &quot;192.168.40.150 hub.test.com&quot; &gt;&gt; /etc/hosts
+</code></pre>
+<h3 id="3网络环境设置">3.网络环境设置</h3>
 <pre><code>vi /etc/sysconfig/network-scripts/ifcfg-ens33 
 </code></pre>
 <p><strong>内容替换如下：</strong></p>
@@ -1767,7 +1785,7 @@ systemctl enable --now docker
 <pre><code class="language-bash">tee /etc/docker/daemon.json &lt;&lt;-'EOF'
 {
   &quot;registry-mirrors&quot;: [&quot;https://hub-mirror.c.163.com/&quot;],
-  &quot;insecure-registries&quot;: [&quot;192.168.40.150.81&quot;]
+  &quot;insecure-registries&quot;: [&quot;https://hub.test.com&quot;]
 }
 EOF
 # 重启
@@ -1783,7 +1801,40 @@ pip3 install docker-compose
 #3、查看版本
 docker-compose version
 </code></pre>
-<h3 id="4下载harbor安装包并解压">4.下载Harbor安装包并解压</h3>
+<h3 id="4创建-https-证书">4.创建 https 证书</h3>
+<p><strong>安装 openssl</strong></p>
+<pre><code class="language-shell">[root@harbor]# yum install openssl -y
+</code></pre>
+<p><strong>创建证书目录，并赋予权限</strong></p>
+<pre><code class="language-shell">[root@harbor ~]# mkdir -p /cert/harbor
+[root@harbor ~]# chmod -R 777 /cert/harbor
+[root@harbor ~]# cd /cert/harbor
+</code></pre>
+<p><strong>创建服务器证书密钥文件 harbor.key</strong></p>
+<pre><code class="language-shell">[root@harbor harbor]# openssl genrsa -des3 -out harbor.key 2048
+</code></pre>
+<blockquote>
+<p>输入密码，确认密码，自己随便定义，但是要记住，后面会用到。</p>
+</blockquote>
+<p><strong>创建服务器证书的申请文件 harbor.csr</strong></p>
+<pre><code class="language-shell">[root@harbor harbor]# openssl req -new -key harbor.key -out harbor.csr
+</code></pre>
+<blockquote>
+<p>输入密钥文件的密码, 然后一路回车。</p>
+</blockquote>
+<p><strong>备份一份服务器密钥文件</strong></p>
+<pre><code class="language-shell">[root@harbor harbor]# cp harbor.key harbor.key.org
+</code></pre>
+<p><strong>去除文件口令</strong></p>
+<pre><code class="language-shell">[root@harbor harbor]# openssl rsa -in harbor.key.org -out harbor.key
+</code></pre>
+<blockquote>
+<p>输入密钥文件的密码</p>
+</blockquote>
+<p><strong>创建一个自当前日期起为期十年的证书 harbor.crt</strong></p>
+<pre><code class="language-shell">[root@harbor harbor]# openssl x509 -req -days 3650 -in harbor.csr -signkey harbor.key -out harbor.crt
+</code></pre>
+<h3 id="5下载harbor安装包并解压">5.下载Harbor安装包并解压</h3>
 <blockquote>
 <p>链接：https://pan.baidu.com/s/1AUEw0Qw3w9lZP-rnAYaWjA<br>
 提取码：qutg</p>
@@ -1791,24 +1842,51 @@ docker-compose version
 <pre><code class="language-undefined">wget https://github.com/goharbor/harbor/releases/download/v2.5.0/harbor-offline-installer-v2.5.0.tgz
 tar zxvf harbor-offline-installer-v2.5.0.tgz
 </code></pre>
-<h3 id="5配置harborcfg和安装harbor">5.配置harbor.cfg和安装Harbor</h3>
-<pre><code class="language-bash">vim harbor.yml
+<h3 id="6配置harborcfg和安装harbor">6.配置harbor.cfg和安装Harbor</h3>
+<pre><code class="language-bash">vi harbor.yml
 </code></pre>
 <blockquote>
-<p>修改以下三处，其它的不动<br>
-1.修改主机名<br>
-hostname = 192.169.40.150</p>
-<p>2.修改端口号</p>
-<p>port: 8081</p>
-<p>3.注释掉关于https部分</p>
+<p>将http端口改成10086，因为默认用的80端口已经被占用，http可以指定任意端口；</p>
 </blockquote>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1654235318168.png" alt="" loading="lazy"></figure>
 <p>接下来运行install.sh安装和启动harbor</p>
 <pre><code class="language-undefined">./prepare
 ./install.sh
 </code></pre>
-<h3 id="6登录">6.登录</h3>
-<pre><code>http://192.168.40.150:81/harbor/sign-in
+<h3 id="7测试-harbor">7.测试 Harbor</h3>
+<pre><code class="language-shell">[root@k8s-master01 ~]# docker login https://hub.test.com
+Username: admin
+Password: Harbor12345 # 默认密码，可通过 harbor.yml 配置文件修改
 </code></pre>
+<p><strong>登录时报：Error response from daemon: Get https://hub.test.com/v2/: x509: certificate is not valid for any names, but wanted to match hub.test.com</strong><br>
+解决：修改客户端（即需要登陆harbor的机器）的docker.service 文件</p>
+<pre><code class="language-shell">vi /lib/systemd/system/docker.service
+添加 --insecure-registry hub.test.com 
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1654236299657.png" alt="" loading="lazy"></figure>
+<p>重新加载服务配置文件，并且重启docker服务</p>
+<pre><code class="language-powershell">systemctl daemon-reload &amp;&amp; systemctl restart docker
+</code></pre>
+<p>下载镜像推送到 Harbor</p>
+<pre><code class="language-shell">[root@k8s-node01 ~]# docker pull nginx
+[root@k8s-node01 ~]# docker tag nginx:latest hub.test.com/library/test:v1
+[root@k8s-node01 ~]# docker push hub.test.com/library/test:v1
+</code></pre>
+<h3 id="8windows-访问-harbor-web界面">8.Windows 访问 Harbor Web界面</h3>
+<p><strong>Windows 添加 hosts 解析路径</strong></p>
+<pre><code class="language-shell">C:\Windows\System32\drivers\etc\hosts
+</code></pre>
+<p><strong>添加信息</strong></p>
+<pre><code class="language-shell">192.168.40.150 hub.test.com
+</code></pre>
+<p><strong>浏览器访问测试</strong></p>
+<blockquote>
+<p><a href="https://hub.test.com/harbor/projects">https://hub.test.com</a></p>
+</blockquote>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1654235306601.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>用户密码：admin / Harbor12345</p>
+</blockquote>
 ]]></content>
     </entry>
     <entry>
@@ -2002,7 +2080,8 @@ ipvsadm
 <h4 id="5设置docker">5.设置docker</h4>
 <pre><code class="language-shell">cat &gt; /etc/docker/daemon.conf &lt;&lt;EOF
 {
-  &quot;registry-mirrors&quot;: [&quot;https://registry.docker-cn.com&quot;,&quot;https://docker.mirrors.ustc.edu.cn&quot;,&quot;docker.io/mirrorgooglecontainers&quot;,&quot;https://heusyzko.mirror.aliyuncs.com&quot;]
+  &quot;registry-mirrors&quot;: [&quot;https://registry.docker-cn.com&quot;,&quot;https://heusyzko.mirror.aliyuncs.com&quot;],
+  &quot;insecure-registries&quot;: [&quot;https://hub.test.com&quot;],
   &quot;exec-opts&quot;:[&quot;native.cgroupdriver=systemd&quot;],
   &quot;log-driver&quot;:&quot;json-file&quot;,
   &quot;log-opts&quot;:{
