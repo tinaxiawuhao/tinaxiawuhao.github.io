@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>k8s资源操作 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="k8s资源操作 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="k8s资源操作" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/HhauOMn26/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1654314629237"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1654314629237"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/f6exx1YLd/" class="tag">k8s</a>
+                
+              </span>
+              <h1>k8s资源操作</h1>
+              <span class="meta">
+                Posted on
+                2022-06-04，16 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/HhauOMn26.png" alt="封面图">
+          </img>
+          
+          <h3 id="1资源类型">1.资源类型</h3>
+<table>
+<thead>
+<tr>
+<th>资源分类</th>
+<th>类型</th>
+<th>具体资源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名称空间级别</td>
+<td>工作负载型资源</td>
+<td>Pod(pod:k8s 系统中可以创建和管理的最小单元)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>工作负载型资源</td>
+<td>ReplicaSet(rs:用来确保容器应用的副本数始终保持在用户定义的副本数)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>工作负载型资源</td>
+<td>Deployment(deployment:为 Pod 和 ReplicaSet 提供了一个 声明式定义 (declarative) 方法)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>工作负载型资源</td>
+<td>StatefulSet(sts:为了解决有状态服务的问题)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>工作负载型资源</td>
+<td>DaemonSet(ds:)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>工作负载型资源</td>
+<td>Job(jobs:负责批处理任务，即仅执行一次的任务，它保证批处理任务的一个或多个 Pod)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>工作负载型资源</td>
+<td>CronJob(jobs:管理基于时间的 Job)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>服务发现及负载均衡型资源</td>
+<td>Service(svc:为一组功能相同的Pod提供一个供外界访问的地址)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>服务发现及负载均衡型资源</td>
+<td>Ingress(ing:官方只能实现四层代理，INGRESS 可以实现七层代理)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>配置与存储型资源</td>
+<td>Volume(存储卷)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>配置与存储型资源</td>
+<td>CSI(容器存储接口-- 第三方存储卷)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>特殊类型的存储卷</td>
+<td>ConfigMap(当配置中心来使用的资源类型)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>特殊类型的存储卷</td>
+<td>Secret(保存敏感数据)</td>
+</tr>
+<tr>
+<td>名称空间级别</td>
+<td>特殊类型的存储卷</td>
+<td>DownwardApi(把外部环境中的信息输出给容器)</td>
+</tr>
+<tr>
+<td>集群级资源</td>
+<td>集群级资源</td>
+<td>Namespace(命名空间)</td>
+</tr>
+<tr>
+<td>集群级资源</td>
+<td>集群级资源</td>
+<td>Node(集群节点)</td>
+</tr>
+<tr>
+<td>集群级资源</td>
+<td>集群级资源</td>
+<td>Role(角色)</td>
+</tr>
+<tr>
+<td>集群级资源</td>
+<td>集群级资源</td>
+<td>ClusterRole(集群角色)</td>
+</tr>
+<tr>
+<td>集群级资源</td>
+<td>集群级资源</td>
+<td>RoleBinding(角色绑定)</td>
+</tr>
+<tr>
+<td>集群级资源</td>
+<td>集群级资源</td>
+<td>ClusterRoleBinging(集群角色绑定)</td>
+</tr>
+<tr>
+<td>元数据型资源</td>
+<td>元数据型资源</td>
+<td>HPA(根据 Pod的 CPU 利用率扩所容)</td>
+</tr>
+<tr>
+<td>元数据型资源</td>
+<td>元数据型资源</td>
+<td>PodTemplate(pod资源模板)</td>
+</tr>
+<tr>
+<td>元数据型资源</td>
+<td>元数据型资源</td>
+<td>LimitRange(资源限制)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2操作指令">2.操作指令</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>get</code></td>
+<td style="text-align:center">查</td>
+<td style="text-align:center">列出某个类型的下属资源</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>describe</code></td>
+<td style="text-align:center">查</td>
+<td style="text-align:center">查看某个资源的详细信息</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>logs</code></td>
+<td style="text-align:center">查</td>
+<td style="text-align:center">查看某个 pod 的日志</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>create</code></td>
+<td style="text-align:center">增</td>
+<td style="text-align:center">新建资源</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>explain</code></td>
+<td style="text-align:center">查</td>
+<td style="text-align:center">查看某个资源的配置项</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>delete</code></td>
+<td style="text-align:center">删</td>
+<td style="text-align:center">删除某个资源</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>edit</code></td>
+<td style="text-align:center">改</td>
+<td style="text-align:center">修改某个资源的配置项</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>apply</code></td>
+<td style="text-align:center">改</td>
+<td style="text-align:center">应用某个资源的配置项</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3查看和进入空间">3.查看和进入空间</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令名</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">kubectl get pod -n名称空间</td>
+<td style="text-align:center">查看对应名称空间内的pod</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl exec -it pod名字 -n名称空间 bash</td>
+<td style="text-align:center">进入对应名称空间的pod内</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get nodes -o wide</td>
+<td style="text-align:center">获取节点和服务版本信息，并查看附加信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pod</td>
+<td style="text-align:center">获取pod信息，默认是default名称空间</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pod -o wide</td>
+<td style="text-align:center">获取pod信息，默认是default名称空间，并查看附加信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pod -n kube-system</td>
+<td style="text-align:center">获取指定名称空间的pod</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pod -n kube-system podName</td>
+<td style="text-align:center">获取指定名称空间中的指定pod</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pod -A</td>
+<td style="text-align:center">获取所有名称空间的pod</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pods -o yaml<br />kubectl get pods -o json</td>
+<td style="text-align:center">查看pod的详细信息，以yaml格式或json格式显示</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pod -A --show-labels</td>
+<td style="text-align:center">查看pod的标签信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get pod -A --selector=“k8s-app=kube-dns”</td>
+<td style="text-align:center">根据Selector（label query）来查询pod</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl exec podName env</td>
+<td style="text-align:center">查看运行pod的环境变量</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl logs -f --tail 500 -n kube-system kube-apiserver-k8s-master</td>
+<td style="text-align:center">查看指定pod的日志</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get svc -A</td>
+<td style="text-align:center">查看所有名称空间的service信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get svc -n kube-system</td>
+<td style="text-align:center">查看指定名称空间的service信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get cs</td>
+<td style="text-align:center">查看componentstatuses信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get cm -A</td>
+<td style="text-align:center">查看所有configmaps信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get sa -A</td>
+<td style="text-align:center">查看所有serviceaccounts信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get ds -A</td>
+<td style="text-align:center">查看所有daemonsets信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get deploy -A</td>
+<td style="text-align:center">查看所有deployments信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get rs -A</td>
+<td style="text-align:center">查看所有replicasets信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get sts -A</td>
+<td style="text-align:center">查看所有statefulsets信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get jobs -A</td>
+<td style="text-align:center">查看所有jobs信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get ing -A</td>
+<td style="text-align:center">查看所有ingresses信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl get ns</td>
+<td style="text-align:center">查看有哪些名称空间</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl describe pod podName<br/>kubectl describe pod -n kube-system kube-apiserver-k8s-master</td>
+<td style="text-align:center">查看pod的描述信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl describe deploy -n kube-system coredns</td>
+<td style="text-align:center">查看指定名称空间中指定deploy的描述信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl top node<br/>kubectl top pod</td>
+<td style="text-align:center">查看node或pod的资源使用情况<br/>（需要heapster 或metrics-server支持）</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl cluster-info <br /> kubectl cluster-info dump</td>
+<td style="text-align:center">查看集群信息</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl -s https://172.16.1.110:6443 get componentstatuses</td>
+<td style="text-align:center">查看各组件信息【172.16.1.110为master机器】</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4进入pod启动的容器">4.进入pod启动的容器</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令名</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">kubectl exec -it podName -n nsName /bin/sh</td>
+<td style="text-align:center">进入容器</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl exec -it podName -n nsName /bin/bash</td>
+<td style="text-align:center">进入容器</td>
+</tr>
+</tbody>
+</table>
+<h3 id="5添加label值">5.添加label值</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令名</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">kubectl label nodes k8s-node01 zone=north</td>
+<td style="text-align:center">为指定节点添加标签</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl label nodes k8s-node01 zone</td>
+<td style="text-align:center">为指定节点删除标签</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl label pod podName -n nsName role-name=test</td>
+<td style="text-align:center">为指定pod添加标签</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl label pod podName -n nsName role-name=dev --overwrite</td>
+<td style="text-align:center">修改lable标签值</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl label pod podName -n nsName role-name</td>
+<td style="text-align:center">删除lable标签</td>
+</tr>
+</tbody>
+</table>
+<h3 id="6滚动升级">6.滚动升级</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令名</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">kubectl apply -f myapp-deployment-v2.yaml</td>
+<td style="text-align:center">通过配置文件滚动升级</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl set image deploy/myapp-deployment myapp=“registry.cn-beijing.aliyuncs.com/google_registry/myapp:v3”</td>
+<td style="text-align:center">通过命令滚动升级</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl rollout undo deploy/myapp-deployment <br />kubectl rollout undo deploy myapp-deployment</td>
+<td style="text-align:center">pod回滚到前一个版本</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl rollout undo deploy/myapp-deployment --to-revision=2</td>
+<td style="text-align:center">回滚到指定历史版本</td>
+</tr>
+</tbody>
+</table>
+<h3 id="7动态伸缩">7.动态伸缩</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令名</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">kubectl scale deploy myapp-deployment --replicas=5</td>
+<td style="text-align:center">动态伸缩</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl scale --replicas=8 -f myapp-deployment-v2.yaml</td>
+<td style="text-align:center">动态伸缩（根据yaml文件）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="8操作类命令">8.操作类命令</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令名</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">kubectl create -f xxx.yaml</td>
+<td style="text-align:center">创建资源</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl apply -f xxx.yaml</td>
+<td style="text-align:center">应用资源</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl apply -f</td>
+<td style="text-align:center">应用资源，该目录下的所有 .yaml, .yml, 或 .json 文件都会被使用</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl create namespace test</td>
+<td style="text-align:center">创建test名称空间</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl delete -f xxx.yaml<br/>kubectl delete -f</td>
+<td style="text-align:center">删除资源</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl delete pod podName</td>
+<td style="text-align:center">删除指定的pod</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl delete pod -n test podName</td>
+<td style="text-align:center">删除指定名称空间的指定pod</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl delete svc svcName<br/>kubectl delete deploy deployName<br/>kubectl delete ns nsName</td>
+<td style="text-align:center">删除其他资源</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl delete pod podName -n nsName --grace-period=0 --force<br/>kubectl delete pod podName -n nsName --grace-period=1<br/>kubectl delete pod podName -n nsName --now</td>
+<td style="text-align:center">强制删除</td>
+</tr>
+<tr>
+<td style="text-align:center">kubectl edit pod podName</td>
+<td style="text-align:center">编辑资源</td>
+</tr>
+</tbody>
+</table>
+<h3 id="9状态">9.状态</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">状态名</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>Running</code></td>
+<td style="text-align:center">运行中</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Error</code></td>
+<td style="text-align:center">异常，无法提供服务</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Pending</code></td>
+<td style="text-align:center">准备中，暂时无法提供服务</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Terminaling</code></td>
+<td style="text-align:center">结束中，即将被移除</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>Unknown</code></td>
+<td style="text-align:center">未知状态，多发生于节点宕机</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>PullImageBackOff</code></td>
+<td style="text-align:center">镜像拉取失败</td>
+</tr>
+</tbody>
+</table>
+<p>必须存在的属性</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>字段类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>version</td>
+<td>String</td>
+<td>K8S API版本, 可以使用kubectl api-version命令查询</td>
+</tr>
+<tr>
+<td>kind</td>
+<td>String</td>
+<td>指的是yaml文件定义的资源类型和角色, 比如Pod</td>
+</tr>
+<tr>
+<td>metadata</td>
+<td>Object</td>
+<td>元数据对象, 固定值就写metadata</td>
+</tr>
+<tr>
+<td>metadata.name</td>
+<td>String</td>
+<td>元数据对象的名字, 比如命名Pod的名字</td>
+</tr>
+<tr>
+<td>metadata.namespace</td>
+<td>String</td>
+<td>元数据对象的命名空间</td>
+</tr>
+<tr>
+<td>Spec</td>
+<td>Object</td>
+<td>详细定义对象, 固定值就写Spec</td>
+</tr>
+<tr>
+<td>spec.containers[]</td>
+<td>list</td>
+<td>Spec对象的容器列表定义, 是个列表</td>
+</tr>
+<tr>
+<td>spec.containers[].name</td>
+<td>String</td>
+<td>容器的名字</td>
+</tr>
+<tr>
+<td>spec.containers[].image</td>
+<td>String</td>
+<td>使用到的镜像名称</td>
+</tr>
+</tbody>
+</table>
+<p><strong>主要对象</strong></p>
+<pre><code class="language-yaml">apiVersion: v1                  #必选，版本号，例如v1，可以用 kubectl api-versions 查询到
+kind: Pod                       #必选，指yaml文件定义的k8s 资源类型或角色，比如：Pod
+metadata:                       #必选，元数据对象
+  name: string                  #必选，元数据对象的名字，自己定义，比如命名Pod的名字
+  namespace: string             #必选，元数据对象的名称空间，默认为&quot;default&quot;
+  labels:                       #自定义标签
+    key1: value1      　        #自定义标签键值对1
+    key2: value2      　        #自定义标签键值对2
+  annotations:                  #自定义注解
+    key1: value1      　        #自定义注解键值对1
+    key2: value2      　        #自定义注解键值对2
+spec:                           #必选，对象【如pod】的详细定义
+  containers:                   #必选，spec对象的容器信息
+  - name: string                #必选，容器名称
+    image: string               #必选，要用到的镜像名称
+    imagePullPolicy: [Always|Never|IfNotPresent]  #获取镜像的策略；(1)Always：意思是每次都尝试重新拉取镜像；(2)Never：表示仅使用本地镜像，即使本地没有镜像也不拉取；(3) IfNotPresent：如果本地有镜像就使用本地镜像，没有就拉取远程镜像。默认：Always
+    command: [string]           #指定容器启动命令，由于是数组因此可以指定多个。不指定则使用镜像打包时指定的启动命令。
+    args: [string]              #指定容器启动命令参数，由于是数组因此可以指定多个
+    workingDir: string          #指定容器的工作目录
+    volumeMounts:               #指定容器内部的存储卷配置
+    - name: string              #指定可以被容器挂载的存储卷的名称。跟下面volume字段的name值相同表示使用这个存储卷
+      mountPath: string         #指定可以被容器挂载的存储卷的路径，应少于512字符
+      readOnly: boolean         #设置存储卷路径的读写模式，true或者false，默认为读写模式false
+    ports:                      #需要暴露的端口号列表
+    - name: string              #端口的名称
+      containerPort: int        #容器监听的端口号
+      #除非绝对必要，否则不要为 Pod 指定 hostPort。将 Pod 绑定到hostPort时，它会限制 Pod 可以调度的位置数
+      #DaemonSet 中的 Pod 可以使用 hostPort，从而可以通过节点 IP 访问到 Pod；因为DaemonSet模式下Pod不会被调度到其他节点。
+      #一般情况下 containerPort与hostPort值相同
+      hostPort: int     #可以通过宿主机+hostPort的方式访问该Pod。例如：pod在/调度到了k8s-node02【172.16.1.112】，hostPort为8090，那么该Pod可以通过172.16.1.112:8090方式进行访问。
+      protocol: string          #端口协议，支持TCP和UDP，默认TCP
+    env:                        #容器运行前需设置的环境变量列表
+    - name: string              #环境变量名称
+      value: string             #环境变量的值
+    resources:                  #资源限制和资源请求的设置（设置容器的资源上线）
+      limits:                   #容器运行时资源使用的上线
+        cpu: string             #CPU限制，单位为core数，允许浮点数，如0.1等价于100m，0.5等价于500m；因此如果小于1那么优先选择如100m的形式，精度为1m。这个数字用作 docker run 命令中的 --cpu-quota 参数。
+        memory: string          #内存限制，单位：E,P,T,G,M,K；或者Ei,Pi,Ti,Gi,Mi,Ki；或者字节数。将用于docker run --memory参数
+      requests:                 #容器启动和调度时的限制设定
+        cpu: string             #CPU请求，容器启动时初始化可用数量，单位为core数，允许浮点数，如0.1等价于100m，0.5等价于500m；因此如果小于1那么优先选择如100m的形式，精度为1m。这个数字用作 docker run 命令中的 --cpu-shares 参数。
+        memory: string          #内存请求,容器启动的初始化可用数量。单位：E,P,T,G,M,K；或者Ei,Pi,Ti,Gi,Mi,Ki；或者字节数
+    # 参见官网地址：https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+    livenessProbe:      　　    #对Pod内各容器健康检查的设置，当探测无响应几次后将自动重启该容器，检查方法有exec、httpGet和tcpSocket，对一个容器【只需设置其中一种方法即可】
+      exec:       　　　　　　  #对Pod内容器健康检查方式设置为exec方式
+        command: [string]       #exec方式需要制定的命令或脚本
+      httpGet:        　　　　  #对Pod内容器健康检查方法设置为HttpGet，需要制定Path、port
+        path: string            #访问 HTTP 服务的路径
+        port: number            #访问容器的端口号或者端口名。如果数字必须在 1 ~ 65535 之间。
+        host: string            #当没有定义 &quot;host&quot; 时，使用 &quot;PodIP&quot;
+        scheme: string          #当没有定义 &quot;scheme&quot; 时，使用 &quot;HTTP&quot;，scheme 只允许 &quot;HTTP&quot; 和 &quot;HTTPS&quot;
+        HttpHeaders:            #请求中自定义的 HTTP 头。HTTP 头字段允许重复。
+        - name: string
+          value: string
+      tcpSocket:      　　　　  #对Pod内容器健康检查方式设置为tcpSocket方式
+         port: number
+      initialDelaySeconds: 5    #容器启动完成后，kubelet在执行第一次探测前应该等待 5 秒。默认是 0 秒，最小值是 0。
+      periodSeconds: 60    　　 #指定 kubelet 每隔 60 秒执行一次存活探测。默认是 10 秒。最小值是 1
+      timeoutSeconds: 3    　　 #对容器健康检查探测等待响应的超时时间为 3 秒，默认1秒
+      successThreshold: 1       #检测到有1次成功则认为服务是`就绪`
+      failureThreshold: 5       #检测到有5次失败则认为服务是`未就绪`。默认值是 3，最小值是 1。
+    restartPolicy: [Always|Never|OnFailure] #Pod的重启策略，默认Always。Always表示一旦不管以何种方式终止运行，kubelet都将重启；OnFailure表示只有Pod以非0退出码退出才重启；Nerver表示不再重启该Pod
+    nodeSelector:           　　#定义Node的label过滤标签，以key：value的格式指定。节点选择，先给主机打标签kubectl label nodes kube-node01 key1=value1 
+      key1: value1
+    imagePullSecrets:     　　  #Pull镜像时使用的secret名称，以name：secretKeyName格式指定
+    - name: string
+    hostNetwork: false      　　#是否使用主机网络模式，默认为false。如果设置为true，表示使用宿主机网络，不使用docker网桥
+  # volumes 和 containers 是同层级 ******************************
+  # 参见官网地址：https://kubernetes.io/zh/docs/concepts/storage/volumes/
+  volumes:        　　　　　　#定义了paues容器关联的宿主机或分布式文件系统存储卷列表 （volumes类型有很多种，选其中一种即可）
+  - name: string     　　 　　#共享存储卷名称。
+    emptyDir: {}      　　    #类型为emtyDir的存储卷，与Pod同生命周期的一个临时目录。当Pod因为某些原因被从节点上删除时，emptyDir卷中的数据也会永久删除。
+    hostPath: string      　　#类型为hostPath的存储卷，表示挂载Pod所在宿主机的文件或目录
+      path: string      　　  #在宿主机上文件或目录的路径
+      type: [|DirectoryOrCreate|Directory|FileOrCreate|File] #空字符串（默认）用于向后兼容，这意味着在安装 hostPath 卷之前不会执行任何检查。DirectoryOrCreate：如果给定目录不存在则创建，权限设置为 0755，具有与 Kubelet 相同的组和所有权。Directory：给定目录必须存在。FileOrCreate：如果给定文件不存在，则创建空文件，权限设置为 0644，具有与 Kubelet 相同的组和所有权。File：给定文件必须存在。
+    secret:       　　　　　  #类型为secret的存储卷，挂载集群预定义的secre对象到容器内部。Secret 是一种包含少量敏感信息例如密码、token 或 key 的对象。放在一个 secret 对象中可以更好地控制它的用途，并降低意外暴露的风险。
+      secretName: string      #secret 对象的名字
+      items:                  #可选，修改key 的目标路径
+      - key: username         #username secret存储在/etc/foo/my-group/my-username 文件中而不是 /etc/foo/username 中。【此时存在spec.containers[].volumeMounts[].mountPath为/etc/foo】
+        path: my-group/my-username
+    configMap:      　　　　  #类型为configMap的存储卷，挂载预定义的configMap对象到容器内部。ConfigMap 允许您将配置文件与镜像文件分离，以使容器化的应用程序具有可移植性。
+      name: string             #提供你想要挂载的 ConfigMap 的名字
+</code></pre>
+<blockquote>
+<p>kubectl explain pod命令可以查看资源的模板</p>
+<p>kubectl explain pod.apiVersion 查看详细字段</p>
+</blockquote>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1%E8%B5%84%E6%BA%90%E7%B1%BB%E5%9E%8B">1.资源类型</a></li>
+<li><a href="#2%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4">2.操作指令</a></li>
+<li><a href="#3%E6%9F%A5%E7%9C%8B%E5%92%8C%E8%BF%9B%E5%85%A5%E7%A9%BA%E9%97%B4">3.查看和进入空间</a></li>
+<li><a href="#4%E8%BF%9B%E5%85%A5pod%E5%90%AF%E5%8A%A8%E7%9A%84%E5%AE%B9%E5%99%A8">4.进入pod启动的容器</a></li>
+<li><a href="#5%E6%B7%BB%E5%8A%A0label%E5%80%BC">5.添加label值</a></li>
+<li><a href="#6%E6%BB%9A%E5%8A%A8%E5%8D%87%E7%BA%A7">6.滚动升级</a></li>
+<li><a href="#7%E5%8A%A8%E6%80%81%E4%BC%B8%E7%BC%A9">7.动态伸缩</a></li>
+<li><a href="#8%E6%93%8D%E4%BD%9C%E7%B1%BB%E5%91%BD%E4%BB%A4">8.操作类命令</a></li>
+<li><a href="#9%E7%8A%B6%E6%80%81">9.状态</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/TX9ZIPxbq/">
+                  <span class="post-title">
+                    k8s-ingress安装使用&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
