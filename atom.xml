@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-06-05T07:19:04.572Z</updated>
+    <updated>2022-06-11T13:55:41.166Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -10,6 +10,498 @@
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, tianxia</rights>
+    <entry>
+        <title type="html"><![CDATA[k8s高可用集群搭建]]></title>
+        <id>https://tinaxiawuhao.github.io/post/McgbXRFnx/</id>
+        <link href="https://tinaxiawuhao.github.io/post/McgbXRFnx/">
+        </link>
+        <updated>2022-06-11T13:48:56.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="整体环境">整体环境</h2>
+<p>3台master节点，3台<a href="https://so.csdn.net/so/search?q=node&amp;spm=1001.2101.3001.7020">node</a>节点。采用了Centos 7，有网络，互相可以ping通。</p>
+<p><strong>准备工作查看单集群部署</strong></p>
+<h3 id="1安装keepalived-和-haproxy">1.安装keepalived 和 haproxy</h3>
+<h4 id="11安装keepalived和-haproxy">1.1安装keepalived和 haproxy</h4>
+<pre><code class="language-shell">1yum install keepalived haproxy -y
+</code></pre>
+<h4 id="12-配置-keepalived">1.2 配置 keepalived</h4>
+<pre><code class="language-shell">cat &lt;&lt;EOF &gt; /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+
+global_defs {
+   router_id k8s
+}
+
+vrrp_script check_haproxy {
+    script &quot;/bin/bash -c 'if [[ $(netstat -nlp | grep 16443) ]]; then exit 0; else exit 1; fi'&quot;
+    interval 3
+    weight -2
+    fall 10
+    rise 2
+}
+
+vrrp_instance VI_1 {
+    state MASTER 
+    interface ens33 
+    virtual_router_id 51
+    priority 250
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass ceb1b3ec013d66163d6ab
+    }
+    virtual_ipaddress {
+        192.168.40.19
+    }
+    track_script {
+        check_haproxy
+    }
+
+}
+
+EOF
+</code></pre>
+<pre><code>cat &lt;&lt;EOF &gt; /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+
+global_defs {
+   router_id k8s
+}
+
+vrrp_script check_haproxy {
+    script &quot;/bin/bash -c 'if [[ $(netstat -nlp | grep 16443) ]]; then exit 0; else exit 1; fi'&quot;
+    interval 3
+    weight -2
+    fall 10
+    rise 2
+}
+
+vrrp_instance VI_1 {
+    state BACKUP 
+    interface ens33 
+    virtual_router_id 51
+    priority 150
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass ceb1b3ec013d66163d6ab
+    }
+    virtual_ipaddress {
+        192.168.40.19
+    }
+    track_script {
+        check_haproxy
+    }
+
+}
+
+EOF
+</code></pre>
+<pre><code>cat &lt;&lt;EOF &gt; /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+
+global_defs {
+   router_id k8s
+}
+
+vrrp_script check_haproxy {
+    script &quot;/bin/bash -c 'if [[ $(netstat -nlp | grep 16443) ]]; then exit 0; else exit 1; fi'&quot;
+    interval 3
+    weight -2
+    fall 10
+    rise 2
+}
+
+vrrp_instance VI_1 {
+    state BACKUP 
+    interface ens33 
+    virtual_router_id 51
+    priority 200
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass ceb1b3ec013d66163d6ab
+    }
+    virtual_ipaddress {
+        192.168.40.19
+    }
+    track_script {
+        check_haproxy
+    }
+
+}
+
+EOF
+</code></pre>
+<blockquote>
+<ul>
+<li>vrrp_script 用于检测 haproxy 是否正常。如果本机的 haproxy 挂掉，即使 keepalived 劫持vip，也无法将流量负载到 apiserver。</li>
+<li>我所查阅的网络教程全部为检测进程, 类似 killall -0 haproxy。这种方式用在主机部署上可以，但容器部署时，在 keepalived 容器中无法知道另一个容器 haproxy 的活跃情况，因此我在此处通过检测端口号来判断 haproxy 的健康状况。</li>
+<li>weight 可正可负。为正时检测成功 +weight，相当与节点检测失败时本身 priority 不变，但其他检测成功节点 priority 增加。为负时检测失败本身 priority 减少。</li>
+<li>另外很多文章中没有强调 nopreempt 参数，意为不可抢占，此时 master 节点失败后，backup 节点也不能接管 vip，因此我将此配置删去</li>
+</ul>
+</blockquote>
+<h4 id="13-配置haproxy">1.3 配置haproxy</h4>
+<pre><code class="language-shell">cat &lt;&lt;EOF &gt; /etc/haproxy/haproxy.cfg
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    # to have these messages end up in /var/log/haproxy.log you will
+    # need to:
+    # 1) configure syslog to accept network log events.  This is done
+    #    by adding the '-r' option to the SYSLOGD_OPTIONS in
+    #    /etc/sysconfig/syslog
+    # 2) configure local2 events to go to the /var/log/haproxy.log
+    #   file. A line like the following can be added to
+    #   /etc/sysconfig/syslog
+    #
+    #    local2.*                       /var/log/haproxy.log
+    #
+    log         127.0.0.1 local0
+    
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon 
+       
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------  
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+#---------------------------------------------------------------------
+# kubernetes apiserver frontend which proxys to the backends
+#--------------------------------------------------------------------- 
+frontend kubernetes-apiserver
+    mode                 tcp
+    bind                 *:16443
+    option               tcplog
+    default_backend      kubernetes-apiserver    
+#---------------------------------------------------------------------
+# round robin balancing between the various backends
+#---------------------------------------------------------------------
+backend kubernetes-apiserver
+    mode        tcp
+    balance     roundrobin
+    server      gk8s-master   192.168.40.20:6443 check
+    server      gk8s-master2   192.168.40.21:6443 check
+    server      gk8s-master3   192.168.40.22:6443 check
+#---------------------------------------------------------------------
+# collection haproxy statistics message
+#---------------------------------------------------------------------
+listen stats
+    bind                 *:1080
+    stats auth           admin:awesomePassword
+    stats refresh        5s
+    stats realm          HAProxy\ Statistics
+    stats uri            /admin?stats
+    
+EOF
+</code></pre>
+<p>设置开机启动</p>
+<pre><code>systemctl enable haproxy &amp;&amp; systemctl start haproxy 
+systemctl enable keepalived &amp;&amp; systemctl start keepalived 
+</code></pre>
+<h3 id="2安装kubeadm-kubelet-kubectl">2.安装kubeadm、kubelet、kubectl</h3>
+<h4 id="1配置文件修改">1.配置文件修改</h4>
+<pre><code class="language-shell">cat &lt;&lt;EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+</code></pre>
+<h4 id="2安装启用">2.安装启用</h4>
+<pre><code class="language-shell">sudo yum install -y kubelet-1.24.1 kubeadm-1.24.1 kubectl-1.24.1 --disableexcludes=kubernetes 
+sudo systemctl enable kubelet &amp;&amp; systemctl start kubelet
+</code></pre>
+<h4 id="3修改kubelet的配置文件">3.修改kubelet的配置文件</h4>
+<p>先查看配置文件位置</p>
+<pre><code class="language-shell">systemctl status kubelet
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1653818855680.png" alt="" loading="lazy"></figure>
+<pre><code class="language-shell">vi /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+</code></pre>
+<p>并添加以下内容(使用和docker相同的cgroup-driver)。</p>
+<pre><code class="language-shell">Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd&quot;
+</code></pre>
+<h4 id="4重启kubelet">4.重启kubelet</h4>
+<pre><code class="language-shell">systemctl daemon-reload &amp;&amp; systemctl restart kubelet
+</code></pre>
+<h3 id="3获取k8s镜像可忽略">3.获取K8S镜像（可忽略）</h3>
+<h4 id="1获取镜像列表">1.获取镜像列表</h4>
+<p><strong>使用阿里云镜像仓库下载（国内环境该命令可不执行，下步骤kubeadm init --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers已经默认为国内环境）</strong></p>
+<p>由于官方镜像地址被墙，所以我们需要首先获取所需镜像以及它们的版本。然后从国内镜像站获取。</p>
+<pre><code class="language-bash">kubeadm config images list
+</code></pre>
+<p>获取镜像列表后可以通过下面的脚本从阿里云获取：</p>
+<pre><code class="language-shell">vi /usr/local/k8s/k8s-images.sh
+</code></pre>
+<blockquote>
+<p>下面的镜像应该去除&quot;k8s.gcr.io/&quot;的前缀，版本换成上面获取到的版本</p>
+</blockquote>
+<pre><code class="language-bash">images=(  
+    kube-apiserver:v1.24.1
+    kube-controller-manager:v1.24.1
+    kube-scheduler:v1.24.1
+    kube-proxy:v1.24.1
+    pause:3.7
+    etcd:3.5.3-0
+    coredns:v1.8.6
+)
+
+for imageName in ${images[@]} ; do
+    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName
+    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName k8s.gcr.io/$imageName
+    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName
+done
+</code></pre>
+<h4 id="2赋权执行">2.赋权执行</h4>
+<pre><code class="language-shell">chmod +x k8s-images.sh &amp;&amp; ./k8s-images.sh
+</code></pre>
+<p><strong>以上操作在所有机器执行</strong></p>
+<h3 id="4初始化环境master操作">4.初始化环境（master操作）</h3>
+<h4 id="1安装镜像">1.安装镜像</h4>
+<p><strong>采用模板配置文件加载</strong></p>
+<pre><code class="language-shell">kubeadm config print init-defaults  &gt; kubeadm-config.yaml
+</code></pre>
+<pre><code class="language-yaml"># 模板随版本更新
+[root@master1 ~]# cat kubeadm-config.yaml 
+apiVersion: kubeadm.k8s.io/v1beta2
+bootstrapTokens:
+- groups:
+  - system:bootstrappers:kubeadm:default-node-token
+  token: abcdef.0123456789abcdef
+  ttl: 24h0m0s
+  usages:
+  - signing
+  - authentication
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: 192.168.40.131    # 本机IP
+  bindPort: 6443
+nodeRegistration:
+  criSocket: unix:///var/run/cri-docker.sock  # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  #criSocket: unix:///run/containerd/containerd.sock      # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  name: master1        # 本主机名
+  taints:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+---
+apiServer:
+  certSANs:
+    - k8s-master-01
+    - k8s-master-02
+    - k8s-master-03
+    - master.k8s.io
+    - 192.168.40.19
+    - 192.168.40.20
+    - 192.168.40.21
+    - 192.168.40.22
+    - 127.0.0.1
+  extraArgs:
+    authorization-mode: Node,RBAC
+  timeoutForControlPlane: 4m0s
+apiVersion: kubeadm.k8s.io/v1beta2
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controlPlaneEndpoint: &quot;192.168.40.19:16443&quot;      # 虚拟IP和haproxy端口
+controllerManager: {}
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+imageRepository: registry.aliyuncs.com/google_containers    # 镜像仓库源要根据自己实际情况修改
+kind: ClusterConfiguration
+kubernetesVersion: v1.24.1     # k8s版本
+networking:
+  dnsDomain: cluster.local
+  podSubnet: &quot;10.244.0.0/16&quot;   #设置网段，和下面网络插件对应
+  serviceSubnet: 10.96.0.0/12
+scheduler: {}
+ 
+---
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+featureGates:
+  SupportIPVSProxyMode: true
+mode: ipvs
+</code></pre>
+<h4 id="2查看kubeadm版本修改命令参数">2.查看kubeadm版本，修改命令参数</h4>
+<pre><code class="language-shell">kubeadm version
+</code></pre>
+<p>这个就很简单了，只需要简单的一个命令：</p>
+<pre><code class="language-bash">#直接使用已经下载好的镜像
+kubeadm init --kubernetes-version=v1.24.1 --control-plane-endpoint &quot;192.168.40.19:16443&quot; --apiserver-advertise-address=192.168.40.20 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap  --cri-socket unix:///var/run/cri-docker.sock | tee kubeadm-init.log
+#或者采用aliyuncs镜像下载
+kubeadm init --kubernetes-version=v1.24.1 --control-plane-endpoint &quot;192.168.40.19:16443&quot; --apiserver-advertise-address=192.168.40.20 --image-repository  registry.aliyuncs.com/google_containers  --service-cidr=10.1.0.0/16 --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/cri-docker.sock| tee kubeadm-init.log
+#使用上面系统生成配置文件加载
+kubeadm init --config kubeadm-config.yaml
+</code></pre>
+<h4 id="3初始化命令说明">3.初始化命令说明：</h4>
+<blockquote>
+<p>虚拟ip节点端口号</p>
+</blockquote>
+<pre><code class="language-bash">--control-plane-endpoint
+</code></pre>
+<blockquote>
+<p>指明用 Master 的哪个 interface 与 Cluster 的其他节点通信。如果 Master 有多个 interface，建议明确指定，如果不指定，kubeadm 会自动选择有默认网关的 interface。</p>
+</blockquote>
+<pre><code class="language-bash">--apiserver-advertise-address
+</code></pre>
+<blockquote>
+<p>指定 Pod 网络的范围。Kubernetes 支持多种网络方案，而且不同网络方案对 --pod-network-cidr 有自己的要求，这里设置为 10.244.0.0/16 是因为我们将使用 flannel 网络方案，必须设置成这个 CIDR。</p>
+</blockquote>
+<pre><code class="language-bash">--pod-network-cidr
+</code></pre>
+<blockquote>
+<p>Kubenetes默认Registries地址是 k8s.gcr.io，在国内并不能访问 gcr.io，在1.19.3版本中我们可以增加–image-repository参数，默认值是 k8s.gcr.io，将其指定为阿里云镜像地址：registry.aliyuncs.com/google_containers。</p>
+</blockquote>
+<pre><code class="language-bash">--image-repository
+</code></pre>
+<blockquote>
+<p>关闭版本探测，因为它的默认值是stable-1，会导致从https://dl.k8s.io/release/stable-1.txt下载最新的版本号，我们可以将其指定为固定版本（最新版：v1.24.1）来跳过网络请求。</p>
+</blockquote>
+<pre><code class="language-bash">--kubernetes-version=v1.24.1 
+</code></pre>
+<blockquote>
+<p>指定启动时使用cri-docker调用docker</p>
+</blockquote>
+<pre><code class="language-shell">--cri-socket unix:///var/run/cri-docker.sock 
+</code></pre>
+<h4 id="4错误启动重置">4.错误启动重置</h4>
+<pre><code class="language-shell"># 重置 如果有需要
+kubeadm reset --cri-socket unix:///var/run/cri-docker.sock
+</code></pre>
+<h4 id="5初始化成功后为顺利使用kubectl执行以下命令">5.初始化成功后，为顺利使用kubectl，执行以下命令：</h4>
+<pre><code class="language-shell">mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<h4 id="6添加其他主节点">6.添加其他主节点</h4>
+<h5 id="1复制密钥及相关文件">1.复制密钥及相关文件</h5>
+<pre><code class="language-shell">ssh root@192.168.40.21 mkdir -p /etc/kubernetes/pki/etcd
+scp /etc/kubernetes/admin.conf root@192.168.40.21:/etc/kubernetes 
+scp /etc/kubernetes/pki/{ca.*,sa.*,front-proxy-ca.*}root@192.168.40.21:/etc/kubernetes/pki
+scp /etc/kubernetes/pki/etcd/ca.* root@192.168.40.21:/etc/kubernetes/pki/etcd
+</code></pre>
+<pre><code class="language-shell">ssh root@192.168.40.22 mkdir -p /etc/kubernetes/pki/etcd
+scp /etc/kubernetes/admin.conf root@192.168.40.22:/etc/kubernetes 
+scp /etc/kubernetes/pki/{ca.*,sa.*,front-proxy-ca.*} root@192.168.40.22:/etc/kubernetes/pki
+scp /etc/kubernetes/pki/etcd/ca.* root@192.168.40.22:/etc/kubernetes/pki/etcd
+</code></pre>
+<h5 id="2添加节点">2.添加节点</h5>
+<pre><code class="language-shell">kubeadm join 192.168.40.19:16443 --token pqir66.66fy6pexw3kprt2b --discovery-token-ca-cert-hash sha256:cd4c42e956fdc7e0ad48c990484c22cfd43da63cb3f3887bedc481e7f33a0be1 --control-plane --cri-socket unix:///var/run/cri-docker.sock 
+</code></pre>
+<h4 id="7执行kubectl-get-nodes查看master节点状态">7.执行kubectl get nodes，查看master节点状态：</h4>
+<pre><code class="language-shell">kubectl get node
+</code></pre>
+<h4 id="8通过如下命令查看kubelet状态">8.通过如下命令查看kubelet状态：</h4>
+<pre><code class="language-bash">journalctl -xef -u kubelet -n 20
+</code></pre>
+<p>提示未安装cni 网络插件。</p>
+<h3 id="51安装flannel网络插件cni">5.1安装flannel网络插件(CNI)</h3>
+<p>master执行以下命令安装flannel即可：</p>
+<pre><code class="language-shell">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+</code></pre>
+<p>kube-flannel.yaml文件中的net-conf.json-&gt;Network地址默认为命令中–pod-network-cidr=值相同</p>
+<p><strong>输入命令kubectl get pods -n kube-system,等待所有插件为running状态</strong>。</p>
+<p><strong>待所有pod status为Running的时候，再次执行kubectl get nodes：</strong></p>
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
+NAME         STATUS   ROLES    AGE   VERSION
+k8s-master   Ready    master   16m   v1.24.1
+</code></pre>
+<p><strong>如上所示，master状态变为，表明Master节点部署成功！</strong></p>
+<h3 id="52安装calico网络功能更完善">5.2安装calico网络(功能更完善)</h3>
+<h4 id="1在master上下载配置calico网络的yaml">1.在master上下载配置calico网络的yaml。</h4>
+<pre><code class="language-shell">kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+</code></pre>
+<h4 id="2提前下载所需要的镜像">2.提前下载所需要的镜像。</h4>
+<pre><code class="language-shell"># 查看此文件用哪些镜像：
+[root@k8s-master ~]# grep image calico.yaml
+image: docker.io/calico/cni:v3.23.1
+image: docker.io/calico/node:v3.23.1
+image: docker.io/calico/kube-controllers:v3.23.1
+</code></pre>
+<h4 id="3安装calico网络">3.安装calico网络。</h4>
+<p>在master上执行如下命令：</p>
+<pre><code class="language-shell">kubectl apply -f calico.yaml
+</code></pre>
+<h4 id="5验证结果">5.验证结果。</h4>
+<p>再次在master上运行命令 kubectl get nodes查看运行结果：</p>
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+master01   Ready    control-plane,master   21h   v1.23.4
+worker01   Ready    control-plane,master   16h   v1.23.4
+worker02   Ready    control-plane,master   16h   v1.23.4
+</code></pre>
+<h3 id="20部署k8s-node1-k8s-node2-k8s-node3集群">20.部署k8s-node1、k8s-node2、k8s-node3集群</h3>
+<p><strong>1、在k8s-node1、k8s-node2、k8s-node3等三台虚拟机中重复执行上面的步骤，安装好docker、kubelet、kubectl、kubeadm。</strong></p>
+<h4 id="1node节点加入集群">1.node节点加入集群</h4>
+<p>在上面第初始化master节点成功后，输出了下面的kubeadm join命令：</p>
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5 --cri-socket unix:///var/run/cri-docker.sock 
+</code></pre>
+<p>该命令就是node加入集群的命令，分别在k8s-node1、k8s-node2上执行该命令加入集群。</p>
+<p>如果忘记该命令，可以通过以下命令重新生成：</p>
+<pre><code class="language-shell">kubeadm token create --print-join-command
+</code></pre>
+<h4 id="2在master节点执行下面命令查看集群状态">2.在master节点执行下面命令查看集群状态：</h4>
+<pre><code class="language-shell">kubectl get nodes
+</code></pre>
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
+NAME         STATUS   ROLES    AGE     VERSION
+k8s-master   Ready    master   24m     v1.24.1
+k8s-master2  Ready    master   24m     v1.24.1
+k8s-master3  Ready    master   24m     v1.24.1
+k8s-node1    Ready    &lt;none&gt;   5m50s   v1.24.1
+k8s-node2    Ready    &lt;none&gt;   5m21s   v1.24.1
+k8s-node3    Ready    &lt;none&gt;   5m21s   v1.24.1
+</code></pre>
+<p>如上所示，所有节点都为ready，集群搭建成功。</p>
+<h2 id="卸载集群命令">卸载集群命令</h2>
+<pre><code class="language-shell">#建议所有服务器都执行
+#!/bin/bash
+kubeadm reset -f
+modprobe -r ipip
+lsmod
+rm -rf ~/.kube/
+rm -rf /etc/kubernetes/
+rm -rf /etc/systemd/system/kubelet.service.d
+rm -rf /etc/systemd/system/kubelet.service
+rm -rf /usr/bin/kube*
+rm -rf /etc/cni
+rm -rf /opt/cni
+rm -rf /var/lib/etcd
+rm -rf /var/etcd
+yum -y remove kubeadm* kubectl* kubelet* docker*
+reboot
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[k8s资源操作]]></title>
         <id>https://tinaxiawuhao.github.io/post/HhauOMn26/</id>
@@ -30825,110 +31317,6 @@ private static class MyProducerCallback implements Callback {
 </tr>
 </tbody>
 </table>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[附录 Flink常见面试问题汇总]]></title>
-        <id>https://tinaxiawuhao.github.io/post/EEiV7EREL/</id>
-        <link href="https://tinaxiawuhao.github.io/post/EEiV7EREL/">
-        </link>
-        <updated>2021-04-18T05:16:56.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="面试题一应用架构">面试题一：应用架构</h3>
-<p>问题： 公司怎么提交的实时任务， 有多少 Job Manager、 Task Manager？<br>
-解答：</p>
-<ol>
-<li>我们使用 yarn session 模式提交任务； 另一种方式是每次提交都会创建一个新的 Flink 集群， 为每一个 job 提供资源， 任务之间互相独立， 互不影响，<br>
-方便管理。 任务执行完成之后创建的集群也会消失。 线上命令脚本如下：bin/yarn-session.sh -n 7 -s 8 -jm 3072 -tm 32768 -qu root.<em>.</em> -nm <em>-</em> -d其中申请 7 个 taskManager， 每个 8 核， 每个 taskmanager 有 32768M 内存。</li>
-<li>集群默认只有一个 Job Manager。 但为了防止单点故障， 我们配置了高可用。<br>
-对于 standlone 模式， 我们公司一般配置一个主 Job Manager， 两个备用 Job<br>
-Manager， 然后结合 ZooKeeper 的使用， 来达到高可用； 对于 yarn 模式， yarn 在<br>
-Job Mananger 故障会自动进行重启， 所以只需要一个， 我们配置的最大重启次数是<br>
-10 次。</li>
-</ol>
-<h3 id="面试题二压测和监控">面试题二：压测和监控</h3>
-<p>问题： 怎么做压力测试和监控？<br>
-解答： 我们一般碰到的压力来自以下几个方面：</p>
-<ol>
-<li>产生数据流的速度如果过快， 而下游的算子消费不过来的话， 会产生背压。<br>
-背压的监控可以使用 Flink Web UI(localhost:8081) 来可视化监控 Metrics， 一旦报警<br>
-就能知道。 一般情况下背压问题的产生可能是由于 sink 这个 操作符没有优化好，<br>
-做一下优化就可以了。 比如如果是写入 ElasticSearch， 那么可以改成批量写入，<br>
-可以调大 ElasticSearch 队列的大小等等策略。</li>
-<li>设置 watermark 的最大延迟时间这个参数， 如果设置的过大， 可能会造成<br>
-内存的压力。 可以设置最大延迟时间小一些， 然后把迟到元素发送到侧输出流中去。<br>
-晚一点更新结果。 或者使用类似于 RocksDB 这样的状态后端， RocksDB 会开辟<br>
-堆外存储空间， 但 IO 速度会变慢， 需要权衡。</li>
-<li>还有就是滑动窗口的长度如果过长， 而滑动距离很短的话， Flink 的性能<br>
-会下降的很厉害。 我们主要通过时间分片的方法， 将每个元素只存入一个“ 重叠窗<br>
-口” ， 这样就可以减少窗口处理中状态的写入。 参见链接：<br>
-https://www.infoq.cn/article/sIhs_qY6HCpMQNblTI9M</li>
-<li>状态后端使用 RocksDB， 还没有碰到被撑爆的问题。</li>
-</ol>
-<h3 id="面试题三为什么用-flink">面试题三：为什么用 Flink</h3>
-<p>问题： 为什么使用 Flink 替代 Spark？<br>
-解答： 主要考虑的是 flink 的低延迟、 高吞吐量和对流式数据应用场景更好的支<br>
-持； 另外， flink 可以很好地处理乱序数据， 而且可以保证 exactly-once 的状态一致<br>
-性。 详见文档第一章， 有 Flink 和 Spark 的详细对比。</p>
-<h3 id="面试题四checkpoint-的存储">面试题四：checkpoint 的存储</h3>
-<p>问题： Flink 的 checkpoint 存在哪里？<br>
-解答： 可以是内存， 文件系统， 或者 RocksDB。 详见文档 第九章 状态编程和容错机制。</p>
-<h3 id="面试题五exactly-once-的保证">面试题五：exactly-once 的保证</h3>
-<p>问题： 如果下级存储不支持事务， Flink 怎么保证 exactly-once？<br>
-解答： 端到端的 exactly-once 对 sink 要求比较高， 具体实现主要有幂等写入和<br>
-事务性写入两种方式。 幂等写入的场景依赖于业务逻辑， 更常见的是用事务性写入。<br>
-而事务性写入又有预写日志（ WAL） 和两阶段提交（ 2PC） 两种方式。<br>
-如果外部系统不支持事务， 那么可以用预写日志的方式， 把结果数据先当成状<br>
-态保存， 然后在收到 checkpoint 完成的通知时， 一次性写入 sink 系统。<br>
-参见文档第九章 状态编程和容错机制</p>
-<h3 id="面试题六状态机制">面试题六：状态机制</h3>
-<p>问题： 说一下 Flink 状态机制？<br>
-解答： Flink 内置的很多算子， 包括源 source， 数据存储 sink 都是有状态的。 在<br>
-Flink 中， 状态始终与特定算子相关联。 Flink 会以 checkpoint 的形式对各个任务的<br>
-状态进行快照， 用于保证故障恢复时的状态一致性。 Flink 通过状态后端来管理状态<br>
-和 checkpoint 的存储， 状态后端可以有不同的配置选择。 详见文档第九章。</p>
-<h3 id="面试题七海量-key-去重">面试题七：海量 key 去重</h3>
-<p>问题： 怎么去重？ 考虑一个实时场景： 双十一场景， 滑动窗口长度为 1 小时，<br>
-滑动距离为 10 秒钟， 亿级用户， 怎样计算 UV？<br>
-解答： 使用类似于 scala 的 set 数据结构或者 redis 的 set 显然是不行的，<br>
-因为可能有上亿个 Key， 内存放不下。 所以可以考虑使用布隆过滤器（ Bloom Filter）<br>
-来去重。</p>
-<h3 id="面试题八checkpoint-与-spark-比较">面试题八：checkpoint 与 spark 比较</h3>
-<p>问题： Flink 的 checkpoint 机制对比 spark 有什么不同和优势？<br>
-解答： spark streaming 的 checkpoint 仅仅是针对 driver 的故障恢复做了数据<br>
-和元数据的 checkpoint。 而 flink 的 checkpoint 机制 要复杂了很多， 它采用的是<br>
-轻量级的分布式快照， 实现了每个算子的快照， 及流动中的数据的快照。 参见文档<br>
-第九章 状态编程和容错机制及文章链接： https://cloud.tencent.com/developer/article/1189624</p>
-<h3 id="面试题九watermark-机制">面试题九：watermark 机制</h3>
-<p>问题： 请详细解释一下 Flink 的 Watermark 机制。<br>
-解答： Watermark 本质是 Flink 中衡量 EventTime 进展的一个机制， 主要用来处<br>
-理乱序数据。 详见文档第七章 时间语义与 Wartermark。</p>
-<h3 id="面试题十exactly-once-如何实现">面试题十：exactly-once 如何实现</h3>
-<p>问题： Flink 中 exactly-once 语义是如何实现的， 状态是如何存储的？<br>
-解答： Flink 依靠 checkpoint 机制来实现 exactly-once 语义， 如果要实现端到端<br>
-的 exactly-once， 还需要外部 source 和 sink 满足一定的条件。 状态的存储通过状态<br>
-后端来管理， Flink 中可以配置不同的状态后端。 详见文档 第九章 状态编程和容错机制。</p>
-<h3 id="面试题十一cep">面试题十一：CEP</h3>
-<p>问题： Flink CEP 编程中当状态没有到达的时候会将数据保存在哪里？<br>
-解答： 在流式处理中， CEP 当然是要支持 EventTime 的， 那么相对应的也要<br>
-支持数据的迟到现象， 也就是 watermark 的处理逻辑。 CEP 对未匹配成功的事件序<br>
-列的处理， 和迟到数据是类似的。 在 Flink CEP 的处理逻辑中， 状态没有满足的和<br>
-迟到的数据， 都会存储在一个 Map 数据结构中， 也就是说， 如果我们限定判断事件<br>
-序列的时长为 5 分钟， 那么内存中就会存储 5 分钟的数据， 这在我看来， 也是对内<br>
-存的极大损伤之一。</p>
-<h3 id="面试题十二三种时间语义">面试题十二：三种时间语义</h3>
-<p>问题： Flink 三种时间语义是什么， 分别说出应用场景？<br>
-解答：</p>
-<ol>
-<li>Event Time： 这是实际应用最常见的时间语义， 具体见文档第七章。</li>
-<li>Processing Time： 没有事件时间的情况下， 或者对实时性要求超高的情况下。</li>
-<li>Ingestion Time： 存在多个 Source Operator 的情况下， 每个 Source Operator<br>
-可以使用自己本地系统时钟指派 Ingestion Time。 后续基于时间相关的各种操作，<br>
-都会使用数据记录中的 Ingestion Time。</li>
-</ol>
-<h3 id="面试题十三数据高峰的处理">面试题十三：数据高峰的处理</h3>
-<p>问题： Flink 程序在面对数据高峰期时如何处理？<br>
-解答： 使用大容量的 Kafka 把数据先放到消息队列里面作为数据源， 再使用<br>
-Flink 进行消费， 不过这样会影响到一点实时性</p>
 ]]></content>
     </entry>
 </feed>
