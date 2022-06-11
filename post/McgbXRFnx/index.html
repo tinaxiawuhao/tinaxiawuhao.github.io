@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>k8s高可用集群搭建 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="k8s高可用集群搭建 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="k8s高可用集群搭建" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/McgbXRFnx/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1654955733670"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1654955733670"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/f6exx1YLd/" class="tag">k8s</a>
+                
+              </span>
+              <h1>k8s高可用集群搭建</h1>
+              <span class="meta">
+                Posted on
+                2022-06-11，15 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/McgbXRFnx.png" alt="封面图">
+          </img>
+          
+          <h2 id="整体环境">整体环境</h2>
+<p>3台master节点，3台<a href="https://so.csdn.net/so/search?q=node&amp;spm=1001.2101.3001.7020">node</a>节点。采用了Centos 7，有网络，互相可以ping通。</p>
+<p><strong>准备工作查看单集群部署</strong></p>
+<h3 id="1安装keepalived-和-haproxy">1.安装keepalived 和 haproxy</h3>
+<h4 id="11安装keepalived和-haproxy">1.1安装keepalived和 haproxy</h4>
+<pre><code class="language-shell">1yum install keepalived haproxy -y
+</code></pre>
+<h4 id="12-配置-keepalived">1.2 配置 keepalived</h4>
+<pre><code class="language-shell">cat &lt;&lt;EOF &gt; /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+
+global_defs {
+   router_id k8s
+}
+
+vrrp_script check_haproxy {
+    script &quot;/bin/bash -c 'if [[ $(netstat -nlp | grep 16443) ]]; then exit 0; else exit 1; fi'&quot;
+    interval 3
+    weight -2
+    fall 10
+    rise 2
+}
+
+vrrp_instance VI_1 {
+    state MASTER 
+    interface ens33 
+    virtual_router_id 51
+    priority 250
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass ceb1b3ec013d66163d6ab
+    }
+    virtual_ipaddress {
+        192.168.40.19
+    }
+    track_script {
+        check_haproxy
+    }
+
+}
+
+EOF
+</code></pre>
+<pre><code>cat &lt;&lt;EOF &gt; /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+
+global_defs {
+   router_id k8s
+}
+
+vrrp_script check_haproxy {
+    script &quot;/bin/bash -c 'if [[ $(netstat -nlp | grep 16443) ]]; then exit 0; else exit 1; fi'&quot;
+    interval 3
+    weight -2
+    fall 10
+    rise 2
+}
+
+vrrp_instance VI_1 {
+    state BACKUP 
+    interface ens33 
+    virtual_router_id 51
+    priority 150
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass ceb1b3ec013d66163d6ab
+    }
+    virtual_ipaddress {
+        192.168.40.19
+    }
+    track_script {
+        check_haproxy
+    }
+
+}
+
+EOF
+</code></pre>
+<pre><code>cat &lt;&lt;EOF &gt; /etc/keepalived/keepalived.conf
+! Configuration File for keepalived
+
+global_defs {
+   router_id k8s
+}
+
+vrrp_script check_haproxy {
+    script &quot;/bin/bash -c 'if [[ $(netstat -nlp | grep 16443) ]]; then exit 0; else exit 1; fi'&quot;
+    interval 3
+    weight -2
+    fall 10
+    rise 2
+}
+
+vrrp_instance VI_1 {
+    state BACKUP 
+    interface ens33 
+    virtual_router_id 51
+    priority 200
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass ceb1b3ec013d66163d6ab
+    }
+    virtual_ipaddress {
+        192.168.40.19
+    }
+    track_script {
+        check_haproxy
+    }
+
+}
+
+EOF
+</code></pre>
+<blockquote>
+<ul>
+<li>vrrp_script 用于检测 haproxy 是否正常。如果本机的 haproxy 挂掉，即使 keepalived 劫持vip，也无法将流量负载到 apiserver。</li>
+<li>我所查阅的网络教程全部为检测进程, 类似 killall -0 haproxy。这种方式用在主机部署上可以，但容器部署时，在 keepalived 容器中无法知道另一个容器 haproxy 的活跃情况，因此我在此处通过检测端口号来判断 haproxy 的健康状况。</li>
+<li>weight 可正可负。为正时检测成功 +weight，相当与节点检测失败时本身 priority 不变，但其他检测成功节点 priority 增加。为负时检测失败本身 priority 减少。</li>
+<li>另外很多文章中没有强调 nopreempt 参数，意为不可抢占，此时 master 节点失败后，backup 节点也不能接管 vip，因此我将此配置删去</li>
+</ul>
+</blockquote>
+<h4 id="13-配置haproxy">1.3 配置haproxy</h4>
+<pre><code class="language-shell">cat &lt;&lt;EOF &gt; /etc/haproxy/haproxy.cfg
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    # to have these messages end up in /var/log/haproxy.log you will
+    # need to:
+    # 1) configure syslog to accept network log events.  This is done
+    #    by adding the '-r' option to the SYSLOGD_OPTIONS in
+    #    /etc/sysconfig/syslog
+    # 2) configure local2 events to go to the /var/log/haproxy.log
+    #   file. A line like the following can be added to
+    #   /etc/sysconfig/syslog
+    #
+    #    local2.*                       /var/log/haproxy.log
+    #
+    log         127.0.0.1 local0
+    
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon 
+       
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------  
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+#---------------------------------------------------------------------
+# kubernetes apiserver frontend which proxys to the backends
+#--------------------------------------------------------------------- 
+frontend kubernetes-apiserver
+    mode                 tcp
+    bind                 *:16443
+    option               tcplog
+    default_backend      kubernetes-apiserver    
+#---------------------------------------------------------------------
+# round robin balancing between the various backends
+#---------------------------------------------------------------------
+backend kubernetes-apiserver
+    mode        tcp
+    balance     roundrobin
+    server      gk8s-master   192.168.40.20:6443 check
+    server      gk8s-master2   192.168.40.21:6443 check
+    server      gk8s-master3   192.168.40.22:6443 check
+#---------------------------------------------------------------------
+# collection haproxy statistics message
+#---------------------------------------------------------------------
+listen stats
+    bind                 *:1080
+    stats auth           admin:awesomePassword
+    stats refresh        5s
+    stats realm          HAProxy\ Statistics
+    stats uri            /admin?stats
+    
+EOF
+</code></pre>
+<p>设置开机启动</p>
+<pre><code>systemctl enable haproxy &amp;&amp; systemctl start haproxy 
+systemctl enable keepalived &amp;&amp; systemctl start keepalived 
+</code></pre>
+<h3 id="2安装kubeadm-kubelet-kubectl">2.安装kubeadm、kubelet、kubectl</h3>
+<h4 id="1配置文件修改">1.配置文件修改</h4>
+<pre><code class="language-shell">cat &lt;&lt;EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+</code></pre>
+<h4 id="2安装启用">2.安装启用</h4>
+<pre><code class="language-shell">sudo yum install -y kubelet-1.24.1 kubeadm-1.24.1 kubectl-1.24.1 --disableexcludes=kubernetes 
+sudo systemctl enable kubelet &amp;&amp; systemctl start kubelet
+</code></pre>
+<h4 id="3修改kubelet的配置文件">3.修改kubelet的配置文件</h4>
+<p>先查看配置文件位置</p>
+<pre><code class="language-shell">systemctl status kubelet
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1653818855680.png" alt="" loading="lazy"></figure>
+<pre><code class="language-shell">vi /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+</code></pre>
+<p>并添加以下内容(使用和docker相同的cgroup-driver)。</p>
+<pre><code class="language-shell">Environment=&quot;KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd&quot;
+</code></pre>
+<h4 id="4重启kubelet">4.重启kubelet</h4>
+<pre><code class="language-shell">systemctl daemon-reload &amp;&amp; systemctl restart kubelet
+</code></pre>
+<h3 id="3获取k8s镜像可忽略">3.获取K8S镜像（可忽略）</h3>
+<h4 id="1获取镜像列表">1.获取镜像列表</h4>
+<p><strong>使用阿里云镜像仓库下载（国内环境该命令可不执行，下步骤kubeadm init --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers已经默认为国内环境）</strong></p>
+<p>由于官方镜像地址被墙，所以我们需要首先获取所需镜像以及它们的版本。然后从国内镜像站获取。</p>
+<pre><code class="language-bash">kubeadm config images list
+</code></pre>
+<p>获取镜像列表后可以通过下面的脚本从阿里云获取：</p>
+<pre><code class="language-shell">vi /usr/local/k8s/k8s-images.sh
+</code></pre>
+<blockquote>
+<p>下面的镜像应该去除&quot;k8s.gcr.io/&quot;的前缀，版本换成上面获取到的版本</p>
+</blockquote>
+<pre><code class="language-bash">images=(  
+    kube-apiserver:v1.24.1
+    kube-controller-manager:v1.24.1
+    kube-scheduler:v1.24.1
+    kube-proxy:v1.24.1
+    pause:3.7
+    etcd:3.5.3-0
+    coredns:v1.8.6
+)
+
+for imageName in ${images[@]} ; do
+    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName
+    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName k8s.gcr.io/$imageName
+    docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName
+done
+</code></pre>
+<h4 id="2赋权执行">2.赋权执行</h4>
+<pre><code class="language-shell">chmod +x k8s-images.sh &amp;&amp; ./k8s-images.sh
+</code></pre>
+<p><strong>以上操作在所有机器执行</strong></p>
+<h3 id="4初始化环境master操作">4.初始化环境（master操作）</h3>
+<h4 id="1安装镜像">1.安装镜像</h4>
+<p><strong>采用模板配置文件加载</strong></p>
+<pre><code class="language-shell">kubeadm config print init-defaults  &gt; kubeadm-config.yaml
+</code></pre>
+<pre><code class="language-yaml"># 模板随版本更新
+[root@master1 ~]# cat kubeadm-config.yaml 
+apiVersion: kubeadm.k8s.io/v1beta2
+bootstrapTokens:
+- groups:
+  - system:bootstrappers:kubeadm:default-node-token
+  token: abcdef.0123456789abcdef
+  ttl: 24h0m0s
+  usages:
+  - signing
+  - authentication
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: 192.168.40.131    # 本机IP
+  bindPort: 6443
+nodeRegistration:
+  criSocket: unix:///var/run/cri-docker.sock  # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  #criSocket: unix:///run/containerd/containerd.sock      # 此处千万不要忘记修改，如果不修改等于没有替换。(此处已经更改完了)
+  name: master1        # 本主机名
+  taints:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+---
+apiServer:
+  certSANs:
+    - k8s-master-01
+    - k8s-master-02
+    - k8s-master-03
+    - master.k8s.io
+    - 192.168.40.19
+    - 192.168.40.20
+    - 192.168.40.21
+    - 192.168.40.22
+    - 127.0.0.1
+  extraArgs:
+    authorization-mode: Node,RBAC
+  timeoutForControlPlane: 4m0s
+apiVersion: kubeadm.k8s.io/v1beta2
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controlPlaneEndpoint: &quot;192.168.40.19:16443&quot;      # 虚拟IP和haproxy端口
+controllerManager: {}
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+imageRepository: registry.aliyuncs.com/google_containers    # 镜像仓库源要根据自己实际情况修改
+kind: ClusterConfiguration
+kubernetesVersion: v1.24.1     # k8s版本
+networking:
+  dnsDomain: cluster.local
+  podSubnet: &quot;10.244.0.0/16&quot;   #设置网段，和下面网络插件对应
+  serviceSubnet: 10.96.0.0/12
+scheduler: {}
+ 
+---
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+featureGates:
+  SupportIPVSProxyMode: true
+mode: ipvs
+</code></pre>
+<h4 id="2查看kubeadm版本修改命令参数">2.查看kubeadm版本，修改命令参数</h4>
+<pre><code class="language-shell">kubeadm version
+</code></pre>
+<p>这个就很简单了，只需要简单的一个命令：</p>
+<pre><code class="language-bash">#直接使用已经下载好的镜像
+kubeadm init --kubernetes-version=v1.24.1 --control-plane-endpoint &quot;192.168.40.19:16443&quot; --apiserver-advertise-address=192.168.40.20 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap  --cri-socket unix:///var/run/cri-docker.sock | tee kubeadm-init.log
+#或者采用aliyuncs镜像下载
+kubeadm init --kubernetes-version=v1.24.1 --control-plane-endpoint &quot;192.168.40.19:16443&quot; --apiserver-advertise-address=192.168.40.20 --image-repository  registry.aliyuncs.com/google_containers  --service-cidr=10.1.0.0/16 --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/cri-docker.sock| tee kubeadm-init.log
+#使用上面系统生成配置文件加载
+kubeadm init --config kubeadm-config.yaml
+</code></pre>
+<h4 id="3初始化命令说明">3.初始化命令说明：</h4>
+<blockquote>
+<p>虚拟ip节点端口号</p>
+</blockquote>
+<pre><code class="language-bash">--control-plane-endpoint
+</code></pre>
+<blockquote>
+<p>指明用 Master 的哪个 interface 与 Cluster 的其他节点通信。如果 Master 有多个 interface，建议明确指定，如果不指定，kubeadm 会自动选择有默认网关的 interface。</p>
+</blockquote>
+<pre><code class="language-bash">--apiserver-advertise-address
+</code></pre>
+<blockquote>
+<p>指定 Pod 网络的范围。Kubernetes 支持多种网络方案，而且不同网络方案对 --pod-network-cidr 有自己的要求，这里设置为 10.244.0.0/16 是因为我们将使用 flannel 网络方案，必须设置成这个 CIDR。</p>
+</blockquote>
+<pre><code class="language-bash">--pod-network-cidr
+</code></pre>
+<blockquote>
+<p>Kubenetes默认Registries地址是 k8s.gcr.io，在国内并不能访问 gcr.io，在1.19.3版本中我们可以增加–image-repository参数，默认值是 k8s.gcr.io，将其指定为阿里云镜像地址：registry.aliyuncs.com/google_containers。</p>
+</blockquote>
+<pre><code class="language-bash">--image-repository
+</code></pre>
+<blockquote>
+<p>关闭版本探测，因为它的默认值是stable-1，会导致从https://dl.k8s.io/release/stable-1.txt下载最新的版本号，我们可以将其指定为固定版本（最新版：v1.24.1）来跳过网络请求。</p>
+</blockquote>
+<pre><code class="language-bash">--kubernetes-version=v1.24.1 
+</code></pre>
+<blockquote>
+<p>指定启动时使用cri-docker调用docker</p>
+</blockquote>
+<pre><code class="language-shell">--cri-socket unix:///var/run/cri-docker.sock 
+</code></pre>
+<h4 id="4错误启动重置">4.错误启动重置</h4>
+<pre><code class="language-shell"># 重置 如果有需要
+kubeadm reset --cri-socket unix:///var/run/cri-docker.sock
+</code></pre>
+<h4 id="5初始化成功后为顺利使用kubectl执行以下命令">5.初始化成功后，为顺利使用kubectl，执行以下命令：</h4>
+<pre><code class="language-shell">mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<h4 id="6添加其他主节点">6.添加其他主节点</h4>
+<h5 id="1复制密钥及相关文件">1.复制密钥及相关文件</h5>
+<pre><code class="language-shell">ssh root@192.168.40.21 mkdir -p /etc/kubernetes/pki/etcd
+scp /etc/kubernetes/admin.conf root@192.168.40.21:/etc/kubernetes 
+scp /etc/kubernetes/pki/{ca.*,sa.*,front-proxy-ca.*}root@192.168.40.21:/etc/kubernetes/pki
+scp /etc/kubernetes/pki/etcd/ca.* root@192.168.40.21:/etc/kubernetes/pki/etcd
+</code></pre>
+<pre><code class="language-shell">ssh root@192.168.40.22 mkdir -p /etc/kubernetes/pki/etcd
+scp /etc/kubernetes/admin.conf root@192.168.40.22:/etc/kubernetes 
+scp /etc/kubernetes/pki/{ca.*,sa.*,front-proxy-ca.*} root@192.168.40.22:/etc/kubernetes/pki
+scp /etc/kubernetes/pki/etcd/ca.* root@192.168.40.22:/etc/kubernetes/pki/etcd
+</code></pre>
+<h5 id="2添加节点">2.添加节点</h5>
+<pre><code class="language-shell">kubeadm join 192.168.40.19:16443 --token pqir66.66fy6pexw3kprt2b --discovery-token-ca-cert-hash sha256:cd4c42e956fdc7e0ad48c990484c22cfd43da63cb3f3887bedc481e7f33a0be1 --control-plane --cri-socket unix:///var/run/cri-docker.sock 
+</code></pre>
+<h4 id="7执行kubectl-get-nodes查看master节点状态">7.执行kubectl get nodes，查看master节点状态：</h4>
+<pre><code class="language-shell">kubectl get node
+</code></pre>
+<h4 id="8通过如下命令查看kubelet状态">8.通过如下命令查看kubelet状态：</h4>
+<pre><code class="language-bash">journalctl -xef -u kubelet -n 20
+</code></pre>
+<p>提示未安装cni 网络插件。</p>
+<h3 id="51安装flannel网络插件cni">5.1安装flannel网络插件(CNI)</h3>
+<p>master执行以下命令安装flannel即可：</p>
+<pre><code class="language-shell">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+</code></pre>
+<p>kube-flannel.yaml文件中的net-conf.json-&gt;Network地址默认为命令中–pod-network-cidr=值相同</p>
+<p><strong>输入命令kubectl get pods -n kube-system,等待所有插件为running状态</strong>。</p>
+<p><strong>待所有pod status为Running的时候，再次执行kubectl get nodes：</strong></p>
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
+NAME         STATUS   ROLES    AGE   VERSION
+k8s-master   Ready    master   16m   v1.24.1
+</code></pre>
+<p><strong>如上所示，master状态变为，表明Master节点部署成功！</strong></p>
+<h3 id="52安装calico网络功能更完善">5.2安装calico网络(功能更完善)</h3>
+<h4 id="1在master上下载配置calico网络的yaml">1.在master上下载配置calico网络的yaml。</h4>
+<pre><code class="language-shell">kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+</code></pre>
+<h4 id="2提前下载所需要的镜像">2.提前下载所需要的镜像。</h4>
+<pre><code class="language-shell"># 查看此文件用哪些镜像：
+[root@k8s-master ~]# grep image calico.yaml
+image: docker.io/calico/cni:v3.23.1
+image: docker.io/calico/node:v3.23.1
+image: docker.io/calico/kube-controllers:v3.23.1
+</code></pre>
+<h4 id="3安装calico网络">3.安装calico网络。</h4>
+<p>在master上执行如下命令：</p>
+<pre><code class="language-shell">kubectl apply -f calico.yaml
+</code></pre>
+<h4 id="5验证结果">5.验证结果。</h4>
+<p>再次在master上运行命令 kubectl get nodes查看运行结果：</p>
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+master01   Ready    control-plane,master   21h   v1.23.4
+worker01   Ready    control-plane,master   16h   v1.23.4
+worker02   Ready    control-plane,master   16h   v1.23.4
+</code></pre>
+<h3 id="20部署k8s-node1-k8s-node2-k8s-node3集群">20.部署k8s-node1、k8s-node2、k8s-node3集群</h3>
+<p><strong>1、在k8s-node1、k8s-node2、k8s-node3等三台虚拟机中重复执行上面的步骤，安装好docker、kubelet、kubectl、kubeadm。</strong></p>
+<h4 id="1node节点加入集群">1.node节点加入集群</h4>
+<p>在上面第初始化master节点成功后，输出了下面的kubeadm join命令：</p>
+<pre><code class="language-shell">kubeadm join 192.168.40.131:6443 --token zj0u08.ge77y7uv76flqgdk --discovery-token-ca-cert-hash sha256:7cd23cec6afb192b2d34c5c719b378082a6315a9d91a22d91b83066c870d4db5 --cri-socket unix:///var/run/cri-docker.sock 
+</code></pre>
+<p>该命令就是node加入集群的命令，分别在k8s-node1、k8s-node2上执行该命令加入集群。</p>
+<p>如果忘记该命令，可以通过以下命令重新生成：</p>
+<pre><code class="language-shell">kubeadm token create --print-join-command
+</code></pre>
+<h4 id="2在master节点执行下面命令查看集群状态">2.在master节点执行下面命令查看集群状态：</h4>
+<pre><code class="language-shell">kubectl get nodes
+</code></pre>
+<pre><code class="language-shell">[root@k8s-master ~]# kubectl get node
+NAME         STATUS   ROLES    AGE     VERSION
+k8s-master   Ready    master   24m     v1.24.1
+k8s-master2  Ready    master   24m     v1.24.1
+k8s-master3  Ready    master   24m     v1.24.1
+k8s-node1    Ready    &lt;none&gt;   5m50s   v1.24.1
+k8s-node2    Ready    &lt;none&gt;   5m21s   v1.24.1
+k8s-node3    Ready    &lt;none&gt;   5m21s   v1.24.1
+</code></pre>
+<p>如上所示，所有节点都为ready，集群搭建成功。</p>
+<h2 id="卸载集群命令">卸载集群命令</h2>
+<pre><code class="language-shell">#建议所有服务器都执行
+#!/bin/bash
+kubeadm reset -f
+modprobe -r ipip
+lsmod
+rm -rf ~/.kube/
+rm -rf /etc/kubernetes/
+rm -rf /etc/systemd/system/kubelet.service.d
+rm -rf /etc/systemd/system/kubelet.service
+rm -rf /usr/bin/kube*
+rm -rf /etc/cni
+rm -rf /opt/cni
+rm -rf /var/lib/etcd
+rm -rf /var/etcd
+yum -y remove kubeadm* kubectl* kubelet* docker*
+reboot
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%95%B4%E4%BD%93%E7%8E%AF%E5%A2%83">整体环境</a>
+<ul>
+<li><a href="#1%E5%AE%89%E8%A3%85keepalived-%E5%92%8C-haproxy">1.安装keepalived 和 haproxy</a>
+<ul>
+<li><a href="#11%E5%AE%89%E8%A3%85keepalived%E5%92%8C-haproxy">1.1安装keepalived和 haproxy</a></li>
+<li><a href="#12-%E9%85%8D%E7%BD%AE-keepalived">1.2 配置 keepalived</a></li>
+<li><a href="#13-%E9%85%8D%E7%BD%AEhaproxy">1.3 配置haproxy</a></li>
+</ul>
+</li>
+<li><a href="#2%E5%AE%89%E8%A3%85kubeadm-kubelet-kubectl">2.安装kubeadm、kubelet、kubectl</a>
+<ul>
+<li><a href="#1%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BF%AE%E6%94%B9">1.配置文件修改</a></li>
+<li><a href="#2%E5%AE%89%E8%A3%85%E5%90%AF%E7%94%A8">2.安装启用</a></li>
+<li><a href="#3%E4%BF%AE%E6%94%B9kubelet%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">3.修改kubelet的配置文件</a></li>
+<li><a href="#4%E9%87%8D%E5%90%AFkubelet">4.重启kubelet</a></li>
+</ul>
+</li>
+<li><a href="#3%E8%8E%B7%E5%8F%96k8s%E9%95%9C%E5%83%8F%E5%8F%AF%E5%BF%BD%E7%95%A5">3.获取K8S镜像（可忽略）</a>
+<ul>
+<li><a href="#1%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F%E5%88%97%E8%A1%A8">1.获取镜像列表</a></li>
+<li><a href="#2%E8%B5%8B%E6%9D%83%E6%89%A7%E8%A1%8C">2.赋权执行</a></li>
+</ul>
+</li>
+<li><a href="#4%E5%88%9D%E5%A7%8B%E5%8C%96%E7%8E%AF%E5%A2%83master%E6%93%8D%E4%BD%9C">4.初始化环境（master操作）</a>
+<ul>
+<li><a href="#1%E5%AE%89%E8%A3%85%E9%95%9C%E5%83%8F">1.安装镜像</a></li>
+<li><a href="#2%E6%9F%A5%E7%9C%8Bkubeadm%E7%89%88%E6%9C%AC%E4%BF%AE%E6%94%B9%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0">2.查看kubeadm版本，修改命令参数</a></li>
+<li><a href="#3%E5%88%9D%E5%A7%8B%E5%8C%96%E5%91%BD%E4%BB%A4%E8%AF%B4%E6%98%8E">3.初始化命令说明：</a></li>
+<li><a href="#4%E9%94%99%E8%AF%AF%E5%90%AF%E5%8A%A8%E9%87%8D%E7%BD%AE">4.错误启动重置</a></li>
+<li><a href="#5%E5%88%9D%E5%A7%8B%E5%8C%96%E6%88%90%E5%8A%9F%E5%90%8E%E4%B8%BA%E9%A1%BA%E5%88%A9%E4%BD%BF%E7%94%A8kubectl%E6%89%A7%E8%A1%8C%E4%BB%A5%E4%B8%8B%E5%91%BD%E4%BB%A4">5.初始化成功后，为顺利使用kubectl，执行以下命令：</a></li>
+<li><a href="#6%E6%B7%BB%E5%8A%A0%E5%85%B6%E4%BB%96%E4%B8%BB%E8%8A%82%E7%82%B9">6.添加其他主节点</a>
+<ul>
+<li><a href="#1%E5%A4%8D%E5%88%B6%E5%AF%86%E9%92%A5%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%96%87%E4%BB%B6">1.复制密钥及相关文件</a></li>
+<li><a href="#2%E6%B7%BB%E5%8A%A0%E8%8A%82%E7%82%B9">2.添加节点</a></li>
+</ul>
+</li>
+<li><a href="#7%E6%89%A7%E8%A1%8Ckubectl-get-nodes%E6%9F%A5%E7%9C%8Bmaster%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81">7.执行kubectl get nodes，查看master节点状态：</a></li>
+<li><a href="#8%E9%80%9A%E8%BF%87%E5%A6%82%E4%B8%8B%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8Bkubelet%E7%8A%B6%E6%80%81">8.通过如下命令查看kubelet状态：</a></li>
+</ul>
+</li>
+<li><a href="#51%E5%AE%89%E8%A3%85flannel%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6cni">5.1安装flannel网络插件(CNI)</a></li>
+<li><a href="#52%E5%AE%89%E8%A3%85calico%E7%BD%91%E7%BB%9C%E5%8A%9F%E8%83%BD%E6%9B%B4%E5%AE%8C%E5%96%84">5.2安装calico网络(功能更完善)</a>
+<ul>
+<li><a href="#1%E5%9C%A8master%E4%B8%8A%E4%B8%8B%E8%BD%BD%E9%85%8D%E7%BD%AEcalico%E7%BD%91%E7%BB%9C%E7%9A%84yaml">1.在master上下载配置calico网络的yaml。</a></li>
+<li><a href="#2%E6%8F%90%E5%89%8D%E4%B8%8B%E8%BD%BD%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E9%95%9C%E5%83%8F">2.提前下载所需要的镜像。</a></li>
+<li><a href="#3%E5%AE%89%E8%A3%85calico%E7%BD%91%E7%BB%9C">3.安装calico网络。</a></li>
+<li><a href="#5%E9%AA%8C%E8%AF%81%E7%BB%93%E6%9E%9C">5.验证结果。</a></li>
+</ul>
+</li>
+<li><a href="#20%E9%83%A8%E7%BD%B2k8s-node1-k8s-node2-k8s-node3%E9%9B%86%E7%BE%A4">20.部署k8s-node1、k8s-node2、k8s-node3集群</a>
+<ul>
+<li><a href="#1node%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4">1.node节点加入集群</a></li>
+<li><a href="#2%E5%9C%A8master%E8%8A%82%E7%82%B9%E6%89%A7%E8%A1%8C%E4%B8%8B%E9%9D%A2%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81">2.在master节点执行下面命令查看集群状态：</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%8D%B8%E8%BD%BD%E9%9B%86%E7%BE%A4%E5%91%BD%E4%BB%A4">卸载集群命令</a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/HhauOMn26/">
+                  <span class="post-title">
+                    k8s资源操作&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
