@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-06-11T13:55:41.166Z</updated>
+    <updated>2022-06-18T04:44:45.887Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -10,6 +10,318 @@
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, tianxia</rights>
+    <entry>
+        <title type="html"><![CDATA[前端简单部署]]></title>
+        <id>https://tinaxiawuhao.github.io/post/KEyilqyTn/</id>
+        <link href="https://tinaxiawuhao.github.io/post/KEyilqyTn/">
+        </link>
+        <updated>2022-06-18T03:54:16.000Z</updated>
+        <content type="html"><![CDATA[<p>部署前端项目，将打包后的文件dist放入nginx，基于nginx的基础镜像创建前端项目的docker镜像即可</p>
+<h3 id="一-前端项目的文件准备">一、前端项目的文件准备</h3>
+<h4 id="1-文件准备">1、文件准备：</h4>
+<pre><code class="language-shell">1,dockerfile(docker部署镜像打包文件)
+2,dist(待部署前端文件夹)
+3,default.conf
+</code></pre>
+<h4 id="2-dockerfile文件">2、Dockerfile文件：</h4>
+<pre><code class="language-shell">FROM nginx
+RUN rm /etc/nginx/conf.d/default.conf
+ADD default.conf /etc/nginx/conf.d/
+COPY dist/ /usr/share/nginx/html/
+EXPOSE 80
+</code></pre>
+<h4 id="3-defaultconf">3、default.conf：</h4>
+<pre><code class="language-shell">server {
+    listen       80;
+    server_name  localhost; # 修改为docker服务宿主机的ip
+  
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html =404;
+    }
+  
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+    
+    location /api/ {
+        proxy_pass http://后端服务名:IP端口;
+    }
+}
+</code></pre>
+<hr>
+<h3 id="二-vue项目的自动化部署">二、vue项目的自动化部署</h3>
+<h4 id="1-安装jenkins">1、安装Jenkins</h4>
+<blockquote>
+<p>Jenkins的安装：https://tinaxiawuhao.github.io/post/MN_sOyfo3/</p>
+</blockquote>
+<h4 id="2-安装nodenpmyarn">2、安装node/npm/yarn</h4>
+<blockquote>
+<p>安装node与node/npm/yarn：https://tinaxiawuhao.github.io/post/XMNtsw8ig/</p>
+</blockquote>
+<h4 id="3-jenkins中配置harbor仓库的密钥">3、Jenkins中配置harbor仓库的密钥</h4>
+<p>我们需要通过jenkinsfile文件推送docker镜像到指定的harbor仓库，需要在jenkins中配置仓库登录凭据</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1655524689375.png" alt="" loading="lazy"></figure>
+<h4 id="4-编写jenkinsfile">4、编写Jenkinsfile</h4>
+<pre><code>pipeline{
+    agent any
+ 
+    environment {
+        WS = &quot;${WORKSPACE}&quot;
+        HARBOR_URL=&quot;harbor的url&quot;
+        HARBOR_ID=&quot;harbor密钥&quot;
+    }
+ 
+    stages {
+        stage(&quot;环境检查&quot;){
+            steps {
+                sh 'docker version'
+                sh 'npm -v'
+                sh 'yarn -v'
+            }
+        }
+        stage('yarn安装与编译') {
+            steps {
+                sh &quot;echo ${WS} &amp;&amp; ls -alh&quot;
+                sh &quot;cd ${WS} &amp;&amp; yarn install&quot;
+                sh &quot;cd ${WS} &amp;&amp; yarn build:hd&quot;
+            }
+        }
+        stage('docker镜像与推送') {
+            steps {
+                sh &quot;cd ${WS} &amp;&amp; docker build -f Dockerfile -t ${HARBOR_URL}/test/web:latest .&quot;
+                withCredentials([usernamePassword(credentialsId: &quot;${HARBOR_ID}&quot;, passwordVariable: 'password', usernameVariable: 'username')]) {
+                    sh &quot;docker login -u ${username} -p ${password} ${HARBOR_URL}&quot;
+                    sh &quot;docker push ${HARBOR_URL}/test/web:latest&quot;
+                }
+            }
+        }
+         
+    }
+     post {
+        success {
+            echo 'success!'
+        }
+        failure {
+            echo 'failed...'
+        }
+    }
+}
+</code></pre>
+<p><strong>harbor密钥获取</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1655524703581.png" alt="" loading="lazy"></figure>
+<p>点进入刚才添加的凭证获取凭证</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1655524712540.png" alt="" loading="lazy"></figure>
+<p>最后创建一个pipeline项目（可选择Pipeline或者多分支流水线），pipeline脚本定义选择Pipeline script from SCM，选择git项目</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1655524732059.png" alt="" loading="lazy"></figure>
+<p>修改关注分支</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1655524738660.png" alt="" loading="lazy"></figure>
+<h3 id="三-模仿后端实现环境变量注入">三、模仿后端实现环境变量注入</h3>
+<p><strong>借助Nginx1.19以后docker镜像的template新功能，可以实现配置文件环境变量的动态注入</strong></p>
+<h4 id="1-准备-defaultconftemplate">1、准备 default.conf.template：</h4>
+<pre><code class="language-shell">server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost; # 修改为docker服务宿主机的ip
+ 
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        ssi on;
+        try_files $uri $uri/ /index.html;
+        if ($request_filename ~* ^.*?\.(eot)|(ttf)|(woff)|(svg)|(otf)$) {
+            add_header Access-Control-Allow-Origin *;
+        }
+    }
+ 
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+ 
+    location /api/ {
+        ssi on;  # 借助ssi
+        proxy_pass ${BACKEND_SERVICE_URL};
+    }
+}
+</code></pre>
+<h4 id="2-编写dockerfile文件">2、编写Dockerfile文件：</h4>
+<pre><code class="language-shell">FROM nginx:1.21
+COPY dist /usr/share/nginx/html
+# 注意和上面文件对比位置的改变
+COPY default.conf.template /etc/nginx/templates/
+EXPOSE 80
+</code></pre>
+<h4 id="3-设置环境变量">3、设置环境变量</h4>
+<p>部署docker时候，设置环境变量-e BACKEND_SERVICE_URL= http://ip:port  后，实际的nginx配置就变为了：</p>
+<blockquote>
+<p>$BACKEND_SERVICE_URL = http://ip:port #后端服务的地址；</p>
+</blockquote>
+<pre><code class="language-shell">server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost; # 修改为docker服务宿主机的ip
+ 
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        ssi on;
+        try_files $uri $uri/ /index.html;
+        if ($request_filename ~* ^.*?\.(eot)|(ttf)|(woff)|(svg)|(otf)$) {
+            add_header Access-Control-Allow-Origin *;
+        }
+    }
+ 
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+ 
+    location /api/ {
+        ssi on;  # 借助ssi
+        proxy_pass  http://ip:port;
+    }
+}
+</code></pre>
+<p>切换服务就可以修改环境变量，切换不同的服务后端</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[gitlab提交代码自动触发Jenkins构建操作]]></title>
+        <id>https://tinaxiawuhao.github.io/post/ymh_BwIfn/</id>
+        <link href="https://tinaxiawuhao.github.io/post/ymh_BwIfn/">
+        </link>
+        <updated>2022-06-16T04:27:16.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="jenkins配置">Jenkins配置</h3>
+<h4 id="插件安装">插件安装</h4>
+<p>系统管理=====》插件管理=====》可选插件=====》搜索要按照的插件(gitlab hook-plugin和gitlab-plugin)<br>
+如果找不到上面两个插件，安装gitlab和gitlab hook即可</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1655527394729.gif" alt="" loading="lazy"></figure>
+<h4 id="创建测试项目">创建测试项目</h4>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1655527415958.gif" alt="" loading="lazy"></figure>
+<h4 id="gitlab配置">gitlab配置</h4>
+<p>打开要关联Jenkins项目的设置选项找到webhooks选项，把Jenkins中的项目触发器url以及Secret token配置到gitlab的webhooks选项中</p>
+<p>URL</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1655527426929.png" alt="" loading="lazy"></figure>
+<p>Secret token</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1655527439844.gif" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1655527449909.gif" alt="" loading="lazy"></figure>
+<h4 id="验证效果">验证效果</h4>
+<p>我们测试下点击刚刚关联的构建动作，Jenkins会不会自动构建<br>
+当出现请求状态码200的时候证明我们的关联动作已经执行</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1655527459975.png" alt="" loading="lazy"></figure>
+<p>下面我们去到Jenkins中看下是否有构建历史</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1655527466575.png" alt="" loading="lazy"></figure>
+<p>再试下手动push代码到gitlab会不会触发Jenkins的构建任务<br>
+手动去到服务器上向远程gitlab分支推送文件</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[linux安装node]]></title>
+        <id>https://tinaxiawuhao.github.io/post/XMNtsw8ig/</id>
+        <link href="https://tinaxiawuhao.github.io/post/XMNtsw8ig/">
+        </link>
+        <updated>2022-06-14T04:18:37.000Z</updated>
+        <content type="html"><![CDATA[<p>以当前node版本16.13.0为例，新建演示目录/usr/local/node</p>
+<h3 id="1-下载">1、下载</h3>
+<pre><code>wget https://nodejs.org/dist/v16.13.0/node-v16.13.0-linux-x64.tar.xz
+</code></pre>
+<h3 id="2-移动到指定目录">2、移动到指定目录</h3>
+<pre><code>mv node-v16.13.0-linux-x64.tar.xz  /usr/local/node
+</code></pre>
+<h3 id="3-解压">3、解压</h3>
+<pre><code>xz -d node-v16.13.0-linux-x64.tar.xz
+tar -xvf node-v16.13.0-linux-x64.tar
+</code></pre>
+<p>测试下：</p>
+<pre><code>/root/sdemo/node-v16.13.0-linux-x64/bin/node -v
+v16.13.0
+
+/root/sdemo/node-v16.13.0-linux-x64/bin/npm -v
+8.1.0
+</code></pre>
+<h3 id="4-设置软连接相当于windows设置环境变量">4、设置软连接，相当于windows设置环境变量</h3>
+<pre><code>ln -s /usr/local/node/node-v16.13.0-linux-x64/bin/node   /usr/bin/node
+ln -s /usr/local/node/node-v16.13.0-linux-x64/bin/npm   /usr/bin/npm
+</code></pre>
+<h3 id="5-安装yarn并设置yarn的软连">5、安装yarn,并设置yarn的软连</h3>
+<pre><code>npm install yarn -g
+ln -s /usr/local/node/node-v16.13.0-linux-x64/bin/yarn   /usr/bin/yarn
+</code></pre>
+<p>测试下：</p>
+<pre><code>yarn -v
+1.22.17
+</code></pre>
+<h3 id="6-安装cnpm">6、安装cnpm</h3>
+<pre><code>npm install -g cnpm --registry=https://registry.npm.taobao.org
+ln -s /usr/local/node/lib/node-v16.13.0-linux-x64/bin/cnpm  /usr/bin/cnpm
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[linux安装jenkins]]></title>
+        <id>https://tinaxiawuhao.github.io/post/MN_sOyfo3/</id>
+        <link href="https://tinaxiawuhao.github.io/post/MN_sOyfo3/">
+        </link>
+        <updated>2022-06-13T04:05:04.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="1-安装jdk">1、安装JDK</h3>
+<pre><code class="language-shell">yum install -y java
+</code></pre>
+<h3 id="2-安装jenkins">2、安装jenkins</h3>
+<p><strong>添加Jenkins库到yum库，Jenkins将从这里下载安装。</strong></p>
+<pre><code class="language-shell">wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+
+rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+
+yum install -y jenkins
+或
+yum install jenkins -y --nogpgcheck
+</code></pre>
+<h3 id="3-修改jenkins端口">3、修改jenkins端口</h3>
+<pre><code>[root@tools ~]# rpm -qa | grep jenkins
+jenkins-2.340-1.1.noarch
+</code></pre>
+<pre><code>[root@tools ~]# rpm -ql jenkins-2.340-1.1.noarch
+/etc/init.d/jenkins
+/etc/logrotate.d/jenkins
+/etc/sysconfig/jenkins
+/usr/bin/jenkins
+/usr/lib/systemd/system/jenkins.service
+/usr/sbin/rcjenkins
+/usr/share/java/jenkins.war
+/usr/share/jenkins
+/usr/share/jenkins/migrate
+/var/cache/jenkins
+/var/lib/jenkins
+/var/log/jenkins
+</code></pre>
+<pre><code>[root@tools ~]# vim /usr/lib/systemd/system/jenkins.service
+vi /etc/sysconfig/jenkins
+
+找到修改端口号：
+JENKINS_PORT=“9000” #此端口不冲突可以不修改
+</code></pre>
+<h3 id="4-启动jenkins">4、启动jenkins</h3>
+<pre><code>systemctl start jenkins.service
+</code></pre>
+<pre><code>[root@tools ~]# netstat -nultp
+</code></pre>
+<blockquote>
+<p>安装成功后Jenkins将作为一个守护进程随系统启动<br>
+系统会创建一个“jenkins”用户来允许这个服务，如果改变服务所有者，同时需要修改/var/log/jenkins, /var/lib/jenkins, 和/var/cache/jenkins的所有者<br>
+启动的时候将从/etc/sysconfig/jenkins获取配置参数<br>
+默认情况下，Jenkins运行在8080端口，在浏览器中直接访问该端进行服务配置<br>
+Jenkins的RPM仓库配置被加到/etc/yum.repos.d/jenkins.repo</p>
+</blockquote>
+<h3 id="5-打开jenkins">5、打开jenkins</h3>
+<p>在浏览器中访问 http://192.168.3.200:9000/<br>
+首次进入会要求输入初始密码</p>
+<p>初始密码在：/var/lib/jenkins/secrets/initialAdminPassword</p>
+<p>重置密码：admin/admin</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[k8s高可用集群搭建]]></title>
         <id>https://tinaxiawuhao.github.io/post/McgbXRFnx/</id>
@@ -459,7 +771,7 @@ master01   Ready    control-plane,master   21h   v1.23.4
 worker01   Ready    control-plane,master   16h   v1.23.4
 worker02   Ready    control-plane,master   16h   v1.23.4
 </code></pre>
-<h3 id="20部署k8s-node1-k8s-node2-k8s-node3集群">20.部署k8s-node1、k8s-node2、k8s-node3集群</h3>
+<h3 id="6部署k8s-node1-k8s-node2-k8s-node3集群">6.部署k8s-node1、k8s-node2、k8s-node3集群</h3>
 <p><strong>1、在k8s-node1、k8s-node2、k8s-node3等三台虚拟机中重复执行上面的步骤，安装好docker、kubelet、kubectl、kubeadm。</strong></p>
 <h4 id="1node节点加入集群">1.node节点加入集群</h4>
 <p>在上面第初始化master节点成功后，输出了下面的kubeadm join命令：</p>
@@ -30327,996 +30639,6 @@ PersonCrossTest(p);
 <p>只是在传递过程中：</p>
 <p>如果是对基本数据类型的数据进行操作，由于原始内容和副本都是存储实际值，并且是在不同的栈区，因此形参的操作，不影响原始内容。</p>
 <p>如果是对引用类型的数据进行操作，分两种情况，一种是形参和实参保持指向同一个对象地址，则形参的操作，会影响实参指向的对象的内容。一种是形参被改动指向新的对象地址（如重新赋值引用），则形参的操作，不会影响实参指向的对象的内容。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[附录 kafka常见面试问题汇总]]></title>
-        <id>https://tinaxiawuhao.github.io/post/aFuh1RRNc/</id>
-        <link href="https://tinaxiawuhao.github.io/post/aFuh1RRNc/">
-        </link>
-        <updated>2021-04-22T05:38:23.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="基础题目">基础题目</h2>
-<h3 id="1-apache-kafka-是什么">1、Apache Kafka 是什么?</h3>
-<p>Apach Kafka 是一款分布式流处理框架，用于实时构建流处理应用。它有一个核心 的功能广为人知，即作为企业级的消息引擎被广泛使用。</p>
-<p>你一定要先明确它的流处理框架地位，这样能给面试官留 下一个很专业的印象。</p>
-<h3 id="2-什么是消费者组">2、什么是消费者组?</h3>
-<p>消费者组是 Kafka 独有的概念，如果面试官问这 个，就说明他对此是有一定了解的。我先给出标准答案：<br>
-1、定义：即消费者组是 Kafka 提供的可扩展且具有容错性的消费者机制。<br>
-2、原理：在 Kafka 中，消费者组是一个由多个消费者实例 构成的组。多个实例共同订阅若干个主题，实现共同消费。同一个组下的每个实例都配置有 相同的组 ID，被分配不同的订阅分区。当某个实例挂掉的时候，其他实例会自动地承担起 它负责消费的分区。</p>
-<p>此时，又有一个小技巧给到你:消费者组的题目，能够帮你在某种程度上掌控下面的面试方向。</p>
-<h4 id="21消费者组的位移提交机制">2.1消费者组的位移提交机制</h4>
-<p>broker维护消费者的消费位移信息，老的版本存储在zk上，新版本存储在内部的topic里。本质上，位移信息消费者自己维护也可以，但是如果消费者挂了或者重启，对于某一个分区的消费位移不就丢失了吗？所以，还是需要提交到broker端做持久化的。</p>
-<h4 id="22消费者组与-broker-之间的交互">2.2消费者组与 Broker 之间的交互</h4>
-<ol>
-<li>
-<p>Kafka中消费者的消费方式</p>
-<p>consumer采用pull(拉)模式从broker中读取数据。 拉取模式也有不足，如果kafka没有数据，消费者可能会陷入循环中，一直返回空数据。针对这一点，kafka消费者在消费数据时会传入一个时长参数timeout，如果当前没有数据可供消费，consumer会等待一段时间后再返回，这段时长即为timeout</p>
-</li>
-<li>
-<p>Kafka的分区分配策略</p>
-<p>一个消费者组中有多个消费者，一个broker有多个分区，所有必然会涉及到分区分配问题，即确定哪一个分区由哪一个consumer来消费。kafka有两种分区分配策略：RoundRobin和Range</p>
-<p>1） RoundRobin</p>
-<p>按照消费者组划分，将消费者组作为一个整体，要求整个消费者组内的消费者订阅相同的主题，否则会导致错误的分配的问题。</p>
-<p>2） Range （默认）</p>
-<p>按照单个主题划分，可能导致消费者消费分区个数不对等的问题；</p>
-<p><strong>offset的维护</strong></p>
-<p>由于kafka可能出现故障，故障之后要恢复到上一次消费的位置，往下继续进行消费。因此consumer需要实时记录自己消费到了哪一个offset，从0.9版本开始，consumer默认将offset保存在kafka的内置topic中，该topic为_consumer_offsets（0.9版本前放在zookeeper中）</p>
-</li>
-</ol>
-<h3 id="3-在-kafka-中zookeeper-的作用是什么">3、在 Kafka 中，ZooKeeper 的作用是什么?</h3>
-<p>目前，Kafka 使用 ZooKeeper 存放集群元数据、成员管理、Controller 选举，以及其他一些管理类任务。之后，等 KIP-500 提案完成后，Kafka 将完全不再依赖 于 ZooKeeper。</p>
-<p>记住，<strong>一定要突出“目前”</strong>，以彰显你非常了解社区的演进计划。“存放元数据”是指主题 分区的所有数据都保存在 ZooKeeper 中，且以它保存的数据为权威，其他“人”都要与它 保持对齐。“成员管理”是指 Broker 节点的注册、注销以及属性变更，等 等。“Controller 选举”是指选举集群 Controller，而其他管理类任务包括但不限于主题 删除、参数配置等。</p>
-<p>不过，抛出 KIP-500 也可能是个双刃剑。碰到非常资深的面试官，他可能会进一步追问你 KIP-500 是怎么做的。一言以蔽之:<strong>KIP-500 思想，是使用社区自研的基于 Raft 的共识算法， 替代 ZooKeeper，实现 Controller 自选举</strong>。</p>
-<h3 id="4-解释下-kafka-中位移offset的作用">4、解释下 Kafka 中位移(offset)的作用</h3>
-<p>在 Kafka 中，每个 主题分区下的每条消息都被赋予了一个唯一的 ID 数值，用于标识它在分区中的位置。这个 ID 数值，就被称为位移，或者叫偏移量。一旦消息被写入到分区日志，它的位移值将不能 被修改。</p>
-<p>答完这些之后，你还可以把整个面试方向转移到你希望的地方。常见方法有以下 3 种:</p>
-<ol>
-<li>如果你深谙 Broker 底层日志写入的逻辑，可以强调下消息在日志中的存放格式;</li>
-<li>如果你明白位移值一旦被确定不能修改，可以强调下“Log Cleaner 组件都不能影响位 移值”这件事情;</li>
-<li>如果你对消费者的概念还算熟悉，可以再详细说说位移值和消费者位移值之间的区别。</li>
-</ol>
-<h3 id="5-partition的leader-replica和follower-replica的区别">5、Partition的Leader Replica和Follower Replica的区别</h3>
-<p>这道题表面上是考核你对 Leader 和 Follower 区别的理解，但很容易引申到 Kafka 的同步 机制上。因此，我建议你主动出击，一次性地把隐含的考点也答出来，也许能够暂时把面试 官“唬住”，并体现你的专业性。</p>
-<p>你可以这么回答:<strong>Kafka 副本当前分为领导者副本和追随者副本。只有 Leader 副本才能 对外提供读写服务，响应 Clients 端的请求。Follower 副本只是采用拉(PULL)的方 式，被动地同步 Leader 副本中的数据，并且在 Leader 副本所在的 Broker 宕机后，随时 准备应聘 Leader 副本。</strong></p>
-<p>通常来说，回答到这个程度，其实才只说了 60%，因此，我建议你再回答两个额外的加分 项。</p>
-<ul>
-<li><strong>强调 Follower 副本也能对外提供读服务</strong>。自 Kafka 2.4 版本开始，社区通过引入新的 Broker 端参数，允许 Follower 副本有限度地提供读服务。</li>
-<li><strong>强调 Leader 和 Follower 的消息序列在实际场景中不一致</strong>。很多原因都可能造成 Leader 和 Follower 保存的消息序列不一致，比如程序 Bug、网络问题等。这是很严重 的错误，必须要完全规避。你可以补充下，之前确保一致性的主要手段是高水位机制， 但高水位值无法保证 Leader 连续变更场景下的数据一致性，因此，社区引入了 Leader Epoch 机制，来修复高水位值的弊端。关于“Leader Epoch 机制”，国内的资料不是 很多，它的普及度远不如高水位，不妨大胆地把这个概念秀出来，力求惊艳一把。</li>
-</ul>
-<h2 id="炫技式题目">炫技式题目</h2>
-<h3 id="6-leo-lso-ar-isr-hw-都表示什么含义">6、LEO、LSO、AR、ISR、HW 都表示什么含义?</h3>
-<ul>
-<li><strong>LEO</strong>:Log End Offset。日志末端位移值或末端偏移量，表示日志下一条待插入消息的 位移值。举个例子，如果日志有 10 条消息，位移值从 0 开始，那么，第 10 条消息的位 移值就是 9。此时，LEO = 10。</li>
-<li><strong>LSO</strong>:Log Stable Offset。这是 Kafka 事务的概念。如果你没有使用到事务，那么这个 值不存在(其实也不是不存在，只是设置成一个无意义的值)。该值控制了事务型消费 者能够看到的消息范围。它经常与 Log Start Offset，即日志起始位移值相混淆，因为 有些人将后者缩写成 LSO，这是不对的。在 Kafka 中，LSO 就是指代 Log Stable Offset。</li>
-<li><strong>AR</strong>:Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。</li>
-<li><strong>ISR</strong>:In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，<strong>还有一个常见的面试题目是如何判断副本是否应该属于 ISR</strong>。目前的判断 依据是:<strong>Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值</strong>。如果超过了，副本就会被从 ISR 中移除。</li>
-<li><strong>HW</strong>:高水位值(High watermark)。这是控制消费者可读取消息范围的重要字段。一 个普通消费者只能“看到”Leader 副本上介于 Log Start Offset 和 HW(不含)之间的 所有消息。水位以上的消息是对消费者不可见的。关于 HW，问法有很多，我能想到的 最高级的问法，就是让你完整地梳理下 Follower 副本拉取 Leader 副本、执行同步机制 的详细步骤。这就是我们的第 20 道题的题目，一会儿我会给出答案和解析。</li>
-</ul>
-<h3 id="7kafka-的-isr-机制是什么">7，Kafka 的 ISR 机制是什么?</h3>
-<p>这个机制简单来说，就是会自动给每个 Partition 维护一个 ISR 列表，这个列表里一定会有 Leader，然后还会包含跟 Leader 保持同步的 Follower。</p>
-<p>也就是说，只要 Leader 的某个 Follower 一直跟他保持数据同步，那么就会存在于 ISR 列表里。</p>
-<p>但是如果 Follower 因为自身发生一些问题，导致不能及时的从 Leader 同步数据过去，那么这个 Follower 就会被认为是“out-of-sync”，被从 ISR 列表里踢出去。</p>
-<p>所以大家先得明白这个 ISR 是什么，说白了，就是 Kafka 自动维护和监控哪些 Follower 及时的跟上了 Leader 的数据同步。</p>
-<h3 id="8kafka-写入的数据如何保证不丢失">8，Kafka 写入的数据如何保证不丢失?</h3>
-<p>所以如果要让写入 Kafka 的数据不丢失，你需要保证如下几点：</p>
-<ul>
-<li>每个 Partition 都至少得有 1 个 Follower 在 ISR 列表里，跟上了 Leader 的数据同步。</li>
-<li>每次写入数据的时候，都要求至少写入 Partition Leader 成功，同时还有至少一个 ISR 里的 Follower 也写入成功，才算这个写入是成功了。</li>
-<li>如果不满足上述两个条件，那就一直写入失败，让生产系统不停的尝试重试，直到满足上述两个条件，然后才能认为写入成功。</li>
-<li>按照上述思路去配置相应的参数，才能保证写入 Kafka 的数据不会丢失。</li>
-</ul>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622096799684.png" alt="" loading="lazy"></figure>
-<p>如上图所示，假如现在 Leader 没有 Follower 了，或者是刚写入 Leader，Leader 立马就宕机，还没来得及同步给 Follower。</p>
-<p>在这种情况下，写入就会失败，然后你就让生产者不停的重试，直到 Kafka 恢复正常满足上述条件，才能继续写入。这样就可以让写入 Kafka 的数据不丢失。</p>
-<h3 id="9-高水位和epoch">9. 高水位和Epoch</h3>
-<p>在Kafka中，高水位的作用主要有两个</p>
-<ul>
-<li>定义消息可见性，即用来标识分区下的哪些消息是可以被消费者消费的。</li>
-<li>帮助Kafka完成副本同步</li>
-</ul>
-<p>下面这张图展示了多个与高水位相关的 Kafka 术语。</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622096512111.png" alt="" loading="lazy"></figure>
-<p>假设这是某个分区 Leader 副本的高水位图。首先，请注意图中的“已提交消息”和“未提交消息”。之前在讲到 Kafka 持久性保障的时候，特意对两者进行了区分。现在，再次强调一下。在分区高水位以下的消息被认为是已提交消息，反之就是未提交消息。</p>
-<p>消费者只能消费已提交消息，即图中位移小于 8 的所有消息。注意，这里我们不讨论 Kafka 事务，因为事务机制会影响消费者所能看到的消息的范围，它不只是简单依赖高水位来判断。它依靠一个名为 LSO（Log Stable Offset）的位移值来判断事务型消费者的可见性。</p>
-<p>另外，<strong>位移值等于高水位的消息也属于未提交消息。也就是说，高水位上的消息是不能被消费者消费的</strong>。</p>
-<h4 id="log-end-offsetleo">Log End Offset（LEO）</h4>
-<p>Log End Offset（LEO）表示副本写入下一条消息的位移值。注意，数字 15 所在的方框是虚线，这就说明，这个副本当前只有 15 条消息，位移值是从 0 到 14，下一条新消息的位移是 15。显然，介于高水位和 LEO 之间的消息就属于未提交消息。这也从侧面告诉了我们一个重要的事实，那就是：<strong>同一个副本对象，其高水位值不会大于 LEO 值</strong>。</p>
-<p><strong>高水位和 LEO 是副本对象的两个重要属性</strong>。Kafka 所有副本都有对应的高水位和 LEO 值，而不仅仅是 Leader 副本。只不过 Leader 副本比较特殊，Kafka 使用 Leader 副本的高水位来定义所在分区的高水位。换句话说，<strong>分区的高水位就是其 Leader 副本的高水位</strong>。</p>
-<h4 id="高水位和leo更新机制">高水位和LEO更新机制</h4>
-<p>现在，我们知道了每个副本对象都保存了一组高水位值和 LEO 值，但实际上，在 Leader 副本所在的 Broker 上，还保存了其他 Follower 副本的HW和LEO 值。</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622096529006.png" alt="" loading="lazy"></figure>
-<p>如上图所示，Broker 0 上保存了某分区的 Leader 副本和所有 Follower 副本的 LEO 值，而 Broker 1 上仅仅保存了该分区的某个 Follower 副本。Kafka 把 Broker 0 上保存的这些 Follower 副本又称为远程副本（Remote Replica）。Kafka 副本机制在运行过程中，会更新 Broker 1 上 Follower 副本的高水位和 LEO 值，同时也会更新 Broker 0 上 Leader 副本的高水位和 LEO 以及所有远程副本的 LEO，但它不会更新远程副本的高水位值，也就是我在图中标记为灰色的部分。</p>
-<p>保存远程副本的作用主要是帮助 Leader 副本确定其高水位，也就是分区高水位。下图是副本同步机制：<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1622096536181.png" alt="" loading="lazy"></p>
-<h3 id="10leader副本保持同步">10,Leader副本保持同步</h3>
-<p>与Leader副本保持同步的判断条件有两个：</p>
-<ol>
-<li>该远程Follower副本在ISR中。</li>
-<li>该远程Follower副本LEO值落后于Leader副本LEO值的时间，不超过Broker端参数replica.lag.time.max.ms的值（默认值10秒）</li>
-</ol>
-<h4 id="副本同步全流程">副本同步全流程</h4>
-<p>当生产者发送一条消息时，Leader 和 Follower 副本对应的高水位是怎么被更新的呢？</p>
-<p>首先是初始状态。下面这张图中的 remote LEO 就是刚才的远程副本的 LEO 值。在初始状态时，所有值都是 0。</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1622096547680.png" alt="" loading="lazy"></figure>
-<p>当生产者给主题分区发送一条消息后，状态变更为：</p>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1622096554503.png" alt="" loading="lazy"></figure>
-<p>此时，Leader 副本成功将消息写入了本地磁盘，故 LEO 值被更新为 1。</p>
-<p>Follower 再次尝试从 Leader 拉取消息。和之前不同的是，这次有消息可以拉取了，因此状态进一步变更为：</p>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1622096561747.png" alt="" loading="lazy"></figure>
-<p>这时，Follower 副本也成功地更新 LEO 为 1。此时，Leader 和 Follower 副本的 LEO 都是 1，但各自的高水位依然是 0，还没有被更新。它们需要在下一轮的拉取中被更新，如下图所示：</p>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1622096573656.png" alt="" loading="lazy"></figure>
-<p>在新一轮的拉取请求中，由于位移值是 0 的消息已经拉取成功，因此 Follower 副本这次请求拉取的是位移值 =1 的消息。Leader 副本接收到此请求后，更新远程副本 LEO 为 1，然后更新 Leader 高水位为 1。做完这些之后，它会将当前已更新过的高水位值 1 发送给 Follower 副本。Follower 副本接收到以后，也将自己的高水位值更新成 1。至此，一次完整的消息同步周期就结束了。事实上，Kafka 就是利用这样的机制，实现了 Leader 和 Follower 副本之间的同步。</p>
-<h4 id="leader-epoch">Leader Epoch</h4>
-<p>从刚才的分析中，我们知道，Follower 副本的高水位更新需要一轮额外的拉取请求才能实现。如果把上面那个例子扩展到多个 Follower 副本，情况可能更糟，也许需要多轮拉取请求。也就是说，Leader 副本高水位更新和 Follower 副本高水位更新在时间上是存在错配的。这种错配是很多“数据丢失”或“数据不一致”问题的根源。基于此，社区在 0.11 版本正式引入了 Leader Epoch 概念，来规避因高水位更新错配导致的各种不一致问题。</p>
-<p>所谓 Leader Epoch，我们大致可以认为是 Leader 版本。它由两部分数据组成。</p>
-<ol>
-<li>Epoch。一个单调增加的版本号。每当副本领导权发生变更时，都会增加该版本号。小版本号的 Leader 被认为是过期 Leader，不能再行使 Leader 权力。</li>
-<li>起始位移（Start Offset）。Leader 副本在该 Epoch 值上写入的首条消息的位移。</li>
-</ol>
-<p>举个例子来说明一下 Leader Epoch。假设现在有两个 Leader Epoch&lt;0, 0&gt; 和 &lt;1, 120&gt;，那么，第一个 Leader Epoch 表示版本号是 0，这个版本的 Leader 从位移 0 开始保存消息，一共保存了 120 条消息。之后，Leader 发生了变更，版本号增加到 1，新版本的起始位移是 120。</p>
-<p>Kafka Broker 会在内存中为每个分区都缓存 Leader Epoch 数据，同时它还会定期地将这些信息持久化到一个 checkpoint 文件中。当 Leader 副本写入消息到磁盘时，Broker 会尝试更新这部分缓存。如果该 Leader 是首次写入消息，那么 Broker 会向缓存中增加一个 Leader Epoch 条目，否则就不做更新。这样，每次有 Leader 变更时，新的 Leader 副本会查询这部分缓存，取出对应的 Leader Epoch 的起始位移，以避免数据丢失和不一致的情况。</p>
-<p>接下来看一个实际的例子，它展示的是 Leader Epoch 是如何防止数据丢失的。</p>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1622096585706.png" alt="" loading="lazy"></figure>
-<p>引用 Leader Epoch 机制后，Follower 副本 B 重启回来后，需要向 A 发送一个特殊的请求去获取 Leader 的 LEO 值。在这个例子中，该值为 2。当获知到 Leader LEO=2 后，B 发现该 LEO 值不比它自己的 LEO 值小，而且缓存中也没有保存任何起始位移值 &gt; 2 的 Epoch 条目，因此 B 无需执行任何日志截断操作。这是对高水位机制的一个明显改进，即副本是否执行日志截断不再依赖于高水位进行判断。</p>
-<p>现在，副本 A 宕机了，B 成为 Leader。同样地，当 A 重启回来后，执行与 B 相同的逻辑判断，发现也不用执行日志截断，至此位移值为 1 的那条消息在两个副本中均得到保留。后面当生产者程序向 B 写入新消息时，副本 B 所在的 Broker 缓存中，会生成新的 Leader Epoch 条目：[Epoch=1, Offset=2]。之后，副本 B 会使用这个条目帮助判断后续是否执行日志截断操作。这样，通过 Leader Epoch 机制，Kafka 完美地规避了这种数据丢失场景。</p>
-<h2 id="深度思考题">深度思考题</h2>
-<h3 id="11-kafka-为什么不支持读写分离">11、Kafka 为什么不支持读写分离?</h3>
-<p>这道题目考察的是你对 Leader/Follower 模型的思考。</p>
-<p>Leader/Follower 模型并没有规定 Follower 副本不可以对外提供读服务。很多框架都是允 许这么做的，只是 Kafka 最初为了避免不一致性的问题，而采用了让 Leader 统一提供服 务的方式。</p>
-<p>不过，在开始回答这道题时，你可以率先亮出观点:<strong>自 Kafka 2.4 之后，Kafka 提供了有限度的读写分离，也就是说，Follower 副本能够对外提供读服务</strong>。</p>
-<p>说完这些之后，你可以再给出之前的版本不支持读写分离的理由。</p>
-<ul>
-<li><strong>场景不适用</strong>。读写分离适用于那种读负载很大，而写操作相对不频繁的场景，可 Kafka 不属于这样的场景。</li>
-<li><strong>同步机制</strong>。Kafka 采用 PULL 方式实现 Follower 的同步，因此，Follower 与 Leader 存 在不一致性窗口。如果允许读 Follower 副本，就势必要处理消息滞后(Lagging)的问题。</li>
-</ul>
-<h3 id="12-如何调优-kafka">12、如何调优 Kafka?</h3>
-<p>回答任何调优问题的第一步，就是 <strong>确定优化目标，并且定量给出目标!</strong> 这点特别重要。对于 Kafka 而言，常见的优化目标是吞吐量、延时、持久性和可用性。每一个方向的优化思路都 是不同的，甚至是相反的。</p>
-<p>确定了目标之后，还要明确优化的维度。有些调优属于通用的优化思路，比如对操作系统、 JVM 等的优化;有些则是有针对性的，比如要优化 Kafka 的 TPS。我们需要从 3 个方向去考虑</p>
-<ul>
-<li><strong>Producer 端</strong>:增加 batch.size、linger.ms，启用压缩，关闭重试等。</li>
-<li><strong>Broker 端</strong>:增加 num.replica.fetchers，提升 Follower 同步 TPS，避免 Broker Full GC 等。</li>
-<li><strong>Consumer</strong>:增加 fetch.min.bytes 等</li>
-</ul>
-<h3 id="13-controller-发生网络分区network-partitioning时kafka-会怎-么样">13、Controller 发生网络分区(Network Partitioning)时，Kafka 会怎 么样?</h3>
-<p>这道题目能够诱发我们对分布式系统设计、CAP 理论、一致性等多方面的思考。不过，针 对故障定位和分析的这类问题，我建议你首先言明“实用至上”的观点，即不论怎么进行理论分析，永远都要以实际结果为准。一旦发生 Controller 网络分区，那么，第一要务就是 查看集群是否出现“脑裂”，即同时出现两个甚至是多个 Controller 组件。这可以根据 Broker 端监控指标 ActiveControllerCount 来判断。</p>
-<p>现在，我们分析下，一旦出现这种情况，Kafka 会怎么样。</p>
-<p>由于 Controller 会给 Broker 发送 3 类请求，即LeaderAndIsrRequest、 StopReplicaRequest 和 UpdateMetadataRequest，因此，一旦出现网络分区，这些请求将不能顺利到达 Broker 端。这将影响主题的创建、修改、删除操作的信息同步，表现为 集群仿佛僵住了一样，无法感知到后面的所有操作。因此，网络分区通常都是非常严重的问 题，要赶快修复。</p>
-<h3 id="14-java-consumer-为什么采用单线程来获取消息">14、Java Consumer 为什么采用单线程来获取消息?</h3>
-<p>在回答之前，如果先把这句话说出来，一定会加分:<strong>Java Consumer 是双线程的设计。一 个线程是用户主线程，负责获取消息;另一个线程是心跳线程，负责向 Kafka 汇报消费者 存活情况。将心跳单独放入专属的线程，能够有效地规避因消息处理速度慢而被视为下线 的“假死”情况。</strong></p>
-<p>单线程获取消息的设计能够避免阻塞式的消息获取方式。单线程轮询方式容易实现异步非阻塞式，这样便于将消费者扩展成支持实时流处理的操作算子。因为很多实时流处理操作算子都不能是阻塞式的。另外一个可能的好处是，可以简化代码的开发。多线程交互的代码是非常容易出错的。</p>
-<h3 id="15-简述-follower-副本消息同步的完整流程">15、简述 Follower 副本消息同步的完整流程</h3>
-<p>首先，Follower 发送 FETCH 请求给 Leader。接着，Leader 会读取底层日志文件中的消 息数据，再更新它内存中的 Follower 副本的 LEO 值，更新为 FETCH 请求中的 fetchOffset 值。最后，尝试更新分区高水位值。Follower 接收到 FETCH 响应之后，会把 消息写入到底层日志，接着更新 LEO 和 HW 值。</p>
-<p>Leader 和 Follower 的 HW 值更新时机是不同的，Follower 的 HW 更新永远落后于 Leader 的 HW。这种时间上的错配是造成各种不一致的原因。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[第三章 Apache Kafka 与Spark的集成]]></title>
-        <id>https://tinaxiawuhao.github.io/post/2csXIfKdw/</id>
-        <link href="https://tinaxiawuhao.github.io/post/2csXIfKdw/">
-        </link>
-        <updated>2021-04-21T05:33:58.000Z</updated>
-        <content type="html"><![CDATA[<p>在本章中，我们将讨论如何将Apache Kafka与Spark Streaming API集成。</p>
-<h2 id="关于spark">关于Spark</h2>
-<p>Spark Streaming API支持实时数据流的可扩展，高吞吐量，容错流处理。 数据可以从诸如Kafka，Flume，Twitter等许多源中提取，并且可以使用复杂的算法来处理，例如地图，缩小，连接和窗口等高级功能。 最后，处理的数据可以推送到文件系统，数据库和活动仪表板。 弹性分布式数据集(RDD)是Spark的基本数据结构。 它是一个不可变的分布式对象集合。 RDD中的每个数据集划分为逻辑分区，可以在集群的不同节点上计算。</p>
-<h2 id="与spark集成">与Spark集成</h2>
-<p>Kafka是Spark流式传输的潜在消息传递和集成平台。 Kafka充当实时数据流的中心枢纽，并使用Spark Streaming中的复杂算法进行处理。 一旦数据被处理，Spark Streaming可以将结果发布到另一个Kafka主题或存储在HDFS，数据库或仪表板中。 下图描述了概念流程。</p>
-<figure data-type="image" tabindex="1"><img src="https://atts.w3cschool.cn/attachments/tuploads/apache_kafka/integration_spark.jpg" alt="Integration with Spark" loading="lazy"></figure>
-<p>现在，让我们详细了解Kafka-Spark API。</p>
-<h3 id="sparkconf-api">SparkConf API</h3>
-<p>它表示Spark应用程序的配置。 用于将各种Spark参数设置为键值对。</p>
-<p>SparkConf 类有以下方法 -</p>
-<ul>
-<li><strong>set(string key，string value)</strong> - 设置配置变量。</li>
-<li><strong>remove(string key)</strong> - 从配置中移除密钥。</li>
-<li><strong>setAppName(string name)</strong> - 设置应用程序的应用程序名称。</li>
-<li><strong>get(string key)</strong> - get key</li>
-</ul>
-<h3 id="streamingcontext-api">StreamingContext API</h3>
-<p>这是Spark功能的主要入口点。 SparkContext表示到Spark集群的连接，可用于在集群上创建RDD，累加器和广播变量。 签名的定义如下所示。</p>
-<pre><code class="language-java">public StreamingContext(String master, String appName, Duration batchDuration, 
-   String sparkHome, scala.collection.Seq&lt;String&gt; jars, 
-   scala.collection.Map&lt;String,String&gt; environment)
-</code></pre>
-<ul>
-<li><strong>主</strong> - 要连接的群集网址(例如mesos:// host:port，spark:// host:port，local [4])。</li>
-<li><strong>appName</strong> - 作业的名称，以显示在集群Web UI上</li>
-<li><strong>batchDuration</strong> - 流式数据将被分成批次的时间间隔</li>
-</ul>
-<pre><code class="language-java">public StreamingContext(SparkConf conf, Duration batchDuration)
-</code></pre>
-<p>通过提供新的SparkContext所需的配置创建StreamingContext。</p>
-<ul>
-<li><strong>conf</strong> - Spark参数</li>
-<li><strong>batchDuration</strong> - 流式数据将被分成批次的时间间隔</li>
-</ul>
-<h3 id="kafkautils-api">KafkaUtils API</h3>
-<p>KafkaUtils API用于将Kafka集群连接到Spark流。 此API具有如下定义的显着方法 createStream 。</p>
-<pre><code class="language-java">public static ReceiverInputDStream&lt;scala.Tuple2&lt;String,String&gt;&gt; createStream(
-   StreamingContext ssc, String zkQuorum, String groupId,
-   scala.collection.immutable.Map&lt;String,Object&gt; topics, StorageLevel storageLevel)
-</code></pre>
-<p>上面显示的方法用于创建从Kafka Brokers提取消息的输入流。</p>
-<ul>
-<li><strong>ssc</strong> - StreamingContext对象。</li>
-<li><strong>zkQuorum</strong> - Zookeeper quorum。</li>
-<li><strong>groupId</strong> - 此消费者的组ID。</li>
-<li><strong>主题</strong> - 返回要消费的主题的地图。</li>
-<li><strong>storageLevel</strong> - 用于存储接收的对象的存储级别。</li>
-</ul>
-<p>KafkaUtils API有另一个方法createDirectStream，用于创建一个输入流，直接从Kafka Brokers拉取消息，而不使用任何接收器。 这个流可以保证来自Kafka的每个消息都包含在转换中一次。</p>
-<p>示例应用程序在Scala中完成。 要编译应用程序，请下载并安装 sbt ，scala构建工具(类似于maven)。 主要应用程序代码如下所示。</p>
-<pre><code class="language-java">import java.util.HashMap
-
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, Produc-erRecord}
-import org.apache.spark.SparkConf
-import org.apache.spark.streaming._
-import org.apache.spark.streaming.kafka._
-
-object KafkaWordCount {
-   def main(args: Array[String]) {
-      if (args.length &lt; 4) {
-         System.err.println(&quot;Usage: KafkaWordCount &lt;zkQuorum&gt;&lt;group&gt; &lt;topics&gt; &lt;numThreads&gt;&quot;)
-         System.exit(1)
-      }
-
-      val Array(zkQuorum, group, topics, numThreads) = args
-      val sparkConf = new SparkConf().setAppName(&quot;KafkaWordCount&quot;)
-      val ssc = new StreamingContext(sparkConf, Seconds(2))
-      ssc.checkpoint(&quot;checkpoint&quot;)
-
-      val topicMap = topics.split(&quot;,&quot;).map((_, numThreads.toInt)).toMap
-      val lines = KafkaUtils.createStream(ssc, zkQuorum, group, topicMap).map(_._2)
-      val words = lines.flatMap(_.split(&quot; &quot;))
-      val wordCounts = words.map(x =&gt; (x, 1L))
-         .reduceByKeyAndWindow(_ &amp;plus; _, _ - _, Minutes(10), Seconds(2), 2)
-      wordCounts.print()
-
-      ssc.start()
-      ssc.awaitTermination()
-   }
-}
-</code></pre>
-<h3 id="构建脚本">构建脚本</h3>
-<p>spark-kafka集成取决于Spark，Spark流和Spark与Kafka的集成jar。 创建一个新文件 build.sbt ，并指定应用程序详细信息及其依赖关系。 在编译和打包应用程序时， sbt 将下载所需的jar。</p>
-<pre><code class="language-sh">name := &quot;Spark Kafka Project&quot;
-version := &quot;1.0&quot;
-scalaVersion := &quot;2.10.5&quot;
-
-libraryDependencies += &quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;1.6.0&quot;
-libraryDependencies += &quot;org.apache.spark&quot; %% &quot;spark-streaming&quot; % &quot;1.6.0&quot;
-libraryDependencies += &quot;org.apache.spark&quot; %% &quot;spark-streaming-kafka&quot; % &quot;1.6.0&quot;
-</code></pre>
-<h3 id="编译包装">编译/包装</h3>
-<p>运行以下命令以编译和打包应用程序的jar文件。 我们需要将jar文件提交到spark控制台以运行应用程序。</p>
-<pre><code class="language-sh">sbt package
-</code></pre>
-<h3 id="提交到spark">提交到Spark</h3>
-<p>启动Kafka Producer CLI(在上一章中解释)，创建一个名为 my-first-topic 的新主题，并提供一些样本消息，如下所示。</p>
-<pre><code class="language-sh">Another spark test message
-</code></pre>
-<p>运行以下命令将应用程序提交到spark控制台。</p>
-<pre><code class="language-sh">/usr/local/spark/bin/spark-submit --packages org.apache.spark:spark-streaming
--kafka_2.10:1.6.0 --class &quot;KafkaWordCount&quot; --master local[4] target/scala-2.10/spark
--kafka-project_2.10-1.0.jar localhost:2181 &lt;group name&gt; &lt;topic name&gt; &lt;number of threads&gt;
-</code></pre>
-<p>此应用程序的示例输出如下所示。</p>
-<pre><code class="language-sh">spark console messages ..
-(Test,1)
-(spark,1)
-(another,1)
-(message,1)
-spark console message ..
-</code></pre>
-<blockquote>
-<p>原文：https://www.w3cschool.cn/apache_kafka/apache_kafka_integration_spark.html</p>
-</blockquote>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[第二章 Apache Kafka 整合 Storm]]></title>
-        <id>https://tinaxiawuhao.github.io/post/wAqEEPZon/</id>
-        <link href="https://tinaxiawuhao.github.io/post/wAqEEPZon/">
-        </link>
-        <updated>2021-04-20T05:29:47.000Z</updated>
-        <content type="html"><![CDATA[<p>在本章中，我们将学习如何将Kafka与Apache Storm集成。</p>
-<h2 id="关于storm">关于Storm</h2>
-<p>Storm最初由Nathan Marz和BackType的团队创建。 在短时间内，Apache Storm成为分布式实时处理系统的标准，允许您处理大量数据。 Storm是非常快的，并且一个基准时钟为每个节点每秒处理超过一百万个元组。 Apache Storm持续运行，从配置的源(Spouts)消耗数据，并将数据传递到处理管道(Bolts)。 联合，Spouts和Bolt构成一个拓扑。</p>
-<h2 id="与storm集成">与Storm集成</h2>
-<p>Kafka和Storm自然互补，它们强大的合作能够实现快速移动的大数据的实时流分析。 Kafka和Storm集成是为了使开发人员更容易地从Storm拓扑获取和发布数据流。</p>
-<h3 id="概念流">概念流</h3>
-<p>Spouts是流的源。 例如，一个喷头可以从Kafka Topic读取元组并将它们作为流发送。 Bolt消耗输入流，处理并可能发射新的流。 Bolt可以从运行函数，过滤元组，执行流聚合，流连接，与数据库交谈等等做任何事情。 Storm拓扑中的每个节点并行执行。 拓扑无限运行，直到终止它。 Storm将自动重新分配任何失败的任务。 此外，Storm保证没有数据丢失，即使机器停机和消息被丢弃。</p>
-<p>让我们详细了解Kafka-Storm集成API。 有三个主要类集成Kafka与Storm。 他们如下 -</p>
-<h3 id="brokerhosts-zkhosts-statichosts">BrokerHosts - ZkHosts &amp; StaticHosts</h3>
-<p>BrokerHosts是一个接口，ZkHosts和StaticHosts是它的两个主要实现。 ZkHosts用于通过在ZooKeeper中维护细节来动态跟踪Kafka代理，而StaticHosts用于手动/静态设置Kafka代理及其详细信息。 ZkHosts是访问Kafka代理的简单快捷的方式。</p>
-<p>ZkHosts的签名如下 -</p>
-<pre><code class="language-java">public ZkHosts(String brokerZkStr, String brokerZkPath)
-public ZkHosts(String brokerZkStr)
-</code></pre>
-<p>其中brokerZkStr是ZooKeeper主机，brokerZkPath是ZooKeeper路径以维护Kafka代理详细信息。</p>
-<h3 id="kafkaconfig-api">KafkaConfig API</h3>
-<p>此API用于定义Kafka集群的配置设置。 Kafka Con-fig的签名定义如下</p>
-<pre><code class="language-java">public KafkaConfig(BrokerHosts hosts, string topic)
-</code></pre>
-<ul>
-<li>
-<p><strong>主机</strong> - BrokerHosts可以是ZkHosts / StaticHosts。</p>
-</li>
-<li>
-<p><strong>主题</strong> - 主题名称。</p>
-</li>
-</ul>
-<h3 id="spoutconfig-api">SpoutConfig API</h3>
-<p>Spoutconfig是KafkaConfig的扩展，支持额外的ZooKeeper信息。</p>
-<pre><code class="language-java">public SpoutConfig(BrokerHosts hosts, string topic, string zkRoot, string id)
-</code></pre>
-<ul>
-<li><strong>主机</strong> - BrokerHosts可以是BrokerHosts接口的任何实现</li>
-<li><strong>主题</strong> - 主题名称。</li>
-<li><strong>zkRoot</strong> - ZooKeeper根路径。</li>
-<li><strong>id -</strong> spouts存储在Zookeeper中消耗的偏移量的状态。 ID应该唯一标识您的喷嘴。</li>
-</ul>
-<h3 id="schemeasmultischeme">SchemeAsMultiScheme</h3>
-<p>SchemeAsMultiScheme是一个接口，用于指示如何将从Kafka中消耗的ByteBuffer转换为风暴元组。 它源自MultiScheme并接受Scheme类的实现。 有很多Scheme类的实现，一个这样的实现是StringScheme，它将字节解析为一个简单的字符串。 它还控制输出字段的命名。 签名定义如下。</p>
-<pre><code class="language-java">public SchemeAsMultiScheme(Scheme scheme)
-</code></pre>
-<ul>
-<li><strong>方案</strong> - 从kafka消耗的字节缓冲区。</li>
-</ul>
-<h3 id="kafkaspout-api">KafkaSpout API</h3>
-<p>KafkaSpout是我们的spout实现，它将与Storm集成。 它从kafka主题获取消息，并将其作为元组发送到Storm生态系统。 KafkaSpout从SpoutConfig获取其配置详细信息。</p>
-<p>下面是一个创建一个简单的Kafka喷水嘴的示例代码。</p>
-<pre><code class="language-java">// ZooKeeper connection string
-BrokerHosts hosts = new ZkHosts(zkConnString);
-
-//Creating SpoutConfig Object
-SpoutConfig spoutConfig = new SpoutConfig(hosts, 
-   topicName, &quot;/&quot; + topicName UUID.randomUUID().toString());
-
-//convert the ByteBuffer to String.
-spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
-
-//Assign SpoutConfig to KafkaSpout.
-KafkaSpout kafkaSpout = new KafkaSpout(spoutConfig);
-</code></pre>
-<h2 id=""></h2>
-<h2 id="创建bolt">创建Bolt</h2>
-<p>Bolt是一个使用元组作为输入，处理元组，并产生新的元组作为输出的组件。 Bolt将实现IRichBolt接口。 在此程序中，使用两个Bolt类WordSplitter-Bolt和WordCounterBolt来执行操作。</p>
-<p>IRichBolt接口有以下方法 -</p>
-<ul>
-<li><strong>准备</strong> - 为Bolt提供要执行的环境。 执行器将运行此方法来初始化喷头。</li>
-<li><strong>执行</strong> - 处理单个元组的输入。</li>
-<li><strong>清理</strong> - 当Bolt要关闭时调用。</li>
-<li><strong>declareOutputFields</strong> - 声明元组的输出模式。</li>
-</ul>
-<p>让我们创建SplitBolt.java，它实现逻辑分割一个句子到词和CountBolt.java，它实现逻辑分离独特的单词和计数其出现。</p>
-<h3 id="splitboltjava">SplitBolt.java</h3>
-<pre><code class="language-java">import java.util.Map;
-
-import backtype.storm.tuple.Tuple;
-import backtype.storm.tuple.Fields;
-import backtype.storm.tuple.Values;
-
-import backtype.storm.task.OutputCollector;
-import backtype.storm.topology.OutputFieldsDeclarer;
-import backtype.storm.topology.IRichBolt;
-import backtype.storm.task.TopologyContext;
-
-public class SplitBolt implements IRichBolt {
-   private OutputCollector collector;
-   
-   @Override
-   public void prepare(Map stormConf, TopologyContext context,
-      OutputCollector collector) {
-      this.collector = collector;
-   }
-   
-   @Override
-   public void execute(Tuple input) {
-      String sentence = input.getString(0);
-      String[] words = sentence.split(&quot; &quot;);
-      
-      for(String word: words) {
-         word = word.trim();
-         
-         if(!word.isEmpty()) {
-            word = word.toLowerCase();
-            collector.emit(new Values(word));
-         }
-         
-      }
-
-      collector.ack(input);
-   }
-   
-   @Override
-   public void declareOutputFields(OutputFieldsDeclarer declarer) {
-      declarer.declare(new Fields(&quot;word&quot;));
-   }
-
-   @Override
-   public void cleanup() {}
-   
-   @Override
-   public Map&lt;String, Object&gt; getComponentConfiguration() {
-      return null;
-   }
-   
-}
-</code></pre>
-<h3 id="countboltjava">CountBolt.java</h3>
-<pre><code class="language-java">import java.util.Map;
-import java.util.HashMap;
-
-import backtype.storm.tuple.Tuple;
-import backtype.storm.task.OutputCollector;
-import backtype.storm.topology.OutputFieldsDeclarer;
-import backtype.storm.topology.IRichBolt;
-import backtype.storm.task.TopologyContext;
-
-public class CountBolt implements IRichBolt{
-   Map&lt;String, Integer&gt; counters;
-   private OutputCollector collector;
-   
-   @Override
-   public void prepare(Map stormConf, TopologyContext context,
-   OutputCollector collector) {
-      this.counters = new HashMap&lt;String, Integer&gt;();
-      this.collector = collector;
-   }
-
-   @Override
-   public void execute(Tuple input) {
-      String str = input.getString(0);
-      
-      if(!counters.containsKey(str)){
-         counters.put(str, 1);
-      }else {
-         Integer c = counters.get(str) +1;
-         counters.put(str, c);
-      }
-   
-      collector.ack(input);
-   }
-
-   @Override
-   public void cleanup() {
-      for(Map.Entry&lt;String, Integer&gt; entry:counters.entrySet()){
-         System.out.println(entry.getKey()&amp;plus;&quot; : &quot; &amp;plus; entry.getValue());
-      }
-   }
-
-   @Override
-   public void declareOutputFields(OutputFieldsDeclarer declarer) {
-   
-   }
-
-   @Override
-   public Map&lt;String, Object&gt; getComponentConfiguration() {
-      return null;
-   }
-}
-</code></pre>
-<h2 id="提交拓扑">提交拓扑</h2>
-<p>Storm拓扑基本上是一个Thrift结构。 TopologyBuilder类提供了简单而容易的方法来创建复杂的拓扑。 TopologyBuilder类具有设置spout(setSpout)和设置bolt(setBolt)的方法。 最后，TopologyBuilder有createTopology来创建to-pology。 shuffleGrouping和fieldsGrouping方法有助于为喷头和Bolt设置流分组。</p>
-<p><strong>本地集群</strong> - 为了开发目的，我们可以使用 LocalCluster 对象创建本地集群，然后使用 LocalCluster的 submitTopology 类。</p>
-<h3 id="kafkastormsamplejava">KafkaStormSample.java</h3>
-<pre><code class="language-java">import backtype.storm.Config;
-import backtype.storm.LocalCluster;
-import backtype.storm.topology.TopologyBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import backtype.storm.spout.SchemeAsMultiScheme;
-import storm.kafka.trident.GlobalPartitionInformation;
-import storm.kafka.ZkHosts;
-import storm.kafka.Broker;
-import storm.kafka.StaticHosts;
-import storm.kafka.BrokerHosts;
-import storm.kafka.SpoutConfig;
-import storm.kafka.KafkaConfig;
-import storm.kafka.KafkaSpout;
-import storm.kafka.StringScheme;
-
-public class KafkaStormSample {
-   public static void main(String[] args) throws Exception{
-      Config config = new Config();
-      config.setDebug(true);
-      config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
-      String zkConnString = &quot;localhost:2181&quot;;
-      String topic = &quot;my-first-topic&quot;;
-      BrokerHosts hosts = new ZkHosts(zkConnString);
-      
-      SpoutConfig kafkaSpoutConfig = new SpoutConfig (hosts, topic, &quot;/&quot; + topic,    
-         UUID.randomUUID().toString());
-      kafkaSpoutConfig.bufferSizeBytes = 1024 * 1024 * 4;
-      kafkaSpoutConfig.fetchSizeBytes = 1024 * 1024 * 4;
-      kafkaSpoutConfig.forceFromStart = true;
-      kafkaSpoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
-
-      TopologyBuilder builder = new TopologyBuilder();
-      builder.setSpout(&quot;kafka-spout&quot;, new KafkaSpout(kafkaSpoutCon-fig));
-      builder.setBolt(&quot;word-spitter&quot;, new SplitBolt()).shuffleGroup-ing(&quot;kafka-spout&quot;);
-      builder.setBolt(&quot;word-counter&quot;, new CountBolt()).shuffleGroup-ing(&quot;word-spitter&quot;);
-         
-      LocalCluster cluster = new LocalCluster();
-      cluster.submitTopology(&quot;KafkaStormSample&quot;, config, builder.create-Topology());
-
-      Thread.sleep(10000);
-      
-      cluster.shutdown();
-   }
-}
-</code></pre>
-<p>在移动编译之前，Kakfa-Storm集成需要策展人ZooKeeper客户端java库。 策展人版本2.9.1支持Apache Storm 0.9.5版(我们在本教程中使用)。 下载下面指定的jar文件并将其放在java类路径中。</p>
-<ul>
-<li>curator-client-2.9.1.jar</li>
-<li>curator-framework-2.9.1.jar</li>
-</ul>
-<p>在包括依赖文件之后，使用以下命令编译程序，</p>
-<pre><code class="language-sh">javac -cp &quot;/path/to/Kafka/apache-storm-0.9.5/lib/*&quot; *.java
-</code></pre>
-<h3 id="执行">执行</h3>
-<p>启动Kafka Producer CLI(在上一章节中解释)，创建一个名为 my-first-topic 的新主题，并提供一些样本消息，如下所示 -</p>
-<pre><code class="language-sh">hello
-kafka
-storm
-spark
-test message
-another test message
-</code></pre>
-<p>现在使用以下命令执行应用程序 -</p>
-<pre><code class="language-sh">java -cp “/path/to/Kafka/apache-storm-0.9.5/lib/*&quot;:. KafkaStormSample
-</code></pre>
-<p>此应用程序的示例输出如下所示 -</p>
-<pre><code class="language-sh">storm : 1
-test : 2
-spark : 1
-another : 1
-kafka : 1
-hello : 1
-message : 2
-</code></pre>
-<blockquote>
-<p>原文：https://www.w3cschool.cn/apache_kafka/apache_kafka_integration_storm.html</p>
-</blockquote>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[第一章 Kafka的安装与使用]]></title>
-        <id>https://tinaxiawuhao.github.io/post/w7MMk_8-a/</id>
-        <link href="https://tinaxiawuhao.github.io/post/w7MMk_8-a/">
-        </link>
-        <updated>2021-04-19T02:41:18.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="kafka-基础知识">Kafka 基础知识</h3>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619146086328.png" alt="" loading="lazy"></figure>
-<p>对于大数据，我们要考虑的问题有很多，首先海量数据如何收集（如 Flume），然后对于收集到的数据如何存储（典型的分布式文件系统 HDFS、分布式数据库 HBase、NoSQL 数据库 Redis），其次存储的数据不是存起来就没事了，要通过计算从中获取有用的信息，这就涉及到计算模型（典型的离线计算 MapReduce、流式实时计算Storm、Spark），或者要从数据中挖掘信息，还需要相应的机器学习算法。在这些之上，还有一些各种各样的查询分析数据的工具（如 Hive、Pig 等）。除此之外，要构建分布式应用还需要一些工具，比如分布式协调服务 Zookeeper 等等。</p>
-<p>这里，我们讲到的是消息系统，Kafka 专为分布式高吞吐量系统而设计，其他消息传递系统相比，Kafka 具有更好的吞吐量，内置分区，复制和固有的容错能力，这使得它非常适合大规模消息处理应用程序。</p>
-<h3 id="消息系统">消息系统</h3>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619146163330.png" alt="" loading="lazy"></figure>
-<p>​		点对点消息系统：生产者发送一条消息到queue，一个queue可以有很多消费者，但是一个消息只能被一个消费者接受，当没有消费者可用时，这个消息会被保存直到有 一个可用的消费者，所以Queue实现了一个可靠的负载均衡。</p>
-<p>​		发布订阅消息系统：发布者发送到topic的消息，只有订阅了topic的订阅者才会收到消息。topic实现了发布和订阅，当你发布一个消息，所有订阅这个topic的服务都能得到这个消息，所以从1到N个订阅者都能得到这个消息的拷贝。</p>
-<h3 id="kafka术语">kafka术语</h3>
-<p>Apache Kafka 是一个分布式发布 - 订阅消息系统和一个强大的队列，可以处理大量的数据，并使你能够将消息从一个端点传递到另一个端点。 Kafka 适合离线和在线消息消费。 Kafka 消息保留在磁盘上，并在群集内复制以防止数据丢失。 Kafka 构建在 ZooKeeper 同步服务之上。 它与 Apache Storm 和 Spark 非常好地集成，用于实时流式数据分析。</p>
-<p>Kafka 是一个分布式消息队列，具有高性能、持久化、多副本备份、横向扩展能力。生产者往队列里写消息，消费者从队列里取消息进行业务逻辑。一般在架构设计中起到解耦、削峰、异步处理的作用。</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619146174125.png" alt="" loading="lazy"></figure>
-<p>​		消息由producer产生，消息按照topic归类，并发送到broker中，broker中保存了一个或多个topic的消息，consumer通过订阅一组topic的消息，通过持续的poll操作从broker获取消息，并进行后续的消息处理。</p>
-<p><strong>Producer</strong> ：消息生产者，就是向broker发指定topic消息的客户端。</p>
-<p><strong>Consumer</strong> ：消息消费者，通过订阅一组topic的消息，从broker读取消息的客户端。</p>
-<p><strong>Broker</strong> ：一个kafka集群包含一个或多个服务器，一台kafka服务器就是一个broker，用于保存producer发送的消息。一个broker可以容纳多个topic。</p>
-<p><strong>Topic</strong> ：每条发送到broker的消息都有一个类别，可以理解为一个队列或者数据库的一张表。</p>
-<p><strong>Partition</strong>：一个topic的消息由多个partition队列存储的，一个partition队列在kafka上称为一个分区。每个partition是一个有序的队列，多个partition间则是无序的。partition中的每条消息都会被分配一个有序的id（offset）。</p>
-<p><strong>Offset</strong>：偏移量。kafka为每条在分区的消息保存一个偏移量offset，这也是消费者在分区的位置。kafka的存储文件都是按照offset.kafka来命名，位于2049位置的即为2048.kafka的文件。比如一个偏移量是5的消费者，表示已经消费了从0-4偏移量的消息，下一个要消费的消息的偏移量是5。</p>
-<p><strong>Consumer Group （CG）</strong>：若干个Consumer组成的集合。这是kafka用来实现一个topic消息的广播（发给所有的consumer）和单播（发给任意一个consumer）的手段。一个topic可以有多个CG。topic的消息会复制（不是真的复制，是概念上的）到所有的CG，但每个CG只会把消息发给该CG中的一个consumer。如果需要实现广播，只要每个consumer有一个独立的CG就可以了。要实现单播只要所有的consumer在同一个CG。用CG还可以将consumer进行自由的分组而不需要多次发送消息到不同的topic。</p>
-<p>​		假如一个消费者组有两个消费者，订阅了一个具有4个分区的topic的消息，那么这个消费者组的每一个消费者都会消费两个分区的消息。消费者组的成员是动态维护的，如果新增或者减少了消费者组中的消费者，那么每个消费者消费的分区的消息也会动态变化。比如原来一个消费者组有两个消费者，其中一个消费者因为故障而不能继续消费消息了，那么剩下一个消费者将会消费全部4个分区的消息。</p>
-<h3 id="apache-kafka基本原理">Apache Kafka基本原理</h3>
-<h4 id="1-分布式和分区distributed-partitioned">1、分布式和分区（distributed、partitioned）</h4>
-<p>我们说 kafka 是一个分布式消息系统，所谓的分布式，实际上我们已经大致了解。消息保存在 Topic 中，而为了能够实现大数据的存储，一个 topic 划分为多个分区，每个分区对应一个文件，可以分别存储到不同的机器上，以实现分布式的集群存储。另外，每个 partition 可以有一定的副本，备份到多台机器上，以提高可用性。</p>
-<p>总结起来就是：一个 topic 对应的多个 partition 分散存储到集群中的多个 broker 上，存储方式是一个 partition 对应一个文件，每个 broker 负责存储在自己机器上的 partition 中的消息读写。</p>
-<h4 id="2-副本replicated">2、副本（replicated ）</h4>
-<p>kafka 还可以配置 partitions 需要备份的个数(replicas),每个 partition 将会被备份到多台机器上,以提高可用性，备份的数量可以通过配置文件指定。</p>
-<p>这种冗余备份的方式在分布式系统中是很常见的，那么既然有副本，就涉及到对同一个文件的多个备份如何进行管理和调度。kafka 采取的方案是：每个 partition 选举一个 server 作为“leader”，由 leader 负责所有对该分区的读写，其他 server 作为 follower 只需要简单的与 leader 同步，保持跟进即可。如果原来的 leader 失效，会重新选举由其他的 follower 来成为新的 leader。</p>
-<p>至于如何选取 leader，实际上如果我们了解 ZooKeeper，就会发现其实这正是 Zookeeper 所擅长的，Kafka 使用 ZK 在 Broker 中选出一个 Controller，用于 Partition 分配和 Leader 选举。</p>
-<p>另外，这里我们可以看到，实际上作为 leader 的 server 承担了该分区所有的读写请求，因此其压力是比较大的，从整体考虑，从多少个 partition 就意味着会有多少个leader，kafka 会将 leader 分散到不同的 broker 上，确保整体的负载均衡。</p>
-<h4 id="3-整体数据流程">3、整体数据流程</h4>
-<p>Kafka 的总体数据流满足下图，该图可以说是概括了整个 kafka 的基本原理。<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1622083894591.jpg" alt="" loading="lazy"></p>
-<p><strong>（1）数据生产过程（Produce）</strong></p>
-<p>对于生产者要写入的一条记录，可以指定四个参数：分别是 topic、partition、key 和 value，其中 topic 和 value（要写入的数据）是必须要指定的，而 key 和 partition 是可选的。</p>
-<p>对于一条记录，先对其进行序列化，然后按照 Topic 和 Partition，放进对应的发送队列中。如果 Partition 没填，那么情况会是这样的：a、Key 有填。按照 Key 进行哈希，相同 Key 去一个 Partition。b、Key 没填。Round-Robin 来选 Partition。</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1622083907859.png" alt="" loading="lazy"></figure>
-<p>producer 将会和Topic下所有 partition leader 保持 socket 连接，消息由 producer 直接通过 socket 发送到 broker。其中 partition leader 的位置( host : port )注册在 zookeeper 中，producer 作为 zookeeper client，已经注册了 watch 用来监听 partition leader 的变更事件，因此，可以准确的知道谁是当前的 leader。</p>
-<p>producer 端采用异步发送：将多条消息暂且在客户端 buffer 起来，并将他们批量的发送到 broker，小数据 IO 太多，会拖慢整体的网络延迟，批量延迟发送事实上提升了网络效率。</p>
-<p><strong>（2）数据消费过程（Consume）</strong></p>
-<p>对于消费者，不是以单独的形式存在的，每一个消费者属于一个 consumer group，一个 group 包含多个 consumer。特别需要注意的是：订阅 Topic 是以一个消费组来订阅的，发送到 Topic 的消息，只会被订阅此 Topic 的每个 group 中的一个 consumer 消费。</p>
-<p>如果所有的 Consumer 都具有相同的 group，那么就像是一个点对点的消息系统；如果每个 consumer 都具有不同的 group，那么消息会广播给所有的消费者。</p>
-<p>具体说来，这实际上是根据 partition 来分的，一个 Partition，只能被消费组里的一个消费者消费，但是可以同时被多个消费组消费，消费组里的每个消费者是关联到一个 partition 的，因此有这样的说法：对于一个 topic,同一个 group 中不能有多于 partitions 个数的 consumer 同时消费,否则将意味着某些 consumer 将无法得到消息。</p>
-<p>同一个消费组的两个消费者不会同时消费一个 partition。</p>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1622083921378.png" alt="" loading="lazy"></figure>
-<p>在 kafka 中，采用了 pull 方式，即 consumer 在和 broker 建立连接之后，主动去 pull(或者说 fetch )消息，首先 consumer 端可以根据自己的消费能力适时的去 fetch 消息并处理，且可以控制消息消费的进度(offset)。</p>
-<p>partition 中的消息只有一个 consumer 在消费，且不存在消息状态的控制，也没有复杂的消息确认机制，可见 kafka broker 端是相当轻量级的。当消息被 consumer 接收之后，需要保存 Offset 记录消费到哪，以前保存在 ZK 中，由于 ZK 的写性能不好，以前的解决方法都是 Consumer 每隔一分钟上报一次，在 0.10 版本后，Kafka 把这个 Offset 的保存，从 ZK 中剥离，保存在一个名叫 consumeroffsets topic 的 Topic 中，由此可见，consumer 客户端也很轻量级。</p>
-<h4 id="4-消息传送机制">4、消息传送机制</h4>
-<p>Kafka 支持 3 种消息投递语义,在业务中，常常都是使用 At least once 的模型。</p>
-<ul>
-<li>At most once：最多一次，消息可能会丢失，但不会重复。</li>
-<li>At least once：最少一次，消息不会丢失，可能会重复。</li>
-<li>Exactly once：只且一次，消息不丢失不重复，只且消费一次。</li>
-</ul>
-<h3 id="kafka安装和使用">kafka安装和使用</h3>
-<p>在Windows安装运行Kafka：https://blog.csdn.net/weixin_38004638/article/details/91893910</p>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1619146234260.png" alt="" loading="lazy"></figure>
-<h3 id="kafka运行">kafka运行</h3>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1619146260426.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1619146275373.png" alt="" loading="lazy"></figure>
-<p>一次写入，支持多个应用读取，读取信息是相同的</p>
-<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1619146288083.png" alt="" loading="lazy"></figure>
-<p><code>kafka-study.pom</code></p>
-<pre><code class="language-java">&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;
-        &lt;artifactId&gt;kafka_2.12&lt;/artifactId&gt;
-        &lt;version&gt;2.2.1&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-        &lt;artifactId&gt;slf4j-nop&lt;/artifactId&gt;
-        &lt;version&gt;1.7.24&lt;/version&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-&lt;build&gt;
-    &lt;plugins&gt;
-        &lt;plugin&gt;
-            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
-            &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
-            &lt;version&gt;3.0&lt;/version&gt;
-            &lt;configuration&gt;
-                &lt;source&gt;1.8&lt;/source&gt;
-                &lt;target&gt;1.8&lt;/target&gt;
-                &lt;encoding&gt;UTF-8&lt;/encoding&gt;
-            &lt;/configuration&gt;
-        &lt;/plugin&gt;
-    &lt;/plugins&gt;
-&lt;/build&gt;
-</code></pre>
-<h3 id="producer生产者">Producer生产者</h3>
-<p>​		发送消息的方式，只管发送，不管结果：只调用接口发送消息到 Kafka 服务器，但不管成功写入与否。由于 Kafka 是高可用的，因此大部分情况下消息都会写入，但在异常情况下会丢消息</p>
-<p><code>同步发送</code>：调用 send() 方法返回一个 Future 对象，我们可以使用它的 get() 方法来判断消息发送成功与否</p>
-<p><code>异步发送</code>：调用 send() 时提供一个回调方法，当接收到 broker 结果后回调此方法</p>
-<pre><code class="language-java">public class MyProducer {
-    private static KafkaProducer&lt;String, String&gt; producer;
-    //初始化
-    static {
-        Properties properties = new Properties();
-        //kafka启动，生产者建立连接broker的地址
-        properties.put(&quot;bootstrap.servers&quot;, &quot;127.0.0.1:9092&quot;);
-        //kafka序列化方式
-        properties.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
-        properties.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
-        //自定义分区分配器
-        properties.put(&quot;partitioner.class&quot;, &quot;com.imooc.kafka.CustomPartitioner&quot;);
-        producer = new KafkaProducer&lt;&gt;(properties);
-    }
-
-    /**
-     * 创建topic：.\bin\windows\kafka-topics.bat --create --zookeeper localhost:2181
-     * --replication-factor 1 --partitions 1 --topic kafka-study
-     * 创建消费者：.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092
-     * --topic kafka-study --from-beginning
-     */
-    //发送消息，发送完后不做处理
-    private static void sendMessageForgetResult() {
-        ProducerRecord&lt;String, String&gt; record = new ProducerRecord&lt;&gt;(&quot;kafka-study&quot;, &quot;name&quot;, &quot;ForgetResult&quot;);
-        producer.send(record);
-        producer.close();
-    }
-    //发送同步消息，获取发送的消息
-    private static void sendMessageSync() throws Exception {
-        ProducerRecord&lt;String, String&gt; record = new ProducerRecord&lt;&gt;(&quot;kafka-study&quot;, &quot;name&quot;, &quot;sync&quot;);
-        RecordMetadata result = producer.send(record).get();
-        System.out.println(result.topic());//kafka-study
-        System.out.println(result.partition());//分区为name的hash对应分区
-        System.out.println(result.offset());//已发送一条消息，此时偏移量+1
-        producer.close();
-    }
-    /**
-     * 创建topic：.\bin\windows\kafka-topics.bat --create --zookeeper localhost:2181
-     * --replication-factor 1 --partitions 3 --topic kafka-study-x
-     * 创建消费者：.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092
-     * --topic kafka-study-x --from-beginning
-     */
-      //发送异步消息，获取回调的消息
-    private static void sendMessageCallback() {
-        ProducerRecord&lt;String, String&gt; record = new ProducerRecord&lt;&gt;(&quot;kafka-study-x&quot;, &quot;name&quot;, &quot;callback&quot;);
-        producer.send(record, new MyProducerCallback());
-        //发送多条消息
-        record = new ProducerRecord&lt;&gt;(&quot;kafka-study-x&quot;, &quot;name-x&quot;, &quot;callback&quot;);
-        producer.send(record, new MyProducerCallback());
-        producer.close();
-    }
-}
-</code></pre>
-<pre><code class="language-java">//发送异步消息
-
-//场景：每条消息发送有延迟，多条消息发送，无需同步等待，可以执行其他操作，程序会自动异步调用 
-private static class MyProducerCallback implements Callback {
-       @Override
-       public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-           if (e != null) {
-               e.printStackTrace();
-               return;
-           }
-           System.out.println(&quot;*** MyProducerCallback ***&quot;);
-           System.out.println(recordMetadata.topic());
-           System.out.println(recordMetadata.partition());
-           System.out.println(recordMetadata.offset());
-       }
-   }
-   public static void main(String[] args) throws Exception {
-       //sendMessageForgetResult();
-       //sendMessageSync();
-       sendMessageCallback();
-   }
-}
-</code></pre>
-<p>自定义分区分配器：决定消息存放在哪个分区.。默认分配器使用轮询存放，轮到已满分区将会写入失败。</p>
-<pre><code class="language-java">public class CustomPartitioner implements Partitioner {
-    @Override
-    public int partition(String topic, Object key, byte[] keyBytes,
-                         Object value, byte[] valueBytes, Cluster cluster) {
-        //获取topic所有分区
-        List&lt;PartitionInfo&gt; partitionInfos = cluster.partitionsForTopic(topic);
-        int numPartitions = partitionInfos.size();
-        //消息必须有key
-        if (null == keyBytes || !(key instanceof String)) {
-            throw new InvalidRecordException(&quot;kafka message must have key&quot;);
-        }
-        //如果只有一个分区，即0号分区
-        if (numPartitions == 1) {return 0;}
-        //如果key为name，发送至最后一个分区
-        if (key.equals(&quot;name&quot;)) {return numPartitions - 1;}
-        return Math.abs(Utils.murmur2(keyBytes)) % (numPartitions - 1);
-    }
-    @Override
-    public void close() {}
-    @Override
-    public void configure(Map&lt;String, ?&gt; map) {}
-}
-</code></pre>
-<p>启动生产者发送消息，通过自定义分区分配器分配，查询到topic信息的offset、partitioner</p>
-<table>
-<thead>
-<tr>
-<th>topic</th>
-<th>partition</th>
-<th>offset</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>kafka-study</td>
-<td>0</td>
-<td>1</td>
-</tr>
-<tr>
-<td>kafka-study</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<td>kafka-study-x</td>
-<td>0</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-<h3 id="kafka消费者组">Kafka消费者（组）</h3>
-<pre><code class="language-java">public class MyConsumer {
-    private static KafkaConsumer&lt;String, String&gt; consumer;
-    private static Properties properties;
-    //初始化
-    static {
-        properties = new Properties();
-        //建立连接broker的地址
-        properties.put(&quot;bootstrap.servers&quot;, &quot;127.0.0.1:9092&quot;);
-        //kafka反序列化
-        properties.put(&quot;key.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
-        properties.put(&quot;value.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
-        //指定消费者组
-        properties.put(&quot;group.id&quot;, &quot;KafkaStudy&quot;);
-    }
-
-    //自动提交位移：由consume自动管理提交
-    private static void generalConsumeMessageAutoCommit() {
-        //配置
-        properties.put(&quot;enable.auto.commit&quot;, true);
-        consumer = new KafkaConsumer&lt;&gt;(properties);
-        //指定topic
-        consumer.subscribe(Collections.singleton(&quot;kafka-study-x&quot;));
-        try {
-            while (true) {
-                boolean flag = true;
-                //拉取信息，超时时间100ms
-                ConsumerRecords&lt;String, String&gt; records = consumer.poll(100);
-                //遍历打印消息
-                for (ConsumerRecord&lt;String, String&gt; record : records) {
-                    System.out.println(String.format(
-                            &quot;topic = %s, partition = %s, key = %s, value = %s&quot;,
-                            record.topic(), record.partition(), record.key(), record.value()
-                    ));
-                    //消息发送完成
-                    if (record.value().equals(&quot;done&quot;)) { flag = false; }
-                }
-                if (!flag) { break; }
-            }
-        } finally {
-            consumer.close();
-        }
-    }
-
-    //手动同步提交当前位移，根据需求提交，但容易发送阻塞，提交失败会进行重试直到抛出异常
-    private static void generalConsumeMessageSyncCommit() {
-        properties.put(&quot;auto.commit.offset&quot;, false);
-        consumer = new KafkaConsumer&lt;&gt;(properties);
-
-        consumer.subscribe(Collections.singletonList(&quot;kafka-study-x&quot;));
-        while (true) {
-            boolean flag = true;
-            ConsumerRecords&lt;String, String&gt; records = consumer.poll(100);
-            for (ConsumerRecord&lt;String, String&gt; record : records) {
-                System.out.println(String.format(
-                        &quot;topic = %s, partition = %s, key = %s, value = %s&quot;,
-                        record.topic(), record.partition(), record.key(), record.value()
-                ));
-                if (record.value().equals(&quot;done&quot;)) { flag = false; }
-            }
-            try {
-                //手动同步提交
-                consumer.commitSync();
-            } catch (CommitFailedException ex) {
-                System.out.println(&quot;commit failed error: &quot; + ex.getMessage());
-            }
-            if (!flag) { break; }
-        }
-    }
-
-    //手动异步提交当前位移，提交速度快，但失败不会记录
-    private static void generalConsumeMessageAsyncCommit() {
-        properties.put(&quot;auto.commit.offset&quot;, false);
-        consumer = new KafkaConsumer&lt;&gt;(properties);
-        consumer.subscribe(Collections.singletonList(&quot;kafka-study-x&quot;));
-        while (true) {
-            boolean flag = true;
-            ConsumerRecords&lt;String, String&gt; records = consumer.poll(100);
-            for (ConsumerRecord&lt;String, String&gt; record : records) {
-                System.out.println(String.format(
-                        &quot;topic = %s, partition = %s, key = %s, value = %s&quot;,
-                        record.topic(), record.partition(), record.key(), record.value()
-                ));
-                if (record.value().equals(&quot;done&quot;)) { flag = false; }
-            }
-            //手动异步提交
-            consumer.commitAsync();
-            if (!flag) { break; }
-        }
-    }
-
-    //手动异步提交当前位移带回调
-    private static void generalConsumeMessageAsyncCommitWithCallback() {
-        properties.put(&quot;auto.commit.offset&quot;, false);
-        consumer = new KafkaConsumer&lt;&gt;(properties);
-        consumer.subscribe(Collections.singletonList(&quot;kafka-study-x&quot;));
-        while (true) {
-            boolean flag = true;
-            ConsumerRecords&lt;String, String&gt; records = consumer.poll(100);
-            for (ConsumerRecord&lt;String, String&gt; record : records) {
-                System.out.println(String.format(
-                        &quot;topic = %s, partition = %s, key = %s, value = %s&quot;,
-                        record.topic(), record.partition(), record.key(), record.value()
-                ));
-                if (record.value().equals(&quot;done&quot;)) { flag = false; }
-            }
-            //使用java8函数式编程
-            consumer.commitAsync((map, e) -&gt; {
-                if (e != null) {
-                    System.out.println(&quot;commit failed for offsets: &quot; + e.getMessage());
-                }
-            });
-            if (!flag) { break; }
-        }
-    }
-
-    //混合同步与异步提交位移
-    @SuppressWarnings(&quot;all&quot;)
-    private static void mixSyncAndAsyncCommit() {
-        properties.put(&quot;auto.commit.offset&quot;, false);
-        consumer = new KafkaConsumer&lt;&gt;(properties);
-        consumer.subscribe(Collections.singletonList(&quot;kafka-study-x&quot;));
-        try {
-            while (true) {
-                //boolean flag = true;
-                ConsumerRecords&lt;String, String&gt; records = consumer.poll(100);
-                for (ConsumerRecord&lt;String, String&gt; record : records) {
-                    System.out.println(String.format(
-                            &quot;topic = %s, partition = %s, key = %s, &quot; + &quot;value = %s&quot;,
-                            record.topic(), record.partition(),
-                            record.key(), record.value()
-                    ));
-                    //if (record.value().equals(&quot;done&quot;)) { flag = false; }
-                }
-                //手动异步提交，保证性能
-                consumer.commitAsync();
-                //if (!flag) { break; }
-            }
-        } catch (Exception ex) {
-            System.out.println(&quot;commit async error: &quot; + ex.getMessage());
-        } finally {
-            try {
-                //异步提交失败，再尝试手动同步提交
-                consumer.commitSync();
-            } finally {
-                consumer.close();
-            }
-        }
-    }
-
-    public static void main(String[] args) {
-        //自动提交位移
-        generalConsumeMessageAutoCommit();
-        //手动同步提交当前位移
-        //generalConsumeMessageSyncCommit();
-        //手动异步提交当前位移
-        //generalConsumeMessageAsyncCommit();
-        //手动异步提交当前位移带回调
-        //generalConsumeMessageAsyncCommitWithCallback()
-        //混合同步与异步提交位移
-        //mixSyncAndAsyncCommit();
-    }
-}
-</code></pre>
-<p>先启动消费者等待接收消息，再启动生产者发送消息，进行消费消息</p>
-<table>
-<thead>
-<tr>
-<th>topic</th>
-<th>partition</th>
-<th>key</th>
-<th>value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>kafka-study-x</td>
-<td>1</td>
-<td>name-x</td>
-<td>callback</td>
-</tr>
-<tr>
-<td>kafka-study-x</td>
-<td>2</td>
-<td>name-x</td>
-<td>callback</td>
-</tr>
-<tr>
-<td>kafka-study-x</td>
-<td>1</td>
-<td>name-x</td>
-<td>callback</td>
-</tr>
-<tr>
-<td>kafka-study-x</td>
-<td>1</td>
-<td>name-x</td>
-<td>callback</td>
-</tr>
-<tr>
-<td>kafka-study-x</td>
-<td>2</td>
-<td>name-x</td>
-<td>callback</td>
-</tr>
-</tbody>
-</table>
 ]]></content>
     </entry>
 </feed>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>linux安装jenkins | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="linux安装jenkins | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="linux安装jenkins" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/MN_sOyfo3/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/0rUbbWww3/" class="tag">jenkins</a>
+                
+                <a href="https://tinaxiawuhao.github.io/tag/YE7mCvrHb/" class="tag">linux</a>
+                
+              </span>
+              <h1>linux安装jenkins</h1>
+              <span class="meta">
+                Posted on
+                2022-06-13，2 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/MN_sOyfo3.png" alt="封面图">
+          </img>
+          
+          <h3 id="1-安装jdk">1、安装JDK</h3>
+<pre><code class="language-shell">yum install -y java
+</code></pre>
+<h3 id="2-安装jenkins">2、安装jenkins</h3>
+<p><strong>添加Jenkins库到yum库，Jenkins将从这里下载安装。</strong></p>
+<pre><code class="language-shell">wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+
+rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+
+yum install -y jenkins
+或
+yum install jenkins -y --nogpgcheck
+</code></pre>
+<h3 id="3-修改jenkins端口">3、修改jenkins端口</h3>
+<pre><code>[root@tools ~]# rpm -qa | grep jenkins
+jenkins-2.340-1.1.noarch
+</code></pre>
+<pre><code>[root@tools ~]# rpm -ql jenkins-2.340-1.1.noarch
+/etc/init.d/jenkins
+/etc/logrotate.d/jenkins
+/etc/sysconfig/jenkins
+/usr/bin/jenkins
+/usr/lib/systemd/system/jenkins.service
+/usr/sbin/rcjenkins
+/usr/share/java/jenkins.war
+/usr/share/jenkins
+/usr/share/jenkins/migrate
+/var/cache/jenkins
+/var/lib/jenkins
+/var/log/jenkins
+</code></pre>
+<pre><code>[root@tools ~]# vim /usr/lib/systemd/system/jenkins.service
+vi /etc/sysconfig/jenkins
+
+找到修改端口号：
+JENKINS_PORT=“9000” #此端口不冲突可以不修改
+</code></pre>
+<h3 id="4-启动jenkins">4、启动jenkins</h3>
+<pre><code>systemctl start jenkins.service
+</code></pre>
+<pre><code>[root@tools ~]# netstat -nultp
+</code></pre>
+<blockquote>
+<p>安装成功后Jenkins将作为一个守护进程随系统启动<br>
+系统会创建一个“jenkins”用户来允许这个服务，如果改变服务所有者，同时需要修改/var/log/jenkins, /var/lib/jenkins, 和/var/cache/jenkins的所有者<br>
+启动的时候将从/etc/sysconfig/jenkins获取配置参数<br>
+默认情况下，Jenkins运行在8080端口，在浏览器中直接访问该端进行服务配置<br>
+Jenkins的RPM仓库配置被加到/etc/yum.repos.d/jenkins.repo</p>
+</blockquote>
+<h3 id="5-打开jenkins">5、打开jenkins</h3>
+<p>在浏览器中访问 http://192.168.3.200:9000/<br>
+首次进入会要求输入初始密码</p>
+<p>初始密码在：/var/lib/jenkins/secrets/initialAdminPassword</p>
+<p>重置密码：admin/admin</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-%E5%AE%89%E8%A3%85jdk">1、安装JDK</a></li>
+<li><a href="#2-%E5%AE%89%E8%A3%85jenkins">2、安装jenkins</a></li>
+<li><a href="#3-%E4%BF%AE%E6%94%B9jenkins%E7%AB%AF%E5%8F%A3">3、修改jenkins端口</a></li>
+<li><a href="#4-%E5%90%AF%E5%8A%A8jenkins">4、启动jenkins</a></li>
+<li><a href="#5-%E6%89%93%E5%BC%80jenkins">5、打开jenkins</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/McgbXRFnx/">
+                  <span class="post-title">
+                    k8s高可用集群搭建&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/XMNtsw8ig/">
+                   <span class="post-title">
+                     linux安装node&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

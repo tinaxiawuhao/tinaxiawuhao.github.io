@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>前端简单部署 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="前端简单部署 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="前端简单部署" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/KEyilqyTn/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/0rUbbWww3/" class="tag">jenkins</a>
+                
+                <a href="https://tinaxiawuhao.github.io/tag/aRa4ue2uk/" class="tag">vue</a>
+                
+                <a href="https://tinaxiawuhao.github.io/tag/SlgJsbW6U/" class="tag">nginx</a>
+                
+                <a href="https://tinaxiawuhao.github.io/tag/axbwTxyHw/" class="tag">docker</a>
+                
+              </span>
+              <h1>前端简单部署</h1>
+              <span class="meta">
+                Posted on
+                2022-06-18，4 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/KEyilqyTn.png" alt="封面图">
+          </img>
+          
+          <p>部署前端项目，将打包后的文件dist放入nginx，基于nginx的基础镜像创建前端项目的docker镜像即可</p>
+<h3 id="一-前端项目的文件准备">一、前端项目的文件准备</h3>
+<h4 id="1-文件准备">1、文件准备：</h4>
+<pre><code class="language-shell">1,dockerfile(docker部署镜像打包文件)
+2,dist(待部署前端文件夹)
+3,default.conf
+</code></pre>
+<h4 id="2-dockerfile文件">2、Dockerfile文件：</h4>
+<pre><code class="language-shell">FROM nginx
+RUN rm /etc/nginx/conf.d/default.conf
+ADD default.conf /etc/nginx/conf.d/
+COPY dist/ /usr/share/nginx/html/
+EXPOSE 80
+</code></pre>
+<h4 id="3-defaultconf">3、default.conf：</h4>
+<pre><code class="language-shell">server {
+    listen       80;
+    server_name  localhost; # 修改为docker服务宿主机的ip
+  
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html =404;
+    }
+  
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+    
+    location /api/ {
+        proxy_pass http://后端服务名:IP端口;
+    }
+}
+</code></pre>
+<hr>
+<h3 id="二-vue项目的自动化部署">二、vue项目的自动化部署</h3>
+<h4 id="1-安装jenkins">1、安装Jenkins</h4>
+<blockquote>
+<p>Jenkins的安装：https://tinaxiawuhao.github.io/post/MN_sOyfo3/</p>
+</blockquote>
+<h4 id="2-安装nodenpmyarn">2、安装node/npm/yarn</h4>
+<blockquote>
+<p>安装node与node/npm/yarn：https://tinaxiawuhao.github.io/post/XMNtsw8ig/</p>
+</blockquote>
+<h4 id="3-jenkins中配置harbor仓库的密钥">3、Jenkins中配置harbor仓库的密钥</h4>
+<p>我们需要通过jenkinsfile文件推送docker镜像到指定的harbor仓库，需要在jenkins中配置仓库登录凭据</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1655524689375.png" alt="" loading="lazy"></figure>
+<h4 id="4-编写jenkinsfile">4、编写Jenkinsfile</h4>
+<pre><code>pipeline{
+    agent any
+ 
+    environment {
+        WS = &quot;${WORKSPACE}&quot;
+        HARBOR_URL=&quot;harbor的url&quot;
+        HARBOR_ID=&quot;harbor密钥&quot;
+    }
+ 
+    stages {
+        stage(&quot;环境检查&quot;){
+            steps {
+                sh 'docker version'
+                sh 'npm -v'
+                sh 'yarn -v'
+            }
+        }
+        stage('yarn安装与编译') {
+            steps {
+                sh &quot;echo ${WS} &amp;&amp; ls -alh&quot;
+                sh &quot;cd ${WS} &amp;&amp; yarn install&quot;
+                sh &quot;cd ${WS} &amp;&amp; yarn build:hd&quot;
+            }
+        }
+        stage('docker镜像与推送') {
+            steps {
+                sh &quot;cd ${WS} &amp;&amp; docker build -f Dockerfile -t ${HARBOR_URL}/test/web:latest .&quot;
+                withCredentials([usernamePassword(credentialsId: &quot;${HARBOR_ID}&quot;, passwordVariable: 'password', usernameVariable: 'username')]) {
+                    sh &quot;docker login -u ${username} -p ${password} ${HARBOR_URL}&quot;
+                    sh &quot;docker push ${HARBOR_URL}/test/web:latest&quot;
+                }
+            }
+        }
+         
+    }
+     post {
+        success {
+            echo 'success!'
+        }
+        failure {
+            echo 'failed...'
+        }
+    }
+}
+</code></pre>
+<p><strong>harbor密钥获取</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1655524703581.png" alt="" loading="lazy"></figure>
+<p>点进入刚才添加的凭证获取凭证</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1655524712540.png" alt="" loading="lazy"></figure>
+<p>最后创建一个pipeline项目（可选择Pipeline或者多分支流水线），pipeline脚本定义选择Pipeline script from SCM，选择git项目</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1655524732059.png" alt="" loading="lazy"></figure>
+<p>修改关注分支</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1655524738660.png" alt="" loading="lazy"></figure>
+<h3 id="三-模仿后端实现环境变量注入">三、模仿后端实现环境变量注入</h3>
+<p><strong>借助Nginx1.19以后docker镜像的template新功能，可以实现配置文件环境变量的动态注入</strong></p>
+<h4 id="1-准备-defaultconftemplate">1、准备 default.conf.template：</h4>
+<pre><code class="language-shell">server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost; # 修改为docker服务宿主机的ip
+ 
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        ssi on;
+        try_files $uri $uri/ /index.html;
+        if ($request_filename ~* ^.*?\.(eot)|(ttf)|(woff)|(svg)|(otf)$) {
+            add_header Access-Control-Allow-Origin *;
+        }
+    }
+ 
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+ 
+    location /api/ {
+        ssi on;  # 借助ssi
+        proxy_pass ${BACKEND_SERVICE_URL};
+    }
+}
+</code></pre>
+<h4 id="2-编写dockerfile文件">2、编写Dockerfile文件：</h4>
+<pre><code class="language-shell">FROM nginx:1.21
+COPY dist /usr/share/nginx/html
+# 注意和上面文件对比位置的改变
+COPY default.conf.template /etc/nginx/templates/
+EXPOSE 80
+</code></pre>
+<h4 id="3-设置环境变量">3、设置环境变量</h4>
+<p>部署docker时候，设置环境变量-e BACKEND_SERVICE_URL= http://ip:port  后，实际的nginx配置就变为了：</p>
+<blockquote>
+<p>$BACKEND_SERVICE_URL = http://ip:port #后端服务的地址；</p>
+</blockquote>
+<pre><code class="language-shell">server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost; # 修改为docker服务宿主机的ip
+ 
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        ssi on;
+        try_files $uri $uri/ /index.html;
+        if ($request_filename ~* ^.*?\.(eot)|(ttf)|(woff)|(svg)|(otf)$) {
+            add_header Access-Control-Allow-Origin *;
+        }
+    }
+ 
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+ 
+    location /api/ {
+        ssi on;  # 借助ssi
+        proxy_pass  http://ip:port;
+    }
+}
+</code></pre>
+<p>切换服务就可以修改环境变量，切换不同的服务后端</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%96%87%E4%BB%B6%E5%87%86%E5%A4%87">一、前端项目的文件准备</a>
+<ul>
+<li><a href="#1-%E6%96%87%E4%BB%B6%E5%87%86%E5%A4%87">1、文件准备：</a></li>
+<li><a href="#2-dockerfile%E6%96%87%E4%BB%B6">2、Dockerfile文件：</a></li>
+<li><a href="#3-defaultconf">3、default.conf：</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-vue%E9%A1%B9%E7%9B%AE%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2">二、vue项目的自动化部署</a>
+<ul>
+<li><a href="#1-%E5%AE%89%E8%A3%85jenkins">1、安装Jenkins</a></li>
+<li><a href="#2-%E5%AE%89%E8%A3%85nodenpmyarn">2、安装node/npm/yarn</a></li>
+<li><a href="#3-jenkins%E4%B8%AD%E9%85%8D%E7%BD%AEharbor%E4%BB%93%E5%BA%93%E7%9A%84%E5%AF%86%E9%92%A5">3、Jenkins中配置harbor仓库的密钥</a></li>
+<li><a href="#4-%E7%BC%96%E5%86%99jenkinsfile">4、编写Jenkinsfile</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E6%A8%A1%E4%BB%BF%E5%90%8E%E7%AB%AF%E5%AE%9E%E7%8E%B0%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%B3%A8%E5%85%A5">三、模仿后端实现环境变量注入</a>
+<ul>
+<li><a href="#1-%E5%87%86%E5%A4%87-defaultconftemplate">1、准备 default.conf.template：</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99dockerfile%E6%96%87%E4%BB%B6">2、编写Dockerfile文件：</a></li>
+<li><a href="#3-%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">3、设置环境变量</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/ymh_BwIfn/">
+                  <span class="post-title">
+                    gitlab提交代码自动触发Jenkins构建操作&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
