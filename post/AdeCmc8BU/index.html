@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -352,7 +352,7 @@
   }
  
 </code></pre>
-<p>**注意：**对于多字查询，该<code>match</code>查询使您可以指定是否使用<code>and</code>运算符而不是默认<code>or</code>运算符。您还可以指定<code>minimum_should_match</code>选项来调整返回结果的相关性。可以在<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/match-multi-word.html">这里</a>找到详细信息。</p>
+<p><strong>注意</strong>：对于多字查询，该<code>match</code>查询使您可以指定是否使用<code>and</code>运算符而不是默认<code>or</code>运算符。您还可以指定<code>minimum_should_match</code>选项来调整返回结果的相关性。可以在<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/match-multi-word.html">这里</a>找到详细信息。</p>
 <h3 id="2多字段搜索">2.多字段搜索</h3>
 <p>正如我们已经看到的，要在搜索中查询多个文档字段（例如，在标题和摘要中搜索相同的查询字符串），则可以使用该<code>multi_match</code>查询。</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -478,7 +478,7 @@
     ]
  
 </code></pre>
-<p><strong>注意：</strong> Boosting不仅仅意味着计算出的分数会乘以Boosting系数。实际应用的升压值经过归一化和一些内部优化。有关增强工作原理的更多信息，请参见 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/query-time-boosting.html">Elasticsearch指南</a>。</p>
+<p><strong>注意</strong> ：Boosting不仅仅意味着计算出的分数会乘以Boosting系数。实际应用的升压值经过归一化和一些内部优化。有关增强工作原理的更多信息，请参见 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/query-time-boosting.html">Elasticsearch指南</a>。</p>
 <h3 id="4布尔查询">4.布尔查询</h3>
 <p>AND / OR / NOT运算符可用于微调我们的搜索查询，以提供更相关或更具体的结果。这是在搜索API中作为<code>bool</code>查询实现的。该<code>bool</code>查询接受一个<code>must</code>参数（等同于AND），一个<code>must_not</code>参数（等同于NOT）和一个<code>should</code>参数（等同于OR）。例如，如果我要搜索书名中带有“ Elasticsearch”或“ Solr”字样的书，则AND由“克林顿·戈姆利”（clinton gormley）创作，而不由“ radu gheorge”（radu gheorge）创作：</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -518,7 +518,7 @@
     ]
  
 </code></pre>
-<p>**注意：**如您所见，布尔查询可以包装任何其他查询类型，包括其他布尔查询，以创建任意复杂或深度嵌套的查询。</p>
+<p><strong>注意</strong>：如您所见，布尔查询可以包装任何其他查询类型，包括其他布尔查询，以创建任意复杂或深度嵌套的查询。</p>
 <h3 id="5模糊查询">5.模糊查询</h3>
 <p>可以在“匹配”和“多匹配”查询中启用模糊匹配，以捕获拼写错误。模糊程度是根据距原始单词的Levenshtein距离指定的。</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -550,7 +550,7 @@
     ]
  
 </code></pre>
-<p>**注意：**模糊度值<code>&quot;AUTO&quot;</code>等于指定<code>2</code>术语长度大于5时的值。但是，设置80％的人类拼写错误的编辑距离为<code>1</code>，并将模糊度设置为<code>1</code>可以改善整体搜索性能。有关更多信息，请参见《Elasticsearch最终指南》的“<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzziness.html">错别字和拼写错误”</a>一章。</p>
+<p><strong>注意</strong>：模糊度值<code>&quot;AUTO&quot;</code>等于指定<code>2</code>术语长度大于5时的值。但是，设置80％的人类拼写错误的编辑距离为<code>1</code>，并将模糊度设置为<code>1</code>可以改善整体搜索性能。有关更多信息，请参见《Elasticsearch最终指南》的“<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzziness.html">错别字和拼写错误”</a>一章。</p>
 <h3 id="6通配符查询">6.通配符查询</h3>
 <p>通配符查询使您可以指定要匹配的模式，而不是整个术语。<code>?</code>匹配任何字符并<code>*</code>匹配零个或多个字符。例如，要查找所有作者姓名以字母“ t”开头的记录</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -712,7 +712,7 @@
     ]
  
 </code></pre>
-<p>**注意：**在上面的示例中，对于非短语类型查询，文档的<code>_id 1</code>得分通常更高，并且<code>_id 4</code>由于其字段长度较短而出现在文档的前面。但是，在进行短语查询时，会考虑到术语的接近度，因此文档<code>_id 4</code>得分会更高。</p>
+<p><strong>注意</strong>：在上面的示例中，对于非短语类型查询，文档的<code>_id 1</code>得分通常更高，并且<code>_id 4</code>由于其字段长度较短而出现在文档的前面。但是，在进行短语查询时，会考虑到术语的接近度，因此文档<code>_id 4</code>得分会更高。</p>
 <h3 id="9匹配词组前缀">9.匹配词组前缀</h3>
 <p>匹配词组前缀查询可在查询时提供“按需输入”或“穷人”版本的自动完成功能，而无需以任何方式准备数据。像match_phrase查询一样，它接受一个<code>slop</code>参数以使单词顺序和相对位置的刚性降低一些。我还接受该<code>max_expansions</code>参数来限制匹配项的数量，以降低资源强度。</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -756,7 +756,7 @@
     ]
  
 </code></pre>
-<p>**注意：“**按类型查询时搜索”会降低性能。更好的解决方案是按类型进行索引时间搜索。请查看<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters-completion.html">完成提示API</a>或使用<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/_index_time_search_as_you_type.html">Edge-Ngram过滤器</a>以获取更多信息。</p>
+<p><strong>注意</strong>：“按类型查询时搜索”会降低性能。更好的解决方案是按类型进行索引时间搜索。请查看<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters-completion.html">完成提示API</a>或使用<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/_index_time_search_as_you_type.html">Edge-Ngram过滤器</a>以获取更多信息。</p>
 <h3 id="10请求参数">10.请求参数</h3>
 <p>该<code>query_string</code>查询提供了一种以简洁的速记语法执行多重匹配查询，布尔查询，增强查询，模糊匹配，通配符，正则表达式和范围查询的方法。在下面的示例中，我们对术语“ saerch算法”执行模糊搜索，其中作者之一是“ grant ingersoll”或“ tom morton”。我们搜索所有字段，但对摘要字段加2。</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -987,7 +987,7 @@
     ]
  
 </code></pre>
-<p>**注意：**范围查询适用于日期，数字和字符串类型字段。</p>
+<p><strong>注意</strong>：范围查询适用于日期，数字和字符串类型字段。</p>
 <h3 id="15过滤查询">15.过滤查询</h3>
 <p>筛选查询允许您筛选查询结果。对于我们的示例，我们正在查询标题或摘要中带有“ Elasticsearch”一词的图书，但我们希望将搜索结果过滤为仅包含20条或更多评论的图书。</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -1177,8 +1177,8 @@
     ]
  
 </code></pre>
-<p>**注意1：**我们本来可以运行常规<code>multi_match</code>查询并按num_reviews字段进行排序，但是这样就失去了进行相关性评分的好处。<br>
-**注意2：**还有许多其他参数可以调整对原始相关性得分的增强效果，例如“修饰符”，“因子”，“ boost_mode”等。这些参数在<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/boosting-by-popularity.html">Elasticsearch指南</a>中进行了详细探讨。</p>
+<p><strong>注意1</strong>：我们本来可以运行常规<code>multi_match</code>查询并按num_reviews字段进行排序，但是这样就失去了进行相关性评分的好处。<br>
+<strong>注意2</strong>：还有许多其他参数可以调整对原始相关性得分的增强效果，例如“修饰符”，“因子”，“ boost_mode”等。这些参数在<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/boosting-by-popularity.html">Elasticsearch指南</a>中进行了详细探讨。</p>
 <h3 id="18作用分值衰减功能">18.作用分值：衰减功能</h3>
 <p>假设您不想以某个字段的值递增，而希望拥有理想的目标值，并且希望该增益因子随着距离该值的增加而衰减。这通常在基于纬度/经度，价格或日期等数字字段的提升中很有用。在我们精心设计的示例中，我们正在搜索理想情况下于2014年6月左右出版的“搜索引擎”书籍。</p>
 <pre><code class="language-java">POST /bookdb_index/book/_search
@@ -1358,8 +1358,8 @@ return my_score
   }
  
 </code></pre>
-<p>**注意1：**要使用动态脚本，必须为<code>config/elasticsearch.yaml</code>文件中的Elasticsearch实例启用动态脚本。也可以使用存储在Elasticsearch服务器上的脚本。查阅<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting.html">Elasticsearch参考文档</a>了解更多信息。</p>
-<p><strong>注意2：</strong> JSON无法包含嵌入的换行符，因此分号用于分隔语句。</p>
+<p><strong>注意1</strong>：要使用动态脚本，必须为<code>config/elasticsearch.yaml</code>文件中的Elasticsearch实例启用动态脚本。也可以使用存储在Elasticsearch服务器上的脚本。查阅<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting.html">Elasticsearch参考文档</a>了解更多信息。</p>
+<p><strong>注意2</strong> ：JSON无法包含嵌入的换行符，因此分号用于分隔语句。</p>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>

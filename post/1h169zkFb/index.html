@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>ClickHouse-3数据类型 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="ClickHouse-3数据类型 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="ClickHouse-3数据类型" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/1h169zkFb/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RW2qYs4AY/" class="tag">clickhouse</a>
+                
+              </span>
+              <h1>ClickHouse-3数据类型</h1>
+              <span class="meta">
+                Posted on
+                2021-11-14，5 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/1h169zkFb.png" alt="封面图">
+          </img>
+          
+          <h3 id="1-整型">1. 整型</h3>
+<p>固定长度的整型，包括 有符号整型(有正有负) 或 无符号整型。</p>
+<p><strong>类比 Java 类型：</strong></p>
+<table>
+<thead>
+<tr>
+<th>CH类型</th>
+<th>Java类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>整型范围（-2n-1~2n-1-1）</td>
+<td></td>
+</tr>
+<tr>
+<td>Int8 - [-128 : 127]</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>Int16 - [-32768 : 32767]</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>Int32 - [-2147483648 : 2147483647]</td>
+<td>Int</td>
+</tr>
+<tr>
+<td>Int64 - [-9223372036854775808 : 9223372036854775807]</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>无符号整型范围（0~2n-1）</td>
+<td></td>
+</tr>
+<tr>
+<td>UInt8 - [0 : 255]</td>
+<td></td>
+</tr>
+<tr>
+<td>UInt16 - [0 : 65535]</td>
+<td></td>
+</tr>
+<tr>
+<td>UInt32 - [0 : 4294967295]</td>
+<td></td>
+</tr>
+<tr>
+<td>UInt64 - [0 : 18446744073709551615]</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>后面的数组就代表位数</p>
+<p>使用场景： 个数、数量、也可以存储型 id。</p>
+<h3 id="2-浮点型">2. 浮点型</h3>
+<p><strong>类比 Java 类型：</strong></p>
+<table>
+<thead>
+<tr>
+<th>CH类型</th>
+<th>Java类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Float32</td>
+<td>float</td>
+</tr>
+<tr>
+<td>Float64</td>
+<td>double</td>
+</tr>
+</tbody>
+</table>
+<p>建议尽可能以整数形式存储数据。例如，将固定精度的数字转换为整数值，如时间用毫秒为单位表示，因为浮点型进行计算时可能引起四舍五入的误差。</p>
+<p>使用场景：一般数据值比较小，不涉及大量的统计计算，精度要求不高的时候。比如保存商品的重量。</p>
+<h3 id="3-布尔型">3. 布尔型</h3>
+<p>没有单独的类型来存储布尔值。可以使用 UInt8 类型，取值限制为 0 或 1。</p>
+<h3 id="4-decimal-型">4. Decimal 型</h3>
+<p>有符号的浮点数，可在加、减和乘法运算过程中保持精度。对于除法，最低有效数字会被丢弃（不四舍五入）。</p>
+<blockquote>
+<p>有三种声明 (s 标识小数位)：</p>
+<p>Decimal32(s)， 即 一共有 8 位，其中小数部分占 s 位，相当于 Mysql - Decimal(9-s,s)<br>
+Decimal64(s)， 即 一共有 18 位，其中小数部分占 s 位，相当于 Decimal(18-s,s)<br>
+Decimal128(s)， 即 一共有 38位，其中小数部分占 s 位，相当于 Decimal(38-s,s)<br>
+使用场景： 一般金额字段、汇率、利率等字段为了保证小数点精度，都使用 Decimal进行存储。</p>
+</blockquote>
+<h3 id="5-字符串">5. 字符串</h3>
+<p><strong>String - 对应 Mysql - Varchar</strong><br>
+字符串可以任意长度的。它可以包含任意的字节集，包含空字节。</p>
+<p><strong>FixedString(N)</strong><br>
+固定长度 N 的字符串，N 必须是严格的正自然数。当服务端读取长度小于 N 的字符串时候，通过在字符串末尾添加空字节来达到 N 字节长度。 当服务端读取长度大于 N 的字符串时候，将返回错误消息。<br>
+与 String 相比，极少会使用 FixedString，因为使用起来不是很方便。</p>
+<p>使用场景：名称、文字描述、字符型编码。 固定长度的可以保存一些定长的内容，比如一些编码，性别等但是考虑到一定的变化风险，带来收益不够明显，所以定长字符串使用意义有限。</p>
+<h3 id="6-枚举类型">6. 枚举类型</h3>
+<p>包括 Enum8 和 Enum16 类型。Enum 保存 ‘string’= integer 的对应关系。</p>
+<blockquote>
+<p>Enum8 用 ‘String’= Int8 对描述。<br>
+Enum16 用 ‘String’= Int16 对描述。</p>
+</blockquote>
+<p>创建一个带有一个枚举 Enum8(‘hello’ = 1, ‘world’ = 2) 类型的列</p>
+<pre><code class="language-sql">CREATE TABLE t_enum
+(
+	x Enum8('hello' = 1, 'world' = 2)
+)
+ENGINE = TinyLog;
+</code></pre>
+<p>这个 x 列只能存储类型定义中列出的值：‘hello’或’world’</p>
+<pre><code class="language-shell">INSERT INTO t_enum VALUES ('hello'), ('world'), ('hello');
+</code></pre>
+<p>如果尝试保存任何其他值，ClickHouse 抛出异常</p>
+<pre><code class="language-shell">insert into t_enum values('a')
+</code></pre>
+<p>如果需要看到对应行的数值，则必须将 Enum 值转换为整数类型</p>
+<pre><code class="language-shell">SELECT CAST(x, 'Int8') FROM t_enum;
+</code></pre>
+<p>使用场景：对一些状态、类型的字段算是一种空间优化，也算是一种数据约束。但是实际使用中往往因为一些数据内容的变化增加一定的维护成本，甚至是数据丢失问题。所以谨慎使用。</p>
+<h3 id="7-时间类型">7. 时间类型</h3>
+<p>目前 ClickHouse 有三种时间类型</p>
+<blockquote>
+<p>Date 接受年-月-日的字符串比如 ‘2019-12-16’<br>
+Datetime 接受年-月-日 时:分:秒的字符串比如 ‘2019-12-16 20:50:10’<br>
+Datetime64 接受年-月-日 时:分:秒.亚秒的字符串比如‘2019-12-16 20:50:10.66’<br>
+日期类型，用两个字节存储，表示从 1970-01-01 (无符号) 到当前的日期值。</p>
+</blockquote>
+<h3 id="8-数组">8. 数组</h3>
+<p>Array(T)：由 T 类型元素组成的数组。<br>
+T 可以是任意类型，包含数组类型。 但不推荐使用多维数组，ClickHouse 对多维数组的支持有限。例如，不能在 MergeTree 表中存储多维数组。</p>
+<p><strong>创建数组方式 1，使用 array 函数array(T)</strong></p>
+<pre><code class="language-shell">SELECT array(1, 2) AS x, toTypeName(x) ;
+</code></pre>
+<p><strong>创建数组方式 2：使用方括号[]</strong></p>
+<pre><code class="language-shell">SELECT [1, 2] AS x, toTypeName(x);
+</code></pre>
+<h3 id="9-其他">9. 其他</h3>
+<p>还有很多数据结构，可以参考官方文档：https://clickhouse.com/docs/zh/sql-reference/data-types/</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-%E6%95%B4%E5%9E%8B">1. 整型</a></li>
+<li><a href="#2-%E6%B5%AE%E7%82%B9%E5%9E%8B">2. 浮点型</a></li>
+<li><a href="#3-%E5%B8%83%E5%B0%94%E5%9E%8B">3. 布尔型</a></li>
+<li><a href="#4-decimal-%E5%9E%8B">4. Decimal 型</a></li>
+<li><a href="#5-%E5%AD%97%E7%AC%A6%E4%B8%B2">5. 字符串</a></li>
+<li><a href="#6-%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B">6. 枚举类型</a></li>
+<li><a href="#7-%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B">7. 时间类型</a></li>
+<li><a href="#8-%E6%95%B0%E7%BB%84">8. 数组</a></li>
+<li><a href="#9-%E5%85%B6%E4%BB%96">9. 其他</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/BBgY7nkHa/">
+                  <span class="post-title">
+                    Docker安装clickhouse&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/XvNkKhwMg/">
+                   <span class="post-title">
+                     ClickHouse-4表引擎&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

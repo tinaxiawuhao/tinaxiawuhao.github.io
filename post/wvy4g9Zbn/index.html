@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -184,7 +184,7 @@
 <ol>
 <li>单reactor多线程工作原理图</li>
 </ol>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1632969385152.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656503549678.png" alt="" loading="lazy"></figure>
 <blockquote>
 <p>（1） reactor对象通过select监控客户端请求事件，收到事件后，通过dispatch进行分发</p>
 </blockquote>
@@ -210,10 +210,10 @@
 <blockquote>
 <p>（2） 多线程数据共享和访问比较复杂 ，reactor处理了所有的事件监听和响应，而且是在单线程中运行，在高并发场景容易出现性能瓶颈</p>
 </blockquote>
-<ol start="3">
+<ol>
 <li>主从reactor多线程工作原理图</li>
 </ol>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1632969541257.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1656503563223.png" alt="" loading="lazy"></figure>
 <blockquote>
 <p>（1）Reactor主线程MainReactor对象通过select监听连接事件，收到连接事件后，通过Acceptor处理连接事件</p>
 </blockquote>

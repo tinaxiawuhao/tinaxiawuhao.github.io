@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1655527476959"
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -172,7 +172,7 @@
           </img>
           
           <h3 id="io操作">IO操作</h3>
-<pre><code>CopyIO分两阶段（一旦拿到数据后就变成了数据操作，不再是IO）：
+<pre><code>IO分两阶段（一旦拿到数据后就变成了数据操作，不再是IO）：
     1.数据准备阶段
     2.内核空间复制数据到用户进程缓冲区（用户空间）阶段
 
@@ -191,7 +191,7 @@
 </code></pre>
 <figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1632709893088.png" alt="" loading="lazy"></figure>
 <h3 id="同步和异步io-阻塞和非阻塞io">同步和异步IO 阻塞和非阻塞IO</h3>
-<pre><code>Copy同步和异步IO的概念：
+<pre><code>同步和异步IO的概念：
 
 	同步是用户线程发起I/O请求后需要等待或者轮询内核I/O操作完成后才能继续执行
 
@@ -205,14 +205,14 @@
 </code></pre>
 <figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1632709914348.png" alt="" loading="lazy"></figure>
 <h3 id="同步与异步线程间调用">同步与异步（线程间调用）</h3>
-<pre><code>Copy同步与异步是对应于调用者与被调用者，它们是线程之间的关系，两个线程之间要么是同步的，要么是异步的
+<pre><code>同步与异步是对应于调用者与被调用者，它们是线程之间的关系，两个线程之间要么是同步的，要么是异步的
 
 	同步操作时，调用者需要等待被调用者返回结果，才会进行下一步操作
 
 	而异步则相反，调用者不需要等待被调用者返回调用，即可进行下一步操作，被调用者通常依靠事件、回调等机制来通知调用者结果
 </code></pre>
 <h3 id="阻塞与非阻塞线程内调用">阻塞与非阻塞（线程内调用）</h3>
-<pre><code>Copy阻塞与非阻塞是对同一个线程来说的，在某个时刻，线程要么处于阻塞，要么处于非阻塞
+<pre><code>阻塞与非阻塞是对同一个线程来说的，在某个时刻，线程要么处于阻塞，要么处于非阻塞
 
 
 阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态：
@@ -222,7 +222,7 @@
     非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程。
 </code></pre>
 <h3 id="同步与异步调用线程通信">同步与异步调用/线程/通信</h3>
-<pre><code>Copy同步就是两种东西通过一种机制实现步调一致，异步是两种东西不必步调一致
+<pre><code>同步就是两种东西通过一种机制实现步调一致，异步是两种东西不必步调一致
 
 
 一、同步调用与异步调用：
@@ -257,7 +257,7 @@
 同步是两个对象之间的关系，而阻塞是一个对象的状态。
 </code></pre>
 <h3 id="四种组合方式">四种组合方式</h3>
-<pre><code>Copy同步阻塞方式：
+<pre><code>同步阻塞方式：
     发送方发送请求之后一直等待响应。
     接收方处理请求时进行的IO操作如果不能马上等到返回结果，就一直等到返回结果后，才响应发送方，期间不能进行其他工作。
 

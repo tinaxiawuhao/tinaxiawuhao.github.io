@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>CountDownLatch,CyclicBarrier,Semaphore的用法和区别 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="CountDownLatch,CyclicBarrier,Semaphore的用法和区别 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="CountDownLatch,CyclicBarrier,Semaphore的用法和区别" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/bPYM5y-vS/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>CountDownLatch,CyclicBarrier,Semaphore的用法和区别</h1>
+              <span class="meta">
+                Posted on
+                2022-04-20，14 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/bPYM5y-vS.png" alt="封面图">
+          </img>
+          
+          <h3 id="countdownlatch">CountDownLatch</h3>
+<blockquote>
+<p>CountDownLatch（也叫闭锁）是一个同步协助类，允许一个或多个线程等待，直到其他线程完成操作集。</p>
+</blockquote>
+<p>CountDownLatch 使用给定的计数值（count）初始化。await 方法会阻塞直到当前的计数值（count）由于 countDown 方法的调用达到 0，count 为 0 之后所有等待的线程都会被释放，并且随后对await方法的调用都会立即返回。</p>
+<h4 id="构造方法">构造方法</h4>
+<pre><code class="language-java">//参数count为计数值
+public CountDownLatch(int count) {}; 
+</code></pre>
+<h4 id="常用方法">常用方法</h4>
+<pre><code class="language-java">// 调用 await() 方法的线程会被挂起，它会等待直到 count 值为 0 才继续执行
+public void await() throws InterruptedException {};
+
+// 和 await() 类似，若等待 timeout 时长后，count 值还是没有变为 0，不再等待，继续执行
+public boolean await(long timeout, TimeUnit unit) throws InterruptedException {};
+
+// 会将 count 减 1，直至为 0
+public void countDown() {};
+</code></pre>
+<h4 id="使用案例">使用案例</h4>
+<blockquote>
+<p>首先是创建实例 CountDownLatch countDown = new CountDownLatch(2)；<br>
+需要同步的线程执行完之后，计数 -1， countDown.countDown()；<br>
+需要等待其他线程执行完毕之后，再运行的线程，调用 countDown.await()实现阻塞同步。</p>
+</blockquote>
+<p><strong>应用场景</strong><br>
+CountDownLatch 一般用作多线程倒计时计数器，强制它们等待其他一组（CountDownLatch的初始化决定）任务执行完成。</p>
+<p>CountDownLatch的两种使用场景：</p>
+<blockquote>
+<p>让多个线程等待，模拟并发。<br>
+让单个线程等待，多个线程（任务）完成后，进行汇总合并。</p>
+</blockquote>
+<p><strong>场景 1：模拟并发</strong></p>
+<pre><code class="language-java">import java.util.concurrent.CountDownLatch;
+
+/**
+ * 让多个线程等待：模拟并发，让并发线程一起执行
+ */
+public class CountDownLatchTest {
+    public static void main(String[] args) throws InterruptedException {
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        
+        for (int i = 0; i &lt; 5; i++) {
+            new Thread(() -&gt; {
+                try {
+                    // 等待
+                    countDownLatch.await();
+                    String parter = &quot;【&quot; + Thread.currentThread().getName() + &quot;】&quot;;
+                    System.out.println(parter + &quot;开始执行……&quot;);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+        Thread.sleep(2000);
+       
+        countDownLatch.countDown();
+    }
+}
+</code></pre>
+<p><strong>场景 2：多个线程完成后，进行汇总合并</strong></p>
+<p>很多时候，我们的并发任务，存在前后依赖关系；比如数据详情页需要同时调用多个接口获取数据，并发请求获取到数据后、需要进行结果合并；或者多个数据操作完成后，需要数据 check；这其实都是：在多个线程(任务)完成后，进行汇总合并的场景。</p>
+<pre><code class="language-java">import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+
+/**
+ * 让单个线程等待：多个线程(任务)完成后，进行汇总合并
+ */
+public class CountDownLatchTest3 {
+
+    //用于聚合所有的统计指标
+    private static Map map = new ConcurrentHashMap();
+    //创建计数器，这里需要统计4个指标
+    private static CountDownLatch countDownLatch = new CountDownLatch(4);
+
+    public static void main(String[] args) throws Exception {
+
+        //记录开始时间
+        long startTime = System.currentTimeMillis();
+
+        Thread countUserThread = new Thread(() -&gt; {
+            try {
+                System.out.println(&quot;正在统计新增用户数量&quot;);
+                Thread.sleep(3000);//任务执行需要3秒
+                map.put(&quot;userNumber&quot;, 100);//保存结果值
+                System.out.println(&quot;统计新增用户数量完毕&quot;);
+                countDownLatch.countDown();//标记已经完成一个任务
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        Thread countOrderThread = new Thread(() -&gt; {
+            try {
+                System.out.println(&quot;正在统计订单数量&quot;);
+                Thread.sleep(3000);//任务执行需要3秒
+                map.put(&quot;countOrder&quot;, 20);//保存结果值
+                System.out.println(&quot;统计订单数量完毕&quot;);
+                countDownLatch.countDown();//标记已经完成一个任务
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Thread countGoodsThread = new Thread(() -&gt; {
+            try {
+                System.out.println(&quot;正在商品销量&quot;);
+                Thread.sleep(3000);//任务执行需要3秒
+                map.put(&quot;countGoods&quot;, 300);//保存结果值
+                System.out.println(&quot;统计商品销量完毕&quot;);
+                countDownLatch.countDown();//标记已经完成一个任务
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Thread countmoneyThread = new Thread(() -&gt; {
+            try {
+                System.out.println(&quot;正在总销售额&quot;);
+                Thread.sleep(3000);//任务执行需要3秒
+                map.put(&quot;countMoney&quot;, 40000);//保存结果值
+                System.out.println(&quot;统计销售额完毕&quot;);
+                countDownLatch.countDown();//标记已经完成一个任务
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        //启动子线程执行任务
+        countUserThread.start();
+        countGoodsThread.start();
+        countOrderThread.start();
+        countmoneyThread.start();
+
+        try {
+            //主线程等待所有统计指标执行完毕
+            countDownLatch.await();
+            long endTime = System.currentTimeMillis();//记录结束时间
+            System.out.println(&quot;------统计指标全部完成--------&quot;);
+            System.out.println(&quot;统计结果为：&quot; + map);
+            System.out.println(&quot;任务总执行时间为&quot; + (endTime - startTime) + &quot;ms&quot;);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+</code></pre>
+<h3 id="cylicbarrier">CylicBarrier</h3>
+<p>从字面上的意思可以知道，这个类的中文意思是“循环栅栏”。大概的意思就是一个可循环利用的屏障。</p>
+<p>它的作用就是会让所有线程都等待完成后才会继续下一步行动。</p>
+<p>现实生活中我们经常会遇到这样的情景，在进行某个活动前需要等待人全部都齐了才开始。例如吃饭时要等全家人都上座了才动筷子，旅游时要等全部人都到齐了才出发，比赛时要等运动员都上场后才开始。</p>
+<p>在<code>JUC</code>包中为我们提供了一个同步工具类能够很好的模拟这类场景，它就是<code>CyclicBarrier</code>类。利用<code>CyclicBarrier</code>类可以实现一组线程相互等待，当所有线程都到达某个屏障点后再进行后续的操作。</p>
+<p><code>CyclicBarrier</code>字面意思是“可重复使用的栅栏”，<code>CyclicBarrier</code>相比 <code>CountDownLatch</code>来说，要简单很多，其源码没有什么高深的地方，它是 <code>ReentrantLock</code> 和 <code>Condition</code> 的组合使用。</p>
+<p>看如下示意图，<code>CyclicBarrier</code> 和 <code>CountDownLatch</code> 是不是很像，只是 <code>CyclicBarrier</code> 可以有不止一个栅栏，因为它的栅栏（Barrier）可以重复使用（Cyclic）。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1656504599018.png" alt="" loading="lazy"></figure>
+<p>就好比以前的那种客车一样，当第一轮车坐满之后发车，然后接着等第二辆车坐满之后在发车。</p>
+<h4 id="构造方法-2">构造方法</h4>
+<pre><code class="language-java">// parties表示屏障拦截的线程数量，每个线程调用 await 方法告诉 CyclicBarrier 我已经到达了屏障，然后当前线程被阻塞。
+public CyclicBarrier(int parties)
+    
+// 用于在线程到达屏障时，优先执行 barrierAction，方便处理更复杂的业务场景(该线程的执行时机是在到达屏障之后再执行)
+public CyclicBarrier(int parties, Runnable barrierAction)
+</code></pre>
+<h4 id="常用方法-2">常用方法</h4>
+<pre><code class="language-java">//屏障 指定数量的线程全部调用await()方法时，这些线程不再阻塞
+// BrokenBarrierException 表示栅栏已经被破坏，破坏的原因可能是其中一个线程 await() 时被中断或者超时
+public int await() throws InterruptedException, BrokenBarrierException
+    
+public int await(long timeout, TimeUnit unit) throws InterruptedException, B
+rokenBarrierException, TimeoutException
+    
+//循环 通过reset()方法可以进行重置
+public void reset()
+</code></pre>
+<h4 id="使用案例-2">使用案例</h4>
+<pre><code class="language-java">import java.util.concurrent.CyclicBarrier;
+
+/**
+ * CyclicBarrier(回环栅栏)允许一组线程互相等待，直到到达某个公共屏障点 (Common Barrier Point)
+ * CountDownLatch 用于等待countDown事件，而栅栏用于等待其他线程。
+ */
+public class CyclicBarrierTest {
+
+    public static void main(String[] args) {
+
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
+
+        for (int i = 0; i &lt; 5; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(Thread.currentThread().getName()
+                                + &quot;开始等待其他线程&quot;);
+                        cyclicBarrier.await();
+                        System.out.println(Thread.currentThread().getName() + &quot;开始执行&quot;);
+                        //TODO 模拟业务处理
+                        Thread.sleep(5000);
+                        System.out.println(Thread.currentThread().getName() + &quot;执行完毕&quot;);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+    }
+}
+</code></pre>
+<p><strong>应用场景</strong><br>
+可以用于多线程计算数据，最后合并计算结果的场景。</p>
+<pre><code class="language-java">import java.util.Set;
+import java.util.concurrent.*;
+
+public class CyclicBarrierTest2 {
+
+    //保存每个学生的平均成绩
+    private ConcurrentHashMap&lt;String, Integer&gt; map = new ConcurrentHashMap&lt;String, Integer&gt;();
+
+    private ExecutorService threadPool = Executors.newFixedThreadPool(3);
+
+    private CyclicBarrier cb = new CyclicBarrier(3, () -&gt; {
+        int result = 0;
+        Set&lt;String&gt; set = map.keySet();
+        for (String s : set) {
+            result += map.get(s);
+        }
+        System.out.println(&quot;三人平均成绩为:&quot; + (result / 3) + &quot;分&quot;);
+    });
+
+
+    public void count() {
+        for (int i = 0; i &lt; 3; i++) {
+            threadPool.execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    //获取学生平均成绩
+                    int score = (int) (Math.random() * 40 + 60);
+                    map.put(Thread.currentThread().getName(), score);
+                    System.out.println(Thread.currentThread().getName() + &quot;同学的平均成绩为：&quot; + score);
+                    try {
+                        //执行完运行await(),等待所有学生平均成绩都计算完毕
+                        cb.await();
+                    } catch (InterruptedException | BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+
+    public static void main(String[] args) {
+        CyclicBarrierTest2 cb = new CyclicBarrierTest2();
+        cb.count();
+    }
+}
+</code></pre>
+<p>测试结果：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656504516218.png" alt="" loading="lazy"></figure>
+<h3 id="semaphore">Semaphore</h3>
+<p>Semaphore，俗称信号量，基于 AbstractQueuedSynchronizer 实现。使用 Semaphore 可以控制同时访问资源的线程个数。</p>
+<p>比如：停车场入口立着的那个显示屏，每有一辆车进入停车场显示屏就会显示剩余车位减 1，每有一辆车从停车场出去，显示屏上显示的剩余车辆就会加 1，当显示屏上的剩余车位为 0 时，停车场入口的栏杆就不会再打开，车辆就无法进入停车场了，直到有一辆车从停车场出去为止。</p>
+<p>比如：在学生时代都去餐厅打过饭，假如有 3 个窗口可以打饭，同一时刻也只能有 3 名同学打饭。第 4 个人来了之后就必须在外面等着，只要有打饭的同学好了，就可以去相应的窗口了 。</p>
+<h4 id="构造方法-3">构造方法</h4>
+<pre><code class="language-java">//创建具有给定的许可数和非公平的公平设置的 Semaphore。  
+Semaphore(int permits)   
+
+//创建具有给定的许可数和给定的公平设置的 Semaphore。  
+Semaphore(int permits, boolean fair)   
+</code></pre>
+<blockquote>
+<p>permits 表示许可证的数量（资源数），就好比一个学生可以占用 3 个打饭窗口。<br>
+fair 表示公平性，如果这个设为 true 的话，下次执行的线程会是等待最久的线程。</p>
+</blockquote>
+<h4 id="常用方法-3">常用方法</h4>
+<pre><code class="language-java">public void acquire() throws InterruptedException
+public boolean tryAcquire()
+public void release()
+public int availablePermits()
+public final int getQueueLength()
+public final boolean hasQueuedThreads()
+protected void reducePermits(int reduction)
+protected Collection&lt;Thread&gt; getQueuedThreads()
+</code></pre>
+<blockquote>
+<p>acquire()：表示阻塞并获取许可。<br>
+tryAcquire()：方法在没有许可的情况下会立即返回 false，要获取许可的线程不会阻塞。<br>
+release()：表示释放许可。<br>
+int availablePermits()：返回此信号量中当前可用的许可证数。<br>
+int getQueueLength()：返回正在等待获取许可证的线程数。<br>
+boolean hasQueuedThreads()：是否有线程正在等待获取许可证。<br>
+void reducePermit(int reduction)：减少 reduction 个许可证。<br>
+Collection getQueuedThreads()：返回所有等待获取许可证的线程集合。</p>
+</blockquote>
+<h4 id="使用案例-3">使用案例</h4>
+<p>我们可以模拟车站买票，假如车站有 3 个窗口售票，那么同一时刻每个窗口只能存在一个人买票，其他人则等待前面的人完成后才可以去买票。</p>
+<pre><code class="language-java">import java.util.concurrent.Semaphore;
+
+public class SemaphoreTest {
+
+    public static void main(String[] args) {
+        // 3 个窗口
+        Semaphore windows = new Semaphore(3);
+        // 模拟 5 个人购票
+        for (int i = 0; i &lt; 5; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // 占用窗口，加锁
+                    try {
+                        windows.acquire();
+                        System.out.println(Thread.currentThread().getName() + &quot;：开始购票&quot;);
+                        // 买票
+                        Thread.sleep(5000);
+                        System.out.println(Thread.currentThread().getName() + &quot;：购票成功&quot;);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        // 释放许可，释放窗口
+                        windows.release();
+                    }
+                }
+            }, &quot;Thread&quot; + i).start();
+        }
+    }
+}
+</code></pre>
+<p>测试结果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1656504535515.png" alt="" loading="lazy"></figure>
+<p>很明显可以看到当前面 3 个线程购票成功之后，剩余的线程再开始购票。</p>
+<p><strong>应用场景</strong><br>
+可以用于做流量控制，特别是公用资源有限的应用场景。</p>
+<p>如我们实现一个同时只能处理 5 个请求的限流器。</p>
+<pre><code class="language-java">import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+public class SemaphoneTest2 {
+
+    /**
+     * 实现一个同时只能处理5个请求的限流器
+     */
+    private static Semaphore semaphore = new Semaphore(5);
+
+    /**
+     * 定义一个线程池
+     * 0
+     */
+    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 50, 1
+            , TimeUnit.SECONDS, new LinkedBlockingDeque&lt;&gt;(200));
+
+    /**
+     * 模拟执行方法
+     */
+    public static void exec() {
+        try {
+            semaphore.acquire(1);
+            // 模拟真实方法执行
+            System.out.println(&quot;执行exec方法&quot;);
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            semaphore.release(1);
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        {
+            for (;;) {
+                Thread.sleep(100);
+                // 模拟请求以10个/s的速度
+                executor.execute(() -&gt; exec());
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="总结">总结</h3>
+<h4 id="1-countdownlatch-cyclicbarrier-semaphore的区别">1、CountDownLatch、CyclicBarrier、Semaphore的区别</h4>
+<p><code>CountDownLatch</code> 和 <code>CyclicBarrier</code> 都能够实现线程之间的等待，只不过它们侧重点不同：</p>
+<p><code>CountDownLatch</code> 一般用于某个线程 A 等待若干个其他线程执行完任务之后，它才执行；<br>
+而<code>CyclicBarrier</code>一般用于一组线程互相等待至某个状态，然后这一组线程再同时执行；<br>
+另外，<code>CountDownLatch</code>是不能够重用的，而 <code>CyclicBarrier</code> 是可以重用的（reset）。<br>
+<code>Semaphore</code>和锁有点类似，它一般用于控制对某组资源的访问权限。</p>
+<h4 id="2-countdownlatch-与-threadjoin-的区别">2、CountDownLatch 与 Thread.join 的区别</h4>
+<p><code>CountDownLatch</code> 的作用就是允许一个或多个线程等待其他线程完成操作，看起来有点类似 join() 方法，但其提供了比 <code>join()</code> 更加灵活的API。<br>
+<code>CountDownLatch</code> 可以手动控制在n个线程里调用 n 次 <code>countDown()</code>方法使计数器进行减一操作，也可以在一个线程里调用 n 次执行减一操作。<br>
+而 join() 的实现原理是不停检查 join 线程是否存活，如果 join 线程存活则让当前线程永远等待。所以两者之间相对来说还是 <code>CountDownLatch</code> 使用起来较为灵活。</p>
+<h4 id="3-cyclicbarrier-与-countdownlatch-区别">3、CyclicBarrier 与 CountDownLatch 区别</h4>
+<p><code>CountDownLatch</code>的计数器只能使用一次，而<code>CyclicBarrier</code>的计数器可以使用reset()方法重置。所以<code>CyclicBarrier</code>能处理更为复杂的业务场景，比如如果计算发生错误，可以重置计数器，并让线程们重新执行一次。<br>
+<code>CyclicBarrier</code>还提供<code>getNumberWaiting</code>(可以获得CyclicBarrier阻塞的线程数量)、<code>isBroken</code>(用来知道阻塞的线程是否被中断)等方法。<br>
+<code>CountDownLatch</code>会阻塞主线程，<code>CyclicBarrier</code>不会阻塞主线程，只会阻塞子线程。<br>
+<code>CountDownLatch</code>和<code>CyclicBarrier</code>都能够实现线程之间的等待，只不过它们侧重点不同。<code>CountDownLatch</code>一般用于一个或多个线程，等待其他线程执行完任务后，再执行。<code>CyclicBarrier</code>一般用于一组线程互相等待至某个状态，然后这一组线程再同时执行。<br>
+<code>CyclicBarrier</code> 还可以提供一个 <code>barrierAction</code>，合并多线程计算结果。<br>
+<code>CyclicBarrier</code>是通过<code>ReentrantLock</code>的&quot;独占锁&quot;和<code>Conditon</code>来实现一组线程的阻塞唤醒的，而<code>CountDownLatch</code>则是通过<code>AQS</code>的“共享锁”实现。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#countdownlatch">CountDownLatch</a>
+<ul>
+<li><a href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95">构造方法</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95">常用方法</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B">使用案例</a></li>
+</ul>
+</li>
+<li><a href="#cylicbarrier">CylicBarrier</a>
+<ul>
+<li><a href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95-2">构造方法</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95-2">常用方法</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B-2">使用案例</a></li>
+</ul>
+</li>
+<li><a href="#semaphore">Semaphore</a>
+<ul>
+<li><a href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95-3">构造方法</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95-3">常用方法</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B-3">使用案例</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a>
+<ul>
+<li><a href="#1-countdownlatch-cyclicbarrier-semaphore%E7%9A%84%E5%8C%BA%E5%88%AB">1、CountDownLatch、CyclicBarrier、Semaphore的区别</a></li>
+<li><a href="#2-countdownlatch-%E4%B8%8E-threadjoin-%E7%9A%84%E5%8C%BA%E5%88%AB">2、CountDownLatch 与 Thread.join 的区别</a></li>
+<li><a href="#3-cyclicbarrier-%E4%B8%8E-countdownlatch-%E5%8C%BA%E5%88%AB">3、CyclicBarrier 与 CountDownLatch 区别</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/MKTk7DnaM/">
+                  <span class="post-title">
+                    ES6新语法&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/4kG3rvwit/">
+                   <span class="post-title">
+                     centos7安装Docker详细步骤&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

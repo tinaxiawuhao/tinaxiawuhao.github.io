@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>netty | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="netty | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="netty" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/Hbra5M-xo/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/BnqmVeFeD/" class="tag">netty</a>
+                
+              </span>
+              <h1>netty</h1>
+              <span class="meta">
+                Posted on
+                2022-06-26，37 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/Hbra5M-xo.png" alt="封面图">
+          </img>
+          
+          <h3 id="1-netty简单介绍">1. Netty简单介绍</h3>
+<h4 id="1-原生nio存在的问题">1. 原生NIO存在的问题</h4>
+<p>为什么有了 NIO ，还会出现 Netty，因为 NIO 有如下问题：<br>
+NIO 的类库和 API 繁杂，使用麻烦：需要熟练掌握 Selector、ServerSocketChannel、 SocketChannel、ByteBuffer 等。<br>
+需要具备其他的额外技能：要熟悉 Java 多线程编程，因为 NIO 编程涉及到 Reactor 模式，你必须对多线程和网络编程非常熟悉，才能编写出高质量的 NIO 程序。<br>
+开发工作量和难度都非常大：例如客户端面临断连重连、网络闪断、半包读写、失败缓存、网络拥塞和异常流的处理等等。<br>
+JDK NIO 的 Bug：例如臭名昭著的 Epoll Bug，它会导致 Selector 空轮询（死循环），最终导致 CPU 100%。直到 JDK 1.7 版本该问题仍旧存在，没有被根本解决</p>
+<h4 id="2-netty官网说明">2. Netty官网说明</h4>
+<p>官网地址 ：https://netty.io/<br>
+Netty是一个异步事件驱动的网络应用程序框架，用于快速开发可维护的高性能的服务器和客户端。<br>
+Netty 是由 JBOSS 提供的一个 Java 开源框架。Netty 提供异步的、基于事件驱动的网络应用程序框架，用以快速开发高性能、高可靠性的网络 IO 程序。<br>
+Netty 可以帮助你快速、简单的开发出一个网络应用，相当于简化和流程化了 NIO 的 开发过程。<br>
+Netty 是目前最流行的 NIO 框架，Netty 在互联网领域、大数据分布式计算领域、游戏行业、通信行业等获得了广泛的应用，知名的 Elasticsearch 、Dubbo 框架内部都采 用了 Netty。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1656503871885.png" alt="" loading="lazy"></figure>
+<h4 id="3-netty的优点">3. Netty的优点</h4>
+<p>Netty 对 JDK 自带的 NIO 的 API 进行了封装，解决了上述问题。</p>
+<p>设计优雅：适用于各种传输类型的统一 API 阻塞和非阻塞 Socket；基于灵活且可扩展的事件模型，可以清晰地分离关注点；高度可定制的线程模型 —— 单线程，一个或多个 线程池.<br>
+使用方便：详细记录的 Javadoc，用户指南和示例；没有其他依赖项 (JDK 5 -&gt; Netty 3.x ; 6 -&gt; Netty 4.x 就可以支持了）。<br>
+高性能、吞吐量更高：延迟更低；减少资源消耗；最小化不必要的内存复制。<br>
+安全：完整的 SSL/TLS 和 StartTLS 支持。<br>
+社区活跃、不断更新：社区活跃，版本迭代周期短，发现的 Bug 可以被及时修复， 同时，更多的新功能会被加入</p>
+<h4 id="4-netty版本说明">4. Netty版本说明</h4>
+<p>netty版本分为 netty3.x 和 netty4.x、netty5.x<br>
+因为Netty5出现重大bug，已经被官网废弃了，目前推荐使用的是Netty4.x的稳定版本<br>
+目前在官网可下载的版本 netty3.x netty4.0.x 和 netty4.1.x<br>
+这里使用的是 Netty4.1.x 版本<br>
+netty 下载地址： https://bintray.com/netty/downloads/netty/</p>
+<h3 id="2-各线程模式">2. 各线程模式</h3>
+<h4 id="1-传统阻塞-io-服务模型">1. 传统阻塞 I/O 服务模型</h4>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656503894532.png" alt="" loading="lazy"></figure>
+<p><strong>模型特点</strong><br>
+采用阻塞IO模式获取输入的数据<br>
+每个连接都需要独立的线程完成数据的输入（read），业务处理， 数据返回（send）<br>
+<strong>问题分析</strong><br>
+当并发数很大，就会创建大量的线程，占用很大系统资源<br>
+连接创建后，如果当前线程暂时没有数据可读，该线程会阻塞在read 操作，造成线程资源浪费</p>
+<h4 id="2-reactor-模式">2. Reactor 模式</h4>
+<p>针对传统阻塞 I/O 服务模型的 2 个缺点，解决方案：</p>
+<p><code>基于 I/O 复用模型</code>：多个连接共用一个阻塞对象，应用程序只需要在一个阻塞对象等待，无需阻塞等待所有连接。当某个连接有新的数据可以处理时，操作系统通知应用程序，线程从阻塞状态返回，开始进行业务处理</p>
+<p><code>基于线程池复用线程资源</code>：不必再为每个连接创建线程，将连接完成后的业务处理任务分配给线程进行处理，一个线程可以处理多个连接的业务。</p>
+<blockquote>
+<p>Reactor 对应的叫法:<br>
+反应器模式<br>
+分发者模式(Dispatcher)<br>
+通知者模式(notifier)</p>
+</blockquote>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1656503912514.png" alt="" loading="lazy"></figure>
+<p><strong>说明:</strong><br>
+Reactor 模式，通过一个或多个输入同时传递给服务处理器的模式 (基于事件驱动)<br>
+服务器端程序处理传入的多个请求, 并将它们同步分派到相应的处理线程， 因此Reactor（反应器）模式也叫 Dispatcher（分发者） 模式<br>
+Reactor 模式使用IO复用监听事件, 收到事件后，分发给某个线程(进程), 这点就是网络服务器高并发处理关键</p>
+<p><strong>核心组成：</strong><br>
+Reactor：Reactor 在一个单独的线程中运行，负责监听和分发事件，分发给适当的处 理程序来对 IO 事件做出反应。 它就像公司的电话接线员，它接听来自客户的电话并 将线路转移到适当的联系人；<br>
+Handlers：处理程序执行 I/O 事件要完成的实际事件，类似于客户想要与之交谈的公司中的实际官员。Reactor 通过调度适当的处理程序来响应 I/O 事件，处理程序执行非阻塞操作</p>
+<p><strong>Reactor 模式分类：</strong></p>
+<blockquote>
+<p>单 Reactor 单线程<br>
+单 Reactor 多线程<br>
+主从 Reactor 多线程</p>
+</blockquote>
+<h4 id="3-单reactor-单线程">3. 单Reactor-单线程</h4>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1656503926332.png" alt="" loading="lazy"></figure>
+<p><strong>说明：</strong><br>
+Select 是前面 I/O 复用模型介绍的标准网络编程 API，可以实现应用程序通过一个阻塞对象监听多路连接请求<br>
+Reactor 对象通过 Select 监控客户端请求事件，收到事件后通过 Dispatch 进行分发<br>
+如果是建立连接请求事件，则由 Acceptor 通过 Accept 处理连接请求，然后创建一个 Handler 对象处理连接完成后的后续业务处理<br>
+如果不是建立连接事件，则 Reactor 会分发调用连接对应的 Handler 来响应<br>
+Handler 会完成 Read→业务处理→Send 的完整业务流程 结合实例：服务器端用一个线程通过多路复用搞定所有的 IO 操作（包括连接，读、写 等），编码简单，清晰明了，但是如果客户端连接数量较多，将无法支撑，前面的 NIO 案例就属于这种模型。<br>
+<strong>优点：</strong><br>
+模型简单，没有多线程、进程通信、竞争的问题，全部都在一个线程中完成<br>
+<strong>缺点：</strong><br>
+性能问题，只有一个线程，无法完全发挥多核 CPU 的性能。Handler 在处理某 个连接上的业务时，整个进程无法处理其他连接事件，很容易导致性能瓶颈<br>
+可靠性问题，线程意外终止，或者进入死循环，会导致整个系统通信模块不 可用，不能接收和处理外部消息，造成节点故障<br>
+使用场景：客户端的数量有限，业务处理非常快速，比如 Redis在业务处理的时间复 杂度 O(1) 的情况</p>
+<h4 id="4-单-reactor-多线程">4. 单 Reactor 多线程</h4>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1656503940131.png" alt="" loading="lazy"></figure>
+<p><strong>说明：</strong><br>
+Reactor 对象通过 select 监控客户端请求事件, 收到事件后，通过 dispatch 进行分发<br>
+如果建立连接请求, 则由 Acceptor 通过 accept 处理连接请求, 然后创建一个Handler对象处理完成连接后的各种事件<br>
+如果不是连接请求，则由 Reactor 分发调用连接对 应的Handler 来处理<br>
+Handler 只负责响应事件，不做具体的业务处理, 通过 read 读取数据后，会分发给后面的 Worker 线程池的某个线程处理业务<br>
+Worker 线程池会分配独立线程完成真正的业务， 并将结果返回给 Handler<br>
+Handler 收到响应后，通过 send 将结果返回给 Client</p>
+<p>**优点：**可以充分的利用多核cpu 的处理能力<br>
+**缺点：**多线程数据共享和访问比较复杂,单 Reactor 处理所有的事件的监听和响应，在单线程运行， 在高并发场景容易出现性能瓶颈</p>
+<h4 id="5-主从-reactor-多线程">5. 主从 Reactor 多线程</h4>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1656503952682.png" alt="" loading="lazy"></figure>
+<p><strong>说明</strong></p>
+<blockquote>
+<p>1: Reactor 主线程 MainReactor 对象通过 select 监听连接事件, 收到事件后，通过 Acceptor 处理连接事件(主 Reactor 只处理连接事件)<br>
+2：当 Acceptor 处理连接事件后，MainReactor 将连接分配给 SubReactor<br>
+3：SubReactor 将连接加入到连接队列进行监听,并创建 Handler 进行各种事件处理<br>
+4：当有新事件发生时， SubReactor 就会调用对应的 Handler处理，Handler 通过 read 读取数据，分发给后面的 （Worker 线程池）处理<br>
+5：（Worker 线程池）分配独立的 （Worker 线程）进行业务处理，并返 回结果<br>
+6：Handler 收到响应的结果后，再通过 send 将结果返回给 Client<br>
+ps：一个 MainReactor 可以关联多个 SubReactor</p>
+</blockquote>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1656503963761.png" alt="" loading="lazy"></figure>
+<p><strong>优点</strong>： 父线程与子线程的数据交互简单职责明确，父线程只需要接收新连接，子线程完成后续的业务处理。<br>
+父线程与子线程的数据交互简单，Reactor 主线程只需要把新连接传给子线程，子线程无需返回数据。<br>
+<strong>缺点</strong>：编程复杂度较高<br>
+结合实例：这种模型在许多项目中广泛使用，包括 Nginx 主从 Reactor 多进程模型， Memcached 主从多线程，Netty 主从多线程模型的支持</p>
+<h4 id="6-reactor-模式小结">6. Reactor 模式小结</h4>
+<p>3 种模式用生活案例来理解<br>
+单 Reactor 单线程，前台接待员和服务员是同一个人，全程为顾客服<br>
+单 Reactor 多线程，1 个前台接待员，多个服务员，接待员只负责接待<br>
+主从 Reactor 多线程，多个前台接待员，多个服务生<br>
+Reactor 模式具有如下的优点：<br>
+响应快，不必为单个同步时间所阻塞，虽然 Reactor 本身依然是同步的<br>
+可以最大程度的避免复杂的多线程及同步问题，并且避免了多线程/进程 的切换开销<br>
+扩展性好，可以方便的通过增加 Reactor 实例个数来充分利用 CPU 资源<br>
+复用性好，Reactor 模型本身与具体事件处理逻辑无关，具有很高的复用性</p>
+<h3 id="3-netty模型">3. Netty模型</h3>
+<h4 id="1-简单版">1. 简单版</h4>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1656503977148.png" alt="" loading="lazy"></figure>
+<p><strong>说明 ：</strong></p>
+<blockquote>
+<p>BossGroup 线程维护Selector , 只关注Accecpt<br>
+当接收到Accept事件，获取到对应的 SocketChannel, 封装成 NIOScoketChannel并注册到 Worker 线程(事件循环), 并进行维护<br>
+当Worker线程监听到 Selector 中通道发生自己感 兴趣的事件后，就进行处理(就由 Handler 处理)， 注意 Handler 已经加入到通道</p>
+</blockquote>
+<h4 id="2-进阶版">2. 进阶版</h4>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1656503987315.png" alt="" loading="lazy"></figure>
+<h4 id="3-完整版-非常重要">3. 完整版 非常重要</h4>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1656503997684.jpg" alt="" loading="lazy"></figure>
+<p><strong>说明 ：</strong></p>
+<blockquote>
+<p>1：Netty 抽象出两组线程池 BossGroup 专门负责接收客户端的连接, WorkerGroup 专门负责网络的读写<br>
+2：BossGroup 和 WorkerGroup 类型都是 NioEventLoopGroup<br>
+3：NioEventLoopGroup 相当于一个事件循环组, 这个组中含有多个事件循环 ，每一个事件循环是 NioEventLoop<br>
+4：NioEventLoop 表示一个不断循环的执行处理任务的线程， 每个 NioEventLoop 都有一个 Selector , 用于监听绑定在其上的 Socket 的网络通讯<br>
+5:NioEventLoopGroup(BossGroup、WorkerGroup) 可以有多个线程, 即可以含有多个 NioEventLoop<br>
+6:每个Boss 的 NioEventLoop 循环执行的步骤有3步<br>
+(1):轮询accept 事件<br>
+(2):处理accept 事件 , 与client建立连接 , 生成NioScocketChannel , 并将其注册到 Worker 的 (3):NIOEventLoop 上的 Selector<br>
+处理任务队列的任务 ， 即 runAllTasks<br>
+7：每个 Worker 的 NIOEventLoop 循环执行的步骤<br>
+(1):轮询read, write 事件<br>
+(2):处理i/o事件， 即read , write 事件，在对应NioScocketChannel 处理<br>
+(3):处理任务队列的任务 ， 即 runAllTasks<br>
+每个Worker NIOEventLoop 处理业务时，会使用 Pipeline(管道), Pipeline 中包含了 Channel , 即通过 Pipeline 可以获取到对应通道, 管道中维护了很多的处理器。管道可以使用 Netty 提供的，也可以自定义</p>
+</blockquote>
+<h4 id="4-理解重制版">4. 理解重制版</h4>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1656504035283.png" alt="" loading="lazy"></figure>
+<p>服务器端首先创建一个ServerSocketChannel，bossGroup只处理客户端连接请求,workGroup处理读写事件，此二者为线程组，其中每一个NIOEventLoop都是线程组其中一个线程</p>
+<p>客户端发送连接请求通过ServerSocketChannel被NIOLoopEventGroup线程组中的一个线程NIOLoopEvent的selector选择器监听，并将事件放入taskqueue队列进行轮询，一旦有accept事件就会封装NIOSocketChannel对象，并通过其去注册到workGroup的线程的selector中让其监听</p>
+<p>一旦workGroup的线程的taskqueue轮询到读写事件，在对应的NIOSocketChannel进行处理</p>
+<h3 id="4-netty实例分析">4. Netty实例分析</h3>
+<h4 id="1-bossgroup-和-workgroup-怎么确定自己有多少个-nioeventloop">1. BossGroup 和 WorkGroup 怎么确定自己有多少个 NIOEventLoop</h4>
+<p>BossGroup 和 WorkerGroup 含有的子线程数（NioEventLoop）默认为 CPU 核数*2</p>
+<p>由源码中的构造方法可知 —— 想要设置线程数只要在参数中输入即可</p>
+<h4 id="2-workergroup-是如何分配这些进程的">2. WorkerGroup 是如何分配这些进程的</h4>
+<p>设置 BossGroup 进程数为 1 ； WorkerGroup 进程数为 4 ； Client 数位 8</p>
+<p>在默认情况下，WorkerGroup 分配的逻辑就是按顺序循环分配的</p>
+<h4 id="3-bossgroup-和-workergroup-中的-selector-和-taskqueue">3. BossGroup 和 WorkerGroup 中的 Selector 和 TaskQueue</h4>
+<p>打断点进行 Debug</p>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1656504060284.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1656504081513.png" alt="" loading="lazy"></figure>
+<p><strong>每个子线程都具有自己的 Selector、TaskQueue……</strong></p>
+<h4 id="4-ctx-上下文-channel-pipeline-之间关系">4. CTX 上下文、Channel、Pipeline 之间关系</h4>
+<p>修改 <code>NettyServerHandler</code> ，并添加端点</p>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1656504102104.png" alt="" loading="lazy"></figure>
+<p>先看 CTX 上下文中的信息</p>
+<figure data-type="image" tabindex="15"><img src="https://tinaxiawuhao.github.io/post-images/1656504116118.png" alt="" loading="lazy"></figure>
+<p>Pipeline</p>
+<figure data-type="image" tabindex="16"><img src="https://tinaxiawuhao.github.io/post-images/1656504129630.png" alt="" loading="lazy"></figure>
+<p>Channel</p>
+<figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1656504144493.png" alt="" loading="lazy"></figure>
+<p>CTX 上下文、Channel、Pipeline 三者关系示意图</p>
+<figure data-type="image" tabindex="18"><img src="https://tinaxiawuhao.github.io/post-images/1656504158613.png" alt="" loading="lazy"></figure>
+<h4 id="5-设置通道参数">5. 设置通道参数</h4>
+<p><strong>childOption() 方法</strong></p>
+<p>给每条child channel 连接设置一些TCP底层相关的属性，比如上面，我们设置了两种TCP属性，其中 ChannelOption.SO_KEEPALIVE表示是否开启TCP底层心跳机制，true为开</p>
+<p><strong>option() 方法</strong></p>
+<p>对于server bootstrap而言，这个方法，是给parent channel 连接设置一些TCP底层相关的属性。</p>
+<p>TCP连接的参数详细介绍如下。SO_RCVBUF ，SO_SNDBUF</p>
+<p>这两个选项就是来设置TCP连接的两个buffer尺寸的。</p>
+<p>每个TCP socket在内核中都有一个发送缓冲区和一个接收缓冲区，TCP的全双工的工作模式以及TCP的滑动窗口便是依赖于这两个独立的buffer以及此buffer的填充状态。</p>
+<p><strong>SO_SNDBUF</strong><br>
+  Socket参数，TCP数据发送缓冲区大小。该缓冲区即TCP发送滑动窗口，linux操作系统可使用命令：cat /proc/sys/net/ipv4/tcp_smem 查询其大小。</p>
+<p><strong>TCP_NODELAY</strong><br>
+  TCP参数，立即发送数据，默认值为Ture（Netty默认为True而操作系统默认为False）。该值设置Nagle算法的启用，改算法将小的碎片数据连接成更大的报文来最小化所发送的报文的数量，如果需要发送一些较小的报文，则需要禁用该算法。Netty默认禁用该算法，从而最小化报文传输延时。</p>
+<p>这个参数，与是否开启Nagle算法是反着来的，true表示关闭，false表示开启。通俗地说，如果要求高实时性，有数据发送时就马上发送，就关闭，如果需要减少发送次数减少网络交互，就开启。</p>
+<p><strong>SO_KEEPALIVE</strong><br>
+  底层TCP协议的心跳机制。Socket参数，连接保活，默认值为False。启用该功能时，TCP会主动探测空闲连接的有效性。可以将此功能视为TCP的心跳机制，需要注意的是：默认的心跳间隔是7200s即2小时。Netty默认关闭该功能。</p>
+<p><strong>SO_REUSEADDR</strong><br>
+  Socket参数，地址复用，默认值False。有四种情况可以使用：<br>
+(1).当有一个有相同本地地址和端口的socket1处于TIME_WAIT状态时，而你希望启动的程序的socket2要占用该地址和端口，比如重启服务且保持先前端口。<br>
+(2).有多块网卡或用IP Alias技术的机器在同一端口启动多个进程，但每个进程绑定的本地IP地址不能相同。<br>
+(3).单个进程绑定相同的端口到多个socket上，但每个socket绑定的ip地址不同。(4).完全相同的地址和端口的重复绑定。但这只用于UDP的多播，不用于TCP。</p>
+<p><strong>SO_LINGER</strong><br>
+  Socket参数，关闭Socket的延迟时间，默认值为-1，表示禁用该功能。-1表示socket.close()方法立即返回，但OS底层会将发送缓冲区全部发送到对端。0表示socket.close()方法立即返回，OS放弃发送缓冲区的数据直接向对端发送RST包，对端收到复位错误。非0整数值表示调用socket.close()方法的线程被阻塞直到延迟时间到或发送缓冲区中的数据发送完毕，若超时，则对端会收到复位错误。</p>
+<p><strong>SO_BACKLOG</strong><br>
+  Socket参数，服务端接受连接的队列长度，如果队列已满，客户端连接将被拒绝。默认值，Windows为200，其他为128。</p>
+<pre><code class="language-java"> b.option(ChannelOption.SO_BACKLOG, 1024) 
+</code></pre>
+<p>表示系统用于临时存放已完成三次握手的请求的队列的最大长度，如果连接建立频繁，服务器处理创建新连接较慢，可以适当调大这个参数.</p>
+<p><strong>SO_BROADCAST</strong><br>
+  Socket参数，设置广播模式。</p>
+<h3 id="5-taskqueue-任务队列">5. TaskQueue 任务队列</h3>
+<p>任务队列中的 Task 有 3 种典型使用场景</p>
+<blockquote>
+<p>用户程序自定义的普通任务<br>
+用户自定义定时任务<br>
+非当前 Reactor 线程调用 Channel 的各种方法</p>
+</blockquote>
+<h3 id="6-异步模型">6. 异步模型</h3>
+<h4 id="1-工作示意图">1. 工作示意图</h4>
+<figure data-type="image" tabindex="19"><img src="https://tinaxiawuhao.github.io/post-images/1656504197703.png" alt="" loading="lazy"></figure>
+<p><strong>说明</strong></p>
+<p>1:在使用 Netty 进行编程时，拦截操作和转换出入站数据只需要您提供 callback 或利用 future 即可。这使得链式操作简单、高效, 并有利于编写可重用的、通用的代码。</p>
+<p>2:Netty 框架的目标就是让你的业务逻辑从网络基础应用编码中分离出来</p>
+<h4 id="2-future-listener-机制">2. Future-Listener 机制</h4>
+<p>当 Future 对象刚刚创建时，处于非完成状态，调用者可以通过返回的 ChannelFuture 来获取操作执行的状态，注册监听函数来执行完成后的操作。<br>
+常见有如下操作<br>
+• 通过 isDone 方法来判断当前操作是否完成；<br>
+• 通过 isSuccess 方法来判断已完成的当前操作是否成功；<br>
+• 通过 getCause 方法来获取已完成的当前操作失败的原因；<br>
+• 通过 isCancelled 方法来判断已完成的当前操作是否被取消；<br>
+• 通过 addListener 方法来注册监听器，当操作已完成(isDone 方法返回完成)，将会通知 指定的监听器；如果 Future 对象已完成，则通知指定的监听器</p>
+<p>代码示例</p>
+<pre><code class="language-java">给一个 ChannelFuture 注册监听器，来监控我们关系的事件
+
+channelFuture.addListener(new ChannelFutureListener() {
+     @Override
+     public void operationComplete(ChannelFuture channelFuture) throws Exception {
+          if (channelFuture.isSuccess()){
+               System.out.println(&quot;监听端口 6668 成功&quot;);
+          }else {
+               System.out.println(&quot;监听端口 6668 失败&quot;);
+          }
+      }
+});
+</code></pre>
+<h4 id="3-快速入门实例-http服务">3. 快速入门实例-HTTP服务</h4>
+<p>Netty 可以做Http服务开发，并且理解Handler实例 和客户端及其请求的关系</p>
+<p><strong>编写代码 —— 服务端代码</strong></p>
+<pre><code class="language-java"># 编写服务端： HttpServer
+public static void main(String[] args) throws Exception {
+    //创建BossGroup ,workGroup
+    EventLoopGroup bossGroup = new NioEventLoopGroup();
+    EventLoopGroup workGroup = new NioEventLoopGroup();
+    try {
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
+        serverBootstrap.group(bossGroup,workGroup)
+            .channel(NioServerSocketChannel.class)
+            .childHandler(new TestServerInitializer());
+        ChannelFuture channelFuture = serverBootstrap.bind(8080).sync();
+        channelFuture.channel().closeFuture().sync();
+    } finally {
+        bossGroup.shutdownGracefully();
+        workGroup.shutdownGracefully();
+    }
+}
+</code></pre>
+<p><strong>编写 服务初始化器 ：HttpServerInitialize</strong></p>
+<pre><code class="language-java">public class TestServerInitializer extends ChannelInitializer&lt;SocketChannel&gt; {
+    @Override
+    protected void initChannel(SocketChannel socketChannel) throws Exception {
+        //向管道加入处理器
+        ChannelPipeline pipeline = socketChannel.pipeline();
+        //加入netty提供的httpServerCodec,netty提供的处理Http的编-解码器
+        pipeline.addLast(&quot;MyHttpServerCodec&quot;,new HttpServerCodec());
+        pipeline.addLast(&quot;MyTestHttpServerHandler&quot;,new TestHttpServerHandler());
+    }
+}
+</code></pre>
+<p><strong>编写 服务处理器 ：HttpServerHandler</strong></p>
+<pre><code class="language-java">/**
+*
+* 1. SimpleChannelInboundHandler 是之前使用的 ChannelInboundHandlerAdapter 的子类
+* 2. HttpObject 这个类型表示， 客户端、服务端 相互通信的数据需要被封装成什么类型
+*
+*/
+public class TestHttpServerHandler extends SimpleChannelInboundHandler&lt;HttpObject&gt; {
+	/**
+    * 读取客户端数据
+    * @param ctx
+    * @param msg
+    * @throws Exception
+    */
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+        //判断msg 是不是HttpRequest 请求
+        if(msg instanceof HttpRequest){
+        System.out.println(&quot;msg 类型 = &quot;+msg.getClass());
+        System.out.println(&quot;客户端地址&quot;+ctx.channel().remoteAddress());
+        // 获取请求的 URI
+        HttpRequest httpRequest = (HttpRequest) msg;
+        URI uri = new URI(httpRequest.uri());
+        // 判断请求路径为 /favicon.ico，就不做处理
+        if (&quot;/favicon.ico&quot;.equals(uri.getPath())){
+        System.out.println(&quot;请求了 图标 资源，不做响应&quot;);
+        	return;
+        }
+        //回复信息给浏览器【HTTP协议】
+        ByteBuf content = Unpooled.copiedBuffer(&quot;Hello I am server&quot;, CharsetUtil.UTF_8);
+        //构造一个http回应，即httpResponse,HttpResponseStatus:状态码
+        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,content);
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE,&quot;text/plain&quot;);
+        response.headers().set(HttpHeaderNames.CONTENT_LENGTH,content.readableBytes());
+        //将构建好的response返回
+        ctx.writeAndFlush(response);
+    }
+}
+</code></pre>
+<p><strong>编写代码 —— 对特定资源的过滤</strong><br>
+上面的服务端启动后，在页面上不止接收到了文本，还接收到了一个网页的图标</p>
+<figure data-type="image" tabindex="20"><img src="https://tinaxiawuhao.github.io/post-images/1656504226962.png" alt="" loading="lazy"></figure>
+<p>现在把它过滤掉</p>
+<pre><code class="language-java">// 修改 HttpServerHandler
+ // 获取请求的 URI
+HttpRequest httpRequest = (HttpRequest) msg;
+URI uri = new URI(httpRequest.uri());
+// 判断请求路径为 /favicon.ico，就不做处理
+if (&quot;/favicon.ico&quot;.equals(uri.getPath())){
+    System.out.println(&quot;请求了 图标 资源，不做响应&quot;);
+    return;
+}
+</code></pre>
+<h3 id="7-netty核心组件">7. netty核心组件</h3>
+<h4 id="1-bootstrap-和-serverbootstrap">1. Bootstrap 和 ServerBootstrap</h4>
+<p>Bootstrap 意思是引导，一个 Netty 应用通常由一个 Bootstrap 开始，主要作用是配置整个 Netty 程序，串联各个组件，Netty 中 Bootstrap类是客户端程序的启动引导类， ServerBootstrap是服务端启动引导类<br>
+常见的方法有</p>
+<blockquote>
+<p>• public ServerBootstrap group(EventLoopGroup parentGroup, EventLoopGroup childGroup)，该方法用于服务器端，用来设置两个 EventLoop<br>
+• public B channel(Class&lt;? extends C&gt; channelClass)，该方法用来设置一个服务器端的通道实现<br>
+• public ChannelFuture bind(int inetPort) ，该方法用于服务器端，用来设置占用的端口号<br>
+• public B option(ChannelOption option, T value)，用来给 ServerChannel 添加配置<br>
+• public B group(EventLoopGroup group) ，该方法用于客户端，用来设置一个 EventLoop<br>
+• public ChannelFuture connect(String inetHost, int inetPort) ，该方法用于客户端，用来连接服务器 端<br>
+• public ServerBootstrap childOption(ChannelOption childOption, T value)，用来给接收到的通道添加配置<br>
+• public ServerBootstrap childHandler(ChannelHandler childHandler)，该方法用来设置业务处理类 （自定义的 handler）</p>
+</blockquote>
+<pre><code>.childHandler(new TestServerInitializer())//对应workGroup
+.handler(null)//对应bossGroup
+</code></pre>
+<h4 id="2-future-和-channelfuture">2. Future 和 ChannelFuture</h4>
+<p>Netty 中所有的 IO 操作都是异步的，不能立刻得知消息是否被正确处理。但是可以过一会等它执行完成或者直接注册一个监听，具体的实现就是通过 Future 和 ChannelFutures，他们可以注册一个监听，当操作执行成功或失败时监听会自动触发注册的监听事件<br>
+常见的方法有</p>
+<blockquote>
+<p>• Channel channel()，返回当前正在进行 IO 操作的通道<br>
+• ChannelFuture sync()，等待异步操作执行完毕</p>
+</blockquote>
+<h4 id="3-channel">3. Channel</h4>
+<p>Netty 网络通信的组件，能够用于执行网络 I/O 操作。<br>
+通过Channel 可获得当前网络连接的通道的状态<br>
+通过Channel 可获得网络连接的配置参数 （例如接收缓冲区大小）<br>
+Channel 提供异步的网络 I/O 操作(如建立连接，读写，绑定端口)，异步调用意味着任何 I/O 调用都将立即返回，并且不保证在调用结束时所请求的 I/O 操作已完成<br>
+调用立即返回一个 ChannelFuture 实例，通过注册监听器到 ChannelFuture 上，可以 I/O 操作成功、失败或取消时回调通知调用方<br>
+支持关联 I/O 操作与对应的处理程序<br>
+不同协议、不同的阻塞类型的连接都有不同的 Channel 类型与之对应</p>
+<p>常用的 Channel 类型</p>
+<blockquote>
+<p>• NioSocketChannel，异步的客户端 TCP Socket 连接。<br>
+• NioServerSocketChannel，异步的服务器端 TCP Socket 连接。<br>
+• NioDatagramChannel，异步的 UDP 连接。<br>
+• NioSctpChannel，异步的客户端 Sctp 连接。<br>
+• NioSctpServerChannel，异步的 Sctp 服务器端连接，这些通道涵盖了 UDP 和 TCP 网络 IO 以及文件 IO。</p>
+</blockquote>
+<h4 id="4-selector">4. Selector</h4>
+<p>Netty 基于 Selector 对象实现 I/O 多路复用，通过 Selector 一个线程可以监听多个连接的 Channel 事件。<br>
+当向一个 Selector 中注册 Channel 后，Selector 内部的机制就可以自动不断地查询 (Select) 这些注册的 Channel 是否有已就绪的 I/O 事件（例如可读，可写，网络连接 完成等），这样程序就可以很简单地使用一个线程高效地管理多个 Channel</p>
+<h4 id="5-channelhandler">5. ChannelHandler</h4>
+<p>我们经常需要自定义一 个 Handler 类去继承 ChannelInboundHandlerA dapter，然后通过重写相应方法实现业务逻辑</p>
+<p>常用的方法</p>
+<pre><code class="language-java">public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implements ChannelInboundHandler { 
+	// 通道注册事件
+	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelRegistered();
+    }
+	// 通道注销事件
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelUnregistered();
+    }
+	// 通道就绪事件 
+	public void channelActive(ChannelHandlerContext ctx) throws Exception { 
+		ctx.fireChannelActive(); 
+	}
+	// 通道读取数据事件 
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception { 
+		ctx.fireChannelRead(msg); 
+	}
+	// 通道读取数据完毕事件
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelReadComplete();
+    }
+    // 通道发生异常事件
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.fireExceptionCaught(cause);
+    }
+}
+</code></pre>
+<h4 id="6-pipeline-和-channelpipeline">6. Pipeline 和 ChannelPipeline</h4>
+<p><code>ChannelPipeline</code> 是一个 Handler 的集合，它负责处理和拦截 inbound（入栈） 或者 outbound（出栈） 的事件和操作，相当于一个贯穿 Netty 的链。(也可以这样理解： ChannelPipeline 是 保存 ChannelHandler 的 List，用于处理或拦截 Channel 的入站 和出站 事件 / 操作)</p>
+<p>ChannelPipeline 实现了一种高级形式的拦截过滤器模式，使用户可以完全控制事件的处理方式，以及 Channel 中各个的 ChannelHandler 如何相互交互</p>
+<p>在 Netty 中每个 Channel 都有且仅有一个 ChannelPipeline 与之对应，它们的组成关系如下</p>
+<figure data-type="image" tabindex="21"><img src="https://tinaxiawuhao.github.io/post-images/1656504246343.png" alt="" loading="lazy"></figure>
+<p><strong>说明 ：</strong></p>
+<blockquote>
+<p>• 一个 Channel 包含了一个 ChannelPipeline，而 ChannelPipeline 中又维护了一个由 ChannelHandlerContext 组成的双向链表，并且每个 ChannelHandlerContext 中又关联着一个 ChannelHandler<br>
+• 入站事件和出站事件在一个双向链表中，入站事件会从链表 head 往后传递到最后一个入站的 handler， 出站事件会从链表 tail 往前传递到最前一个出站的 handler，两种类型的 handler 互不干扰</p>
+</blockquote>
+<p><strong>常用方法</strong></p>
+<pre><code>//把一个业务处理类（handler） 添加到链中的第一个位置
+ChannelPipeline addFirst(ChannelHandler… handlers)
+//把一个业务处理类（handler） 添加到链中的最后一个位置
+ChannelPipeline addLast(ChannelHandler… handlers)
+</code></pre>
+<h3 id="8-netty-群聊">8. Netty 群聊</h3>
+<p><strong>要求：</strong></p>
+<blockquote>
+<p>编写一个 Netty 群聊系统，实现服务器端和客户端之间的数据简单通讯（非阻塞）<br>
+实现多人群聊<br>
+服务器端：可以监测用户上线，离线，并实现消息转发功能<br>
+客户端：通过channel 可以无阻塞发送消息给其它所有用户，同时可以接受其它用 户发送的消息(有服务器转发得到)</p>
+</blockquote>
+<p><strong>1. server端</strong></p>
+<pre><code class="language-java">public class ChatServer {
+    private int port;
+
+    public ChatServer(int port) {
+        this.port = port;
+    }
+
+    public void run() throws Exception{
+        //创建bossGroup,workGroup
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup();
+        try {
+            //创建辅助工具
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            //循环事件组
+            serverBootstrap.group(bossGroup,workGroup)//线程组
+                    .channel(NioServerSocketChannel.class)//通道类型
+                    .option(ChannelOption.SO_BACKLOG,128)
+                    .childOption(ChannelOption.SO_KEEPALIVE,true)
+                    .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            //加入解码器
+                            pipeline.addLast(&quot;decoder&quot;,new StringDecoder());
+                            //加入编码器
+                            pipeline.addLast(&quot;encoder&quot;,new StringEncoder());
+                            pipeline.addLast(new ChatServerHandler());
+
+                        }
+                    });
+            System.out.println(&quot;server is ok&quot;);
+            ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
+            channelFuture.channel().closeFuture().sync();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
+        }
+    }
+    public static void main(String[] args) throws Exception {
+       new ChatServer(8080).run();
+    }
+}
+</code></pre>
+<p><strong>2. serverHandler</strong></p>
+<pre><code class="language-java">public class ChatServerHandler extends SimpleChannelInboundHandler&lt;String&gt; {
+    /**
+     * 定义一个 Channel 线程组，管理所有的 Channel, 参数 执行器
+     *  GlobalEventExecutor =&gt; 全局事件执行器
+     *  INSTANCE =&gt; 表示是单例的
+     */
+    private  static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);
+    /**
+     * 当连接建立之后，第一个被执行
+     * 一连接成功，就把当前的 Channel 加入到 ChannelGroup，并将上线消息推送给其他客户
+     */
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        // 将该客户上线的信息，推送给其他在线的 客户端
+        // 该方法，会将 ChannelGroup 中所有的 Channel 遍历，并发送消息
+        Date date = new Date(System.currentTimeMillis());
+        channelGroup.writeAndFlush(&quot;[client]&quot; +channel.remoteAddress()+&quot;[&quot;+simpleDateFormat.format(date)+&quot;]&quot;+&quot;加入聊天&quot;);
+        channelGroup.add(channel);
+
+    }
+
+    /**
+     * 当断开连接激活，将 XXX 退出群聊消息推送给当前在线的客户
+     * 当某个 Channel 执行到这个方法，会自动从 ChannelGroup 中移除
+     */
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        Date date = new Date(System.currentTimeMillis());
+        channelGroup.writeAndFlush(&quot;[client]&quot;+channel.remoteAddress()+&quot;[&quot;+simpleDateFormat.format(date)+&quot;]&quot;+&quot;离开聊天&quot;);
+        //channelGroup.remove(channel); 不需要，handlerRemoved（）直接删除了channel
+    }
+
+    /**
+     * 提示客户端离线状态
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        Date date = new Date(System.currentTimeMillis());
+        System.out.println(ctx.channel().remoteAddress()+&quot;[&quot;+simpleDateFormat.format(date)+&quot;]&quot;+&quot;下线了&quot;);
+    }
+
+    /**
+     * 提示客户端上线状态
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        Date date = new Date(System.currentTimeMillis());
+        System.out.println(ctx.channel().remoteAddress()+&quot;[&quot;+simpleDateFormat.format(date)+&quot;]&quot;+&quot;上线了&quot;);;
+    }
+
+    /**
+     * 读取消息，转发数据
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+        Channel channel = ctx.channel();
+        Date date = new Date(System.currentTimeMillis());
+        //遍历，根据不同对象发送不同数据
+        channelGroup.forEach(ch -&gt;{
+            if(channel != ch){//不是自己的channel
+                ch.writeAndFlush(&quot;[客户]&quot;+channel.remoteAddress()+&quot;[&quot;+simpleDateFormat.format(date)+&quot;]&quot;+&quot;发送&quot;+msg+&quot;/n&quot;);
+            }
+            else{
+                ch.writeAndFlush(&quot;[自己]发送了消息&quot;+&quot;[&quot;+simpleDateFormat.format(date)+&quot;]&quot;+msg+&quot;/n&quot;);
+            }
+        }
+
+        );
+    }
+
+    /**
+     * 异常处理
+     * @param ctx
+     * @param cause
+     * @throws Exception
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.close();
+    }
+}
+</code></pre>
+<p><strong>3. client端</strong></p>
+<pre><code class="language-java">public class ChatClient {
+    private final String HOST;
+    private final int PORT;
+    public ChatClient(String host, int port) {
+        HOST = host;
+        PORT = port;
+    }
+
+    public void run() throws InterruptedException {
+        EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(eventLoopGroup)
+                    .channel(NioSocketChannel.class)
+                    .handler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) throws Exception {
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            //加入解码器
+                            pipeline.addLast(&quot;decoder&quot;,new StringDecoder());
+                            //加入编码器
+                            pipeline.addLast(&quot;encoder&quot;,new StringEncoder());
+                            pipeline.addLast(new ChatClientHandler());
+                        }
+                    });
+
+            ChannelFuture channelFuture = bootstrap.connect(HOST, PORT).sync();
+            System.out.println(&quot;client prepare is ok&quot;);
+            Channel channel = channelFuture.channel();
+            //客户端需要输入信息，定义扫描器
+            Scanner scanner = new Scanner(System.in);
+            while(scanner.hasNextLine()){
+                String s = scanner.nextLine();
+                channel.writeAndFlush(s);
+
+            }
+            channel.closeFuture().sync();
+        } finally {
+            eventLoopGroup.shutdownGracefully();
+        }
+
+    }
+    public static void main(String[] args) throws InterruptedException {
+        new ChatClient(&quot;localhost&quot;,8080).run();
+    }
+}
+</code></pre>
+<p><strong>4. clientHandler</strong></p>
+<pre><code>public class ChatClientHandler extends SimpleChannelInboundHandler&lt;String&gt; {
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
+        // 直接输出从服务端获得的信息
+        System.out.println(s.trim());
+    }
+}
+</code></pre>
+<h3 id="9-心跳机制">9. 心跳机制</h3>
+<p><strong>1. server端：</strong></p>
+<pre><code class="language-java">public class MyServer {
+    public static void main(String[] args) throws Exception{
+        //创建bossGroup,workGroup
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup();
+
+        try {
+            //创建辅助工具
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            //循环事件组
+            serverBootstrap.group(bossGroup,workGroup)//线程组
+                .channel(NioServerSocketChannel.class)//通道类型
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                    @Override
+                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        ChannelPipeline pipeline = socketChannel.pipeline();
+                        /*
+                 说明：
+                 1. IdleStateHandler 是 Netty 提供的 空闲状态处理器
+                 2. 四个参数：
+                 readerIdleTime : 表示多久没有 读 事件后，就会发送一个心跳检测包，检测是否还是连接状态
+                 writerIdleTime : 表示多久没有 写 事件后，就会发送一个心跳检测包，检测是否还是连接状态
+                 allIdleTime : 表示多久时间既没读也没写 后，就会发送一个心跳检测包，检测是否还是连接状态
+                 TimeUnit : 时间单位
+                 1. 当 Channel 一段时间内没有执行 读 / 写 / 读写 事件后，就会触发一个 IdleStateEvent 空闲状态事件
+                 2. 当 IdleStateEvent 触发后，就会传递给 Pipeline 中的下一个 Handler 去处理，通过回调下一个 Handler 的 userEventTriggered 方法，在该方法中处理 IdleStateEvent
+                             */
+                        pipeline.addLast(new IdleStateHandler(3,5,7, TimeUnit.SECONDS));
+                        pipeline.addLast(new MyServerHandler());
+                    }
+                });
+            System.out.println(&quot;server is ok&quot;);
+            ChannelFuture channelFuture = serverBootstrap.bind(8080).sync();
+            channelFuture.channel().closeFuture().sync();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
+        }
+    }
+
+}
+</code></pre>
+<p><strong>2. handler</strong></p>
+<pre><code class="language-java">public class MyServerHandler extends ChannelInboundHandlerAdapter {
+    /**
+     * @param ctx 上下文
+      @param evt 事件
+        * @throws Exception
+     */
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if(evt instanceof IdleStateEvent){
+            //将 evt 向下转型 IdleStateEvent
+            IdleStateEvent event =  (IdleStateEvent)evt;
+            String eventType = null;
+            //IdleStateEvent 枚举
+            switch (event.state()){
+                case READER_IDLE:
+                    eventType = &quot;读空闲&quot;;
+                    break;
+                case WRITER_IDLE:
+                    eventType = &quot;写空闲&quot;;
+                    break;
+                case ALL_IDLE:
+                    eventType = &quot;读写空闲&quot;;
+            }
+            System.out.println(ctx.channel().remoteAddress()+&quot;---超时事件---&quot;+eventType);
+        }
+    }
+}
+</code></pre>
+<p><strong>说明：</strong></p>
+<blockquote>
+<p>1: IdleStateHandler 是 Netty 提供的 空闲状态处理器</p>
+<p>2: 四个参数：<br>
+readerIdleTime : 表示多久没有 读 事件后，就会发送一个心跳检测包，检测是否还是连接状态<br>
+writerIdleTime : 表示多久没有 写 事件后，就会发送一个心跳检测包，检测是否还是连接状态<br>
+allIdleTime : 表示多久时间既没读也没写 后，就会发送一个心跳检测包，检测是否还是连接状态<br>
+TimeUnit : 时间单位<br>
+3: 当 Channel 一段时间内没有执行 读 / 写 / 读写 事件后，就会触发一个 IdleStateEvent 空闲状态事件</p>
+<p>4: 当 IdleStateEvent 触发后，就会传递给 Pipeline 中的下一个 Handler 去处理，通过回调下一个 Handler 的 userEventTriggered 方法，在该方法中处理 IdleStateEvent</p>
+</blockquote>
+<h3 id="10-长连接">10. 长连接</h3>
+<p><strong>要求：</strong><br>
+实现基于webSocket的长连接 的全双工的交互<br>
+改变Http协议多次请求的约束，实 现长连接了， 服务器可以发送消息 给浏览器<br>
+客户端浏览器和服务器端会相互感 知，比如服务器关闭了，浏览器会 感知，同样浏览器关闭了，服务器 会感知</p>
+<p>代码实现</p>
+<p><strong>服务端 ：WebServer</strong></p>
+<pre><code class="language-java">public class MyServer {
+    public static void main(String[] args) throws InterruptedException {
+        //创建bossGroup,workGroup
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup();
+
+        try {
+            //创建辅助工具
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            //循环事件组
+            serverBootstrap.group(bossGroup,workGroup)//线程组
+                .channel(NioServerSocketChannel.class)//通道类型
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                    @Override
+                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        ChannelPipeline pipeline = socketChannel.pipeline();
+                        //基于http协议使用http的编码和解码器
+                        pipeline.addLast(new HttpServerCodec());
+                        // 添加块处理器
+                        pipeline.addLast(new ChunkedWriteHandler());
+                        /*
+                               说明：
+                               1. 因为 HTTP 数据传输时是分段的，HttpObjectAggregator 可以将多个端聚合
+                               2. 这就是为什么浏览器发送大量数据时，就会发出多次 HTTP 请求
+                            */
+                        pipeline.addLast(new HttpObjectAggregator(8192));
+                        /*
+                               说明：
+                               1. 对于 WebSocket 是以 帧 的形式传递的
+                               2. 后面的参数表示 ：请求的 URL
+                               3. WebSocketServerProtocolHandler 将 HTTP 协议升级为 WebSocket 协议，即保持长连接
+                               4. 切换协议通过一个状态码101
+                            */
+                        pipeline.addLast(new WebSocketServerProtocolHandler(&quot;/hello&quot;));
+                        // 自定义的 Handler
+                        pipeline.addLast(new MyTextWebSocketFrameHandler());
+
+
+                    }
+                });
+            System.out.println(&quot;server is ok&quot;);
+            ChannelFuture channelFuture = serverBootstrap.bind(8080).sync();
+            channelFuture.channel().closeFuture().sync();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
+        }
+    }
+
+
+}
+</code></pre>
+<p><strong>服务端的处理器 ：MyTextWebSocketFrameHandler</strong></p>
+<pre><code class="language-java">/**
+ * TextWebSocketFrame 类型，表示一个文本帧（flame）
+ */
+public class MyTextWebSocketFrameHandler extends SimpleChannelInboundHandler&lt;TextWebSocketFrame&gt; {
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
+        System.out.println(&quot;服务器收到消息&quot;+msg.text());
+
+        //回复消息
+        ctx.channel().writeAndFlush(new TextWebSocketFrame(&quot;服务器时间&quot;+ LocalDateTime.now()+msg.text()));
+    }
+
+    /**
+         * 客户端连接后，触发方法
+         * @param ctx
+         * @throws Exception
+         */
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        //id表示唯一的值，Longtext是唯一的shortText 不是唯一
+        System.out.println(&quot;handlerAdded 被调用&quot;+ctx.channel().id().asLongText());
+        System.out.println(&quot;handlerAdded 被调用&quot;+ctx.channel().id().asShortText());
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        System.out.println(&quot;handlerRemove被调用&quot;+ctx.channel().id().asLongText());
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println(&quot;异常发生&quot;+cause.getMessage());
+        //关闭连接
+        ctx.close();
+    }
+
+}
+</code></pre>
+<p>hello.html(浏览器)</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form onsubmit=&quot;return false&quot;&gt;
+        &lt;textarea id=&quot;message&quot; name=&quot;message&quot; style=&quot;height: 300px; width: 300px&quot;&gt;&lt;/textarea&gt;
+        &lt;input type=&quot;button&quot; value=&quot;发送消息&quot; onclick=&quot;send(this.form.message.value)&quot;&gt;
+        &lt;textarea id=&quot;responseText&quot; style=&quot;height: 300px; width: 300px&quot;&gt;&lt;/textarea&gt;
+        &lt;input type=&quot;button&quot; value=&quot;清空内容&quot; onclick=&quot;document.getElementById('responseText').value=''&quot;&gt;
+    &lt;/form&gt;
+    &lt;script&gt;
+        var socket;
+        // 判断当前浏览器是否支持 WebSocket
+        if (window.WebSocket){
+            socket = new WebSocket(&quot;ws://localhost:8080/hello&quot;);
+            // 相当于 channelRead0 方法，ev 收到服务器端回送的消息
+            socket.onmessage = function (ev){
+                var rt = document.getElementById(&quot;responseText&quot;);
+                rt.value = rt.value + &quot;\n&quot; + ev.data;
+            }
+            // 相当于连接开启，感知到连接开启
+            socket.onopen = function (){
+                var rt = document.getElementById(&quot;responseText&quot;);
+                rt.value = rt.value + &quot;\n&quot; + &quot;连接开启……&quot;;
+            }
+            // 感知连接关闭
+            socket.onclose = function (){
+                var rt = document.getElementById(&quot;responseText&quot;);
+                rt.value = rt.value + &quot;\n&quot; + &quot;连接关闭……&quot;;
+            }
+        }else {
+            alert(&quot;不支持 WebSocket&quot;);
+        }
+
+        // 发送消息到服务器
+        function send(message){
+            // 判断 WebSocket 是否创建好了
+            if (!window.socket){
+                return ;
+            }
+            // 判断 WebSocket 是否开启
+            if (socket.readyState == WebSocket.OPEN){
+                // 通过 Socket 发送消息
+                socket.send(message);
+            }else {
+                alert(&quot;连接未开启&quot;);
+            }
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-netty%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D">1. Netty简单介绍</a>
+<ul>
+<li><a href="#1-%E5%8E%9F%E7%94%9Fnio%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98">1. 原生NIO存在的问题</a></li>
+<li><a href="#2-netty%E5%AE%98%E7%BD%91%E8%AF%B4%E6%98%8E">2. Netty官网说明</a></li>
+<li><a href="#3-netty%E7%9A%84%E4%BC%98%E7%82%B9">3. Netty的优点</a></li>
+<li><a href="#4-netty%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E">4. Netty版本说明</a></li>
+</ul>
+</li>
+<li><a href="#2-%E5%90%84%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%BC%8F">2. 各线程模式</a>
+<ul>
+<li><a href="#1-%E4%BC%A0%E7%BB%9F%E9%98%BB%E5%A1%9E-io-%E6%9C%8D%E5%8A%A1%E6%A8%A1%E5%9E%8B">1. 传统阻塞 I/O 服务模型</a></li>
+<li><a href="#2-reactor-%E6%A8%A1%E5%BC%8F">2. Reactor 模式</a></li>
+<li><a href="#3-%E5%8D%95reactor-%E5%8D%95%E7%BA%BF%E7%A8%8B">3. 单Reactor-单线程</a></li>
+<li><a href="#4-%E5%8D%95-reactor-%E5%A4%9A%E7%BA%BF%E7%A8%8B">4. 单 Reactor 多线程</a></li>
+<li><a href="#5-%E4%B8%BB%E4%BB%8E-reactor-%E5%A4%9A%E7%BA%BF%E7%A8%8B">5. 主从 Reactor 多线程</a></li>
+<li><a href="#6-reactor-%E6%A8%A1%E5%BC%8F%E5%B0%8F%E7%BB%93">6. Reactor 模式小结</a></li>
+</ul>
+</li>
+<li><a href="#3-netty%E6%A8%A1%E5%9E%8B">3. Netty模型</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E5%8D%95%E7%89%88">1. 简单版</a></li>
+<li><a href="#2-%E8%BF%9B%E9%98%B6%E7%89%88">2. 进阶版</a></li>
+<li><a href="#3-%E5%AE%8C%E6%95%B4%E7%89%88-%E9%9D%9E%E5%B8%B8%E9%87%8D%E8%A6%81">3. 完整版 非常重要</a></li>
+<li><a href="#4-%E7%90%86%E8%A7%A3%E9%87%8D%E5%88%B6%E7%89%88">4. 理解重制版</a></li>
+</ul>
+</li>
+<li><a href="#4-netty%E5%AE%9E%E4%BE%8B%E5%88%86%E6%9E%90">4. Netty实例分析</a>
+<ul>
+<li><a href="#1-bossgroup-%E5%92%8C-workgroup-%E6%80%8E%E4%B9%88%E7%A1%AE%E5%AE%9A%E8%87%AA%E5%B7%B1%E6%9C%89%E5%A4%9A%E5%B0%91%E4%B8%AA-nioeventloop">1. BossGroup 和 WorkGroup 怎么确定自己有多少个 NIOEventLoop</a></li>
+<li><a href="#2-workergroup-%E6%98%AF%E5%A6%82%E4%BD%95%E5%88%86%E9%85%8D%E8%BF%99%E4%BA%9B%E8%BF%9B%E7%A8%8B%E7%9A%84">2. WorkerGroup 是如何分配这些进程的</a></li>
+<li><a href="#3-bossgroup-%E5%92%8C-workergroup-%E4%B8%AD%E7%9A%84-selector-%E5%92%8C-taskqueue">3. BossGroup 和 WorkerGroup 中的 Selector 和 TaskQueue</a></li>
+<li><a href="#4-ctx-%E4%B8%8A%E4%B8%8B%E6%96%87-channel-pipeline-%E4%B9%8B%E9%97%B4%E5%85%B3%E7%B3%BB">4. CTX 上下文、Channel、Pipeline 之间关系</a></li>
+<li><a href="#5-%E8%AE%BE%E7%BD%AE%E9%80%9A%E9%81%93%E5%8F%82%E6%95%B0">5. 设置通道参数</a></li>
+</ul>
+</li>
+<li><a href="#5-taskqueue-%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97">5. TaskQueue 任务队列</a></li>
+<li><a href="#6-%E5%BC%82%E6%AD%A5%E6%A8%A1%E5%9E%8B">6. 异步模型</a>
+<ul>
+<li><a href="#1-%E5%B7%A5%E4%BD%9C%E7%A4%BA%E6%84%8F%E5%9B%BE">1. 工作示意图</a></li>
+<li><a href="#2-future-listener-%E6%9C%BA%E5%88%B6">2. Future-Listener 机制</a></li>
+<li><a href="#3-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%AE%9E%E4%BE%8B-http%E6%9C%8D%E5%8A%A1">3. 快速入门实例-HTTP服务</a></li>
+</ul>
+</li>
+<li><a href="#7-netty%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6">7. netty核心组件</a>
+<ul>
+<li><a href="#1-bootstrap-%E5%92%8C-serverbootstrap">1. Bootstrap 和 ServerBootstrap</a></li>
+<li><a href="#2-future-%E5%92%8C-channelfuture">2. Future 和 ChannelFuture</a></li>
+<li><a href="#3-channel">3. Channel</a></li>
+<li><a href="#4-selector">4. Selector</a></li>
+<li><a href="#5-channelhandler">5. ChannelHandler</a></li>
+<li><a href="#6-pipeline-%E5%92%8C-channelpipeline">6. Pipeline 和 ChannelPipeline</a></li>
+</ul>
+</li>
+<li><a href="#8-netty-%E7%BE%A4%E8%81%8A">8. Netty 群聊</a></li>
+<li><a href="#9-%E5%BF%83%E8%B7%B3%E6%9C%BA%E5%88%B6">9. 心跳机制</a></li>
+<li><a href="#10-%E9%95%BF%E8%BF%9E%E6%8E%A5">10. 长连接</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/X2beO2j1l/">
+                  <span class="post-title">
+                    NIO&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

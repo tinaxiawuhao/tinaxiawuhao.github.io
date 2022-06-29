@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>ClickHouse-4表引擎 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="ClickHouse-4表引擎 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="ClickHouse-4表引擎" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/XvNkKhwMg/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RW2qYs4AY/" class="tag">clickhouse</a>
+                
+              </span>
+              <h1>ClickHouse-4表引擎</h1>
+              <span class="meta">
+                Posted on
+                2021-11-15，14 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/XvNkKhwMg.png" alt="封面图">
+          </img>
+          
+          <h3 id="1-表引擎的使用">1 表引擎的使用</h3>
+<p>表引擎是 ClickHouse 的一大特色。可以说，表引擎决定了如何存储表的数据。包括：</p>
+<blockquote>
+<p>数据的存储方式和位置，写到哪里以及从哪里读取数据。(默认是在安装路径下的 data 路径)<br>
+支持哪些查询以及如何支持。（有些语法只有在特定的引擎下才能用）<br>
+并发数据访问。<br>
+索引的使用（如果存在）。<br>
+是否可以执行多线程请求。<br>
+数据复制参数。<br>
+表引擎的使用方式就是必须显式在创建表时定义该表使用的引擎，以及引擎使用的相关参数。</p>
+<p>特别注意：引擎的名称大小写敏感, 驼峰命名</p>
+</blockquote>
+<h3 id="2-tinylog">2 TinyLog</h3>
+<p>以列文件的形式保存在磁盘上，不支持索引，没有并发控制。一般保存少量数据的小表，生产环境上作用有限。可以用于平时练习测试用。</p>
+<p>如：</p>
+<pre><code class="language-sql">create table t_tinylog ( id String, name String) engine=TinyLog;
+</code></pre>
+<h3 id="3-memory">3 Memory</h3>
+<p>内存引擎，数据以未压缩的原始形式直接保存在内存当中，服务器重启数据就会消失。读写操作不会相互阻塞，不支持索引。简单查询下有非常非常高的性能表现（超过 10G/s）。<br>
+一般用到它的地方不多，除了用来测试，就是在需要非常高的性能，同时数据量又不太大（上限大概 1 亿行）的场景。</p>
+<h3 id="4-mergetree">4 MergeTree</h3>
+<p>ClickHouse 中最强大的表引擎当属 MergeTree（合并树）引擎及该系列（*MergeTree）中的其他引擎，支持索引和分区，地位可以相当于 innodb 之于 Mysql。而且基于 MergeTree，还衍生除了很多小弟，也是非常有特色的引擎。</p>
+<p><strong>建表语句</strong></p>
+<pre><code class="language-sql">create table t_order_mt(
+    id UInt32,
+    sku_id String,
+    total_amount Decimal(16,2),
+    create_time Datetime
+) engine =MergeTree
+partition by toYYYYMMDD(create_time)
+primary key (id)
+order by (id,sku_id);
+</code></pre>
+<p><strong>插入数据</strong></p>
+<pre><code class="language-sql">insert into t_order_mt values
+(101,'sku_001',1000.00,'2020-06-01 12:00:00') ,
+(102,'sku_002',2000.00,'2020-06-01 11:00:00'),
+(102,'sku_004',2500.00,'2020-06-01 12:00:00'),
+(102,'sku_002',2000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',12000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',600.00,'2020-06-02 12:00:00');
+</code></pre>
+<p>MergeTree 其实还有很多参数(绝大多数用默认值即可)，但是三个参数是更加重要的，也涉及了关于 MergeTree 的很多概念。</p>
+<h4 id="41-partition-by-分区可选">4.1 partition by 分区(可选)</h4>
+<p><strong>作用</strong><br>
+学过 hive 的应该都不陌生，分区的目的主要是降低扫描的范围，优化查询速度，如果不填,只会使用一个分区 —— all。</p>
+<p><strong>分区目录</strong><br>
+MergeTree 是以列文件+索引文件+表定义文件组成的，但是如果设定了分区那么这些文件就会保存到不同的分区目录中。目录保存在本地磁盘</p>
+<p><strong>并行</strong><br>
+分区后，面对涉及跨分区的查询统计，ClickHouse 会以分区为单位并行处理， 即一个线程处理一个分区内的数据。</p>
+<p><strong>数据写入与分区合并</strong><br>
+任何一个批次的数据写入都会产生一个临时分区，不会纳入任何一个已有的分区。写入后的某个时刻（大概 10-15 分钟后），ClickHouse 会自动执行合并操作（等不及也可以手动通过 optimize 执行），把临时分区的数据，合并到已有分区中。</p>
+<pre><code class="language-sql">optimize table xxxx final;
+</code></pre>
+<p><strong>例如</strong><br>
+再次执行上面的插入操作</p>
+<pre><code class="language-sql">insert into t_order_mt values
+(101,'sku_001',1000.00,'2020-06-01 12:00:00') ,
+(102,'sku_002',2000.00,'2020-06-01 11:00:00'),
+(102,'sku_004',2500.00,'2020-06-01 12:00:00'),
+(102,'sku_002',2000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',12000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',600.00,'2020-06-02 12:00:00');
+</code></pre>
+<p>查看数据并没有纳入任何分区</p>
+<p>手动 <code>optimize</code> 之后</p>
+<pre><code class="language-sql">optimize table t_order_mt final;
+</code></pre>
+<h4 id="42-primary-key-主键可选">4.2 primary key 主键(可选)</h4>
+<p>ClickHouse 中的主键，和其他数据库不太一样，它只提供了数据的一级索引，但是却不是唯一约束。这就意味着是可以存在相同 primary key 的数据的。<br>
+主键的设定主要依据是查询语句中的 where 条件。<br>
+根据条件通过对主键进行某种形式的二分查找，能够定位到对应的 index granularity,避免了全表扫描。<br>
+index granularity： 直接翻译的话就是索引粒度，指在稀疏索引中两个相邻索引对应数据的间隔。ClickHouse 中的 MergeTree 默认是 8192。官方不建议修改这个值，除非该列存在大量重复值，比如在一个分区中几万行才有一个不同数据。</p>
+<p>稀疏索引：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1656505152575.png" alt="" loading="lazy"></figure>
+<p>稀疏索引的好处就是可以用很少的索引数据，定位更多的数据，代价就是只能定位到索引粒度的第一行，然后再进行进行一点扫描。</p>
+<h4 id="43-order-by必选">4.3 order by（必选）</h4>
+<p>order by 设定了分区内的数据按照哪些字段顺序进行有序保存。<br>
+order by 是 MergeTree 中唯一一个必填项，甚至比 primary key 还重要，因为当用户不设置主键的情况，很多处理会依照 order by 的字段进行处理（比如后面会讲的去重和汇总）。<br>
+要求：主键必须是 order by 字段的前缀字段。有点类似 SQL 索引中的最左前缀。<br>
+比如 order by 字段是 (id,sku_id) 那么主键必须是 id 或者(id,sku_id)</p>
+<h4 id="44-二级索引跳数索引">4.4 二级索引(跳数索引)</h4>
+<p>目前在 ClickHouse 的官网上二级索引的功能在 v20.1.2.4 之前是被标注为实验性的，在这个版本之后默认是开启的。</p>
+<p>老版本使用二级索引前需要增加设置<br>
+是否允许使用实验性的二级索引（v20.1.2.4 开始，这个参数已被删除，默认开启）</p>
+<pre><code class="language-sql">set allow_experimental_data_skipping_indices=1;
+</code></pre>
+<p><strong>创建测试表</strong></p>
+<pre><code class="language-sql">create table t_order_mt2(
+    id UInt32,
+    sku_id String,
+    total_amount Decimal(16,2),
+    create_time Datetime,
+    INDEX a total_amount TYPE minmax GRANULARITY 5
+) engine =MergeTree
+partition by toYYYYMMDD(create_time)
+primary key (id)
+order by (id, sku_id);
+</code></pre>
+<p>最主要的是需要加上这一句：<code>INDEX a total_amount TYPE minmax GRANULARITY 5</code><br>
+其中：</p>
+<blockquote>
+<p>INDEX a： 定义一个索引，并命名为 a<br>
+total_amount： 索引字段名称<br>
+TYPE minmax： 定义类型， 保存最大最小值<br>
+GRANULARITY N：是设定二级索引对于一级索引粒度的粒度。一级索引会记录每个分区的最大最小值，二级索引就是在一级索引的基础上，取每 N 个分区合在一起的最大最小值。</p>
+</blockquote>
+<p><strong>插入数据</strong></p>
+<pre><code class="language-sql">insert into t_order_mt2 values
+(101,'sku_001',1000.00,'2020-06-01 12:00:00') ,
+(102,'sku_002',2000.00,'2020-06-01 11:00:00'),
+(102,'sku_004',2500.00,'2020-06-01 12:00:00'),
+(102,'sku_002',2000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',12000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',600.00,'2020-06-02 12:00:00');
+</code></pre>
+<p><strong>对比效果</strong><br>
+那么在使用下面语句进行测试，可以看出二级索引能够为非主键字段的查询发挥作用。</p>
+<pre><code class="language-shell">clickhouse-client --send_logs_level=trace &lt;&lt;&lt; 'select * from t_order_mt2 where total_amount &gt; toDecimal32(900., 2)';
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656505167546.png" alt="" loading="lazy"></figure>
+<h4 id="45-数据-ttl数据存活时间">4.5 数据 TTL（数据存活时间）</h4>
+<p>TTL 即 Time To Live，MergeTree 提供了可以管理数据表或者列的生命周期的功能。过期的数据不会立马处理，只是会做标记，等到合并时一起处理。</p>
+<p><strong>列级别 TTL</strong><br>
+（1）创建测试表</p>
+<pre><code class="language-sql">create table t_order_mt3(
+    id UInt32,
+    sku_id String,
+    total_amount Decimal(16,2) TTL create_time+interval 10 SECOND,
+    create_time Datetime 
+) engine =MergeTree
+partition by toYYYYMMDD(create_time)
+primary key (id)
+order by (id, sku_id);
+</code></pre>
+<p>在列后加上： <code>TTL create_time+interval 10 SECOND</code><br>
+其中：</p>
+<blockquote>
+<p>TTL：定义一个过期时间<br>
+create_time：使用了当前表中的一个 Datetime 类型的列，TTL 中引用的字段不能是主键字段，且类型必须是 日期类型<br>
+± interval 10 SECOND：需要增加/减少的 时间长度 时间单位</p>
+</blockquote>
+<p>注：如果在建表时没有加 TTL 配置，需要在建表之后加，那么则需要使用如下语法：</p>
+<pre><code class="language-sql">ALTER TABLE 表名
+    MODIFY COLUMN
+    列名 列数据类型 TTL d + INTERVAL 10 SECOND;
+</code></pre>
+<p>（2）插入数据（注意：根据实际时间改变）</p>
+<pre><code class="language-sql">insert into t_order_mt3 values
+(106,'sku_001',1000.00,'2020-06-12 22:52:30'),
+(107,'sku_002',2000.00,'2020-06-12 22:52:30'),
+(110,'sku_003',600.00,'2020-06-13 12:00:00');
+</code></pre>
+<p>（3）手动合并，查看效果,到期后，指定的字段数据归 0；如果执行合并后还是可以看到数据，可能是需要设置时区，或者需要重启。</p>
+<p><strong>表级 TTL</strong><br>
+与列级相同，在建表时与建表之后都有对应的语法进行设置<br>
+（1）在建表时，写在 Order By 的后面</p>
+<pre><code class="language-sql">CREATE TABLE example_table
+(
+    d DateTime,
+    a Int
+)
+ENGINE = MergeTree
+PARTITION BY toYYYYMM(d)
+ORDER BY d
+TTL d + INTERVAL 1 MONTH [DELETE],
+    d + INTERVAL 1 WEEK TO VOLUME 'aaa',
+    d + INTERVAL 2 WEEK TO DISK 'bbb';
+</code></pre>
+<p>该示例中的 [DELETE]、TO VOLUME……在下文&quot;注意&quot;中说明<br>
+（2）在建表之后，使用 alter</p>
+<pre><code class="language-sql">alter table t_order_mt3 MODIFY TTL create_time + INTERVAL 10 SECOND;
+</code></pre>
+<p>表级的 TTL ，如果是按照表中字段值判断是否过期，那么不会整表删除，只会是某一行数据到期删某一行。</p>
+<p>注意</p>
+<blockquote>
+<p>涉及判断的字段必须是 Date 或者 Datetime 类型，推荐使用分区的日期字段。</p>
+</blockquote>
+<blockquote>
+<p>能够使用的时间单位：</p>
+<p>SECOND<br>
+MINUTE<br>
+HOUR<br>
+DAY<br>
+WEEK<br>
+MONTH<br>
+QUARTER YEAR</p>
+</blockquote>
+<blockquote>
+<p>上文提到的 [DELETE]、TO VOLUME…… 表示的是过期之后，需要做的操作。可选的配置如下</p>
+<p>DELETE - 删除数据 （默认，不配置则删除）;<br>
+RECOMPRESS codec_name - 使用codec_name重新压缩数据部分；<br>
+TO DISK ‘aaa’ - 将数据移动到磁盘 aaa 上<br>
+TO VOLUME ‘bbb’ - 将数据移动到磁盘 bbb 上<br>
+GROUP BY - 聚合过期行</p>
+</blockquote>
+<h3 id="5-replacingmergetree">5 ReplacingMergeTree</h3>
+<p>ReplacingMergeTree 是 MergeTree 的一个变种，它存储特性完全继承 MergeTree，只是多了一个去重的功能。 尽管 MergeTree 可以设置主键，但是 primary key 其实没有唯一约束的功能。如果你想处理掉重复的数据，可以借助这个 ReplacingMergeTree。去重按照order by的字段去重</p>
+<p><strong>去重时机</strong><br>
+数据的去重只会在合并的过程中出现。合并会在未知的时间在后台进行，所以你无法预先作出计划。有一些数据可能仍未被处理。</p>
+<p><strong>去重范围</strong><br>
+如果表经过了分区，去重只会在分区内部进行去重，不能执行跨分区的去重。</p>
+<p>所以 ReplacingMergeTree 能力有限， ReplacingMergeTree 适用于在后台清除重复的数据以节省空间，但是它不保证没有重复的数据出现。</p>
+<p><strong>案例演示</strong><br>
+（1）创建表</p>
+<pre><code class="language-sql">create table t_order_rmt(
+    id UInt32,
+    sku_id String,
+    total_amount Decimal(16,2) ,
+    create_time Datetime 
+) engine =ReplacingMergeTree(create_time)
+partition by toYYYYMMDD(create_time)
+primary key (id)
+order by (id, sku_id);
+</code></pre>
+<p>ReplacingMergeTree() 填入的参数为版本字段，重复数据保留版本字段值最大的。<br>
+如果不填版本字段，默认按照插入顺序保留最后一条。<br>
+（2）向表中插入数据</p>
+<pre><code class="language-sql">insert into t_order_rmt values
+(101,'sku_001',1000.00,'2020-06-01 12:00:00') ,
+(102,'sku_002',2000.00,'2020-06-01 11:00:00'),
+(102,'sku_004',2500.00,'2020-06-01 12:00:00'),
+(102,'sku_002',2000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',12000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',600.00,'2020-06-02 12:00:00');
+</code></pre>
+<p>（3）执行第一次查询</p>
+<pre><code class="language-sql">select * from t_order_rmt;
+</code></pre>
+<p>（4）手动合并</p>
+<pre><code class="language-sql">OPTIMIZE TABLE t_order_rmt FINAL;
+</code></pre>
+<p>（5）再执行一次查询</p>
+<pre><code class="language-sql">select * from t_order_rmt;
+</code></pre>
+<p>通过测试得到结论</p>
+<blockquote>
+<p>实际上是使用 order by 字段作为唯一键<br>
+去重不能跨分区<br>
+只有同一批插入（新版本）或合并分区时才会进行去重<br>
+认定重复的数据保留，版本字段值最大的<br>
+如果版本字段相同则按插入顺序保留最后一笔</p>
+</blockquote>
+<h3 id="6-summingmergetree">6 SummingMergeTree</h3>
+<p>对于不查询明细，只关心以维度进行汇总聚合结果的场景。如果只使用普通的MergeTree的话，无论是存储空间的开销，还是查询时临时聚合的开销都比较大。<br>
+ClickHouse 为了这种场景，提供了一种能够“预聚合”的引擎 SummingMergeTree。该引擎聚合的依据依然是 order by 的字段，相当于按照 order by 的字段做了一次 Group By。</p>
+<p><strong>案例演示</strong><br>
+（1）创建表</p>
+<pre><code class="language-sql">create table t_order_smt(
+    id UInt32,
+    sku_id String,
+    total_amount Decimal(16,2) ,
+    create_time Datetime 
+) engine =SummingMergeTree(total_amount)
+partition by toYYYYMMDD(create_time)
+primary key (id)
+order by (id,sku_id );
+</code></pre>
+<p>（2）插入数据</p>
+<pre><code class="language-sql">insert into t_order_smt values
+(101,'sku_001',1000.00,'2020-06-01 12:00:00'),
+(102,'sku_002',2000.00,'2020-06-01 11:00:00'),
+(102,'sku_004',2500.00,'2020-06-01 12:00:00'),
+(102,'sku_002',2000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',12000.00,'2020-06-01 13:00:00'),
+(102,'sku_002',600.00,'2020-06-02 12:00:00');
+</code></pre>
+<p>（3）执行第一次查询</p>
+<pre><code class="language-sql">select * from t_order_smt;
+</code></pre>
+<p>（4）手动合并</p>
+<pre><code class="language-sql">OPTIMIZE TABLE t_order_smt FINAL;
+</code></pre>
+<p>（5）再执行一次查询</p>
+<pre><code class="language-sql">select * from t_order_smt;
+</code></pre>
+<p>通过结果可以得到以下结论</p>
+<blockquote>
+<p>以 SummingMergeTree（）中指定的列作为汇总数据列<br>
+可以填写多列必须数字列，如果不填，以所有非维度列且为数字列的字段为汇总数据列<br>
+以 order by 的列为准，作为维度列<br>
+其他的列按插入顺序保留第一行<br>
+不在一个分区的数据不会被聚合<br>
+只有在同一批次插入(新版本)或分片合并时才会进行聚合<br>
+开发建议<br>
+设计聚合表的话，唯一键值、流水号可以去掉，所有字段全部是维度、度量或者时间戳。</p>
+</blockquote>
+<p><strong>问题</strong><br>
+能不能直接执行以下 SQL 得到汇总值</p>
+<pre><code class="language-sql">select total_amount from XXX where province_name=’’ and create_date=’xxx’
+</code></pre>
+<p><strong>答：</strong><br>
+不行，可能会包含一些还没来得及聚合的临时明细<br>
+如果要是获取汇总值，还是需要使用 sum 进行聚合，这样效率会有一定的提高，但本身 ClickHouse 是列式存储的，效率提升有限，不会特别明显。</p>
+<pre><code class="language-sql">select sum(total_amount) from province_name=’’ and create_date=‘xxx’
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-%E8%A1%A8%E5%BC%95%E6%93%8E%E7%9A%84%E4%BD%BF%E7%94%A8">1 表引擎的使用</a></li>
+<li><a href="#2-tinylog">2 TinyLog</a></li>
+<li><a href="#3-memory">3 Memory</a></li>
+<li><a href="#4-mergetree">4 MergeTree</a>
+<ul>
+<li><a href="#41-partition-by-%E5%88%86%E5%8C%BA%E5%8F%AF%E9%80%89">4.1 partition by 分区(可选)</a></li>
+<li><a href="#42-primary-key-%E4%B8%BB%E9%94%AE%E5%8F%AF%E9%80%89">4.2 primary key 主键(可选)</a></li>
+<li><a href="#43-order-by%E5%BF%85%E9%80%89">4.3 order by（必选）</a></li>
+<li><a href="#44-%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E8%B7%B3%E6%95%B0%E7%B4%A2%E5%BC%95">4.4 二级索引(跳数索引)</a></li>
+<li><a href="#45-%E6%95%B0%E6%8D%AE-ttl%E6%95%B0%E6%8D%AE%E5%AD%98%E6%B4%BB%E6%97%B6%E9%97%B4">4.5 数据 TTL（数据存活时间）</a></li>
+</ul>
+</li>
+<li><a href="#5-replacingmergetree">5 ReplacingMergeTree</a></li>
+<li><a href="#6-summingmergetree">6 SummingMergeTree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/1h169zkFb/">
+                  <span class="post-title">
+                    ClickHouse-3数据类型&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/hle1ZXFqv/">
+                   <span class="post-title">
+                     Clickhouse-5数据分区&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

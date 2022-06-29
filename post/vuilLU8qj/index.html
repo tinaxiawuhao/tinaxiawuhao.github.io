@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>ClickHouse-8分片集群 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="ClickHouse-8分片集群 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="ClickHouse-8分片集群" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/vuilLU8qj/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656505837819"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RW2qYs4AY/" class="tag">clickhouse</a>
+                
+              </span>
+              <h1>ClickHouse-8分片集群</h1>
+              <span class="meta">
+                Posted on
+                2021-11-19，10 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/vuilLU8qj.png" alt="封面图">
+          </img>
+          
+          <h3 id="clickhouse-分片集群">ClickHouse-分片集群</h3>
+<p>副本虽然能够提高数据的可用性，降低丢失风险，但是每台服务器实际上必须容纳全量数据，对数据的横向扩容没有解决。 要解决数据水平切分的问题，需要引入分片的概念。通过分片把一份完整的数据进行切分，不同的分片分布到不同的节点上，再通过 Distributed 表引擎把数据拼接起来一同使用。</p>
+<p>Distributed 表引擎本身不存储数据，有点类似于 MyCat 之于 MySql，成为一种中间件，通过分布式逻辑表来写入、分发、路由来操作多台节点不同分片的分布式数据。</p>
+<p>注意：ClickHouse 的集群是表级别的，实际企业中，大部分做了高可用，但是没有用分片，避免降低查询性能以及操作集群的复杂性。</p>
+<h4 id="1集群写入流程3-分片-2-副本共-6-个节点">1.集群写入流程（3 分片 2 副本共 6 个节点）</h4>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1656505247965.png" alt="" loading="lazy"></figure>
+<p>internal_replication:内部副本同步 true：由分片自己同步 false：由distribute表同步，压力大</p>
+<h4 id="2集群读取流程3-分片-2-副本共-6-个节点">2.集群读取流程（3 分片 2 副本共 6 个节点）</h4>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656505265680.png" alt="" loading="lazy"></figure>
+<h4 id="3-分片-2-副本共-6-个节点集群配置供参考">3 分片 2 副本共 6 个节点集群配置（供参考）</h4>
+<p>配置的位置还是在之前的/etc/clickhouse-server/config.d/metrika.xml，内容如下 注：也可以不创建外部文件，直接在 config.xml 的&lt;remote_servers&gt;中指定</p>
+<pre><code class="language-xml">&lt;yandex&gt;
+    &lt;remote_servers&gt;
+        &lt;fz_cluster&gt; &lt;!-- 集群名称--&gt;
+            &lt;shard&gt; &lt;!--集群的第一个分片--&gt;
+                &lt;internal_replication&gt;true&lt;/internal_replication&gt;
+                &lt;!--该分片的第一个副本--&gt;
+                &lt;replica&gt;
+                    &lt;host&gt;node01&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+                &lt;!--该分片的第二个副本--&gt;
+                &lt;replica&gt;
+                    &lt;host&gt;node02&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+            &lt;/shard&gt;
+            &lt;shard&gt; &lt;!--集群的第二个分片--&gt;
+                &lt;internal_replication&gt;true&lt;/internal_replication&gt;
+                &lt;replica&gt; &lt;!--该分片的第一个副本--&gt;
+                    &lt;host&gt;node03&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+                &lt;replica&gt; &lt;!--该分片的第二个副本--&gt;
+                    &lt;host&gt;node04&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+            &lt;/shard&gt;
+            &lt;shard&gt; &lt;!--集群的第三个分片--&gt;
+                &lt;internal_replication&gt;true&lt;/internal_replication&gt;
+                &lt;replica&gt; &lt;!--该分片的第一个副本--&gt;
+                    &lt;host&gt;node05&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+                &lt;replica&gt; &lt;!--该分片的第二个副本--&gt;
+                    &lt;host&gt;node06&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+            &lt;/shard&gt;
+        &lt;/fz_cluster&gt;
+    &lt;/remote_servers&gt;
+&lt;/yandex&gt;
+</code></pre>
+<h4 id="4-配置三节点版本集群及副本">4 .配置三节点版本集群及副本</h4>
+<h5 id="41-集群及副本规划2-个分片只有第一个分片有副本">4.1 集群及副本规划（2 个分片，只有第一个分片有副本）</h5>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1656505279732.png" alt="" loading="lazy"></figure>
+<h5 id="42-配置步骤">4.2 配置步骤</h5>
+<p>1）在 Node01 的/etc/clickhouse-server/config.d 目录下创建 metrika-shard.xml 文件 vim /etc/clickhouse-server/config.d/metrika-shard.xml 注：也可以不创建外部文件，直接在 config.xml 的&lt;remote_servers&gt;中指定</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt; 
+&lt;yandex&gt;     
+    &lt;remote_servers&gt;         
+        &lt;gmall_cluster&gt; &lt;!-- 集群名称--&gt;             
+            &lt;shard&gt; &lt;!--集群的第一个分片--&gt;                 
+                &lt;internal_replication&gt;true&lt;/internal_replication&gt;                 
+                &lt;replica&gt; &lt;!--该分片的第一个副本--&gt;                     
+                    &lt;host&gt;Node01&lt;/host&gt;                     
+                    &lt;port&gt;9000&lt;/port&gt;                     
+                    &lt;user&gt;default&lt;/user&gt;                     
+                    &lt;password&gt;1234qwer&lt;/password&gt;                 
+                &lt;/replica&gt;                 
+                &lt;replica&gt; &lt;!--该分片的第二个副本--&gt;                     
+                    &lt;host&gt;Node02&lt;/host&gt;                     
+                    &lt;port&gt;9000&lt;/port&gt;                     
+                    &lt;user&gt;default&lt;/user&gt;                     
+                    &lt;password&gt;1234qwer&lt;/password&gt;                 
+                &lt;/replica&gt;             
+            &lt;/shard&gt;             
+            &lt;shard&gt; &lt;!--集群的第二个分片--&gt;                 
+                &lt;internal_replication&gt;true&lt;/internal_replication&gt;                 
+                &lt;replica&gt; &lt;!--该分片的第一个副本--&gt;                    
+                    &lt;host&gt;Node03&lt;/host&gt;                     
+                    &lt;port&gt;9000&lt;/port&gt;                     
+                    &lt;user&gt;default&lt;/user&gt;                     
+                    &lt;password&gt;1234qwer&lt;/password&gt;                 
+                &lt;/replica&gt;             
+            &lt;/shard&gt;         
+        &lt;/gmall_cluster&gt;     
+    &lt;/remote_servers&gt;          
+    &lt;zookeeper-servers&gt;         
+        &lt;node index=&quot;1&quot;&gt;             
+            &lt;host&gt;Node01&lt;/host&gt;             
+            &lt;port&gt;2181&lt;/port&gt;         
+        &lt;/node&gt;         
+        &lt;node index=&quot;2&quot;&gt;             
+            &lt;host&gt;Node02&lt;/host&gt;             
+            &lt;port&gt;2181&lt;/port&gt;         
+        &lt;/node&gt;         
+        &lt;node index=&quot;3&quot;&gt;             
+            &lt;host&gt;Node03&lt;/host&gt;             
+            &lt;port&gt;2181&lt;/port&gt;         
+        &lt;/node&gt;     
+    &lt;/zookeeper-servers&gt;     
+    &lt;macros&gt;         
+        &lt;shard&gt;01&lt;/shard&gt; &lt;!--不同机器放的分片数不一样--&gt;         
+        &lt;replica&gt;rep_1_1&lt;/replica&gt; &lt;!--不同机器放的副本数不一样--&gt;     
+    &lt;/macros&gt; 
+&lt;/yandex&gt;
+</code></pre>
+<p>2）将 Node01 的 metrika-shard.xml 同步到 Node02 和 Node03</p>
+<pre><code class="language-shell">scp /etc/clickhouse-server/config.d/metrika-shard.xml root@Node02:/etc/clickhouse-server/config.d/
+scp /etc/clickhouse-server/config.d/metrika-shard.xml root@Node03:/etc/clickhouse-server/config.d/
+</code></pre>
+<p>3）修改 Node02 和 Node03 中 metrika-shard.xml 宏的配置</p>
+<p>（1）Node02</p>
+<pre><code class="language-xml">&lt;macros&gt;
+        &lt;shard&gt;01&lt;/shard&gt; &lt;!--不同机器放的分片数不一样--&gt;
+        &lt;replica&gt;rep_1_2&lt;/replica&gt; &lt;!--不同机器放的副本数不一样--&gt;
+&lt;/macros&gt;1.2.3.4.
+</code></pre>
+<p>（2）Node03</p>
+<pre><code class="language-xml">&lt;macros&gt;
+        &lt;shard&gt;02&lt;/shard&gt; &lt;!--不同机器放的分片数不一样--&gt;
+        &lt;replica&gt;rep_2_1&lt;/replica&gt; &lt;!--不同机器放的副本数不一样--&gt;
+&lt;/macros&gt;1.2.3.4.
+</code></pre>
+<p>4）在 Node01 上修改/etc/clickhouse-server/config.xml</p>
+<pre><code class="language-shell">vim /etc/clickhouse-server/config.xml 
+ 
+&lt;zookeeper incl=&quot;zookeeper-servers&quot; optional=&quot;true&quot; /&gt;
+&lt;include_from&gt;/etc/clickhouse-server/config.d/metrika-shard.xml&lt;/include_from&gt;
+</code></pre>
+<p>5）同步/etc/clickhouse-server/config.xml 到 Node02 和 Node03</p>
+<pre><code class="language-shell">scp /etc/clickhouse-server/config.xml root@Node02:/etc/clickhouse-server/
+scp /etc/clickhouse-server/config.xml root@Node03:/etc/clickhouse-server/
+</code></pre>
+<p>6）重启三台服务器上的 ClickHouse 服务 sudo clickhouse restart  查看集群</p>
+<pre><code>superset-BI :) show clusters;
+SHOW CLUSTERS
+Query id: 391735d2-bf74-43f5-aa86-b6d203c357cd
+┌─cluster─────────────────────────────────────────┐
+│ gmall_cluster                                   │
+│ test_cluster_one_shard_three_replicas_localhost │
+│ test_cluster_two_shards                         │
+│ test_cluster_two_shards_internal_replication    │
+│ test_cluster_two_shards_localhost               │
+│ test_shard_localhost                            │
+│ test_shard_localhost_secure                     │
+│ test_unavailable_shard                          │
+└─────────────────────────────────────────────────┘
+8 rows in set. Elapsed: 0.002 sec.
+</code></pre>
+<p>7）在 Node01 上执行建表语句 ➢ 会自动同步到 Node02 和 Node03 上 ➢ 集群名字要和配置文件中的一致 ➢ 分片和副本名称从配置文件的宏定义中获取</p>
+<pre><code class="language-sql">create table st_fz_order_mt_01 on cluster gmall_cluster ( 
+    id UInt32, 
+    sku_id String, 
+    total_amount Decimal(16,2), 
+    create_time Datetime 
+) engine =ReplicatedMergeTree('/clickhouse/tables/{shard}/st_fz_order_mt_01','{replica}') 
+partition by toYYYYMMDD(create_time) 
+primary key (id) 
+order by (id,sku_id);  
+</code></pre>
+<pre><code class="language-sql">create table st_fz_order_mt_01 on cluster gmall_cluster (  
+	id UInt32,        
+    sku_id String,         
+    total_amount Decimal(16,2),         
+    create_time Datetime         
+) engine =ReplicatedMergeTree('/clickhouse/tables/{shard}/st_fz_order_mt_01','{replica}')         
+partition by toYYYYMMDD(create_time)         
+primary key (id)         
+order by (id,sku_id); 
+</code></pre>
+<pre><code class="language-sql">CREATE TABLE st_fz_order_mt_01 ON CLUSTER gmall_cluster (  
+	`id` UInt32,   
+    `sku_id` String,   
+    `total_amount` Decimal(16, 2),   
+    `create_time` Datetime 
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/st_fz_order_mt_01', '{replica}') 
+PARTITION BY toYYYYMMDD(create_time) 
+PRIMARY KEY id 
+ORDER BY (id, sku_id) 
+</code></pre>
+<p>在Node02和Node03上查看表是否创建成功 show tables;</p>
+<p>8）在 Node02 上创建 Distribute 分布式表</p>
+<pre><code class="language-sql">create table st_fz_order_mt_all2 on cluster gmall_cluster (      
+    id UInt32,       
+    sku_id String,       
+    total_amount Decimal(16,2),       
+    create_time Datetime       
+)engine = Distributed(gmall_cluster,default, st_fz_order_mt_01,hiveHash(sku_id)); 
+CREATE TABLE st_fz_order_mt_all2 ON CLUSTER gmall_cluster (   
+    `id` UInt32,   
+    `sku_id` String,   
+    `total_amount` Decimal(16, 2),   
+    `create_time` Datetime 
+) ENGINE = Distributed(gmall_cluster, default, st_fz_order_mt_01, hiveHash(sku_id)) 
+</code></pre>
+<p>参数含义： Distributed（集群名称，库名，本地表名，分片键） 分片键必须是整型数字，所以用 hiveHash 函数转换，也可以 rand()</p>
+<p>9）在 Node01 上插入测试数据</p>
+<pre><code class="language-sql">insert into st_order_mt_all2 values
+(201,'sku_001',1000.00,'2020-06-01 12:00:00') ,
+(202,'sku_002',2000.00,'2020-06-01 12:00:00'),
+(203,'sku_004',2500.00,'2020-06-01 12:00:00'),
+(204,'sku_002',2000.00,'2020-06-01 12:00:00'),
+(205,'sku_003',600.00,'2020-06-02 12:00:00');1.2.3.4.5.6.
+</code></pre>
+<p>10）通过查询分布式表和本地表观察输出结果 （1）分布式表</p>
+<pre><code class="language-sql">select * From st_fz_order_mt_all2;
+
+Query id: d8b676e9-c119-4483-8ca2-f0b5cd150a61
+┌──id─┬─sku_id──┬─total_amount─┬─────────create_time─┐
+│ 202 │ sku_002 │         2000 │ 2020-06-01 12:00:00 │
+│ 203 │ sku_004 │         2500 │ 2020-06-01 12:00:00 │
+│ 204 │ sku_002 │         2000 │ 2020-06-01 12:00:00 │
+└─────┴─────────┴──────────────┴─────────────────────┘
+┌──id─┬─sku_id──┬─total_amount─┬─────────create_time─┐
+│ 205 │ sku_003 │          600 │ 2020-06-02 12:00:00 │
+└─────┴─────────┴──────────────┴─────────────────────┘
+┌──id─┬─sku_id──┬─total_amount─┬─────────create_time─┐
+│ 201 │ sku_001 │         1000 │ 2020-06-01 12:00:00 │
+└─────┴─────────┴──────────────┴─────────────────────┘
+</code></pre>
+<p>（2）本地表</p>
+<pre><code class="language-sql">Node1:
+SELECT *
+FROM st_fz_order_mt_01
+Query id: ddcb5176-e443-4253-9877-57fec8f57311
+┌──id─┬─sku_id──┬─total_amount─┬─────────create_time─┐
+│ 202 │ sku_002 │         2000 │ 2020-06-01 12:00:00 │
+│ 203 │ sku_004 │         2500 │ 2020-06-01 12:00:00 │
+│ 204 │ sku_002 │         2000 │ 2020-06-01 12:00:00 │
+└─────┴─────────┴──────────────┴─────────────────────┘
+3 rows in set. Elapsed: 0.002 sec. 
+
+
+Node3:
+SELECT *
+FROM st_fz_order_mt_01
+Query id: 7a336004-7040-4098-948e-1e7c5d983edb
+┌──id─┬─sku_id──┬─total_amount─┬─────────create_time─┐
+│ 205 │ sku_003 │          600 │ 2020-06-02 12:00:00 │
+└─────┴─────────┴──────────────┴─────────────────────┘
+┌──id─┬─sku_id──┬─total_amount─┬─────────create_time─┐
+│ 201 │ sku_001 │         1000 │ 2020-06-01 12:00:00 │
+└─────┴─────────┴──────────────┴─────────────────────┘
+2 rows in set. Elapsed: 0.002 sec.
+</code></pre>
+<p>可以看到数据分布在Node1和Node3两个节点上。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#clickhouse-%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4">ClickHouse-分片集群</a>
+<ul>
+<li><a href="#1%E9%9B%86%E7%BE%A4%E5%86%99%E5%85%A5%E6%B5%81%E7%A8%8B3-%E5%88%86%E7%89%87-2-%E5%89%AF%E6%9C%AC%E5%85%B1-6-%E4%B8%AA%E8%8A%82%E7%82%B9">1.集群写入流程（3 分片 2 副本共 6 个节点）</a></li>
+<li><a href="#2%E9%9B%86%E7%BE%A4%E8%AF%BB%E5%8F%96%E6%B5%81%E7%A8%8B3-%E5%88%86%E7%89%87-2-%E5%89%AF%E6%9C%AC%E5%85%B1-6-%E4%B8%AA%E8%8A%82%E7%82%B9">2.集群读取流程（3 分片 2 副本共 6 个节点）</a></li>
+<li><a href="#3-%E5%88%86%E7%89%87-2-%E5%89%AF%E6%9C%AC%E5%85%B1-6-%E4%B8%AA%E8%8A%82%E7%82%B9%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E4%BE%9B%E5%8F%82%E8%80%83">3 分片 2 副本共 6 个节点集群配置（供参考）</a></li>
+<li><a href="#4-%E9%85%8D%E7%BD%AE%E4%B8%89%E8%8A%82%E7%82%B9%E7%89%88%E6%9C%AC%E9%9B%86%E7%BE%A4%E5%8F%8A%E5%89%AF%E6%9C%AC">4 .配置三节点版本集群及副本</a>
+<ul>
+<li><a href="#41-%E9%9B%86%E7%BE%A4%E5%8F%8A%E5%89%AF%E6%9C%AC%E8%A7%84%E5%88%922-%E4%B8%AA%E5%88%86%E7%89%87%E5%8F%AA%E6%9C%89%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%88%86%E7%89%87%E6%9C%89%E5%89%AF%E6%9C%AC">4.1 集群及副本规划（2 个分片，只有第一个分片有副本）</a></li>
+<li><a href="#42-%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4">4.2 配置步骤</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/bps7a3f5p/">
+                  <span class="post-title">
+                    ClickHouse-7副本&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/DseKIIHw3/">
+                   <span class="post-title">
+                     Thingsboard源码编译&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
