@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>异步编程的 7 种实现方式 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="异步编程的 7 种实现方式 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="异步编程的 7 种实现方式" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/9hE3Lg3SU/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656857553630"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1656857553630"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                
+              </span>
+              <h1>异步编程的 7 种实现方式</h1>
+              <span class="meta">
+                Posted on
+                2022-04-09，13 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/9hE3Lg3SU.png" alt="封面图">
+          </img>
+          
+          <p>早期的系统是同步的，容易理解，我们来看个例子</p>
+<p><strong>同步编程</strong></p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1656857458145.png" alt="" loading="lazy"></figure>
+<p>当用户创建一笔电商交易订单时，要经历的业务逻辑流程还是很长的，每一步都要耗费一定的时间，那么整体的RT就会比较长。</p>
+<p>于是，聪明的人们开始思考能不能将一些非核心业务从主流程中剥离出来，于是有了<code>异步编程</code>雏形。</p>
+<blockquote>
+<p>异步编程是让程序并发运行的一种手段。它允许多个事件同时发生，当程序调用需要长时间运行的方法时，它不会阻塞当前的执行流程，程序可以继续运行。</p>
+</blockquote>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656857467980.png" alt="" loading="lazy"></figure>
+<p>核心思路：采用多线程优化性能，将串行操作变成并行操作。异步模式设计的程序可以显著减少线程等待，从而在高吞吐量场景中，极大提升系统的整体性能，显著降低时延。</p>
+<p>接下来，我们来讲下异步有哪些编程实现方式</p>
+<h3 id="一-线程-thread">一、线程 Thread</h3>
+<p>直接继承 <code>Thread类</code> 是创建异步线程最简单的方式。</p>
+<p>首先，创建Thread子类，普通类或匿名内部类方式；然后创建子类实例；最后通过start()方法启动线程。</p>
+<pre><code class="language-java">public class AsyncThread extends Thread{
+    @Override
+    public void run() {
+        System.out.println(&quot;当前线程名称:&quot; + this.getName() + &quot;, 执行线程名称:&quot; + Thread.currentThread().getName() + &quot;-hello&quot;);
+    }
+}
+public static void main(String[] args) {
+
+  // 模拟业务流程
+  // .......
+  
+    // 创建异步线程 
+    AsyncThread asyncThread = new AsyncThread();
+
+    // 启动异步线程
+    asyncThread.start();
+}
+</code></pre>
+<p>当然如果每次都创建一个 <code>Thread线程</code>，频繁的创建、销毁，浪费系统资源。我们可以采用线程池</p>
+<pre><code class="language-java">@Bean(name = &quot;executorService&quot;)
+public ExecutorService downloadExecutorService() {
+    return new ThreadPoolExecutor(20, 40, 60, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(2000),
+            new ThreadFactoryBuilder().setNameFormat(&quot;defaultExecutorService-%d&quot;).build(),
+            (r, executor) -&gt; log.error(&quot;defaultExecutor pool is full! &quot;));
+}
+</code></pre>
+<p>将业务逻辑封装到 <code>Runnable</code> 或 <code>Callable</code> 中，交由 <code>线程池</code> 来执行</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1656857480787.png" alt="" loading="lazy"></figure>
+<h3 id="二-future">二、Future</h3>
+<p>上述方式虽然达到了多线程并行处理，但有些业务不仅仅要执行过程，还要获取执行结果。</p>
+<p>Java 从1.5版本开始，提供了 <code>Callable</code> 和 <code>Future</code>，可以在任务执行完毕之后得到任务执行结果。</p>
+<p>当然也提供了其他功能，如：取消任务、查询任务是否完成等</p>
+<p>Future类位于java.util.concurrent包下，接口定义：</p>
+<pre><code class="language-java">public interface Future&lt;V&gt; {
+    boolean cancel(boolean mayInterruptIfRunning);
+    boolean isCancelled();
+    boolean isDone();
+    V get() throws InterruptedException, ExecutionException;
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+</code></pre>
+<p><strong>方法描述：</strong></p>
+<ul>
+<li>cancel()：取消任务，如果取消任务成功返回true，如果取消任务失败则返回false</li>
+<li>isCancelled()：表示任务是否被取消成功，如果在任务正常完成前被取消成功，则返回 true</li>
+<li>isDone()：表示任务是否已经完成，如果完成，返回true</li>
+<li>get()：获取执行结果，这个方法会产生阻塞，会一直等到任务执行完毕才返回</li>
+<li>get(long timeout, TimeUnit unit)：用来获取执行结果，如果在指定时间内，还没获取到结果，就直接返回null</li>
+</ul>
+<p><strong>代码示例：</strong></p>
+<pre><code class="language-java">public class CallableAndFuture {
+
+    public static ExecutorService executorService = new ThreadPoolExecutor(4, 40,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue&lt;Runnable&gt;(1024), new ThreadFactoryBuilder()
+            .setNameFormat(&quot;demo-pool-%d&quot;).build(), new ThreadPoolExecutor.AbortPolicy());
+
+
+    static class MyCallable implements Callable&lt;String&gt; {
+        @Override
+        public String call() throws Exception {
+            return &quot;异步处理，Callable 返回结果&quot;;
+        }
+    }
+
+    public static void main(String[] args) {
+        Future&lt;String&gt; future = executorService.submit(new MyCallable());
+        try {
+            System.out.println(future.get());
+        } catch (Exception e) {
+            // nodo
+        } finally {
+            executorService.shutdown();
+        }
+    }
+}
+</code></pre>
+<p>Future 表示一个可能还没有完成的异步任务的结果，通过 <code>get</code> 方法获取执行结果，该方法会阻塞直到任务返回结果。</p>
+<h3 id="三-futuretask">三、FutureTask</h3>
+<p><code>FutureTask</code> 实现了 <code>RunnableFuture</code> 接口，则 <code>RunnableFuture</code> 接口继承了 <code>Runnable</code> 接口和 <code>Future</code> 接口，所以可以将 <code>FutureTask</code> 对象作为任务提交给 <code>ThreadPoolExecutor</code> 去执行，也可以直接被 <code>Thread</code> 执行；又因为实现了 <code>Future</code> 接口，所以也能用来获得任务的执行结果。</p>
+<p><strong>FutureTask 构造函数：</strong></p>
+<pre><code class="language-java">public FutureTask(Callable&lt;V&gt; callable)
+public FutureTask(Runnable runnable, V result)
+</code></pre>
+<p>FutureTask 常用来封装 <code>Callable</code> 和 <code>Runnable</code>，可以作为一个任务提交到线程池中执行。除了作为一个独立的类之外，也提供了一些功能性函数供我们创建自定义 task 类使用。</p>
+<p>FutureTask 线程安全由CAS来保证。</p>
+<pre><code class="language-java">ExecutorService executor = Executors.newCachedThreadPool();
+// FutureTask包装callbale任务，再交给线程池执行
+FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;&gt;(() -&gt; {
+    System.out.println(&quot;子线程开始计算：&quot;);
+    Integer sum = 0;
+    for (int i = 1; i &lt;= 100; i++)
+        sum += i;
+    return sum;
+});
+
+// 线程池执行任务， 运行结果在 futureTask 对象里面
+executor.submit(futureTask);
+
+try {
+    System.out.println(&quot;task运行结果计算的总和为：&quot; + futureTask.get());
+} catch (Exception e) {
+    e.printStackTrace();
+}
+executor.shutdown();
+</code></pre>
+<blockquote>
+<p>Callable 和 Future 的区别：Callable 用于产生结果，Future 用于获取结果</p>
+</blockquote>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1656857496532.png" alt="" loading="lazy"></figure>
+<p>如果是对多个任务多次自由串行、或并行组合，涉及多个线程之间同步阻塞获取结果，Future 代码实现会比较繁琐，需要我们手动处理各个交叉点，很容易出错。</p>
+<h3 id="四-异步框架-completablefuture">四、异步框架 CompletableFuture</h3>
+<p>Future 类通过 <code>get()</code> 方法阻塞等待获取异步执行的运行结果，性能比较差。</p>
+<p>JDK1.8 中，Java 提供了 <code>CompletableFuture</code> 类，它是基于异步函数式编程。相对阻塞式等待返回结果，<code>CompletableFuture</code> 可以通过回调的方式来处理计算结果，实现了异步非阻塞，性能更优。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>异步任务结束时，会自动回调某个对象的方法</li>
+<li>异步任务出错时，会自动回调某个对象的方法</li>
+<li>主线程设置好回调后，不再关心异步任务的执行</li>
+</ul>
+<p><strong>泡茶示例：</strong></p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1656857505924.png" alt="" loading="lazy"></figure>
+<p>(内容摘自：极客时间的《Java 并发编程实战》)</p>
+<pre><code class="language-java">//任务1：洗水壶-&gt;烧开水
+CompletableFuture&lt;Void&gt; f1 =
+        CompletableFuture.runAsync(() -&gt; {
+            System.out.println(&quot;T1:洗水壶...&quot;);
+            sleep(1, TimeUnit.SECONDS);
+
+            System.out.println(&quot;T1:烧开水...&quot;);
+            sleep(15, TimeUnit.SECONDS);
+        });
+
+//任务2：洗茶壶-&gt;洗茶杯-&gt;拿茶叶
+CompletableFuture&lt;String&gt; f2 =
+        CompletableFuture.supplyAsync(() -&gt; {
+            System.out.println(&quot;T2:洗茶壶...&quot;);
+            sleep(1, TimeUnit.SECONDS);
+
+            System.out.println(&quot;T2:洗茶杯...&quot;);
+            sleep(2, TimeUnit.SECONDS);
+
+            System.out.println(&quot;T2:拿茶叶...&quot;);
+            sleep(1, TimeUnit.SECONDS);
+            return &quot;龙井&quot;;
+        });
+
+//任务3：任务1和任务2完成后执行：泡茶
+CompletableFuture&lt;String&gt; f3 =
+        f1.thenCombine(f2, (__, tf) -&gt; {
+            System.out.println(&quot;T1:拿到茶叶:&quot; + tf);
+            System.out.println(&quot;T1:泡茶...&quot;);
+            return &quot;上茶:&quot; + tf;
+        });
+
+//等待任务3执行结果
+System.out.println(f3.join());
+
+}
+</code></pre>
+<p>CompletableFuture 提供了非常丰富的API，大约有50种处理串行，并行，组合以及处理错误的方法。</p>
+<h3 id="五-springboot-注解-async">五、 SpringBoot 注解 @Async</h3>
+<p>除了硬编码的异步编程处理方式，SpringBoot 框架还提供了 <code>注解式</code> 解决方案，以 <code>方法体</code> 为边界，方法体内部的代码逻辑全部按异步方式执行。</p>
+<p>首先，使用 <code>@EnableAsync</code> 启用异步注解</p>
+<pre><code class="language-java">@SpringBootApplication
+@EnableAsync
+public class StartApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(StartApplication.class, args);
+    }
+}
+</code></pre>
+<p>自定义线程池：</p>
+<pre><code class="language-java">@Configuration
+@Slf4j
+public class ThreadPoolConfiguration {
+
+    @Bean(name = &quot;defaultThreadPoolExecutor&quot;, destroyMethod = &quot;shutdown&quot;)
+    public ThreadPoolExecutor systemCheckPoolExecutorService() {
+
+        return new ThreadPoolExecutor(3, 10, 60, TimeUnit.SECONDS,
+                new LinkedBlockingQueue&lt;Runnable&gt;(10000),
+                new ThreadFactoryBuilder().setNameFormat(&quot;default-executor-%d&quot;).build(),
+                (r, executor) -&gt; log.error(&quot;system pool is full! &quot;));
+    }
+}
+</code></pre>
+<p>在异步处理的方法上添加注解 <code>@Async</code> ，当对 <code>execute 方法</code> 调用时，通过自定义的线程池 <code>defaultThreadPoolExecutor</code> 异步化执行  <code>execute 方法</code></p>
+<pre><code class="language-java">@Service
+public class AsyncServiceImpl implements AsyncService {
+
+    @Async(&quot;defaultThreadPoolExecutor&quot;)
+    public Boolean execute(Integer num) {
+        System.out.println(&quot;线程：&quot; + Thread.currentThread().getName() + &quot; , 任务：&quot; + num);
+        return true;
+    }
+
+}
+</code></pre>
+<p>用 @Async 注解标记的方法，称为异步方法。在spring boot应用中使用 @Async 很简单：</p>
+<ul>
+<li>调用异步方法类上或者启动类加上注解 @EnableAsync</li>
+<li>在需要被异步调用的方法外加上 @Async</li>
+<li>所使用的 @Async 注解方法的类对象应该是Spring容器管理的bean对象；</li>
+</ul>
+<h3 id="六-spring-applicationevent-事件">六、Spring ApplicationEvent 事件</h3>
+<p>事件机制在一些大型项目中被经常使用，Spring 专门提供了一套事件机制的接口，满足了架构原则上的解耦。</p>
+<p><code>ApplicationContext</code> 通过 <code>ApplicationEvent</code> 类和 <code>ApplicationListener</code> 接口进行事件处理。如果将实现 <code>ApplicationListener</code> 接口的 bean 注入到上下文中，则每次使用 <code>ApplicationContext</code> 发布 <code>ApplicationEvent</code> 时，都会通知该 bean。本质上，这是标准的<code>观察者设计模式</code>。</p>
+<blockquote>
+<p>ApplicationEvent 是由 Spring 提供的所有 Event 类的基类</p>
+</blockquote>
+<p>首先，自定义业务事件子类，继承自 <code>ApplicationEvent</code>，通过泛型注入业务模型参数类。相当于 MQ 的消息体。</p>
+<pre><code class="language-java">public class OrderEvent extends AbstractGenericEvent&lt;OrderModel&gt; {
+    public OrderEvent(OrderModel source) {
+        super(source);
+    }
+}
+</code></pre>
+<p>然后，编写事件监听器。<code>ApplicationListener</code> 接口是由 Spring 提供的事件订阅者必须实现的接口，我们需要定义一个子类，继承 <code>ApplicationListener</code>。相当于 MQ 的消费端</p>
+<pre><code class="language-java">@Component
+public class OrderEventListener implements ApplicationListener&lt;OrderEvent&gt; {
+    @Override
+    public void onApplicationEvent(OrderEvent event) {
+
+        System.out.println(&quot;【OrderEventListener】监听器处理！&quot; + JSON.toJSONString(event.getSource()));
+
+    }
+}
+</code></pre>
+<p>最后，发布事件，把某个事件告诉所有与这个事件相关的监听器。相当于 MQ 的生产端。</p>
+<pre><code class="language-java">OrderModel orderModel = new OrderModel();
+orderModel.setOrderId((long) i);
+orderModel.setBuyerName(&quot;Tom-&quot; + i);
+orderModel.setSellerName(&quot;judy-&quot; + i);
+orderModel.setAmount(100L);
+// 发布Spring事件通知
+SpringUtils.getApplicationContext().publishEvent(new OrderEvent(orderModel));
+</code></pre>
+<p><strong>加个餐：</strong></p>
+<pre><code class="language-java">[消费端]线程：http-nio-8090-exec-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-1&quot;,&quot;orderId&quot;:1,&quot;sellerName&quot;:&quot;judy-1&quot;}
+[生产端]线程：http-nio-8090-exec-1，发布事件 1
+[消费端]线程：http-nio-8090-exec-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-2&quot;,&quot;orderId&quot;:2,&quot;sellerName&quot;:&quot;judy-2&quot;}
+[生产端]线程：http-nio-8090-exec-1，发布事件 2
+[消费端]线程：http-nio-8090-exec-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-3&quot;,&quot;orderId&quot;:3,&quot;sellerName&quot;:&quot;judy-3&quot;}
+[生产端]线程：http-nio-8090-exec-1，发布事件 3
+</code></pre>
+<p>上面是跑了个demo的运行结果，我们发现无论生产端还是消费端，使用了同一个线程 <code>http-nio-8090-exec-1</code>，Spring 框架的事件机制默认是同步阻塞的。只是在代码规范方面做了解耦，有较好的扩展性，但底层还是采用同步调用方式。</p>
+<p><strong>那么问题来了，如果想实现异步调用，如何处理？</strong></p>
+<p>我们需要手动创建一个 <code>SimpleApplicationEventMulticaster</code>，并设置 <code>TaskExecutor</code>，此时所有的消费事件采用异步线程执行。</p>
+<pre><code class="language-java">@Component
+public class SpringConfiguration {
+
+    @Bean
+    public SimpleApplicationEventMulticaster applicationEventMulticaster(@Qualifier(&quot;defaultThreadPoolExecutor&quot;) ThreadPoolExecutor defaultThreadPoolExecutor) {
+        SimpleApplicationEventMulticaster simpleApplicationEventMulticaster = new SimpleApplicationEventMulticaster();
+        simpleApplicationEventMulticaster.setTaskExecutor(defaultThreadPoolExecutor);
+        return simpleApplicationEventMulticaster;
+    }
+
+}
+</code></pre>
+<p>我们看下改造后的运行结果：</p>
+<pre><code class="language-java">[生产端]线程：http-nio-8090-exec-1，发布事件 1
+[生产端]线程：http-nio-8090-exec-1，发布事件 2
+[生产端]线程：http-nio-8090-exec-1，发布事件 3
+[消费端]线程：default-executor-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-2&quot;,&quot;orderId&quot;:2,&quot;sellerName&quot;:&quot;judy-2&quot;}
+[消费端]线程：default-executor-2，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-1&quot;,&quot;orderId&quot;:1,&quot;sellerName&quot;:&quot;judy-1&quot;}
+[消费端]线程：default-executor-0，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-3&quot;,&quot;orderId&quot;:3,&quot;sellerName&quot;:&quot;judy-3&quot;}
+</code></pre>
+<p><strong><code>SimpleApplicationEventMulticaster</code> 这个我们自己实例化的 Bean 与系统默认的加载顺序如何？会不会有冲突？</strong></p>
+<p>查了下 Spring 源码，处理逻辑在 <code>AbstractApplicationContext#initApplicationEventMulticaster</code> 方法中，通过 beanFactory 查找是否有自定义的 Bean，如果没有，容器会自己 new 一个 <code>SimpleApplicationEventMulticaster</code> 对象注入到容器中。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1656857527673.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>代码地址：https://github.com/aalansehaiyang/wx-project</p>
+</blockquote>
+<h3 id="七-消息队列">七、消息队列</h3>
+<p>异步架构是互联网系统中一种典型架构模式，与同步架构相对应。而消息队列天生就是这种异步架构，具有超高吞吐量和超低时延。</p>
+<p>消息队列异步架构的主要角色包括消息生产者、消息队列和消息消费者。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1656857533663.png" alt="" loading="lazy"></figure>
+<p>消息生产者就是主应用程序，生产者将调用请求封装成消息发送给消息队列。</p>
+<p>消息队列的职责就是缓冲消息，等待消费者消费。根据消费方式又分为<code>点对点模式</code>和<code>发布订阅模式</code>两种。</p>
+<p>消息消费者，用来从消息队列中拉取、消费消息，完成业务逻辑处理。</p>
+<p>当然市面上消息队列框架非常多，常见的有RabbitMQ、Kafka、RocketMQ、ActiveMQ 和 Pulsar 等</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1656857542660.png" alt="" loading="lazy"></figure>
+<p>不同的消息队列的功能特性会略有不同，但整体架构类似，这里就不展开了。</p>
+<p>我们只需要记住一个关键点，借助消息队列这个中间件可以高效的实现异步编程。</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%BA%BF%E7%A8%8B-thread">一、线程 Thread</a></li>
+<li><a href="#%E4%BA%8C-future">二、Future</a></li>
+<li><a href="#%E4%B8%89-futuretask">三、FutureTask</a></li>
+<li><a href="#%E5%9B%9B-%E5%BC%82%E6%AD%A5%E6%A1%86%E6%9E%B6-completablefuture">四、异步框架 CompletableFuture</a></li>
+<li><a href="#%E4%BA%94-springboot-%E6%B3%A8%E8%A7%A3-async">五、 SpringBoot 注解 @Async</a></li>
+<li><a href="#%E5%85%AD-spring-applicationevent-%E4%BA%8B%E4%BB%B6">六、Spring ApplicationEvent 事件</a></li>
+<li><a href="#%E4%B8%83-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">七、消息队列</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/wT9gsiZx3/">
+                  <span class="post-title">
+                    ExecutorCompletionService&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/bPYM5y-vS/">
+                   <span class="post-title">
+                     CountDownLatch,CyclicBarrier,Semaphore的用法和区别&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

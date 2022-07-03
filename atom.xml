@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-06-30T14:17:46.820Z</updated>
+    <updated>2022-07-03T14:12:46.084Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -6483,6 +6483,102 @@ systemctl enable docker
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[binlog、redolog、undolog]]></title>
+        <id>https://tinaxiawuhao.github.io/post/HHdQUUQvV/</id>
+        <link href="https://tinaxiawuhao.github.io/post/HHdQUUQvV/">
+        </link>
+        <updated>2022-04-30T14:08:02.000Z</updated>
+        <content type="html"><![CDATA[<p>日志是 <code>mysql</code> 数据库的重要组成部分，记录着数据库运行期间各种状态信息。<code>mysql</code>日志主要包括错误日志、查询日志、慢查询日志、事务日志、二进制日志几大类。</p>
+<p>作为开发，我们重点需要关注的是二进制日志( <code>binlog</code> )和事务日志(包括<code>redo log</code> 和 <code>undo log</code> )，本文接下来会详细介绍这三种日志。</p>
+<h3 id="binlog">binlog</h3>
+<p><code>binlog</code> 用于记录数据库执行的写入性操作(不包括查询)信息，以二进制的形式保存在磁盘中。<code>binlog</code> 是 <code>mysql</code>的逻辑日志，并且由 <code>Server</code> 层进行记录，使用任何存储引擎的 <code>mysql</code> 数据库都会记录 <code>binlog</code> 日志。</p>
+<ul>
+<li><strong>逻辑日志</strong>：可以简单理解为记录的就是sql语句 。</li>
+<li><strong>物理日志</strong>：<code>mysql</code> 数据最终是保存在数据页中的，物理日志记录的就是数据页变更 。</li>
+</ul>
+<p><code>binlog</code> 是通过追加的方式进行写入的，可以通过<code>max_binlog_size</code> 参数设置每个 <code>binlog</code>文件的大小，当文件大小达到给定值之后，会生成新的文件来保存日志。</p>
+<h4 id="binlog使用场景">binlog使用场景</h4>
+<p>在实际应用中， <code>binlog</code> 的主要使用场景有两个，分别是 <strong>主从复制</strong> 和 <strong>数据恢复</strong> 。</p>
+<ol>
+<li><strong>主从复制</strong> ：在 <code>Master</code> 端开启 <code>binlog</code> ，然后将 <code>binlog</code>发送到各个 <code>Slave</code> 端， <code>Slave</code> 端重放 <code>binlog</code> 从而达到主从数据一致。</li>
+<li><strong>数据恢复</strong> ：通过使用 <code>mysqlbinlog</code> 工具来恢复数据。</li>
+</ol>
+<h4 id="binlog刷盘时机">binlog刷盘时机</h4>
+<p>对于 <code>InnoDB</code> 存储引擎而言，只有在事务提交时才会记录<code>binlog</code> ，此时记录还在内存中，那么 <code>binlog</code>是什么时候刷到磁盘中的呢？</p>
+<p><code>mysql</code> 通过 <code>sync_binlog</code> 参数控制 <code>binlog</code> 的刷盘时机，取值范围是 <code>0-N</code>：</p>
+<ul>
+<li>0：不去强制要求，由系统自行判断何时写入磁盘；</li>
+<li>1：每次 <code>commit</code> 的时候都要将 <code>binlog</code> 写入磁盘；</li>
+<li>N：每N个事务，才会将 <code>binlog</code> 写入磁盘。</li>
+</ul>
+<p>从上面可以看出， <code>sync_binlog</code> 最安全的是设置是 <code>1</code> ，这也是<code>MySQL 5.7.7</code>之后版本的默认值。但是设置一个大一些的值可以提升数据库性能，因此实际情况下也可以将值适当调大，牺牲一定的一致性来获取更好的性能。</p>
+<h4 id="binlog日志格式">binlog日志格式</h4>
+<p><code>binlog</code> 日志有三种格式，分别为 <code>STATMENT</code> 、 <code>ROW</code> 和 <code>MIXED</code>。</p>
+<blockquote>
+<p>在 <code>MySQL 5.7.7</code> 之前，默认的格式是 <code>STATEMENT</code> ， <code>MySQL 5.7.7</code> 之后，默认值是 <code>ROW</code>。日志格式通过 <code>binlog-format</code> 指定。</p>
+</blockquote>
+<ul>
+<li>
+<p><code>STATMENT</code>：基于<code>SQL</code> 语句的复制( <code>statement-based replication, SBR</code> )，每一条会修改数据的sql语句会记录到<code>binlog</code> 中  。</p>
+</li>
+<li>
+<ul>
+<li>优点：不需要记录每一行的变化，减少了 binlog 日志量，节约了 IO  , 从而提高了性能；</li>
+<li>缺点：在某些情况下会导致主从数据不一致，比如执行sysdate() 、  slepp()  等 。</li>
+</ul>
+</li>
+<li>
+<p><code>ROW</code>：基于行的复制(<code>row-based replication, RBR</code> )，不记录每条sql语句的上下文信息，仅需记录哪条数据被修改了 。</p>
+</li>
+<li>
+<ul>
+<li>优点：不会出现某些特定情况下的存储过程、或function、或trigger的调用和触发无法被正确复制的问题 ；</li>
+<li>缺点：会产生大量的日志，尤其是<code>alter table</code> 的时候会让日志暴涨</li>
+</ul>
+</li>
+<li>
+<p><code>MIXED</code>：基于<code>STATMENT</code> 和 <code>ROW</code> 两种模式的混合复制(<code>mixed-based replication, MBR</code> )，一般的复制使用<code>STATEMENT</code> 模式保存 <code>binlog</code> ，对于 <code>STATEMENT</code> 模式无法复制的操作使用 <code>ROW</code> 模式保存 <code>binlog</code></p>
+</li>
+</ul>
+<h3 id="redo-log">redo log</h3>
+<p>我们都知道，事务的四大特性里面有一个是 <strong>持久性</strong> ，具体来说就是<strong>只要事务提交成功，那么对数据库做的修改就被永久保存下来了，不可能因为任何原因再回到原来的状态</strong> 。</p>
+<p>那么 <code>mysql</code>是如何保证一致性的呢？</p>
+<p>最简单的做法是在每次事务提交的时候，将该事务涉及修改的数据页全部刷新到磁盘中。但是这么做会有严重的性能问题，主要体现在两个方面：</p>
+<ol>
+<li>因为 <code>Innodb</code> 是以 <code>页</code> 为单位进行磁盘交互的，而一个事务很可能只修改一个数据页里面的几个字节，这个时候将完整的数据页刷到磁盘的话，太浪费资源了！</li>
+<li>一个事务可能涉及修改多个数据页，并且这些数据页在物理上并不连续，使用随机IO写入性能太差！</li>
+</ol>
+<p>因此 <code>mysql</code> 设计了 <code>redo log</code> ， <strong>具体来说就是只记录事务对数据页做了哪些修改</strong>，这样就能完美地解决性能问题了(相对而言文件更小并且是顺序IO)。</p>
+<h4 id="redo-log基本概念">redo log基本概念</h4>
+<p><code>redo log</code> 包括两部分：一个是内存中的日志缓冲( <code>redo log buffer</code> )，另一个是磁盘上的日志文件( <code>redo logfile</code>)。</p>
+<p><code>mysql</code> 每执行一条 <code>DML</code> 语句，先将记录写入 <code>redo log buffer</code>，后续某个时间点再一次性将多个操作记录写到 <code>redo log file</code>。这种 <strong>先写日志，再写磁盘</strong> 的技术就是 <code>MySQL</code>里经常说到的 <code>WAL(Write-Ahead Logging)</code> 技术。</p>
+<p>在计算机操作系统中，用户空间( <code>user space</code> )下的缓冲区数据一般情况下是无法直接写入磁盘的，中间必须经过操作系统内核空间( <code>kernel space</code> )缓冲区( <code>OS Buffer</code> )。</p>
+<p>因此， <code>redo log buffer</code> 写入 <code>redo logfile</code> 实际上是先写入 <code>OS Buffer</code> ，然后再通过系统调用 <code>fsync()</code> 将其刷到 <code>redo log file</code><br>
+中，过程如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1656857434307.png" alt="" loading="lazy"></figure>
+<p><code>mysql</code> 支持三种将 <code>redo log buffer</code> 写入 <code>redo log file</code> 的时机，可以通过 <code>innodb_flush_log_at_trx_commit</code> 参数配置，各参数值含义如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656857376635.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1656857386706.png" alt="" loading="lazy"></figure>
+<h4 id="redo-log记录形式">redo log记录形式</h4>
+<p>前面说过， <code>redo log</code> 实际上记录数据页的变更，而这种变更记录是没必要全部保存，因此 <code>redo log</code>实现上采用了大小固定，循环写入的方式，当写到结尾时，会回到开头循环写日志。如下图：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1656857394791.png" alt="" loading="lazy"></figure>
+<p>同时我们很容易得知， 在innodb中，既有<code>redo log</code> 需要刷盘，还有 <code>数据页</code> 也需要刷盘， <code>redo log</code>存在的意义主要就是降低对 <code>数据页</code> 刷盘的要求  。</p>
+<p>在上图中， <code>write pos</code> 表示 <code>redo log</code> 当前记录的 <code>LSN</code> (逻辑序列号)位置， <code>check point</code> 表示 <strong>数据页更改记录</strong> 刷盘后对应 <code>redo log</code> 所处的 <code>LSN</code>(逻辑序列号)位置。</p>
+<p><code>write pos</code> 到 <code>check point</code> 之间的部分是 <code>redo log</code> 空着的部分，用于记录新的记录；<code>check point</code> 到 <code>write pos</code> 之间是 <code>redo log</code> 待落盘的数据页更改记录。当 <code>write pos</code>追上<code>check point</code> 时，会先推动 <code>check point</code> 向前移动，空出位置再记录新的日志。</p>
+<p>启动 <code>innodb</code> 的时候，不管上次是正常关闭还是异常关闭，总是会进行恢复操作。因为 <code>redo log</code>记录的是数据页的物理变化，因此恢复的时候速度比逻辑日志(如 <code>binlog</code> )要快很多。</p>
+<p>重启<code>innodb</code> 时，首先会检查磁盘中数据页的 <code>LSN</code> ，如果数据页的<code>LSN</code> 小于日志中的 <code>LSN</code> ，则会从 <code>checkpoint</code> 开始恢复。</p>
+<p>还有一种情况，在宕机前正处于<code>checkpoint</code> 的刷盘过程，且数据页的刷盘进度超过了日志页的刷盘进度，此时会出现数据页中记录的 <code>LSN</code> 大于日志中的 <code>LSN</code>，这时超出日志进度的部分将不会重做，因为这本身就表示已经做过的事情，无需再重做。</p>
+<h4 id="redo-log与binlog区别">redo log与binlog区别</h4>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1656857408492.png" alt="" loading="lazy"></figure>
+<p>由 <code>binlog</code> 和 <code>redo log</code> 的区别可知：<code>binlog</code> 日志只用于归档，只依靠 <code>binlog</code> 是没有 <code>crash-safe</code> 能力的。</p>
+<p>但只有 <code>redo log</code> 也不行，因为 <code>redo log</code> 是 <code>InnoDB</code>特有的，且日志上的记录落盘后会被覆盖掉。因此需要 <code>binlog</code>和 <code>redo log</code>二者同时记录，才能保证当数据库发生宕机重启时，数据不会丢失。</p>
+<h3 id="undo-log">undo log</h3>
+<p>数据库事务四大特性中有一个是 <strong>原子性</strong> ，具体来说就是 <strong>原子性是指对数据库的一系列操作，要么全部成功，要么全部失败，不可能出现部分成功的情况</strong>。</p>
+<p>实际上， <strong>原子性</strong> 底层就是通过 <code>undo log</code> 实现的。<code>undo log</code>主要记录了数据的逻辑变化，比如一条 <code>INSERT</code> 语句，对应一条<code>DELETE</code> 的 <code>undo log</code> ，对于每个 <code>UPDATE</code> 语句，对应一条相反的 <code>UPDATE</code> 的 <code>undo log</code> ，这样在发生错误时，就能回滚到事务之前的数据状态。</p>
+<p>同时， <code>undo log</code> 也是 <code>MVCC</code>(多版本并发控制)实现的关键。</p>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[CountDownLatch,CyclicBarrier,Semaphore的用法和区别]]></title>
         <id>https://tinaxiawuhao.github.io/post/bPYM5y-vS/</id>
         <link href="https://tinaxiawuhao.github.io/post/bPYM5y-vS/">
@@ -6890,6 +6986,316 @@ public class SemaphoneTest2 {
 <code>CountDownLatch</code>和<code>CyclicBarrier</code>都能够实现线程之间的等待，只不过它们侧重点不同。<code>CountDownLatch</code>一般用于一个或多个线程，等待其他线程执行完任务后，再执行。<code>CyclicBarrier</code>一般用于一组线程互相等待至某个状态，然后这一组线程再同时执行。<br>
 <code>CyclicBarrier</code> 还可以提供一个 <code>barrierAction</code>，合并多线程计算结果。<br>
 <code>CyclicBarrier</code>是通过<code>ReentrantLock</code>的&quot;独占锁&quot;和<code>Conditon</code>来实现一组线程的阻塞唤醒的，而<code>CountDownLatch</code>则是通过<code>AQS</code>的“共享锁”实现。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[异步编程的 7 种实现方式]]></title>
+        <id>https://tinaxiawuhao.github.io/post/9hE3Lg3SU/</id>
+        <link href="https://tinaxiawuhao.github.io/post/9hE3Lg3SU/">
+        </link>
+        <updated>2022-04-09T14:06:23.000Z</updated>
+        <content type="html"><![CDATA[<p>早期的系统是同步的，容易理解，我们来看个例子</p>
+<p><strong>同步编程</strong></p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1656857458145.png" alt="" loading="lazy"></figure>
+<p>当用户创建一笔电商交易订单时，要经历的业务逻辑流程还是很长的，每一步都要耗费一定的时间，那么整体的RT就会比较长。</p>
+<p>于是，聪明的人们开始思考能不能将一些非核心业务从主流程中剥离出来，于是有了<code>异步编程</code>雏形。</p>
+<blockquote>
+<p>异步编程是让程序并发运行的一种手段。它允许多个事件同时发生，当程序调用需要长时间运行的方法时，它不会阻塞当前的执行流程，程序可以继续运行。</p>
+</blockquote>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1656857467980.png" alt="" loading="lazy"></figure>
+<p>核心思路：采用多线程优化性能，将串行操作变成并行操作。异步模式设计的程序可以显著减少线程等待，从而在高吞吐量场景中，极大提升系统的整体性能，显著降低时延。</p>
+<p>接下来，我们来讲下异步有哪些编程实现方式</p>
+<h3 id="一-线程-thread">一、线程 Thread</h3>
+<p>直接继承 <code>Thread类</code> 是创建异步线程最简单的方式。</p>
+<p>首先，创建Thread子类，普通类或匿名内部类方式；然后创建子类实例；最后通过start()方法启动线程。</p>
+<pre><code class="language-java">public class AsyncThread extends Thread{
+    @Override
+    public void run() {
+        System.out.println(&quot;当前线程名称:&quot; + this.getName() + &quot;, 执行线程名称:&quot; + Thread.currentThread().getName() + &quot;-hello&quot;);
+    }
+}
+public static void main(String[] args) {
+
+  // 模拟业务流程
+  // .......
+  
+    // 创建异步线程 
+    AsyncThread asyncThread = new AsyncThread();
+
+    // 启动异步线程
+    asyncThread.start();
+}
+</code></pre>
+<p>当然如果每次都创建一个 <code>Thread线程</code>，频繁的创建、销毁，浪费系统资源。我们可以采用线程池</p>
+<pre><code class="language-java">@Bean(name = &quot;executorService&quot;)
+public ExecutorService downloadExecutorService() {
+    return new ThreadPoolExecutor(20, 40, 60, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(2000),
+            new ThreadFactoryBuilder().setNameFormat(&quot;defaultExecutorService-%d&quot;).build(),
+            (r, executor) -&gt; log.error(&quot;defaultExecutor pool is full! &quot;));
+}
+</code></pre>
+<p>将业务逻辑封装到 <code>Runnable</code> 或 <code>Callable</code> 中，交由 <code>线程池</code> 来执行</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1656857480787.png" alt="" loading="lazy"></figure>
+<h3 id="二-future">二、Future</h3>
+<p>上述方式虽然达到了多线程并行处理，但有些业务不仅仅要执行过程，还要获取执行结果。</p>
+<p>Java 从1.5版本开始，提供了 <code>Callable</code> 和 <code>Future</code>，可以在任务执行完毕之后得到任务执行结果。</p>
+<p>当然也提供了其他功能，如：取消任务、查询任务是否完成等</p>
+<p>Future类位于java.util.concurrent包下，接口定义：</p>
+<pre><code class="language-java">public interface Future&lt;V&gt; {
+    boolean cancel(boolean mayInterruptIfRunning);
+    boolean isCancelled();
+    boolean isDone();
+    V get() throws InterruptedException, ExecutionException;
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+</code></pre>
+<p><strong>方法描述：</strong></p>
+<ul>
+<li>cancel()：取消任务，如果取消任务成功返回true，如果取消任务失败则返回false</li>
+<li>isCancelled()：表示任务是否被取消成功，如果在任务正常完成前被取消成功，则返回 true</li>
+<li>isDone()：表示任务是否已经完成，如果完成，返回true</li>
+<li>get()：获取执行结果，这个方法会产生阻塞，会一直等到任务执行完毕才返回</li>
+<li>get(long timeout, TimeUnit unit)：用来获取执行结果，如果在指定时间内，还没获取到结果，就直接返回null</li>
+</ul>
+<p><strong>代码示例：</strong></p>
+<pre><code class="language-java">public class CallableAndFuture {
+
+    public static ExecutorService executorService = new ThreadPoolExecutor(4, 40,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue&lt;Runnable&gt;(1024), new ThreadFactoryBuilder()
+            .setNameFormat(&quot;demo-pool-%d&quot;).build(), new ThreadPoolExecutor.AbortPolicy());
+
+
+    static class MyCallable implements Callable&lt;String&gt; {
+        @Override
+        public String call() throws Exception {
+            return &quot;异步处理，Callable 返回结果&quot;;
+        }
+    }
+
+    public static void main(String[] args) {
+        Future&lt;String&gt; future = executorService.submit(new MyCallable());
+        try {
+            System.out.println(future.get());
+        } catch (Exception e) {
+            // nodo
+        } finally {
+            executorService.shutdown();
+        }
+    }
+}
+</code></pre>
+<p>Future 表示一个可能还没有完成的异步任务的结果，通过 <code>get</code> 方法获取执行结果，该方法会阻塞直到任务返回结果。</p>
+<h3 id="三-futuretask">三、FutureTask</h3>
+<p><code>FutureTask</code> 实现了 <code>RunnableFuture</code> 接口，则 <code>RunnableFuture</code> 接口继承了 <code>Runnable</code> 接口和 <code>Future</code> 接口，所以可以将 <code>FutureTask</code> 对象作为任务提交给 <code>ThreadPoolExecutor</code> 去执行，也可以直接被 <code>Thread</code> 执行；又因为实现了 <code>Future</code> 接口，所以也能用来获得任务的执行结果。</p>
+<p><strong>FutureTask 构造函数：</strong></p>
+<pre><code class="language-java">public FutureTask(Callable&lt;V&gt; callable)
+public FutureTask(Runnable runnable, V result)
+</code></pre>
+<p>FutureTask 常用来封装 <code>Callable</code> 和 <code>Runnable</code>，可以作为一个任务提交到线程池中执行。除了作为一个独立的类之外，也提供了一些功能性函数供我们创建自定义 task 类使用。</p>
+<p>FutureTask 线程安全由CAS来保证。</p>
+<pre><code class="language-java">ExecutorService executor = Executors.newCachedThreadPool();
+// FutureTask包装callbale任务，再交给线程池执行
+FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;&gt;(() -&gt; {
+    System.out.println(&quot;子线程开始计算：&quot;);
+    Integer sum = 0;
+    for (int i = 1; i &lt;= 100; i++)
+        sum += i;
+    return sum;
+});
+
+// 线程池执行任务， 运行结果在 futureTask 对象里面
+executor.submit(futureTask);
+
+try {
+    System.out.println(&quot;task运行结果计算的总和为：&quot; + futureTask.get());
+} catch (Exception e) {
+    e.printStackTrace();
+}
+executor.shutdown();
+</code></pre>
+<blockquote>
+<p>Callable 和 Future 的区别：Callable 用于产生结果，Future 用于获取结果</p>
+</blockquote>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1656857496532.png" alt="" loading="lazy"></figure>
+<p>如果是对多个任务多次自由串行、或并行组合，涉及多个线程之间同步阻塞获取结果，Future 代码实现会比较繁琐，需要我们手动处理各个交叉点，很容易出错。</p>
+<h3 id="四-异步框架-completablefuture">四、异步框架 CompletableFuture</h3>
+<p>Future 类通过 <code>get()</code> 方法阻塞等待获取异步执行的运行结果，性能比较差。</p>
+<p>JDK1.8 中，Java 提供了 <code>CompletableFuture</code> 类，它是基于异步函数式编程。相对阻塞式等待返回结果，<code>CompletableFuture</code> 可以通过回调的方式来处理计算结果，实现了异步非阻塞，性能更优。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>异步任务结束时，会自动回调某个对象的方法</li>
+<li>异步任务出错时，会自动回调某个对象的方法</li>
+<li>主线程设置好回调后，不再关心异步任务的执行</li>
+</ul>
+<p><strong>泡茶示例：</strong></p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1656857505924.png" alt="" loading="lazy"></figure>
+<p>(内容摘自：极客时间的《Java 并发编程实战》)</p>
+<pre><code class="language-java">//任务1：洗水壶-&gt;烧开水
+CompletableFuture&lt;Void&gt; f1 =
+        CompletableFuture.runAsync(() -&gt; {
+            System.out.println(&quot;T1:洗水壶...&quot;);
+            sleep(1, TimeUnit.SECONDS);
+
+            System.out.println(&quot;T1:烧开水...&quot;);
+            sleep(15, TimeUnit.SECONDS);
+        });
+
+//任务2：洗茶壶-&gt;洗茶杯-&gt;拿茶叶
+CompletableFuture&lt;String&gt; f2 =
+        CompletableFuture.supplyAsync(() -&gt; {
+            System.out.println(&quot;T2:洗茶壶...&quot;);
+            sleep(1, TimeUnit.SECONDS);
+
+            System.out.println(&quot;T2:洗茶杯...&quot;);
+            sleep(2, TimeUnit.SECONDS);
+
+            System.out.println(&quot;T2:拿茶叶...&quot;);
+            sleep(1, TimeUnit.SECONDS);
+            return &quot;龙井&quot;;
+        });
+
+//任务3：任务1和任务2完成后执行：泡茶
+CompletableFuture&lt;String&gt; f3 =
+        f1.thenCombine(f2, (__, tf) -&gt; {
+            System.out.println(&quot;T1:拿到茶叶:&quot; + tf);
+            System.out.println(&quot;T1:泡茶...&quot;);
+            return &quot;上茶:&quot; + tf;
+        });
+
+//等待任务3执行结果
+System.out.println(f3.join());
+
+}
+</code></pre>
+<p>CompletableFuture 提供了非常丰富的API，大约有50种处理串行，并行，组合以及处理错误的方法。</p>
+<h3 id="五-springboot-注解-async">五、 SpringBoot 注解 @Async</h3>
+<p>除了硬编码的异步编程处理方式，SpringBoot 框架还提供了 <code>注解式</code> 解决方案，以 <code>方法体</code> 为边界，方法体内部的代码逻辑全部按异步方式执行。</p>
+<p>首先，使用 <code>@EnableAsync</code> 启用异步注解</p>
+<pre><code class="language-java">@SpringBootApplication
+@EnableAsync
+public class StartApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(StartApplication.class, args);
+    }
+}
+</code></pre>
+<p>自定义线程池：</p>
+<pre><code class="language-java">@Configuration
+@Slf4j
+public class ThreadPoolConfiguration {
+
+    @Bean(name = &quot;defaultThreadPoolExecutor&quot;, destroyMethod = &quot;shutdown&quot;)
+    public ThreadPoolExecutor systemCheckPoolExecutorService() {
+
+        return new ThreadPoolExecutor(3, 10, 60, TimeUnit.SECONDS,
+                new LinkedBlockingQueue&lt;Runnable&gt;(10000),
+                new ThreadFactoryBuilder().setNameFormat(&quot;default-executor-%d&quot;).build(),
+                (r, executor) -&gt; log.error(&quot;system pool is full! &quot;));
+    }
+}
+</code></pre>
+<p>在异步处理的方法上添加注解 <code>@Async</code> ，当对 <code>execute 方法</code> 调用时，通过自定义的线程池 <code>defaultThreadPoolExecutor</code> 异步化执行  <code>execute 方法</code></p>
+<pre><code class="language-java">@Service
+public class AsyncServiceImpl implements AsyncService {
+
+    @Async(&quot;defaultThreadPoolExecutor&quot;)
+    public Boolean execute(Integer num) {
+        System.out.println(&quot;线程：&quot; + Thread.currentThread().getName() + &quot; , 任务：&quot; + num);
+        return true;
+    }
+
+}
+</code></pre>
+<p>用 @Async 注解标记的方法，称为异步方法。在spring boot应用中使用 @Async 很简单：</p>
+<ul>
+<li>调用异步方法类上或者启动类加上注解 @EnableAsync</li>
+<li>在需要被异步调用的方法外加上 @Async</li>
+<li>所使用的 @Async 注解方法的类对象应该是Spring容器管理的bean对象；</li>
+</ul>
+<h3 id="六-spring-applicationevent-事件">六、Spring ApplicationEvent 事件</h3>
+<p>事件机制在一些大型项目中被经常使用，Spring 专门提供了一套事件机制的接口，满足了架构原则上的解耦。</p>
+<p><code>ApplicationContext</code> 通过 <code>ApplicationEvent</code> 类和 <code>ApplicationListener</code> 接口进行事件处理。如果将实现 <code>ApplicationListener</code> 接口的 bean 注入到上下文中，则每次使用 <code>ApplicationContext</code> 发布 <code>ApplicationEvent</code> 时，都会通知该 bean。本质上，这是标准的<code>观察者设计模式</code>。</p>
+<blockquote>
+<p>ApplicationEvent 是由 Spring 提供的所有 Event 类的基类</p>
+</blockquote>
+<p>首先，自定义业务事件子类，继承自 <code>ApplicationEvent</code>，通过泛型注入业务模型参数类。相当于 MQ 的消息体。</p>
+<pre><code class="language-java">public class OrderEvent extends AbstractGenericEvent&lt;OrderModel&gt; {
+    public OrderEvent(OrderModel source) {
+        super(source);
+    }
+}
+</code></pre>
+<p>然后，编写事件监听器。<code>ApplicationListener</code> 接口是由 Spring 提供的事件订阅者必须实现的接口，我们需要定义一个子类，继承 <code>ApplicationListener</code>。相当于 MQ 的消费端</p>
+<pre><code class="language-java">@Component
+public class OrderEventListener implements ApplicationListener&lt;OrderEvent&gt; {
+    @Override
+    public void onApplicationEvent(OrderEvent event) {
+
+        System.out.println(&quot;【OrderEventListener】监听器处理！&quot; + JSON.toJSONString(event.getSource()));
+
+    }
+}
+</code></pre>
+<p>最后，发布事件，把某个事件告诉所有与这个事件相关的监听器。相当于 MQ 的生产端。</p>
+<pre><code class="language-java">OrderModel orderModel = new OrderModel();
+orderModel.setOrderId((long) i);
+orderModel.setBuyerName(&quot;Tom-&quot; + i);
+orderModel.setSellerName(&quot;judy-&quot; + i);
+orderModel.setAmount(100L);
+// 发布Spring事件通知
+SpringUtils.getApplicationContext().publishEvent(new OrderEvent(orderModel));
+</code></pre>
+<p><strong>加个餐：</strong></p>
+<pre><code class="language-java">[消费端]线程：http-nio-8090-exec-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-1&quot;,&quot;orderId&quot;:1,&quot;sellerName&quot;:&quot;judy-1&quot;}
+[生产端]线程：http-nio-8090-exec-1，发布事件 1
+[消费端]线程：http-nio-8090-exec-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-2&quot;,&quot;orderId&quot;:2,&quot;sellerName&quot;:&quot;judy-2&quot;}
+[生产端]线程：http-nio-8090-exec-1，发布事件 2
+[消费端]线程：http-nio-8090-exec-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-3&quot;,&quot;orderId&quot;:3,&quot;sellerName&quot;:&quot;judy-3&quot;}
+[生产端]线程：http-nio-8090-exec-1，发布事件 3
+</code></pre>
+<p>上面是跑了个demo的运行结果，我们发现无论生产端还是消费端，使用了同一个线程 <code>http-nio-8090-exec-1</code>，Spring 框架的事件机制默认是同步阻塞的。只是在代码规范方面做了解耦，有较好的扩展性，但底层还是采用同步调用方式。</p>
+<p><strong>那么问题来了，如果想实现异步调用，如何处理？</strong></p>
+<p>我们需要手动创建一个 <code>SimpleApplicationEventMulticaster</code>，并设置 <code>TaskExecutor</code>，此时所有的消费事件采用异步线程执行。</p>
+<pre><code class="language-java">@Component
+public class SpringConfiguration {
+
+    @Bean
+    public SimpleApplicationEventMulticaster applicationEventMulticaster(@Qualifier(&quot;defaultThreadPoolExecutor&quot;) ThreadPoolExecutor defaultThreadPoolExecutor) {
+        SimpleApplicationEventMulticaster simpleApplicationEventMulticaster = new SimpleApplicationEventMulticaster();
+        simpleApplicationEventMulticaster.setTaskExecutor(defaultThreadPoolExecutor);
+        return simpleApplicationEventMulticaster;
+    }
+
+}
+</code></pre>
+<p>我们看下改造后的运行结果：</p>
+<pre><code class="language-java">[生产端]线程：http-nio-8090-exec-1，发布事件 1
+[生产端]线程：http-nio-8090-exec-1，发布事件 2
+[生产端]线程：http-nio-8090-exec-1，发布事件 3
+[消费端]线程：default-executor-1，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-2&quot;,&quot;orderId&quot;:2,&quot;sellerName&quot;:&quot;judy-2&quot;}
+[消费端]线程：default-executor-2，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-1&quot;,&quot;orderId&quot;:1,&quot;sellerName&quot;:&quot;judy-1&quot;}
+[消费端]线程：default-executor-0，消费事件 {&quot;amount&quot;:100.0,&quot;buyerName&quot;:&quot;Tom-3&quot;,&quot;orderId&quot;:3,&quot;sellerName&quot;:&quot;judy-3&quot;}
+</code></pre>
+<p><strong><code>SimpleApplicationEventMulticaster</code> 这个我们自己实例化的 Bean 与系统默认的加载顺序如何？会不会有冲突？</strong></p>
+<p>查了下 Spring 源码，处理逻辑在 <code>AbstractApplicationContext#initApplicationEventMulticaster</code> 方法中，通过 beanFactory 查找是否有自定义的 Bean，如果没有，容器会自己 new 一个 <code>SimpleApplicationEventMulticaster</code> 对象注入到容器中。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1656857527673.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>代码地址：https://github.com/aalansehaiyang/wx-project</p>
+</blockquote>
+<h3 id="七-消息队列">七、消息队列</h3>
+<p>异步架构是互联网系统中一种典型架构模式，与同步架构相对应。而消息队列天生就是这种异步架构，具有超高吞吐量和超低时延。</p>
+<p>消息队列异步架构的主要角色包括消息生产者、消息队列和消息消费者。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1656857533663.png" alt="" loading="lazy"></figure>
+<p>消息生产者就是主应用程序，生产者将调用请求封装成消息发送给消息队列。</p>
+<p>消息队列的职责就是缓冲消息，等待消费者消费。根据消费方式又分为<code>点对点模式</code>和<code>发布订阅模式</code>两种。</p>
+<p>消息消费者，用来从消息队列中拉取、消费消息，完成业务逻辑处理。</p>
+<p>当然市面上消息队列框架非常多，常见的有RabbitMQ、Kafka、RocketMQ、ActiveMQ 和 Pulsar 等</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1656857542660.png" alt="" loading="lazy"></figure>
+<p>不同的消息队列的功能特性会略有不同，但整体架构类似，这里就不展开了。</p>
+<p>我们只需要记住一个关键点，借助消息队列这个中间件可以高效的实现异步编程。</p>
 ]]></content>
     </entry>
     <entry>
@@ -31057,303 +31463,6 @@ public class ClassB extends ClassA {
 </code></pre>
 <p>从结果可以看出，首先加载类，加载的时候先加载父类，然后子类，类加载的时候就执行静态代码快，也就是说静态代码块是在类加载的时候就加载的，而且只加载一次。如果存在多个执行顺序按照代码的先后来。<br>
 对于非静态代码块，是在new的时候加载的，只是在构造函数之前加载而已。如果存在多个执行顺序按照代码的先后来。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[指令重排序]]></title>
-        <id>https://tinaxiawuhao.github.io/post/J4bdQ7uDb/</id>
-        <link href="https://tinaxiawuhao.github.io/post/J4bdQ7uDb/">
-        </link>
-        <updated>2021-04-30T06:23:15.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="数据依赖性">数据依赖性</h3>
-<p>如果两个操作访问同一个变量，且这两个操作中有一个为写操作，此时这两个操作之间就存在数据依赖性。数据依赖分下列三种类型：</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>代码示例</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>写后读</td>
-<td>a = 1;b = a;</td>
-<td>写一个变量之后，再读这个位置。</td>
-</tr>
-<tr>
-<td>写后写</td>
-<td>a = 1;a = 2;</td>
-<td>写一个变量之后，再写这个变量。</td>
-</tr>
-<tr>
-<td>读后写</td>
-<td>a = b;b = 1;</td>
-<td>读一个变量之后，再写这个变量。</td>
-</tr>
-</tbody>
-</table>
-<p>上面三种情况，只要重排序两个操作的执行顺序，程序的执行结果将会被改变。</p>
-<p>前面提到过，编译器和处理器可能会对操作做重排序。编译器和处理器在重排序时，会遵守数据依赖性，编译器和处理器不会改变存在数据依赖关系的两个操作的执行顺序。</p>
-<p>注意，这里所说的数据依赖性仅针对单个处理器中执行的指令序列和单个线程中执行的操作，不同处理器之间和不同线程之间的数据依赖性不被编译器和处理器考虑。</p>
-<h3 id="as-if-serial-语义">as-if-serial 语义</h3>
-<p>as-if-serial 语义的意思指：不管怎么重排序（编译器和处理器为了提高并行度），（单线程）程序的执行结果不能被改变。编译器，runtime 和处理器都必须遵守 as-if-serial 语义。</p>
-<p>为了遵守 as-if-serial 语义，编译器和处理器不会对存在数据依赖关系的操作做重排序，因为这种重排序会改变执行结果。但是，如果操作之间不存在数据依赖关系，这些操作可能被编译器和处理器重排序。为了具体说明，请看下面计算圆面积的代码示例：</p>
-<pre><code class="language-java">double pi  = 3.14;    //A
-double r   = 1.0;     //B
-double area = pi * r * r; //C  
-</code></pre>
-<p>上面三个操作的数据依赖关系如下图所示：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619332089100.png" alt="" loading="lazy"></figure>
-<p>如上图所示，A 和 C 之间存在数据依赖关系，同时 B 和 C 之间也存在数据依赖关系。因此在最终执行的指令序列中，C 不能被重排序到 A 和 B 的前面（C 排到 A 和 B 的前面，程序的结果将会被改变）。但 A 和 B 之间没有数据依赖关系，编译器和处理器可以重排序 A 和 B 之间的执行顺序。下图是该程序的两种执行顺序：</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619332096691.webp" alt="" loading="lazy"></figure>
-<p>as-if-serial 语义把单线程程序保护了起来，遵守 as-if-serial 语义的编译器，runtime 和处理器共同为编写单线程程序的程序员创建了一个幻觉：单线程程序是按程序的顺序来执行的。as-if-serial 语义使单线程程序员无需担心重排序会干扰他们，也无需担心内存可见性问题。</p>
-<h3 id="程序顺序规则">程序顺序规则</h3>
-<p>根据 happens- before 的程序顺序规则，上面计算圆的面积的示例代码存在三个 happens- before 关系：</p>
-<ol>
-<li>A happens- before B；</li>
-<li>B happens- before C；</li>
-<li>A happens- before C；</li>
-</ol>
-<p>这里的第3个 happens- before 关系，是根据 happens- before 的传递性推导出来的。</p>
-<p>这里 A happens- before B，但实际执行时 B 却可以排在 A 之前执行（看上面的重排序后的执行顺序）。在第一章提到过，如果 A happens- before B，JMM 并不要求 A 一定要在 B 之前执行。JMM 仅仅要求前一个操作（执行的结果）对后一个操作可见，且前一个操作按顺序排在第二个操作之前。这里操作 A 的执行结果不需要对操作 B 可见；而且重排序操作 A 和操作 B 后的执行结果，与操作 A 和操作 B 按 happens- before 顺序执行的结果一致。在这种情况下，JMM 会认为这种重排序并不非法（not illegal），JMM 允许这种重排序。</p>
-<p>在计算机中，软件技术和硬件技术有一个共同的目标：在不改变程序执行结果的前提下，尽可能的开发并行度。编译器和处理器遵从这一目标，从 happens- before 的定义我们可以看出，JMM 同样遵从这一目标。</p>
-<h3 id="重排序对多线程的影响">重排序对多线程的影响</h3>
-<p>现在让我们来看看，重排序是否会改变多线程程序的执行结果。请看下面的示例代码：</p>
-<pre><code class="language-java">class ReorderExample {
-    int a = 0;
-    boolean flag = false;
-
-    public void writer() {
-        a = 1;                   //1
-        flag = true;             //2
-    }
-
-    Public void reader() {
-        if (flag) {                //3
-            int i =  a * a;        //4
-            ……
-        }
-    }
-}  
-</code></pre>
-<p>flag 变量是个标记，用来标识变量 a 是否已被写入。这里假设有两个线程 A 和 B，A 首先执行writer() 方法，随后 B 线程接着执行 reader() 方法。线程B在执行操作4时，能否看到线程 A 在操作1对共享变量 a 的写入？</p>
-<p>答案是：不一定能看到。</p>
-<p>由于操作1和操作2没有数据依赖关系，编译器和处理器可以对这两个操作重排序；同样，操作3和操作4没有数据依赖关系，编译器和处理器也可以对这两个操作重排序。让我们先来看看，当操作1和操作2重排序时，可能会产生什么效果？请看下面的程序执行时序图：<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1619332109512.webp" alt="" loading="lazy"></p>
-<p>如上图所示，操作1和操作2做了重排序。程序执行时，线程A首先写标记变量 flag，随后线程 B 读这个变量。由于条件判断为真，线程 B 将读取变量a。此时，变量 a 还根本没有被线程 A 写入，在这里多线程程序的语义被重排序破坏了！</p>
-<p>※注：本文统一用红色的虚箭线表示错误的读操作，用绿色的虚箭线表示正确的读操作。</p>
-<p>下面再让我们看看，当操作3和操作4重排序时会产生什么效果（借助这个重排序，可以顺便说明控制依赖性）。下面是操作3和操作4重排序后，程序的执行时序图：</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619332116836.webp" alt="" loading="lazy"></figure>
-<p>在程序中，操作3和操作4存在控制依赖关系。当代码中存在控制依赖性时，会影响指令序列执行的并行度。为此，编译器和处理器会采用猜测（Speculation）执行来克服控制相关性对并行度的影响。以处理器的猜测执行为例，执行线程 B 的处理器可以提前读取并计算 a*a，然后把计算结果临时保存到一个名为重排序缓冲（reorder buffer ROB）的硬件缓存中。当接下来操作3的条件判断为真时，就把该计算结果写入变量i中。</p>
-<p>从图中我们可以看出，猜测执行实质上对操作3和4做了重排序。重排序在这里破坏了多线程程序的语义！</p>
-<p>在单线程程序中，对存在控制依赖的操作重排序，不会改变执行结果（这也是 as-if-serial 语义允许对存在控制依赖的操作做重排序的原因）；但在多线程程序中，对存在控制依赖的操作重排序，可能会改变程序的执行结果。</p>
-<h3 id="编译器指令重排">编译器指令重排</h3>
-<p>下面我们简单看一个编译器重排的例子：</p>
-<p>线程 1 线程 2</p>
-<pre><code class="language-bash">1：x2 = a ; 3: x1 = b ;
-
-2: b = 1; 4: a = 2 ;
-</code></pre>
-<p>两个线程同时执行，分别有1、2、3、4四段执行代码，其中1、2属于线程1 ， 3、4属于线程2 ，从程序的执行顺序上看，似乎不太可能出现x1 = 1 和x2 = 2 的情况，但实际上这种情况是有可能发现的，因为如果编译器对这段程序代码执行重排优化后，可能出现下列情况</p>
-<p>线程 1 线程 2</p>
-<pre><code class="language-bash">2: b = 1; 4: a = 2 ;
-
-1：x2 = a ; 3: x1 = b ;
-</code></pre>
-<p>这种执行顺序下就有可能出现<code>x1 = 1</code> 和<code>x2 = 2</code> 的情况，这也就说明在多线程环境下，由于编译器优化重排的存在，两个线程中使用的变量能否保证一致性是无法确定的。</p>
-<p>源代码和Runtime时执行的代码很可能不一样，这是因为编译器、处理器常常会为了追求性能对改变执行顺序。然而改变顺序执行很危险，很有可能使得运行结果和预想的不一样，特别是当重排序共享变量时。</p>
-<p>从源代码到Runtime需要经过三步的重排序：</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1619515556691.png" alt="" loading="lazy"></figure>
-<h2 id="编译器重排序">编译器重排序</h2>
-<p>为了提高性能，在不改变单线程的执行结果下，可以改变语句执行顺序。</p>
-<p>比如尽可能的减少寄存器的读写次数，充分利用局部性。像下面这段代码这样，交替的读x、y，会导致寄存器频繁的交替存储x和y，最糟的情况下寄存器要存储3次x和3次y。如果能让x的一系列操作一块做完，y的一块做完，理想情况下寄存器只需要存储1次x和1次y。</p>
-<pre><code class="language-javascript">//优化前
-int x = 1;
-int y = 2;
-int a1 = x * 1;
-int b1 = y * 1;
-int a2 = x * 2;
-int b2 = y * 2;
-int a3 = x * 3;
-int b3 = y * 3;
-
-//优化后
-int x = 1;
-int y = 2;
-int a1 = x * 1;
-int a2 = x * 2;
-int a3 = x * 3;
-int b1 = y * 1;
-int b2 = y * 2;
-int b3 = y * 3;
-</code></pre>
-<h2 id="指令重排序">指令重排序</h2>
-<p>指令重排序是处理器层面做的优化。处理器在执行时往往会因为一些限制而等待，如访存的地址不在cache中发生miss，这时就需要到内存甚至外存去取，然而内存和外区的读取速度比CPU执行速度慢得多。</p>
-<p>早期处理器是顺序执行(in-order execution)的，在内存、外存读取数据这段时间，处理器就一直处于等待状态。现在处理器一般都是乱序执行(out-of-order execution)，处理器会在等待数据的时候去<strong>执行其他已准备好的操作</strong>，不会让处理器一直等待。</p>
-<p>满足乱序执行的条件：</p>
-<ol>
-<li>该缓存的操作数缓存好</li>
-<li>有空闲的执行单元</li>
-</ol>
-<p>对于下面这段汇编代码，操作1如果发生cache miss，则需要等待读取内存外存。看看有没有能优先执行的指令，操作2依赖于操作1，不能被优先执行，操作3不依赖1和2，所以能优先执行操作3。 所以实际执行顺序是3&gt;1&gt;2</p>
-<pre><code class="language-javascript">LDR R1, [R0];//操作1
-ADD R2, R1, R1;//操作2
-ADD R3, R4, R4;//操作3
-</code></pre>
-<h2 id="内存系统重排序">内存系统重排序</h2>
-<p>由于处理器有读、写缓存区，<em>写缓存区没有及时刷新到内存</em>，造成其他处理器读到的值不是最新的，使得<strong>处理器执行的读写操作与内存上反应出的顺序不一致</strong>。</p>
-<p>如下面这个例子，可能造成处理器A读到的b=0，处理器B读到的a=0。A1写a=1先写到处理器A的写缓存区中，此时内存中a=0。如果这时处理器B从内存中读a，读到的将是0。</p>
-<p>以处理器A来说，处理器A执行的顺序是A1&gt;A2&gt;A3，但是由于写缓存区没有及时刷新到内存，所以实际顺序为A2&gt;A1&gt;A3。</p>
-<pre><code class="language-javascript">初始化：
-a = 0;
-b = 0;
-
-处理器A执行
-a = 1; //A1
-read(b); //A2
-
-处理器B执行
-b = 2; //B1
-read(a); //B2
-</code></pre>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1619515566926.png" alt="" loading="lazy"></figure>
-<h2 id="阻止重排序">阻止重排序</h2>
-<p>不论哪种重排序都可能造成共享变量中线程间不可见，这会改变程序运行结果。所以需要禁止对那些要求可见的共享变量重排序。</p>
-<ul>
-<li>阻止编译重排序：禁止编译器在某些时候重排序。</li>
-<li>阻止指令重排序和内存系统重排序：使用内存屏障或Lock前缀指令</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[happens-before原则和volatile]]></title>
-        <id>https://tinaxiawuhao.github.io/post/67CnuNlVA/</id>
-        <link href="https://tinaxiawuhao.github.io/post/67CnuNlVA/">
-        </link>
-        <updated>2021-04-29T05:38:32.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="基本概念">基本概念</h2>
-<p><strong>先补充一下概念：Java 内存模型中的可见性、原子性和有序性。</strong></p>
-<h3 id="可见性">可见性：</h3>
-<p>可见性是一种复杂的属性，因为可见性中的错误总是会违背我们的直觉。通常，我们无法确保执行读操作的线程能适时地看到其他线程写入的值，有时甚至是根本不可能的事情。为了确保多个线程之间对内存写入操作的可见性，必须使用同步机制。</p>
-<p><strong>可见性，是指线程之间的可见性，一个线程修改的状态对另一个线程是可见的</strong>也就是一个线程修改的结果。另一个线程马上就能看到。比如：用volatile修饰的变量，就会具有可见性。volatile修饰的变量不允许线程内部缓存和重排序，即直接修改内存。所以对其他线程是可见的。但是这里需要注意一个问题，volatile只能让被他修饰内容具有可见性，但不能保证它具有原子性。比如 volatile int a = 0；之后有一个操作 a++；这个变量a具有可见性，但是a++ 依然是一个非原子操作，也就是这个操作同样存在线程安全问题。</p>
-<p>在 Java 中 <code>volatile</code>、<code>synchronized</code> 和<code>final</code> 实现可见性。</p>
-<h3 id="原子性">原子性：</h3>
-<p><strong>原子是世界上的最小单位，具有不可分割性</strong>，比如 a=0；（a非long和double类型） 这个操作是不可分割的，那么我们说这个操作是原子操作。再比如：a++； 这个操作实际是a = a + 1；是可分割的，所以他不是一个原子操作。非原子操作都会存在线程安全问题，需要我们使用同步技术（sychronized）来让它变成一个原子操作。一个操作是原子操作，那么我们称它具有原子性。java的concurrent包下提供了一些原子类，我们可以通过阅读API来了解这些原子类的用法。比如：<code>AtomicInteger</code>、<code>AtomicLong</code>、<code>AtomicReference</code>等。</p>
-<p>在 Java 中 <code>synchronized</code> 和在 <code>lock</code>、<code>unlock</code> 中操作保证原子性。</p>
-<h3 id="有序性">有序性：</h3>
-<p>Java 语言提供了 volatile 和 synchronized 两个关键字来保证线程之间操作的有序性，volatile 是因为其本身包含“禁止指令重排序”的语义，synchronized 是由“一个变量在同一个时刻只允许一条线程对其进行 lock 操作”这条规则获得的，此规则决定了持有同一个对象锁的两个同步块只能串行执行。</p>
-<h2 id="happens-before">happens-before</h2>
-<p>在学习<code>Java内存模型(JMM, Java Memory Model)</code>时，关于线程、主存(main memory)、工作内存(working memory)，这些概念都有着实体的相互对应，线程可能对应着一个内核线程，主存对应着内存，而工作内存则涵盖了写缓冲区、缓存(cache)、寄存器等一系列为了提高数据存取效率的<strong>暂存区域</strong>。但是，一提到<strong>happens-before原则</strong>，就让人有点“丈二和尚摸不着头脑”。这个涵盖了整个<code>JMM</code>中可见性原则的规则，究竟如何理解？</p>
-<p>两个操作间具有happens-before关系，并不意味着前一个操作必须要在后一个操作之前执行。happens-before仅仅要求前一个操作对后一个操作可见。happens-before原则和一般意义上的<strong>时间先后</strong>是不同的</p>
-<h2 id="有哪些happens-before规则">有哪些happens-before规则</h2>
-<p><code>程序次序规则</code>：在一个线程内一段代码的执行结果是有序的。就是还会指令重排，但是随便它怎么排，结果是按照我们代码的顺序生成的不会变。<br>
-<code>管程锁定规则</code>：就是无论是在单线程环境还是多线程环境，对于同一个锁来说，一个线程对这个锁解锁之后，另一个线程获取了这个锁都能看到前一个线程的操作结果！(管程是一种通用的同步原语，synchronized就是管程的实现）<br>
-<code>volatile变量规则</code>：就是如果一个线程先去写一个volatile变量，然后一个线程去读这个变量，那么这个写操作的结果一定对读的这个线程可见。<br>
-<code>线程启动规则</code>：在主线程A执行过程中，启动子线程B，那么线程A在启动子线程B之前对共享变量的修改结果对线程B可见。<br>
-<code>线程终止规则</code>：在主线程A执行过程中，子线程B终止，那么线程B在终止之前对共享变量的修改结果在线程A中可见。也称线程join()规则。<br>
-<code>线程中断规则</code>：对线程interrupt()方法的调用先行发生于被中断线程代码检测到中断事件的发生，可以通过Thread.interrupted()检测到是否发生中断。<br>
-<code>传递性规则</code>：这个简单的，就是happens-before原则具有传递性，即hb(A, B) ， hb(B, C)，那么hb(A, C)。<br>
-<code>对象终结规则</code>：这个也简单的，就是一个对象的初始化的完成，也就是构造函数执行的结束一定 happens-before它的finalize()方法。</p>
-<h3 id="顺序一致性内存模型">顺序一致性内存模型</h3>
-<p>顺序一致性内存模型是一个被计算机科学家理想化了的理论参考模型，它为程序员提供了极强的内存可见性保证。顺序一致性内存模型有两大特性：</p>
-<ol>
-<li>一个线程中的所有操作必须按照程序的顺序来执行。</li>
-<li>（不管程序是否同步）所有线程都只能看到一个单一的操作执行顺序。在顺序一致性内存模型中，每个操作都必须原子执行且立刻对所有线程可见。</li>
-</ol>
-<p>在概念上，顺序一致性模型有一个单一的全局内存，这个内存通过一个开关可以连接到任意一个线程。同时，每一个线程必须按程序的顺序来执行内存读/写操作。在任意时间点最多只能有一个线程可以连接到内存。当多个线程并发执行时，开关装置能把所有线程的所有内存读/写操作串行化。</p>
-<p>为了更好的理解，下面我们来对顺序一致性模型的特性做进一步的说明。</p>
-<p>假设有两个线程A和B并发执行。其中A线程有三个操作，它们在程序中的顺序是：A1-&gt;A2-&gt;A3。B线程也有三个操作，它们在程序中的顺序是：B1-&gt;B2-&gt;B3。</p>
-<p>假设这两个线程使用监视器来正确同步：A线程的三个操作执行后释放监视器，随后B线程获取同一个监视器。</p>
-<p>现在我们再假设这两个线程没有做同步，未同步程序在顺序一致性模型中虽然整体执行顺序是无序的，但所有线程都只能看到一个一致的整体执行顺序。假设，线程A和B看到的执行顺序都是：B1-&gt;A1-&gt;A2-&gt;B2-&gt;A3-&gt;B3。之所以能得到这个保证是因为顺序一致性内存模型中的每个操作必须立即对任意线程可见。</p>
-<p>但是，在JMM中就没有这个保证。未同步程序在JMM中不但整体的执行顺序是无序的，而且所有线程看到的操作执行顺序也可能不一致。比如，在当前线程把写过的数据缓存在本地内存中，且还没有刷新到主内存之前，这个写操作仅对当前线程可见；从其他线程的角度来观察，会认为这个写操作根本还没有被当前线程执行。只有当前线程把本地内存中写过的数据刷新到主内存之后，这个写操作才能对其他线程可见。在这种情况下，当前线程和其它线程看到的操作执行顺序将不一致。</p>
-<p><strong>Java内存模型</strong></p>
-<p>关于Java内存模型的书籍文章，汗牛充栋，想必大家也都有自己的理解。那就仅仅由上面的顺序一致性模型来引出JMM，看看具体区别在哪。<br>
-<img src="https://mmbiz.qpic.cn/mmbiz_png/6fuT3emWI5L2ia8pMCBIIMcJS5mdJUl6qPH8FLPQnoyYbQDM3VsSQIB0m7wrvsm7QgPBGyhaMRmoOHV1cSHqbCA/640?tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片" loading="lazy"></p>
-<p>可以看出，本地内存是一个明显区别于顺序一致性内存模型的地方。事实上，造成可见性问题的根源之一，就在于这个本地内存（强调一下，包括缓存、写缓冲和寄存器等等）。本地内存使得每个线程都有了自己的私有存储，大部分时间对数据的存取工作都在这个区域完成。但是我们写一个数据，是直到数据写到主存中才算真正完成。实际上每个线程维护了一个<strong>副本</strong>，所有线程都在自己的本地内存中不断地读/写一个共享内存中的数据的副本。单线程情况下，这个副本不会造成任何问题；但一旦到多线程，有一个线程将变量写到主存，其他线程却不知道，其他线程的副本就都过期。比如，由于本地内存的存在，程序员写的一段代码，写一个普通的共享变量，其可能先被写到缓冲区，那指令完成的时间就被推迟了，实际表现也就是我们常说的“指令重排序”（这实际上是内存模型层面的重排序，重排序还可能是编译器、机器指令层级上的乱序）。</p>
-<p>因此，在Java内存模型中，每个线程不再像顺序一致性模型中那样有确定的指令执行视图，一个指令可能被重排了。从一个线程的角度看，其他线程（甚至是这个线程本身）执行的指令顺序有多种可能性，也就是说，一个线程的执行结果对其他线程的可见性无法保证。</p>
-<p>总结一下导致可见性问题的原因：</p>
-<ol>
-<li>数据的写无法及时通知到别的线程，如写缓冲区的引入</li>
-<li>线程不能及时读到其他线程对共享变量的修改，如缓存的使用</li>
-<li>各种层级上对指令的重排序，导致指令执行的顺序无法确定</li>
-</ol>
-<p>所以要解决可见性问题，本质是要让线程对共享变量的修改，及时同步到其他线程。我们所使用的硬件架构下，不具备顺序一致性内存模型的全局一致的指令执行顺序，<strong>讨论指令执行的时间先后并不存在意义或者说根本没办法确定时间上的先后</strong>。可以看看下面程序，每个线程中的flag副本会在多久后被更新呢？答案是：无法确定，看线程何时刷新自己的本地内存。</p>
-<pre><code class="language-java">public class testVisibility {
-    public static boolean flag = false;
-
-    public static void main(String[] args) {
-        List&lt;Thread&gt; thdList = new ArrayList&lt;Thread&gt;();
-        for(int i = 0; i &lt; 10; i++) {
-            Thread t = new Thread(new Runnable(){
-                public void run() {
-                    while (true) {
-                        if (flag) {
-                            // 多运行几次，可能并不会打印出来也可能会打印出来
-                            // 如果不打印，则表示Thread看到的仍然是本地内存中的flag
-                            // 可以尝试将flag变成volatile再运行几次看看
-                                  System.out.println(Thread.currentThread().getId() + &quot; is true now&quot;); 
-                        }
-                    }
-                }
-            });
-            t.start();
-            thdList.add(t);
-        }
-
-        flag = true;
-        System.out.println(&quot;set flag true&quot;);
-
-        // 等待线程执行完毕
-        try {
-            for (Thread t : thdList) {
-                t.join();
-            }
-        } catch (Exception e) {
-
-        }
-    }
-}
-</code></pre>
-<p>那么既然我们无法讨论指令执行的先后，也不需要讨论，我们实际只想知道某线程的操作对另一个线程是否可见，于是就规定了happens-before这个<strong>可见性原则</strong>，程序员可以基于这个原则进行可见性的判断。</p>
-<h2 id="volatile原理">Volatile原理</h2>
-<p>Java语言提供了一种稍弱的同步机制，即volatile变量，用来确保将变量的更新操作通知到其他线程。当把变量声明为volatile类型后，编译器与运行时都会注意到这个变量是共享的，因此不会将该变量上的操作与其他内存操作一起重排序。volatile变量不会被缓存在寄存器或者对其他处理器不可见的地方，因此在读取volatile类型的变量时总会返回最新写入的值。</p>
-<p>在访问volatile变量时不会执行加锁操作，因此也就不会使执行线程阻塞，因此<code>volatile</code>变量是一种比<code>sychronized</code>关键字更轻量级的同步机制。<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1619330405178.png" alt="" loading="lazy"></p>
-<p>当对非 volatile 变量进行读写的时候，每个线程先从内存拷贝变量到CPU缓存中。如果计算机有多个CPU，每个线程可能在不同的CPU上被处理，这意味着每个线程可以拷贝到不同的 CPU cache 中。</p>
-<p>而声明变量是 volatile 的，JVM 保证了每次读变量都从内存中读，跳过 CPU cache 这一步。</p>
-<p><strong>当一个变量定义为 volatile 之后，将具备两种特性：</strong></p>
-<p>1. 保证此变量对所有的线程的可见性，这里的“可见性”，如本文开头所述，当一个线程修改了这个变量的值，volatile 保证了新值能立即同步到主内存，以及每次使用前立即从主内存刷新。但普通变量做不到这点，普通变量的值在线程间传递均需要通过主内存来完成。</p>
-<p>2. 禁止指令重排序优化。有volatile修饰的变量，赋值后多执行了一个添加<strong>内存屏障</strong>操作（指令重排序时不能把后面的指令重排序到内存屏障之前的位置），只有一个CPU访问内存时，并不需要内存屏障；（什么是指令重排序：是指CPU采用了允许将多条指令不按程序规定的顺序分开发送给各相应电路单元处理）。</p>
-<p><strong>volatile 性能：</strong></p>
-<p>volatile 的读性能消耗与普通变量几乎相同，但是写操作稍慢，因为它需要在本地代码中插入许多内存屏障指令来保证处理器不发生乱序执行。</p>
-<h3 id="volatile变量">volatile变量</h3>
-<p>volatile就是一个践行happens-before的关键字。看以下对volatile的描述，就不难知道，happens-before指的是线程<strong>接收其他线程修改共享变量的消息</strong>与该线程<strong>读取共享变量</strong>的<strong>先后关系</strong>。大家可以再细想一下，如果没有happens-before原则，岂不是相当于一个线程读取自己的共享变量副本时，其他线程修改这个变量的消息还没有同步过来？这就是可见性问题。</p>
-<p><strong>volatile变量规则</strong>：对一个volatile的写，happens-before于任意后续对这个volatile变量的读。</p>
-<p><strong>线程A写一个volatile变量</strong>，实质上是线程A向接下来要获取这个锁的某个线程发出了（线程A对共享变量修改的）消息。</p>
-<p><strong>线程B读一个volatile变量</strong>，实质上是线程B接收了之前某个线程发出的（对共享变量所做修改的）消息。</p>
-<p><strong>线程A写一个volatile变量，随后线程B读这个变量</strong>，这个过程实质上是线程A通过主内存向线程B发送消息。</p>
-<p>其实仔细看看volatile的实现方式，实际上就是限制了重排序的范围——加入内存屏障(Memory Barrier or Memory Fence)。也即是说，允许指令执行的时间先后顺序在一定范围内发生变化，而这个范围就是根据happens-before原则来规定。内存屏障概括起来有两个功能：</p>
-<ol>
-<li>使写缓冲区的内容刷新到内存，保证对其他线程/CPU可见</li>
-<li>禁止读写操作的越过内存屏障进行重排序</li>
-</ol>
-<p>每个volatile写操作的前面插入一个<code>StoreStore</code>屏障</p>
-<p>每个volatile写操作的后面插入一个<code>StoreLoad</code>屏障</p>
-<p>每个volatile读操作的后面插入一个<code>LoadLoad</code>屏障</p>
-<p>每个volatile读操作的后面插入一个<code>LoadStore</code>屏障</p>
-<p>关于内存屏障的种类，这里不是研究的重点。一直困扰我的是，在多处理器系统下，这个屏障如何能跨越处理器来阻止操作执行的顺序呢？比如下面的读写操作：</p>
-<pre><code class="language-java">public static volatile int race = 0;
-// Thread A
-public static void save(int src) {
-    race = src;
-}
-// Thread B
-public static int load() {
-    return race;
-}
-</code></pre>
-<p>这就要提到从操作系统到硬件层面的观念转换，可以参看总线事务（Bus transaction）的概念。当CPU要与内存进行数据交换的时候，实际上总线会同步数据交换操作，同一时刻只能有一个CPU进行读/写内存，所以我们所看到的多处理器并行，并行的是CPU的计算资源。在总线看来，对于存储的读写操作就是串行的，是按照一定顺序的。这也就是为什么一个内存屏障能够跨越处理器去限制读写、去完成通信。</p>
 ]]></content>
     </entry>
 </feed>
