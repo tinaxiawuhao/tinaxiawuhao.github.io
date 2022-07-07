@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-07-05T12:06:12.371Z</updated>
+    <updated>2022-07-07T11:02:48.921Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -2635,6 +2635,370 @@ rm -rf /var/etcd
 yum -y remove kubeadm* kubectl* kubelet* docker*
 reboot
 </code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Helm简介]]></title>
+        <id>https://tinaxiawuhao.github.io/post/zIWVYloAQ/</id>
+        <link href="https://tinaxiawuhao.github.io/post/zIWVYloAQ/">
+        </link>
+        <updated>2022-06-08T10:58:52.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="一-简介">一、简介</h3>
+<p>Helm是Kubernetes的包管理器。包管理器类似于Ubuntu中使用的apt、Python中的pip一样，能快速查找、下载和安装软件包。<br>
+<strong>Helm解决的痛点</strong></p>
+<ul>
+<li>在Kubernetes中部署一个可以使用的应用，需要涉及到很多的Kubernetes资源的共同协作。比如安装一个WordPress，用到了一些Kubernetes的一些资源对象，包括Deployment用于部署应用、Service提供服务发现、Secret配置 WordPress的用户名和密码，可能还需要pv和pvc来提供持久化服务。并且WordPress数据是存储在mariadb里面的，所以需要mariadb启动就绪后才能启动 WordPress。这些k8s资源过于分散，不方便进行管理。</li>
+<li>Helm把Kubernetes资源(比如deployments、services或ingress等) 打包到一个chart中，而chart被保存到chart仓库。通过chart仓库可用来存储和分享chart。Helm使发布可配置，支持发布应用配置的版本管理，简化了Kubernetes部署应用的版本控制、打包、发布、删除、更新等操作。</li>
+</ul>
+<p><strong>Helm相关组件及概念</strong></p>
+<ul>
+<li><strong>helm</strong>是一个命令行工具，主要用于Kubernetes应用程序Chart的创建、打包、发布以及创建和管理本地和远程的Chart仓库。chart Helm的软件包，采用TAR格式。类似于APT的DEB包或者YUM的RPM包，其包含了一组定义Kubernetes资源相关的 YAML文件。</li>
+<li><strong>Repoistory</strong> Helm的软件仓库，Repository本质上是一个Web服务器，该服务器保存了一系列的Chart软件包以供用户下载，并且提供了一个该Repository的Chart包的清单文件以供查询。Helm可以同时管理多个不同的Repository。</li>
+<li><strong>release</strong>使用helm install命令在Kubernetes集群中部署的Chart称为Release。可以理解为Helm使用Chart包部署的一个应用实例。</li>
+</ul>
+<blockquote>
+<p>创建release<br>
+helm 客户端从指定的目录或本地tar文件或远程repo仓库解析出chart的结构信息<br>
+helm 客户端根据 chart 和 values 生成一个 release<br>
+helm 将install release请求直接传递给 kube-apiserver</p>
+<p>删除release<br>
+helm 客户端从指定的目录或本地tar文件或远程repo仓库解析出chart的结构信息<br>
+helm 客户端根据 chart 和 values 生成一个 release<br>
+helm 将delete release请求直接传递给 kube-apiserver</p>
+<p>更新release<br>
+helm 客户端从指定的目录或本地tar文件或远程repo仓库解析出chart的结构信息<br>
+helm 将收到的信息生成新的 release，并同时更新这个 release 的 history<br>
+helm 将新的 release 传递给 kube-apiserver 进行更新</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>chart</strong>的基本结构</p>
+<pre><code class="language-java">## Helm的打包格式叫做chart，所谓chart就是一系列文件, 它描述了一组相关的 k8s 集群资源。
+## Chart中的文件安装特定的目录结构组织, 最简单的chart 目录如下所示：
+./
+├── charts                            #  目录存放依赖的chart
+├── Chart.yaml                        #  包含Chart的基本信息，包括chart版本，名称等
+├── templates                         #  目录下存放应用一系列k8s资源的yaml模板
+│   ├── deployment.yaml
+│   ├── _helpers.tpl                  #  此文件中定义一些可重用的模板片断，此文件中的定义在任何资源定义模板中可用
+│   ├── ingress.yaml
+│   ├── NOTES.txt                     #  介绍chart部署后的帮助信息，如何使用chart等
+│   ├── serviceaccount.yaml
+│   ├── service.yaml
+│   └── tests
+│       └── test-connection.yaml
+└── values.yaml                       #  包含了必要的值定义（默认值）, 用于存储templates目录中模板文件中用到变量的值
+</code></pre>
+</li>
+</ul>
+<h3 id="二-安装helm">二、安装Helm</h3>
+<h4 id="1-安装helm">1 安装Helm</h4>
+<pre><code class="language-shell">[root@Ansible01 ~]# wget https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz
+[root@Ansible01 ~]# tar -zxvf helm-v3.0.0-linux-amd64.tar.gz
+[root@Ansible01 ~]# mv linux-amd64/helm /usr/local/bin/helm
+[root@Ansible01 ~]# helm version
+version.BuildInfo{Version:&quot;v3.8.2&quot;, GitCommit:&quot;6e3701edea09e5d55a8ca2aae03a68917630e91b&quot;, GitTreeState:&quot;clean&quot;, GoVersion:&quot;go1.17.5&quot;}
+</code></pre>
+<h4 id="2-添加常用repo">2 添加常用repo</h4>
+<p><strong>添加存储库</strong></p>
+<pre><code class="language-shell">[root@Ansible01 ~]# helm repo add aliyun https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+&quot;aliyun&quot; has been added to your repositories
+</code></pre>
+<p><strong>更新存储库</strong></p>
+<pre><code class="language-shell">[root@Ansible01 ~]# helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the &quot;aliyun&quot; chart repository
+...Successfully got an update from the &quot;stable&quot; chart repository
+...Successfully got an update from the &quot;prometheus-community&quot; chart repository
+...Successfully got an update from the &quot;bitnami&quot; chart repository
+Update Complete. ⎈Happy Helming!⎈
+</code></pre>
+<p><strong>查看存储库</strong></p>
+<pre><code class="language-shell">[root@Ansible01 ~]# helm repo list
+NAME                    URL                                                   
+bitnami                 https://charts.bitnami.com/bitnami                    
+prometheus-community    https://prometheus-community.github.io/helm-charts    
+stable                  http://mirror.azure.cn/kubernetes/charts              
+aliyun                  https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+</code></pre>
+<p><strong>删除存储库</strong></p>
+<pre><code class="language-shell">[root@Ansible01 ~]# helm repo remove  aliyun
+&quot;aliyun&quot; has been removed from your repositories
+</code></pre>
+<h3 id="三-使用helm">三、使用Helm</h3>
+<h4 id="1-使用chart部署一个mysql">1 使用chart部署一个mysql</h4>
+<pre><code class="language-shell">#  查找所有repo下的所有chart
+helm search repo
+
+#  查找stable这个repo下的chart mysql
+helm search repo stable/mysql
+ 
+#  查看chart信息：
+helm show chart stable/mysql
+
+ #  安装包：
+helm install db stable/mysql**
+
+# 查看发布状态：
+helm status db
+</code></pre>
+<pre><code class="language-shell">[root@Ansible01 ~]# kubectl get pod -n default
+NAME                        READY   STATUS    RESTARTS       AGE
+db-mysql-599d764c8c-knfqc   0/1     Pending   0              2m10s
+</code></pre>
+<pre><code class="language-shell">[root@Ansible01 ~]# kubectl describe pod db-mysql-599d764c8c-knfqc -n default
+......
+Events:
+  Type     Reason            Age                  From               Message
+  ----     ------            ----                 ----               -------
+  Warning  FailedScheduling  17s (x3 over 2m33s)  default-scheduler  0/4 nodes are available: 4 pod has unbound immediate PersistentVolumeClaims.
+</code></pre>
+<h4 id="2-安装前自定义chart配置选项">2 安装前自定义chart配置选项</h4>
+<ul>
+<li>上面部署的mysql并没有成功，这是因为并不是所有的chart都能按照默认配置运行成功，可能会需要一些环境依赖，例如PV。</li>
+<li>所以需要自定义chart配置选项，安装过程中有两种方法可以传递配置数据：–values（或-f）：指定带有覆盖的YAML文件。这可以多次指定，最右边的文件优先。</li>
+<li>–set：在命令行上指定替代。如果两者都用，–set优先级高</li>
+</ul>
+<p><strong>创建满足的PV</strong></p>
+<pre><code class="language-shell">[root@Ansible01 mysql]# cat pv.yaml 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: &quot;managed-nfs-storage&quot;
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: &quot;/mnt/data&quot;
+
+[root@Ansible01 hello-world]# kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                                           STORAGECLASS          REASON   AGE
+mysql-pv-volume                            10Gi       RWO            Retain           Available                                                   managed-nfs-storage            4s
+</code></pre>
+<pre><code class="language-shell">[root@Ansible01 hello-world]# helm uninstall db
+release &quot;db&quot; uninstalled
+
+[root@Ansible01 hello-world]# cat config.yaml 
+persistence:
+  enabled: true
+  storageClass: &quot;managed-nfs-storage&quot;
+  accessMode: ReadWriteOnce
+  size: 8Gi
+mysqlUser: &quot;k8s&quot;
+mysqlPassword: &quot;123456&quot;
+mysqlDatabase: &quot;k8s&quot;
+
+[root@Ansible01 hello-world]# helm install db -f config.yaml stable/mysql
+
+[root@Ansible01 hello-world]# kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                                           STORAGECLASS          REASON   AGE
+mysql-pv-volume                            10Gi       RWO            Retain           Bound      default/db-mysql                                managed-nfs-storage            17s
+
+
+[root@Ansible01 hello-world]# kubectl get pod 
+NAME                       READY   STATUS    RESTARTS       AGE
+db-mysql-f7fbfdd68-tc8cm   1/1     Running   0              11s
+</code></pre>
+<h4 id="3-构建一个helm-chart">3 构建一个Helm Chart</h4>
+<ul>
+<li>命令来创建一个名为mychart 的helm chart</li>
+</ul>
+<pre><code class="language-shell">[root@Ansible01 2022-05-21]# helm create mychart
+Creating mychart
+[root@Ansible01 2022-05-21]# ls
+mychart
+</code></pre>
+<ul>
+<li>创建后会在目录创建一个mychart目录</li>
+</ul>
+<pre><code class="language-shell">[root@Ansible01 2022-05-21]# tree mychart/
+mychart/
+├── charts
+├── Chart.yaml
+├── templates
+│   ├── deployment.yaml
+│   ├── _helpers.tpl
+│   ├── hpa.yaml
+│   ├── ingress.yaml
+│   ├── NOTES.txt
+│   ├── serviceaccount.yaml
+│   ├── service.yaml
+│   └── tests
+│       └── test-connection.yaml
+└── values.yaml
+
+3 directories, 10 files
+</code></pre>
+<ul>
+<li>其中mychart目录下的templates目录中保存有部署的模板文件，values.yaml中定义了部署的变量，Chart.yaml文件包含有version（chart版本）和appVersion（包含应用的版本）。</li>
+</ul>
+<pre><code class="language-shell">[root@Ansible01 2022-05-21]# cat mychart/Chart.yaml  |grep -v &quot;^#&quot; |grep -v ^$
+apiVersion: v2
+name: mychart
+description: A Helm chart for Kubernetes
+type: application
+version: 0.1.0
+appVersion: &quot;1.16.0&quot;
+</code></pre>
+<ul>
+<li>选择镜像及标签和副本数（这里设置1个）</li>
+</ul>
+<pre><code class="language-shell">[root@Ansible01 2022-05-21]# vi mychart/values.yaml
+replicaCount: 1
+
+image:
+  repository: myapp
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: &quot;v1&quot;
+</code></pre>
+<ul>
+<li>编辑完成后检查依赖及模板配置是否正确</li>
+</ul>
+<pre><code class="language-shell">[root@Ansible01 2022-05-21]# cd mychart/
+[root@Ansible01 mychart]# helm lint .
+==&gt; Linting .
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+</code></pre>
+<ul>
+<li>打包应用，其中0.1.0为在Chart.yaml文件中定义的version（chart版本）信息</li>
+</ul>
+<pre><code class="language-shell">[root@Ansible01 2022-05-21]# helm package mychart/
+Successfully packaged chart and saved it to: /root/2022-05-21/mychart-0.1.0.tgz
+[root@Ansible01 2022-05-21]# ls
+mychart  mychart-0.1.0.tgz
+</code></pre>
+<ul>
+<li>升级、回滚和删除</li>
+</ul>
+<pre><code class="language-shell">#  发布新版本的chart时，或者当您要更改发布的配置时，可以使用该helm upgrade 命令。
+helm upgrade --set imageTag=1.17 web mychart
+helm upgrade -f values.yaml web mychart
+ 
+#  如果在发布后没有达到预期的效果，则可以使用helm rollback回滚到之前的版本。
+例如将应用回滚到第一个版本：
+helm rollback web 2
+
+#  卸载发行版，请使用以下helm uninstall命令：
+helm uninstall web
+
+#  查看历史版本配置信息
+helm get --revision 1 web
+</code></pre>
+<ul>
+<li>下载、上传tar包</li>
+</ul>
+<pre><code class="language-shell">[root@Ansible01 2022-05-21]# helm pull stable/traefik
+[root@Ansible01 2022-05-21]# ls
+traefik-1.87.7.tgz
+</code></pre>
+<pre><code class="language-shell"># 　 一种方式是直接上传charts文件夹，seldon-mab是charts目录，harbor-test-helm是harbor charts repo名称。
+helm push seldon-mab harbor-test-helm
+
+#　　另一种是将charts package文件包push
+helm push seldon-core-operator-1.5.1.tgz harbor-test-helm
+</code></pre>
+<ul>
+<li>安装到k8s的其它空间：--namespace=monitoring</li>
+</ul>
+<pre><code class="language-shell">helm install --name prometheus-operator --set rbacEnable=true --namespace=monitoring stable/prometheus-operator
+</code></pre>
+<h3 id="四-helm使用minio搭建私有仓库">四、Helm使用minio搭建私有仓库</h3>
+<p><strong>minio介绍</strong></p>
+<p>我们一般是从本地的目录结构中的chart去进行部署，如果要集中管理chart,就需要涉及到repository的问题，因为helmrepository都是指到外面的地址，接下来我们可以通过minio建立一个企业私有的存放仓库。</p>
+<p>Minio提供对象存储服务。它的应用场景被设定在了非结构化的数据的存储之上了。众所周知，非结构化对象诸如图像/音频/视频/log文件/系统备份/镜像文件…等等保存起来管理总是不那么方便，size变化很大，类型很多，再有云端的结合会使得情况更加复杂，minio就是解决此种场景的一个解决方案。Minio号称其能很好的适应非结构化的数据，支持AWS的S3，非结构化的文件从数KB到5TB都能很好的支持。</p>
+<p>Minio的使用比较简单，只有两个文件，服务端minio,客户访问端mc,比较简单。</p>
+<p>在项目中，我们可以直接找一台虚拟机作为Minio Server,提供服务，当然minio也支持作为Pod部署。</p>
+<h4 id="1-helm3存储库更改">1 helm3存储库更改</h4>
+<p>在Helm 2中，默认情况下包括稳定的图表存储库。在Helm 3中，默认情况下不包含任何存储库。因此需要做的第一件事就是添加一个存储库。官方图表存储库将在有限的时间内继续接收补丁，但是将不再作为默认存储库包含在Helm客户端中。</p>
+<h4 id="2-minio介绍">2 minio介绍</h4>
+<p>MinIO 是一个基于Apache License  v2.0开源协议的对象存储服务。它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。</p>
+<p>MinIO是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 NodeJS, Redis 或者 MySQL。</p>
+<h4 id="3-安装minio服务端">3 安装minio服务端</h4>
+<p><strong>1使用容器安装服务端</strong></p>
+<pre><code class="language-shell">docker pull minio/minio
+docker run -p 9000:9000 minio/minio server /data
+</code></pre>
+<p><strong>2使用二进制安装服务端</strong></p>
+<pre><code class="language-shell">wget https://dl.min.io/server/minio/release/linux-amd64/minio
+chmod +x minio
+mkdir -p /chart
+./minio server /chart
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657191641142.png" alt="" loading="lazy"></figure>
+<p><strong>访问Browser Access地址：</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657191649298.png" alt="" loading="lazy"></figure>
+<p><strong>在启动日志中获取access  key和secret  key</strong></p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657191656837.png" alt="" loading="lazy"></figure>
+<p>看到这个页面则表示登陆成功</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657191664579.png" alt="" loading="lazy"></figure>
+<p>至此服务端部署完成。</p>
+<h4 id="4-安装minio客户端">4 安装minio客户端</h4>
+<p><strong>1.使用容器安装客户端</strong></p>
+<pre><code class="language-shell">docker pull minio/mc
+docker run minio/mc ls play
+</code></pre>
+<p><strong>2.使用二进制安装客户端</strong></p>
+<pre><code class="language-shell">wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+./mc
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657191674247.png" alt="" loading="lazy"></figure>
+<h4 id="5-连接至服务端">5 连接至服务端</h4>
+<pre><code class="language-shell">./mc config host add myminio http://172.17.0.1:9000 XH2LCA4AJIP52RDB4P5M CDDCuoS2FNsdW8S0bodkcs2729N+TH5lFov+rrT3
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657191689882.png" alt="" loading="lazy"></figure>
+<p>服务端启动时候的access  key和secret  key</p>
+<h4 id="6-mc的shell使用别名">6 mc的shell使用别名</h4>
+<pre><code class="language-shell">ls=mc ls
+cp=mc cp
+cat=mc cat
+mkdir=mc mb
+pipe=mc pipe
+find=mc find
+</code></pre>
+<h4 id="7-创建bucket">7 创建bucket</h4>
+<pre><code class="language-shell">./mc mb myminio/minio-helm-repo
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657191697994.png" alt="" loading="lazy"></figure>
+<h4 id="8-设置bucket和objects匿名访问">8 设置bucket和objects匿名访问</h4>
+<pre><code class="language-shell">./mc policy set download myminio/minio-helm-repo
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657191704821.png" alt="" loading="lazy"></figure>
+<h4 id="9-helm创建与仓库连接的indexyaml文件">9 helm创建与仓库连接的index.yaml文件</h4>
+<pre><code class="language-shell">mkdir /root/helm/repo
+helm repo index helm/repo/
+</code></pre>
+<h4 id="10-helm与minio仓库进行连接">10 helm与minio仓库进行连接</h4>
+<p><strong>1.将index.yaml文件推送到backet中去</strong></p>
+<pre><code class="language-shell">./mc cp helm/repo/index.yaml myminio/minio-helm-repo
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657191712580.png" alt="" loading="lazy"></figure>
+<p><strong>2.helm连接私仓</strong></p>
+<pre><code class="language-shell">helm repo add fengnan http://192.168.0.119:9000/minio-helm-repo
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657191720766.png" alt="" loading="lazy"></figure>
+<p><strong>3.更新repo仓库</strong></p>
+<pre><code class="language-shell">helm repo update
+</code></pre>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657191729687.png" alt="" loading="lazy"></figure>
+<p><strong>4.查看repo</strong></p>
+<pre><code class="language-shell">helm repo list
+</code></pre>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657191738239.png" alt="" loading="lazy"></figure>
+<p><strong>5.查看repo中的文件</strong></p>
+<pre><code class="language-shell">./mc ls myminio/minio-helm-repo
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657191745072.png" alt="" loading="lazy"></figure>
+<p><strong>6.登录服务端web界面查看</strong></p>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657191757447.png" alt="" loading="lazy"></figure>
 ]]></content>
     </entry>
     <entry>
@@ -6850,6 +7214,172 @@ systemctl enable docker
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[HTTP3]]></title>
+        <id>https://tinaxiawuhao.github.io/post/Um_5N4eGG/</id>
+        <link href="https://tinaxiawuhao.github.io/post/Um_5N4eGG/">
+        </link>
+        <updated>2022-05-10T10:52:43.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="http3协议发布">HTTP3协议发布</h3>
+<p>自2017年起HTTP3协议已发布了29个Draft，推出在即，Chrome、Nginx等软件都在跟进实现最新的草案。本文将介绍HTTP3协议规范、应用场景及实现原理。</p>
+<p>2015年HTTP2协议正式推出后，已经有接近一半的互联网站点在使用它：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657191233668.jpg" alt="" loading="lazy"></figure>
+<p>HTTP2协议虽然大幅提升了HTTP/1.1的性能，然而，基于TCP实现的HTTP2遗留下3个问题：</p>
+<blockquote>
+<ul>
+<li>有序字节流引出的<strong>队头阻塞</strong>（<a href="https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Head-of-line_blocking">Head-of-line blocking</a>），使得HTTP2的多路复用能力大打折扣；</li>
+<li><strong>TCP与TLS叠加了握手时延</strong>，建链时长还有1倍的下降空间；</li>
+<li>基于TCP四元组确定一个连接，这种诞生于有线网络的设计，并不适合移动状态下的无线网络，这意味着**IP地址的频繁变动会导致TCP连接、TLS会话反复握手，**成本高昂。</li>
+</ul>
+</blockquote>
+<p>HTTP3协议解决了这些问题：</p>
+<blockquote>
+<ul>
+<li>HTTP3基于UDP协议重新定义了连接，在QUIC层实现了无序、并发字节流的传输，解决了队头阻塞问题（包括基于QPACK解决了动态表的队头阻塞）；</li>
+<li>HTTP3重新定义了TLS协议加密QUIC头部的方式，既提高了网络攻击成本，又降低了建立连接的速度（仅需1个RTT就可以同时完成建链与密钥协商）；</li>
+<li>HTTP3 将Packet、QUIC Frame、HTTP3 Frame分离，实现了连接迁移功能，降低了5G环境下高速移动设备的连接维护成本。</li>
+</ul>
+</blockquote>
+<p>本文将会从HTTP3协议的概念讲起，从连接迁移的实现上学习HTTP3的报文格式，再围绕着队头阻塞问题来分析多路复用与QPACK动态表的实现。虽然正式的RFC规范还未推出，但最近的草案Change只有微小的变化，所以现在学习HTTP3正当其时，这将是下一代互联网最重要的基础设施。</p>
+<hr>
+<h3 id="http3协议到底是什么">HTTP3协议到底是什么？</h3>
+<p>就像HTTP2协议一样，HTTP3并没有改变HTTP1的语义。那什么是HTTP语义呢？在我看来，它包括以下3个点：</p>
+<blockquote>
+<ul>
+<li>请求只能由客户端发起，而服务器针对每个请求返回一个响应；</li>
+<li>请求与响应都由Header、Body（可选）组成，其中请求必须含有URL和方法，而响应必须含有响应码；</li>
+<li>Header中各Name对应的含义保持不变。</li>
+</ul>
+</blockquote>
+<p>HTTP3在保持HTTP1语义不变的情况下，更改了编码格式，这由2个原因所致：首先，是为了减少编码长度。下图中HTTP1协议的编码使用了ASCII码，用空格、冒号以及\r\n作为分隔符，编码效率很低：</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657191244440.jpg" alt="" loading="lazy"></figure>
+<p>HTTP2与HTTP3采用二进制、静态表、动态表与Huffman算法对HTTP Header编码，不只提供了高压缩率，还加快了发送端编码、接收端解码的速度。</p>
+<p>其次，由于HTTP1协议不支持多路复用，这样高并发只能通过多开一些TCP连接实现。然而，通过TCP实现高并发有3个弊端：</p>
+<blockquote>
+<ul>
+<li>实现成本高。TCP是由操作系统内核实现的，如果通过多线程实现并发，并发线程数不能太多，否则线程间切换成本会以指数级上升；如果通过异步、非阻塞socket实现并发，开发效率又太低；</li>
+<li>每个TCP连接与TLS会话都叠加了2-3个RTT的建链成本；</li>
+<li>TCP连接有一个防止出现拥塞的慢启动流程，它会对每个TCP连接都产生减速效果。</li>
+</ul>
+</blockquote>
+<p>因此，HTTP2与HTTP3都在应用层实现了多路复用功能：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657191252726.jpg" alt="" loading="lazy"></figure>
+<p>HTTP2协议基于TCP有序字节流实现，因此<strong>应用层的多路复用并不能做到无序地并发，在丢包场景下会出现队头阻塞问题</strong>。如下面的动态图片所示，服务器返回的绿色响应由5个TCP报文组成，而黄色响应由4个TCP报文组成，当第2个黄色报文丢失后，即使客户端接收到完整的5个绿色报文，但TCP层不会允许应用进程的read函数读取到最后5个报文，并发成了一纸空谈：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657191260722.gif" alt="" loading="lazy"></figure>
+<p>当网络繁忙时，丢包概率会很高，多路复用受到了很大限制。因此，<strong>HTTP3采用UDP作为传输层协议，重新实现了无序连接，并在此基础上通过有序的QUIC Stream提供了多路复用</strong>，如下图所示：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657191268463.jpg" alt="" loading="lazy"></figure>
+<p>最早这一实验性协议由Google推出，并命名为gQUIC，因此，IETF草案中仍然保留了QUIC概念，用来描述HTTP3协议的传输层和表示层。HTTP3协议规范由以下5个部分组成：</p>
+<blockquote>
+<ul>
+<li>QUIC层由<a href="https://link.zhihu.com/?target=https%3A//datatracker.ietf.org/doc/html/draft-ietf-quic-transport-29">https://tools.ietf.org/html/draft-ietf-quic-transport-29</a>描述，它定义了连接、报文的可靠传输、有序字节流的实现；</li>
+<li>TLS协议会将QUIC层的部分报文头部暴露在明文中，方便代理服务器进行路由。<a href="https://link.zhihu.com/?target=https%3A//tools.ietf.org/html/draft-ietf-quic-tls-29%E8%A7%84%E8%8C%83%E5%AE%9A%E4%B9%89%E4%BA%86QUIC%E4%B8%8ETLS%E7%9A%84%E7%BB%93%E5%90%88%E6%96%B9%E5%BC%8F%EF%BC%9B">https://tools.ietf.org/html/draft-ietf-quic-tls-29规范定义了QUIC与TLS的结合方式；</a></li>
+<li>丢包检测、RTO重传定时器预估等功能由<a href="https://link.zhihu.com/?target=https%3A//tools.ietf.org/html/draft-ietf-quic-recovery-29">https://tools.ietf.org/html/draft-ietf-quic-recovery-29</a>定义，目前拥塞控制使用了类似TCP New RENO的算法，未来有可能更换为基于带宽检测的算法（例如BBR）；</li>
+<li>基于以上3个规范，<a href="https://link.zhihu.com/?target=https%3A//tools.ietf.org/html/draft-ietf-quic-http-29%E5%AE%9A%E4%B9%89%E4%BA%86HTTP%E8%AF%AD%E4%B9%89%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%8C%E5%8C%85%E6%8B%AC%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E9%80%81%E3%80%81%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E7%9A%84%E4%BC%A0%E8%BE%93%E7%AD%89%EF%BC%9B">https://tools.ietf.org/html/draft-ietf-quic-http-29定义了HTTP语义的实现，包括服务器推送、请求响应的传输等；</a></li>
+<li>在HTTP2中，由HPACK规范定义HTTP头部的压缩算法。由于HPACK动态表的更新具有时序性，无法满足HTTP3的要求。在HTTP3中，QPACK定义HTTP头部的编码：<a href="https://link.zhihu.com/?target=https%3A//datatracker.ietf.org/doc/html/draft-ietf-quic-qpack-16">https://tools.ietf.org/html/draft-ietf-quic-qpack-16</a>。注意，以上规范的最新草案都到了29，而QPACK相对简单，它目前更新到16。</li>
+</ul>
+</blockquote>
+<p>自1991年诞生的HTTP/0.9协议已不再使用，<strong>但1996推出的HTTP/1.0、1999年推出的HTTP/1.1、2015年推出的HTTP2协议仍然共存于互联网中（HTTP/1.0在企业内网中还在广为使用，例如Nginx与上游的默认协议还是1.0版本），即将面世的HTTP3协议的加入，将会进一步增加协议适配的复杂度</strong>。接下来，我们将深入HTTP3协议的细节。</p>
+<hr>
+<h3 id="连接迁移功能是怎样实现的">连接迁移功能是怎样实现的？</h3>
+<p>对于当下的HTTP1和HTTP2协议，传输请求前需要先完成耗时1个RTT的TCP三次握手、耗时1个RTT的TLS握手（TLS1.3），<strong>由于它们分属内核实现的传输层、openssl库实现的表示层，所以难以合并在一起</strong>，如下图所示：</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657191282402.jpg" alt="" loading="lazy"></figure>
+<p>在IoT时代，移动设备接入的网络会频繁变动，从而导致设备IP地址改变。<strong>对于通过四元组（源IP、源端口、目的IP、目的端口）定位连接的TCP协议来说，这意味着连接需要断开重连，所以上述2个RTT的建链时延、TCP慢启动都需要重新来过</strong>。而HTTP3的QUIC层实现了连接迁移功能，允许移动设备更换IP地址后，只要仍保有上下文信息（比如连接ID、TLS密钥等），就可以复用原连接。</p>
+<p>在UDP报文头部与HTTP消息之间，共有3层头部，定义连接且实现了Connection Migration主要是在Packet Header中完成的，如下图所示：</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657191289184.jpg" alt="" loading="lazy"></figure>
+<p>这3层Header实现的功能各不相同：</p>
+<blockquote>
+<ul>
+<li>Packet Header实现了可靠的连接。当UDP报文丢失后，通过Packet Header中的Packet Number实现报文重传。连接也是通过其中的Connection ID字段定义的；</li>
+<li>QUIC Frame Header在无序的Packet报文中，基于QUIC Stream概念实现了有序的字节流，这允许HTTP消息可以像在TCP连接上一样传输；</li>
+<li>HTTP3 Frame Header定义了HTTP Header、Body的格式，以及服务器推送、QPACK编解码流等功能。</li>
+<li>为了进一步提升网络传输效率，Packet Header又可以细分为两种：</li>
+<li>Long Packet Header用于首次建立连接；</li>
+<li>Short Packet Header用于日常传输数据。</li>
+</ul>
+</blockquote>
+<p>其中，Long Packet Header的格式如下图所示：</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657191297461.jpg" alt="" loading="lazy"></figure>
+<p>建立连接时，连接是由服务器通过Source Connection ID字段分配的，这样，后续传输时，双方只需要固定住Destination Connection ID，就可以在客户端IP地址、端口变化后，绕过UDP四元组（与TCP四元组相同），实现连接迁移功能。下图是Short Packet Header头部的格式，这里就不再需要传输Source Connection ID字段了：</p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657191304638.jpg" alt="" loading="lazy"></figure>
+<p>上图中的Packet Number是每个报文独一无二的序号，基于它可以实现丢失报文的精准重发。如果你通过抓包观察Packet Header，会发现Packet Number被TLS层加密保护了，这是为了防范各类网络攻击的一种设计。下图给出了Packet Header中被加密保护的字段：</p>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657191312018.jpg" alt="" loading="lazy"></figure>
+<p>其中，显示为E（Encrypt）的字段表示被TLS加密过。当然，Packet Header只是描述了最基本的连接信息，其上的Stream层、HTTP消息也是被加密保护的：</p>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657191318976.jpg" alt="" loading="lazy"></figure>
+<p>现在我们已经对HTTP3协议的格式有了基本的了解，接下来我们通过队头阻塞问题，看看Packet之上的QUIC Frame、HTTP3 Frame帧格式。</p>
+<hr>
+<h3 id="stream多路复用时的队头阻塞是怎样解决的">Stream多路复用时的队头阻塞是怎样解决的？</h3>
+<p>其实，解决队头阻塞的方案，就是允许微观上有序发出的Packet报文，在接收端无序到达后也可以应用于并发请求中。比如上文的动态图中，如果丢失的黄色报文对其后发出的绿色报文不造成影响，队头阻塞问题自然就得到了解决：</p>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657191326006.gif" alt="" loading="lazy"></figure>
+<p>在Packet Header之上的QUIC Frame Header，定义了有序字节流Stream，而且Stream之间可以实现真正的并发。HTTP3的Stream，借鉴了HTTP2中的部分概念，所以在讨论QUIC Frame Header格式之前，我们先来看看HTTP2中的Stream长成什么样子：</p>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657191333124.jpg" alt="" loading="lazy"></figure>
+<p>每个Stream就像HTTP1中的TCP连接，它保证了承载的HEADERS frame（存放HTTP Header）、DATA frame（存放HTTP Body）是有序到达的，多个Stream之间可以并行传输。在HTTP3中，上图中的HTTP2 frame会被拆解为两层，我们先来看底层的QUIC Frame。</p>
+<p>一个Packet报文中可以存放多个QUIC Frame，当然所有Frame的长度之和不能大于PMTUD（Path Maximum Transmission Unit Discovery，这是大于1200字节的值），你可以把它与IP路由中的MTU概念对照理解：</p>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657191340236.jpg" alt="" loading="lazy"></figure>
+<p>每一个Frame都有明确的类型：</p>
+<figure data-type="image" tabindex="15"><img src="https://tinaxiawuhao.github.io/post-images/1657191346617.jpg" alt="" loading="lazy"></figure>
+<p>前4个字节的Frame Type字段描述的类型不同，接下来的编码也不相同，下表是各类Frame的16进制Type值：</p>
+<figure data-type="image" tabindex="16"><img src="https://tinaxiawuhao.github.io/post-images/1657191354925.jpg" alt="" loading="lazy"></figure>
+<p>在上表中，我们只要分析0x08-0x0f这8种STREAM类型的Frame，就能弄明白Stream流的实现原理，自然也就清楚队头阻塞是怎样解决的了。Stream Frame用于传递HTTP消息，它的格式如下所示：</p>
+<figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1657191362406.jpg" alt="" loading="lazy"></figure>
+<p>可见，Stream Frame头部的3个字段，完成了多路复用、有序字节流以及报文段层面的二进制分隔功能，包括：</p>
+<ul>
+<li>Stream ID标识了一个有序字节流。当HTTP Body非常大，需要跨越多个Packet时，只要在每个Stream Frame中含有同样的Stream ID，就可以传输任意长度的消息。多个并发传输的HTTP消息，通过不同的Stream ID加以区别；</li>
+<li>消息序列化后的“有序”特性，是通过Offset字段完成的，它类似于TCP协议中的Sequence序号，用于实现Stream内多个Frame间的累计确认功能；</li>
+<li>Length指明了Frame数据的长度。</li>
+</ul>
+<p>你可能会奇怪，为什么会有8种Stream Frame呢？这是因为0x08-0x0f 这8种类型其实是由3个二进制位组成，它们实现了以下3 标志位的组合：</p>
+<ul>
+<li>第1位表示是否含有Offset，当它为0时，表示这是Stream中的起始Frame，这也是上图中Offset是可选字段的原因；</li>
+<li>第2位表示是否含有Length字段；</li>
+<li>第3位Fin，表示这是Stream中最后1个Frame，与HTTP2协议Frame帧中的FIN标志位相同。</li>
+</ul>
+<p>Stream数据中并不会直接存放HTTP消息，因为HTTP3还需要实现服务器推送、权重优先级设定、流量控制等功能，所以Stream Data中首先存放了HTTP3 Frame：</p>
+<figure data-type="image" tabindex="18"><img src="https://tinaxiawuhao.github.io/post-images/1657191370693.jpg" alt="" loading="lazy"></figure>
+<p>其中，Length指明了HTTP消息的长度，而Type字段（请注意，低2位有特殊用途，在QPACK章节中会详细介绍）包含了以下类型：</p>
+<ul>
+<li>0x00：DATA帧，用于传输HTTP Body包体；</li>
+<li>0x01：HEADERS帧，通过QPACK 编码，传输HTTP Header头部；</li>
+<li>0x03：CANCEL_PUSH控制帧，用于取消1次服务器推送消息，通常客户端在收到PUSH_PROMISE帧后，通过它告知服务器不需要这次推送；</li>
+<li>0x04：SETTINGS控制帧，设置各类通讯参数；</li>
+<li>0x05：PUSH_PROMISE帧，用于服务器推送HTTP Body前，先将HTTP Header头部发给客户端，流程与HTTP2相似；</li>
+<li>0x07：GOAWAY控制帧，用于关闭连接（注意，不是关闭Stream）；</li>
+<li>0x0d：MAX_PUSH_ID，客户端用来限制服务器推送消息数量的控制帧。</li>
+</ul>
+<p>总结一下，QUIC Stream Frame定义了有序字节流，且多个Stream间的传输没有时序性要求，这样，HTTP消息基于QUIC Stream就实现了真正的多路复用，队头阻塞问题自然就被解决掉了。</p>
+<hr>
+<h3 id="qpack编码是如何解决队头阻塞问题的">QPACK编码是如何解决队头阻塞问题的？</h3>
+<p>最后，我们再看下HTTP Header头部的编码方式，它需要面对另一种队头阻塞问题。</p>
+<p>与HTTP2中的HPACK编码方式相似，HTTP3中的QPACK也采用了静态表、动态表及Huffman编码：</p>
+<figure data-type="image" tabindex="19"><img src="https://tinaxiawuhao.github.io/post-images/1657191378639.jpg" alt="" loading="lazy"></figure>
+<p>先来看静态表的变化。在上图中，GET方法映射为数字2，这是通过客户端、服务器协议实现层的硬编码完成的。在HTTP2中，共有61个静态表项：</p>
+<figure data-type="image" tabindex="20"><img src="https://tinaxiawuhao.github.io/post-images/1657191385740.jpg" alt="" loading="lazy"></figure>
+<p>而在QPACK中，则上升为98个静态表项，比如Nginx上的ngx_htt_v3_static_table数组所示：</p>
+<figure data-type="image" tabindex="21"><img src="https://tinaxiawuhao.github.io/post-images/1657191392331.jpg" alt="" loading="lazy"></figure>
+<p>你也可以从<a href="https://link.zhihu.com/?target=https%3A//datatracker.ietf.org/doc/html/draft-ietf-quic-qpack-14%23appendix-A">这里</a>找到完整的HTTP3静态表。对于Huffman以及整数的编码，QPACK与HPACK并无多大不同，但动态表编解码方式差距很大。</p>
+<p>所谓动态表，就是将未包含在静态表中的Header项，在其首次出现时加入动态表，这样后续传输时仅用1个数字表示，大大提升了编码效率。因此，动态表是天然具备时序性的，如果首次出现的请求出现了丢包，后续请求解码HPACK头部时，一定会被阻塞！</p>
+<p>QPACK是如何解决队头阻塞问题的呢？事实上，QPACK将动态表的编码、解码独立在单向Stream中传输，仅当单向Stream中的动态表编码成功后，接收端才能解码双向Stream上HTTP消息里的动态表索引。</p>
+<p>我们又引入了单向Stream和双向Stream概念，不要头疼，它其实很简单。单向指只有一端可以发送消息，双向则指两端都可以发送消息。还记得上一小节的QUIC Stream Frame头部吗？其中的Stream ID别有玄机，除了标识Stream外，它的低2位还可以表达以下组合：</p>
+<figure data-type="image" tabindex="22"><img src="https://tinaxiawuhao.github.io/post-images/1657191400338.jpg" alt="" loading="lazy"></figure>
+<p>因此，当Stream ID是0、4、8、12时，这就是客户端发起的双向Stream（HTTP3不支持服务器发起双向Stream），它用于传输HTTP请求与响应。单向Stream有很多用途，所以它在数据前又多出一个Stream Type字段：</p>
+<figure data-type="image" tabindex="23"><img src="https://tinaxiawuhao.github.io/post-images/1657191471479.jpg" alt="" loading="lazy"></figure>
+<p>Stream Type有以下取值：</p>
+<blockquote>
+<ul>
+<li>0x00：控制Stream，传递各类Stream控制消息；</li>
+<li>0x01：服务器推送消息；</li>
+<li>0x02：用于编码QPACK动态表，比如面对不属于静态表的HTTP请求头部，客户端可以通过这个Stream发送动态表编码；</li>
+<li>0x03：用于通知编码端QPACK动态表的更新结果。</li>
+</ul>
+</blockquote>
+<p>由于HTTP3的STREAM之间是乱序传输的，因此，若先发送的编码Stream后到达，双向Stream中的QPACK头部就无法解码，此时传输HTTP消息的双向Stream就会进入Block阻塞状态（两端可以通过控制帧定义阻塞Stream的处理方式）。</p>
+<hr>
+<h3 id="小结">小结</h3>
+<p>最后对本文内容做个小结。</p>
+<p>基于四元组定义连接并不适用于下一代IoT网络，HTTP3创造出Connection ID概念实现了连接迁移，通过融合传输层、表示层，既缩短了握手时长，也加密了传输层中的绝大部分字段，提升了网络安全性。</p>
+<p>HTTP3在Packet层保障了连接的可靠性，在QUIC Frame层实现了有序字节流，在HTTP3 Frame层实现了HTTP语义，这彻底解开了队头阻塞问题，真正实现了应用层的多路复用。</p>
+<p>QPACK使用独立的单向Stream分别传输动态表编码、解码信息，这样乱序、并发传输HTTP消息的Stream既不会出现队头阻塞，也能基于时序性大幅压缩HTTP Header的体积。</p>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[binlog、redolog、undolog]]></title>
         <id>https://tinaxiawuhao.github.io/post/HHdQUUQvV/</id>
         <link href="https://tinaxiawuhao.github.io/post/HHdQUUQvV/">
@@ -7922,6 +8452,1142 @@ ExecutorCompletionService的实际用法应该是这样的：CompletionService�
 submit.get();//直接获取返回值
 </code></pre>
 <p>如上如果我们在使用过程中由于需要的是当前线程任务的返回值，所以没有调用take方法，而是通过get方法获取到当前线程调用的返回值，会导致task任务在队列中一直增加，从而造成OOM</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[easyExcel]]></title>
+        <id>https://tinaxiawuhao.github.io/post/T8lb37RDN/</id>
+        <link href="https://tinaxiawuhao.github.io/post/T8lb37RDN/">
+        </link>
+        <updated>2022-03-10T10:50:56.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="读excel">读Excel</h3>
+<h4 id="注解">注解</h4>
+<p>使用注解很简单，只要在对应的实体类上面加上注解即可。</p>
+<h5 id="excelproperty"><code>ExcelProperty</code></h5>
+<p>用于匹配excel和实体类的匹配,参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>空</td>
+<td>用于匹配excel中的头，必须全匹配,如果有多行头，会匹配最后一行头</td>
+</tr>
+<tr>
+<td>order</td>
+<td>Integer.MAX_VALUE</td>
+<td>优先级高于<code>value</code>，会根据<code>order</code>的顺序来匹配实体和excel中数据的顺序</td>
+</tr>
+<tr>
+<td>index</td>
+<td>-1</td>
+<td>优先级高于<code>value</code>和<code>order</code>，会根据<code>index</code>直接指定到excel中具体的哪一列</td>
+</tr>
+<tr>
+<td>converter</td>
+<td>自动选择</td>
+<td>指定当前字段用什么转换器，默认会自动选择。读的情况下只要实现<code>com.alibaba.excel.converters.Converter#convertToJavaData(com.alibaba.excel.converters.ReadConverterContext&lt;?&gt;)</code> 方法即可</td>
+</tr>
+</tbody>
+</table>
+<h5 id="excelignore"><code>ExcelIgnore</code></h5>
+<p>默认所有字段都会和excel去匹配，加了这个注解会忽略该字段</p>
+<h5 id="excelignoreunannotated"><code>ExcelIgnoreUnannotated</code></h5>
+<p>默认不加<code>ExcelProperty</code> 的注解的都会参与读写，加了不会参与</p>
+<h5 id="datetimeformat"><code>DateTimeFormat</code></h5>
+<p>日期转换，用<code>String</code>去接收excel日期格式的数据会调用这个注解,参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>空</td>
+<td>参照<code>java.text.SimpleDateFormat</code>书写即可</td>
+</tr>
+<tr>
+<td>use1904windowing</td>
+<td>自动选择</td>
+<td>excel中时间是存储1900年起的一个双精度浮点数，但是有时候默认开始日期是1904，所以设置这个值改成默认1904年开始</td>
+</tr>
+</tbody>
+</table>
+<h5 id="numberformat"><code>NumberFormat</code></h5>
+<p>数字转换，用<code>String</code>去接收excel数字格式的数据会调用这个注解。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>空</td>
+<td>参照<code>java.text.DecimalFormat</code>书写即可</td>
+</tr>
+<tr>
+<td>roundingMode</td>
+<td>RoundingMode.HALF_UP</td>
+<td>格式化的时候设置舍入模式</td>
+</tr>
+</tbody>
+</table>
+<h4 id="参数">参数</h4>
+<h5 id="概念介绍">概念介绍</h5>
+<ul>
+<li><code>ReadWorkbook</code> 可以理解成一个excel</li>
+<li><code>ReadSheet</code> 理解成一个excel里面的一个表单</li>
+</ul>
+<h5 id="通用参数">通用参数</h5>
+<p><code>ReadWorkbook</code>,<code>ReadSheet</code> 都会有的参数，如果为空，默认使用上级。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>converter</td>
+<td>空</td>
+<td>默认加载了很多转换器，这里可以加入不支持的字段</td>
+</tr>
+<tr>
+<td>readListener</td>
+<td>空</td>
+<td>可以注册多个监听器，读取excel的时候会不断的回调监听器中的方法</td>
+</tr>
+<tr>
+<td>headRowNumber</td>
+<td>1</td>
+<td>excel中头的行数，默认1行</td>
+</tr>
+<tr>
+<td>head</td>
+<td>空</td>
+<td>与<code>clazz</code>二选一。读取文件头对应的列表，会根据列表匹配数据，建议使用class</td>
+</tr>
+<tr>
+<td>clazz</td>
+<td>空</td>
+<td>与<code>head</code>二选一。读取文件的头对应的class，也可以使用注解。如果两个都不指定，则会读取全部数据</td>
+</tr>
+<tr>
+<td>autoTrim</td>
+<td>true</td>
+<td>会对头、读取数据等进行自动trim</td>
+</tr>
+<tr>
+<td>use1904windowing</td>
+<td>false</td>
+<td>excel中时间是存储1900年起的一个双精度浮点数，但是有时候默认开始日期是1904，所以设置这个值改成默认1904年开始</td>
+</tr>
+<tr>
+<td>useScientificFormat</td>
+<td>false</td>
+<td>数字转文本的时候在较大的数值的是否是否采用科学计数法</td>
+</tr>
+</tbody>
+</table>
+<h5 id="readworkbook">ReadWorkbook</h5>
+<p>设置方法如下，找不到参数的看下通用参数里面是否存在。</p>
+<pre><code class="language-java"> EasyExcel.read(fileName, DemoData.class, new DemoDataListener())
+ // 在 read 方法之后， 在 sheet方法之前都是设置ReadWorkbook的参数
+ .sheet()
+ .doRead();
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>excelType</td>
+<td>空</td>
+<td>当前excel的类型,支持XLS、XLSX、CSV</td>
+</tr>
+<tr>
+<td>inputStream</td>
+<td>空</td>
+<td>与<code>file</code>二选一。读取文件的流，如果接收到的是流就只用，不用流建议使用<code>file</code>参数。因为使用了<code>inputStream</code> easyexcel会帮忙创建临时文件，最终还是<code>file</code></td>
+</tr>
+<tr>
+<td>file</td>
+<td>空</td>
+<td>与<code>inputStream</code>二选一。读取文件的文件。</td>
+</tr>
+<tr>
+<td>mandatoryUseInputStream</td>
+<td>false</td>
+<td>强制使用 <code>inputStream</code> 来创建对象，性能会变差，但是不会创建临文件。</td>
+</tr>
+<tr>
+<td>charset</td>
+<td>Charset#defaultCharset</td>
+<td>只有csv文件有用，读取文件的时候使用的编码</td>
+</tr>
+<tr>
+<td>autoCloseStream</td>
+<td>true</td>
+<td>自动关闭读取的流。</td>
+</tr>
+<tr>
+<td>readCache</td>
+<td>空</td>
+<td>默认小于5M用 内存，超过5M会使用 <code>EhCache</code>,这里不建议使用这个参数。</td>
+</tr>
+<tr>
+<td>readCacheSelector</td>
+<td>SimpleReadCacheSelector</td>
+<td>用于选择什么时候用内存去存储临时数据，什么时候用磁盘存储临时数据</td>
+</tr>
+<tr>
+<td>ignoreEmptyRow</td>
+<td>true</td>
+<td>忽略空的行</td>
+</tr>
+<tr>
+<td>password</td>
+<td>空</td>
+<td>读取文件的密码</td>
+</tr>
+<tr>
+<td>xlsxSAXParserFactoryName</td>
+<td>空</td>
+<td>指定sax读取使用的class的名称，例如：<code>com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl</code></td>
+</tr>
+<tr>
+<td>useDefaultListener</td>
+<td>true</td>
+<td><code>@since 2.1.4</code> 默认会加入<code>ModelBuildEventListener</code> 来帮忙转换成传入<code>class</code>的对象，设置成<code>false</code>后将不会协助转换对象，自定义的监听器会接收到<code>Map&lt;Integer,CellData&gt;</code>对象，如果还想继续接听到<code>class</code>对象，请调用<code>readListener</code>方法，加入自定义的<code>beforeListener</code>、 <code>ModelBuildEventListener</code>、 自定义的<code>afterListener</code>即可。</td>
+</tr>
+<tr>
+<td>extraReadSet</td>
+<td>空</td>
+<td>额外需要读取内容的set，默认不读取这些数据</td>
+</tr>
+</tbody>
+</table>
+<h5 id="readsheet">ReadSheet</h5>
+<p>设置方法如下，找不到参数的看下通用参数里面是否存在。</p>
+<pre><code class="language-java"> EasyExcel.read(fileName, DemoData.class, new DemoDataListener())
+ .sheet()
+  // 在 sheet 方法之后， 在 doRead方法之前都是设置ReadSheet的参数
+ .doRead();
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sheetNo</td>
+<td>0</td>
+<td>需要读取Sheet的编码，建议使用这个来指定读取哪个Sheet</td>
+</tr>
+<tr>
+<td>sheetName</td>
+<td>空</td>
+<td>根据名字去匹配Sheet</td>
+</tr>
+</tbody>
+</table>
+<h3 id="写excel">写Excel</h3>
+<h4 id="注解-2">注解</h4>
+<p>使用注解很简单，只要在对应的实体类上面加上注解即可。</p>
+<h5 id="excelproperty-2"><code>ExcelProperty</code></h5>
+<p>用于匹配excel和实体类的匹配,参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>空</td>
+<td>用于匹配excel中的头，必须全匹配,如果有多行头，会匹配最后一行头</td>
+</tr>
+<tr>
+<td>order</td>
+<td>Integer.MAX_VALUE</td>
+<td>优先级高于<code>value</code>，会根据<code>order</code>的顺序来匹配实体和excel中数据的顺序</td>
+</tr>
+<tr>
+<td>index</td>
+<td>-1</td>
+<td>优先级高于<code>value</code>和<code>order</code>，会根据<code>index</code>直接指定到excel中具体的哪一列</td>
+</tr>
+<tr>
+<td>converter</td>
+<td>自动选择</td>
+<td>指定当前字段用什么转换器，默认会自动选择。写的情况下只要实现<code>com.alibaba.excel.converters.Converter#convertToExcelData(com.alibaba.excel.converters.WriteConverterContext&lt;T&gt;)</code> 方法即可</td>
+</tr>
+</tbody>
+</table>
+<h5 id="excelignore-2"><code>ExcelIgnore</code></h5>
+<p>默认所有字段都会和excel去匹配，加了这个注解会忽略该字段</p>
+<h5 id="excelignoreunannotated-2"><code>ExcelIgnoreUnannotated</code></h5>
+<p>默认不加<code>ExcelProperty</code> 的注解的都会参与读写，加了不会参与</p>
+<h5 id="datetimeformat-2"><code>DateTimeFormat</code></h5>
+<p>日期转换，用<code>String</code>去接收excel日期格式的数据会调用这个注解,参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>空</td>
+<td>参照<code>java.text.SimpleDateFormat</code>书写即可</td>
+</tr>
+<tr>
+<td>use1904windowing</td>
+<td>自动选择</td>
+<td>excel中时间是存储1900年起的一个双精度浮点数，但是有时候默认开始日期是1904，所以设置这个值改成默认1904年开始</td>
+</tr>
+</tbody>
+</table>
+<h5 id="numberformat-2"><code>NumberFormat</code></h5>
+<p>数字转换，用<code>String</code>去接收excel数字格式的数据会调用这个注解。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>空</td>
+<td>参照<code>java.text.DecimalFormat</code>书写即可</td>
+</tr>
+<tr>
+<td>roundingMode</td>
+<td>RoundingMode.HALF_UP</td>
+<td>格式化的时候设置舍入模式</td>
+</tr>
+</tbody>
+</table>
+<h4 id="参数-2">参数</h4>
+<h5 id="概念介绍-2">概念介绍</h5>
+<ul>
+<li><code>WriteWorkbook</code> 可以理解成一个excel</li>
+<li><code>WriteSheet</code> 理解成一个excel里面的一个表单</li>
+<li><code>WriteTable</code> 一个表单里面如果有多个实际用的表格，则可以用<code>WriteTable</code></li>
+</ul>
+<h5 id="通用参数-2">通用参数</h5>
+<p><code>WriteWorkbook</code>,<code>WriteSheet</code> ,<code>WriteTable</code>都会有的参数，如果为空，默认使用上级。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>converter</td>
+<td>空</td>
+<td>默认加载了很多转换器，这里可以加入不支持的字段</td>
+</tr>
+<tr>
+<td>writeHandler</td>
+<td>空</td>
+<td>写的处理器。可以实现<code>WorkbookWriteHandler</code>,<code>SheetWriteHandler</code>,<code>RowWriteHandler</code>,<code>CellWriteHandler</code>，在写入excel的不同阶段会调用</td>
+</tr>
+<tr>
+<td>relativeHeadRowIndex</td>
+<td>0</td>
+<td>写入到excel和上面空开几行</td>
+</tr>
+<tr>
+<td>head</td>
+<td>空</td>
+<td>与<code>clazz</code>二选一。读取文件头对应的列表，会根据列表匹配数据，建议使用class</td>
+</tr>
+<tr>
+<td>clazz</td>
+<td>空</td>
+<td>与<code>head</code>二选一。读取文件的头对应的class，也可以使用注解。如果两个都不指定，则会读取全部数据</td>
+</tr>
+<tr>
+<td>autoTrim</td>
+<td>true</td>
+<td>会对头、读取数据等进行自动trim</td>
+</tr>
+<tr>
+<td>use1904windowing</td>
+<td>false</td>
+<td>excel中时间是存储1900年起的一个双精度浮点数，但是有时候默认开始日期是1904，所以设置这个值改成默认1904年开始</td>
+</tr>
+<tr>
+<td>useScientificFormat</td>
+<td>false</td>
+<td>数字转文本的时候在较大的数值的是否是否采用科学计数法</td>
+</tr>
+<tr>
+<td>needHead</td>
+<td>true</td>
+<td>是否需要写入头到excel</td>
+</tr>
+<tr>
+<td>useDefaultStyle</td>
+<td>true</td>
+<td>是否使用默认的样式</td>
+</tr>
+<tr>
+<td>automaticMergeHead</td>
+<td>true</td>
+<td>自动合并头，头中相同的字段上下左右都会去尝试匹配</td>
+</tr>
+<tr>
+<td>excludeColumnIndexes</td>
+<td>空</td>
+<td>需要排除对象中的index的数据</td>
+</tr>
+<tr>
+<td>excludeColumnFieldNames</td>
+<td>空</td>
+<td>需要排除对象中的字段的数据</td>
+</tr>
+<tr>
+<td>includeColumnIndexes</td>
+<td>空</td>
+<td>只要导出对象中的index的数据</td>
+</tr>
+<tr>
+<td>includeColumnFieldNames</td>
+<td>空</td>
+<td>只要导出对象中的字段的数据</td>
+</tr>
+</tbody>
+</table>
+<h5 id="writeworkbook">WriteWorkbook</h5>
+<p>设置方法如下，找不到参数的看下通用参数里面是否存在。</p>
+<pre><code class="language-java"> EasyExcel.write(fileName, DemoData.class)
+            // 在 write 方法之后， 在 sheet方法之前都是设置WriteWorkbook的参数
+            .sheet(&quot;模板&quot;)
+            .doWrite(() -&gt; {
+                // 分页查询数据
+                return data();
+            });
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>excelType</td>
+<td>空</td>
+<td>当前excel的类型,支持XLS、XLSX、CSV</td>
+</tr>
+<tr>
+<td>outputStream</td>
+<td>空</td>
+<td>与<code>file</code>二选一。写入文件的流</td>
+</tr>
+<tr>
+<td>file</td>
+<td>空</td>
+<td>与<code>outputStream</code>二选一。写入的文件</td>
+</tr>
+<tr>
+<td>templateInputStream</td>
+<td>空</td>
+<td>模板的文件流</td>
+</tr>
+<tr>
+<td>templateFile</td>
+<td>空</td>
+<td>模板文件</td>
+</tr>
+<tr>
+<td>charset</td>
+<td>Charset#defaultCharset</td>
+<td>只有csv文件有用，写入文件的时候使用的编码</td>
+</tr>
+<tr>
+<td>autoCloseStream</td>
+<td>true</td>
+<td>自动关闭写入的流。</td>
+</tr>
+<tr>
+<td>password</td>
+<td>空</td>
+<td>读取文件的密码</td>
+</tr>
+<tr>
+<td>inMemory</td>
+<td>false</td>
+<td>是否在内存处理，默认会生成临时文件以节约内存。内存模式效率会更好，但是容易OOM</td>
+</tr>
+<tr>
+<td>writeExcelOnException</td>
+<td>false</td>
+<td>写入过程中抛出异常了，是否尝试把数据写入到excel</td>
+</tr>
+</tbody>
+</table>
+<h5 id="writesheet">WriteSheet</h5>
+<p>设置方法如下，找不到参数的看下通用参数里面是否存在。</p>
+<pre><code class="language-java"> EasyExcel.write(fileName, DemoData.class)
+            .sheet(&quot;模板&quot;)
+             // 在 sheet 方法之后， 在 doWrite方法之前都是设置WriteSheet的参数
+            .doWrite(() -&gt; {
+                // 分页查询数据
+                return data();
+            });
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sheetNo</td>
+<td>0</td>
+<td>需要写入的编码</td>
+</tr>
+<tr>
+<td>sheetName</td>
+<td>空</td>
+<td>需要些的Sheet名称，默认同<code>sheetNo</code></td>
+</tr>
+</tbody>
+</table>
+<h5 id="writetable">WriteTable</h5>
+<p>设置方法如下，找不到参数的看下通用参数里面是否存在。</p>
+<pre><code class="language-java">        EasyExcel.write(fileName, DemoData.class)
+            .sheet(&quot;模板&quot;)
+            .table()
+            // 在 table 方法之后， 在 doWrite方法之前都是设置WriteTable的参数
+            .doWrite(() -&gt; {
+                // 分页查询数据
+                return data();
+            });
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tableNo</td>
+<td>0</td>
+<td>需要写入的编码</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-java">&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+    &lt;artifactId&gt;easyexcel&lt;/artifactId&gt;
+    &lt;version&gt;3.1.1&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="webtest">WebTest</h3>
+<pre><code class="language-java">import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.util.MapUtils;
+import com.alibaba.fastjson.JSON;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * web读写案例
+ *
+ **/
+@Controller
+public class WebTest {
+
+    @Autowired
+    private UploadDAO uploadDAO;
+
+    /**
+     * 文件下载（失败了会返回一个有部分数据的Excel）
+     * &lt;p&gt;
+     * 1. 创建excel对应的实体对象 参照{@link DownloadData}
+     * &lt;p&gt;
+     * 2. 设置返回的 参数
+     * &lt;p&gt;
+     * 3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
+     */
+    @GetMapping(&quot;download&quot;)
+    public void download(HttpServletResponse response) throws IOException {
+        // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
+        response.setContentType(&quot;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&quot;);
+        response.setCharacterEncoding(&quot;utf-8&quot;);
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode(&quot;测试&quot;, &quot;UTF-8&quot;).replaceAll(&quot;\\+&quot;, &quot;%20&quot;);
+        response.setHeader(&quot;Content-disposition&quot;, &quot;attachment;filename*=utf-8''&quot; + fileName + &quot;.xlsx&quot;);
+
+        EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet(&quot;模板&quot;).doWrite(data());
+    }
+
+    /**
+     * 文件下载并且失败的时候返回json（默认失败了会返回一个有部分数据的Excel）
+     *
+     * @since 2.1.1
+     */
+    @GetMapping(&quot;downloadFailedUsingJson&quot;)
+    public void downloadFailedUsingJson(HttpServletResponse response) throws IOException {
+        // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
+        try {
+            response.setContentType(&quot;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&quot;);
+            response.setCharacterEncoding(&quot;utf-8&quot;);
+            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+            String fileName = URLEncoder.encode(&quot;测试&quot;, &quot;UTF-8&quot;).replaceAll(&quot;\\+&quot;, &quot;%20&quot;);
+            response.setHeader(&quot;Content-disposition&quot;, &quot;attachment;filename*=utf-8''&quot; + fileName + &quot;.xlsx&quot;);
+            // 这里需要设置不关闭流
+            EasyExcel.write(response.getOutputStream(), DownloadData.class).autoCloseStream(Boolean.FALSE).sheet(&quot;模板&quot;)
+                .doWrite(data());
+        } catch (Exception e) {
+            // 重置response
+            response.reset();
+            response.setContentType(&quot;application/json&quot;);
+            response.setCharacterEncoding(&quot;utf-8&quot;);
+            Map&lt;String, String&gt; map = MapUtils.newHashMap();
+            map.put(&quot;status&quot;, &quot;failure&quot;);
+            map.put(&quot;message&quot;, &quot;下载文件失败&quot; + e.getMessage());
+            response.getWriter().println(JSON.toJSONString(map));
+        }
+    }
+
+    /**
+     * 文件上传
+     * &lt;p&gt;
+     * 1. 创建excel对应的实体对象 参照{@link UploadData}
+     * &lt;p&gt;
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
+     * &lt;p&gt;
+     * 3. 直接读即可
+     */
+    @PostMapping(&quot;upload&quot;)
+    @ResponseBody
+    public String upload(MultipartFile file) throws IOException {
+        EasyExcel.read(file.getInputStream(), UploadData.class, new UploadDataListener(uploadDAO)).sheet().doRead();
+        return &quot;success&quot;;
+    }
+
+    private List&lt;DownloadData&gt; data() {
+        List&lt;DownloadData&gt; list = ListUtils.newArrayList();
+        for (int i = 0; i &lt; 10; i++) {
+            DownloadData data = new DownloadData();
+            data.setString(&quot;字符串&quot; + 0);
+            data.setDate(new Date());
+            data.setDoubleData(0.56);
+            list.add(data);
+        }
+        return list;
+    }
+}
+</code></pre>
+<h3 id="downloaddata">DownloadData</h3>
+<pre><code class="language-java">import java.util.Date;
+
+import com.alibaba.excel.annotation.ExcelProperty;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 基础数据类
+ *
+ **/
+@Getter
+@Setter
+@EqualsAndHashCode
+public class DownloadData {
+    @ExcelProperty(&quot;字符串标题&quot;)
+    private String string;
+    @ExcelProperty(&quot;日期标题&quot;)
+    private Date date;
+    @ExcelProperty(&quot;数字标题&quot;)
+    private Double doubleData;
+}
+</code></pre>
+<h3 id="uploaddao">UploadDAO</h3>
+<pre><code class="language-java">import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+/**
+ * 假设这个是你的DAO存储。当然还要这个类让spring管理，当然你不用需要存储，也不需要这个类。
+ *
+ **/
+@Repository
+public class UploadDAO {
+
+    public void save(List&lt;UploadData&gt; list) {
+        // 如果是mybatis,尽量别直接调用多次insert,自己写一个mapper里面新增一个方法batchInsert,所有数据一次性插入
+    }
+}
+</code></pre>
+<h3 id="uploaddata">UploadData</h3>
+<pre><code class="language-java">import java.util.Date;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 基础数据类
+ *
+ **/
+@Getter
+@Setter
+@EqualsAndHashCode
+public class UploadData {
+    private String string;
+    private Date date;
+    private Double doubleData;
+}
+</code></pre>
+<h3 id="uploaddatalistener">UploadDataListener</h3>
+<pre><code class="language-java">import java.util.List;
+
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.util.ListUtils;
+import com.alibaba.fastjson.JSON;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 模板的读取类
+ *
+ */
+// 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
+@Slf4j
+public class UploadDataListener implements ReadListener&lt;UploadData&gt; {
+    /**
+     * 每隔5条存储数据库，实际使用中可以100条，然后清理list ，方便内存回收
+     */
+    private static final int BATCH_COUNT = 5;
+    private List&lt;UploadData&gt; cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    /**
+     * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
+     */
+    private UploadDAO uploadDAO;
+
+    public UploadDataListener() {
+        // 这里是demo，所以随便new一个。实际使用如果到了spring,请使用下面的有参构造函数
+        uploadDAO = new UploadDAO();
+    }
+
+    /**
+     * 如果使用了spring,请使用这个构造方法。每次创建Listener的时候需要把spring管理的类传进来
+     *
+     * @param uploadDAO
+     */
+    public UploadDataListener(UploadDAO uploadDAO) {
+        this.uploadDAO = uploadDAO;
+    }
+
+    /**
+     * 这个每一条数据解析都会来调用
+     *
+     * @param data    one row value. Is is same as {@link AnalysisContext#readRowHolder()}
+     * @param context
+     */
+    @Override
+    public void invoke(UploadData data, AnalysisContext context) {
+        log.info(&quot;解析到一条数据:{}&quot;, JSON.toJSONString(data));
+        cachedDataList.add(data);
+        // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
+        if (cachedDataList.size() &gt;= BATCH_COUNT) {
+            saveData();
+            // 存储完成清理 list
+            cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+        }
+    }
+
+    /**
+     * 所有数据解析完成了 都会来调用
+     *
+     * @param context
+     */
+    @Override
+    public void doAfterAllAnalysed(AnalysisContext context) {
+        // 这里也要保存数据，确保最后遗留的数据也存储到数据库
+        saveData();
+        log.info(&quot;所有数据解析完成！&quot;);
+    }
+
+    /**
+     * 加上存储数据库
+     */
+    private void saveData() {
+        log.info(&quot;{}条数据，开始存储数据库！&quot;, cachedDataList.size());
+        uploadDAO.save(cachedDataList);
+        log.info(&quot;存储数据库成功！&quot;);
+    }
+}
+</code></pre>
+<h3 id="excelutil">ExcelUtil</h3>
+<pre><code class="language-java">import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.Sheet;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@Slf4j
+public class ExcelUtil {
+
+   private static Sheet initSheet;
+
+   static {
+      initSheet = new Sheet(1, 0);
+      initSheet.setSheetName(&quot;sheet&quot;);
+      //设置自适应宽度
+      initSheet.setAutoWidth(Boolean.TRUE);
+   }
+
+   /**
+    * 读取少于1000行数据
+    * @param filePath 文件绝对路径
+    * @return
+    */
+   public static List&lt;Object&gt; readLessThan1000Row(String filePath){
+      return readLessThan1000RowBySheet(filePath,null);
+   }
+
+   /**
+    * 读小于1000行数据, 带样式
+    * filePath 文件绝对路径
+    * initSheet ：
+    *      sheetNo: sheet页码，默认为1
+    *      headLineMun: 从第几行开始读取数据，默认为0, 表示从第一行开始读取
+    *      clazz: 返回数据List&lt;Object&gt; 中Object的类名
+    */
+   public static List&lt;Object&gt; readLessThan1000RowBySheet(String filePath, Sheet sheet){
+      if(!StringUtils.hasText(filePath)){
+         return null;
+      }
+
+      sheet = sheet != null ? sheet : initSheet;
+
+      InputStream fileStream = null;
+      try {
+         fileStream = new FileInputStream(filePath);
+         return EasyExcelFactory.read(fileStream, sheet);
+      } catch (FileNotFoundException e) {
+         log.info(&quot;找不到文件或文件路径错误, 文件：{}&quot;, filePath);
+      }finally {
+         try {
+            if(fileStream != null){
+               fileStream.close();
+            }
+         } catch (IOException e) {
+            log.info(&quot;excel文件读取失败, 失败原因：{}&quot;, e);
+         }
+      }
+      return null;
+   }
+
+   /**
+    * 读大于1000行数据
+    * @param filePath 文件觉得路径
+    * @return
+    */
+   public static List&lt;Object&gt; readMoreThan1000Row(String filePath){
+      return readMoreThan1000RowBySheet(filePath,null);
+   }
+
+   /**
+    * 读大于1000行数据, 带样式
+    * @param filePath 文件觉得路径
+    * @return
+    */
+   public static List&lt;Object&gt; readMoreThan1000RowBySheet(String filePath, Sheet sheet){
+      if(!StringUtils.hasText(filePath)){
+         return null;
+      }
+
+      sheet = sheet != null ? sheet : initSheet;
+
+      InputStream fileStream = null;
+      try {
+         fileStream = new FileInputStream(filePath);
+         ExcelListener excelListener = new ExcelListener();
+         EasyExcelFactory.readBySax(fileStream, sheet, excelListener);
+         return excelListener.getDatas();
+      } catch (FileNotFoundException e) {
+         log.error(&quot;找不到文件或文件路径错误, 文件：{}&quot;, filePath);
+      }finally {
+         try {
+            if(fileStream != null){
+               fileStream.close();
+            }
+         } catch (IOException e) {
+            log.error(&quot;excel文件读取失败, 失败原因：{}&quot;, e);
+         }
+      }
+      return null;
+   }
+
+   /**
+    * 生成excle
+    * @param filePath  绝对路径, 如：/home/chenmingjian/Downloads/aaa.xlsx
+    * @param data 数据源
+    * @param head 表头
+    */
+   public static void writeBySimple(String filePath, List&lt;List&lt;Object&gt;&gt; data, List&lt;String&gt; head){
+      writeSimpleBySheet(filePath,data,head,null);
+   }
+
+   /**
+    * 生成excle
+    * @param filePath 绝对路径, 如：/home/chenmingjian/Downloads/aaa.xlsx
+    * @param data 数据源
+    * @param sheet excle页面样式
+    * @param head 表头
+    */
+   public static void writeSimpleBySheet(String filePath, List&lt;List&lt;Object&gt;&gt; data, List&lt;String&gt; head, Sheet sheet){
+      sheet = (sheet != null) ? sheet : initSheet;
+
+      if(head != null){
+         List&lt;List&lt;String&gt;&gt; list = new ArrayList&lt;&gt;();
+         head.forEach(h -&gt; list.add(Collections.singletonList(h)));
+         sheet.setHead(list);
+      }
+
+      OutputStream outputStream = null;
+      ExcelWriter writer = null;
+      try {
+         outputStream = new FileOutputStream(filePath);
+         writer = EasyExcelFactory.getWriter(outputStream);
+         writer.write1(data,sheet);
+      } catch (FileNotFoundException e) {
+         log.error(&quot;找不到文件或文件路径错误, 文件：{}&quot;, filePath);
+      }finally {
+         try {
+            if(writer != null){
+               writer.finish();
+            }
+
+            if(outputStream != null){
+               outputStream.close();
+            }
+
+         } catch (IOException e) {
+            log.error(&quot;excel文件导出失败, 失败原因：{}&quot;, e);
+         }
+      }
+
+   }
+
+   /**
+    * 生成excle
+    * @param filePath 绝对路径, 如：/home/chenmingjian/Downloads/aaa.xlsx
+    * @param data 数据源
+    */
+   public static void writeWithTemplate(String filePath, List&lt;? extends BaseRowModel&gt; data){
+      writeWithTemplateAndSheet(filePath,data,null);
+   }
+
+   /**
+    * 生成excle
+    * @param filePath 绝对路径, 如：/home/chenmingjian/Downloads/aaa.xlsx
+    * @param data 数据源
+    * @param sheet excle页面样式
+    */
+   public static void writeWithTemplateAndSheet(String filePath, List&lt;? extends BaseRowModel&gt; data, Sheet sheet){
+      if(CollectionUtils.isEmpty(data)){
+         return;
+      }
+
+      sheet = (sheet != null) ? sheet : initSheet;
+      sheet.setClazz(data.get(0).getClass());
+
+      OutputStream outputStream = null;
+      ExcelWriter writer = null;
+      try {
+         outputStream = new FileOutputStream(filePath);
+         writer = EasyExcelFactory.getWriter(outputStream);
+         writer.write(data,sheet);
+      } catch (FileNotFoundException e) {
+         log.error(&quot;找不到文件或文件路径错误, 文件：{}&quot;, filePath);
+      }finally {
+         try {
+            if(writer != null){
+               writer.finish();
+            }
+
+            if(outputStream != null){
+               outputStream.close();
+            }
+         } catch (IOException e) {
+            log.error(&quot;excel文件导出失败, 失败原因：{}&quot;, e);
+         }
+      }
+
+   }
+
+   /**
+    * 生成多Sheet的excle
+    * @param filePath 绝对路径, 如：/home/chenmingjian/Downloads/aaa.xlsx
+    * @param multipleSheelPropetys
+    */
+   public static void writeWithMultipleSheel(String filePath,List&lt;MultipleSheelPropety&gt; multipleSheelPropetys){
+      if(CollectionUtils.isEmpty(multipleSheelPropetys)){
+         return;
+      }
+
+      OutputStream outputStream = null;
+      ExcelWriter writer = null;
+      try {
+         outputStream = new FileOutputStream(filePath);
+         writer = EasyExcelFactory.getWriter(outputStream);
+         for (MultipleSheelPropety multipleSheelPropety : multipleSheelPropetys) {
+            Sheet sheet = multipleSheelPropety.getSheet() != null ? multipleSheelPropety.getSheet() : initSheet;
+            if(!CollectionUtils.isEmpty(multipleSheelPropety.getData())){
+               sheet.setClazz(multipleSheelPropety.getData().get(0).getClass());
+            }
+            writer.write(multipleSheelPropety.getData(), sheet);
+         }
+
+      } catch (FileNotFoundException e) {
+         log.error(&quot;找不到文件或文件路径错误, 文件：{}&quot;, filePath);
+      }finally {
+         try {
+            if(writer != null){
+               writer.finish();
+            }
+
+            if(outputStream != null){
+               outputStream.close();
+            }
+         } catch (IOException e) {
+            log.error(&quot;excel文件导出失败, 失败原因：{}&quot;, e);
+         }
+      }
+
+   }
+
+
+   /*********************匿名内部类开始，可以提取出去******************************/
+
+   @Data
+   public static class MultipleSheelPropety{
+
+      private List&lt;? extends BaseRowModel&gt; data;
+
+      private Sheet sheet;
+   }
+
+   /**
+    * 解析监听器，
+    * 每解析一行会回调invoke()方法。
+    * 整个excel解析结束会执行doAfterAllAnalysed()方法
+    */
+   @Getter
+   @Setter
+   public static class ExcelListener extends AnalysisEventListener {
+
+      private List&lt;Object&gt; datas = new ArrayList&lt;&gt;();
+
+      /**
+       * 逐行解析
+       * object : 当前行的数据
+       */
+      @Override
+      public void invoke(Object object, AnalysisContext context) {
+         //当前行
+         // context.getCurrentRowNum()
+         if (object != null) {
+            datas.add(object);
+         }
+      }
+
+
+      /**
+       * 解析完所有数据后会调用该方法
+       */
+      @Override
+      public void doAfterAllAnalysed(AnalysisContext context) {
+         //解析结束销毁不用的资源
+      }
+
+   }
+
+   /************************匿名内部类结束，可以提取出去***************************/
+
+}
+</code></pre>
 ]]></content>
     </entry>
     <entry>
@@ -31268,485 +32934,6 @@ System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
 <p>这是 JDK 9 里面新增的 List 接口里面的静态方法，同样也是不可变的。</p>
 </li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Java线程同步五种方法]]></title>
-        <id>https://tinaxiawuhao.github.io/post/fE1AHZqDl/</id>
-        <link href="https://tinaxiawuhao.github.io/post/fE1AHZqDl/">
-        </link>
-        <updated>2021-05-04T09:16:26.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="线程同步">线程同步</h2>
-<p>即当有一个线程在对内存进行操作时，其他线程都不可以对这个内存地址进行操作，直到该线程完成操作， 其他线程才能对该内存地址进行操作，而其他线程又处于等待状态，实现线程同步的方法有很多，下面介绍java线程同步的五种方法。</p>
-<h3 id="同步方法">同步方法</h3>
-<p>使用synchronized关键字修饰的方法。由于java的每个对象都有一个内置锁，当用关键字修饰此方法时，内置锁会保护整个方法。在调用该方法前，需要获得内置锁，否则该线程就处于阻塞状态。</p>
-<pre><code class="language-java">public synchronized void method(){} 
-# synchronized关键字也可以修饰静态方法，此时如果调用该静态方法，将会锁住整个类。
-public static synchronized void method(){} 
-</code></pre>
-<h3 id="同步代码块">同步代码块</h3>
-<p>即有synchronized关键字修饰的语句块。被关键字修饰的的语句块会自动加上内置锁，从而实现同步。</p>
-<pre><code class="language-java">synchronized(object){ 
-	# 代码
-} 
-</code></pre>
-<p><strong>注：同步是一种高开销的操作，因此应该尽量减少同步的内容。通常没有必要去同步整个方法，使用关键字synchronized修饰关键代码即可。</strong></p>
-<h3 id="使用特殊域变量修饰符volatile实现线程同步">使用特殊域变量修饰符volatile实现线程同步</h3>
-<p>（1）volatile关键字是非锁，比synchronized稍弱的同步机制</p>
-<p>（2）保证此变量对所有的线程的可见性，当一个线程修改了这个变量的值，volatile 保证了新值能立即同步到主内存，以及每次使用前立即从主内存刷新。</p>
-<p>（3）volatile不会提供原子操作，并不能保证线程安全，也不能用来修饰final类型的变量。</p>
-<p>（4）禁止指令重排序优化。有volatile修饰的变量，赋值后多执行了一个添加<strong>内存屏障</strong>操作（指令重排序时不能把后面的指令重排序到内存屏障之前的位置）</p>
-<pre><code class="language-java">public class Test extends Thread  {
-    volatile int x = 0; //此处可以将volatile去除 或者 替换为 static，经过对比可看出volatile的作用
-    
-    private void write() {
-        x = 5;
-    }
-    
-    private void read() {
-        while (x != 5) {}
-        if(x == 5){
-            System.out.println(&quot;------stoped&quot;);
-        }
-    }
-    
-    public static void main(String[] args) throws Exception {
-        Test example = new Test();
-        
-        Thread writeThread = new Thread(new Runnable() {
-            public void run() {
-                example.write();
-            }
-        });
-
-        Thread readThread = new Thread(new Runnable() {
-            public void run() {
-                example.read();
-            }
-        });
-
-        readThread.start();
-        TimeUnit.SECONDS.sleep(5); //记住此处一定要暂停5秒，以保证writeThread一定会在readThread中执行
-        System.out.println(&quot;------&quot;);
-        writeThread.start();
-    }
-}
-</code></pre>
-<p>注：多线程中的非同步问题主要出现在对域的读写上，如果域自身避免这个问题，那么就不需要修改操作该域的方法。用final域，有锁保护的域可以避免非同步的问题。</p>
-<h3 id="使用重入锁reentrantlock实现线程同步">使用重入锁ReentrantLock实现线程同步</h3>
-<p>jdk1.5中java.util.concurrent包下ReentrantLock类是可重入、互斥、实现了Lock接口的锁。它与synchronized修饰的方法具有相同的基本行为与语义，并且扩展了其能力。</p>
-<p>ReentrantLock类的常用方法有：</p>
-<p>（1）ReentrantLock()：创建一个ReentrantLock实例。</p>
-<p>（2）lock():获得锁</p>
-<p>（3）unlock()：释放锁</p>
-<p>上述代码可以修改为：</p>
-<pre><code class="language-java">public class Test extends Thread  {
-    private int x = 0; 
-    
-    /**
-      * 使用可重入锁
-      */
-    private Lock lock=new ReentrantLock();
-    
-    private void write() {
-     lock.lock();
-        try {
-            x = 5;
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }finally {
-            lock.unlock();//释放锁
-        }
-    }
-    
-    private void read() {
-     lock.lock();
-        try {
-            while (x != 5) {}
-            if(x == 5){
-                System.out.println(&quot;------stoped&quot;);
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }finally {
-            lock.unlock();//释放锁
-        }
-        
-    }
-    
-    public static void main(String[] args) throws Exception {
-        Test example = new Test();
-        
-        Thread writeThread = new Thread(new Runnable() {
-            public void run() {
-                example.write();
-            }
-        });
-
-        Thread readThread = new Thread(new Runnable() {
-            public void run() {
-                example.read();
-            }
-        });
-
-        readThread.start();
-        TimeUnit.SECONDS.sleep(5); //记住此处一定要暂停5秒，以保证writeThread一定会在readThread中执行
-        System.out.println(&quot;------&quot;);
-        writeThread.start();
-    }
-}
-</code></pre>
-<p>注：</p>
-<ol>
-<li>
-<p>ReentrantLock()还可以通过public ReentrantLock(boolean fair)构造方法创建公平锁，即，优先运行等待时间最长的线程，这样大幅度降低程序运行效率。</p>
-</li>
-<li>
-<p>关于Lock对象和synchronized关键字的选择：</p>
-<p>（1）最好两个都不用，使用一种java.util.concurrent包提供的机制，能够帮助用户处理所有与锁相关的代码。</p>
-<p>（2）如果synchronized关键字能够满足用户的需求，就用synchronized，他能简化代码。</p>
-<p>（3）如果需要使用更高级的功能，就用ReentrantLock类，此时要注意及时释放锁，否则会出现死锁，通常在finally中释放锁。</p>
-</li>
-</ol>
-<h3 id="使用threadlocal管理局部变量实现线程同步">使用ThreadLocal管理局部变量实现线程同步</h3>
-<p>ThreadLocal管理变量，则每一个使用该变量的线程都获得一个该变量的副本，副本之间相互独立，这样每一个线程都可以随意修改自己的副本，而不会对其他线程产生影响。</p>
-<p>ThreadLocal类常用的方法：</p>
-<ol>
-<li>
-<p>get()：返回该线程局部变量的当前线程副本中的值。</p>
-</li>
-<li>
-<p>initialValue()：返回此线程局部变量的当前线程的”初始值“。</p>
-</li>
-<li>
-<p>remove()：移除此线程局部变量当前线程的值。</p>
-</li>
-<li>
-<p>set(T value)：将此线程局部变量的当前线程副本中的值设置为指定值value。</p>
-</li>
-</ol>
-<p>上述代码修改为：</p>
-<pre><code class="language-java"> 
-public class Test extends Thread  {
-    private static ThreadLocal&lt;Integer&gt; count=new ThreadLocal&lt;Integer&gt;(){
-            @Override
-            protected Integer initialValue() {
-                  // TODO Auto-generated method stub
-                  return 0;
-            }
-      };
-    
-    private void write() {
-        count.set(count.get()+5);
-    }
-    
-    private void read() {
-        while (count.get() != 5) {}
-        if(count.get() == 5){
-            System.out.println(&quot;------stoped&quot;);
-        }
-    }
-    
-    public static void main(String[] args) throws Exception {
-        Test example = new Test();
-        
-        Thread writeThread = new Thread(new Runnable() {
-            public void run() {
-                example.write();
-            }
-        });
-
-        Thread readThread = new Thread(new Runnable() {
-            public void run() {
-                example.read();
-            }
-        });
-
-        readThread.start();
-        TimeUnit.SECONDS.sleep(5); //记住此处一定要暂停5秒，以保证writeThread一定会在readThread中执行
-        System.out.println(&quot;------&quot;);
-        writeThread.start();
-    }
-}
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[ThreadLocal是什么]]></title>
-        <id>https://tinaxiawuhao.github.io/post/cQAJ3QFSZ/</id>
-        <link href="https://tinaxiawuhao.github.io/post/cQAJ3QFSZ/">
-        </link>
-        <updated>2021-05-03T08:38:38.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>ThreadLocal是一个本地线程副本变量工具类。主要用于将私有线程和该线程存放的副本对象做一个映射，各个线程之间的变量互不干扰，在高并发场景下，可以实现无状态的调用，特别适用于各个线程依赖不通的变量值完成操作的场景。</p>
-</blockquote>
-<h3 id="数据结构">数据结构</h3>
-<p>下图为ThreadLocal的内部结构图<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1619599257027.png" alt="" loading="lazy"></p>
-<h3 id="threadlocal结构内部核心机制">ThreadLocal结构内部核心机制:</h3>
-<ol>
-<li>
-<p>每个Thread线程内部都有一个Map。</p>
-</li>
-<li>
-<p>Map里面存储线程本地对象（key）和线程的变量副本（value）</p>
-</li>
-<li>
-<p>Thread内部的Map是由ThreadLocal维护的，由ThreadLocal负责向map获取和设置线程的变量值。<br>
-所以对于不同的线程，每次获取副本值时，别的线程并不能获取到当前线程的副本值，形成了副本的隔离，互不干扰。</p>
-</li>
-</ol>
-<p>Thread线程内部的Map在类中描述如下：</p>
-<pre><code class="language-java"> public class Thread implements Runnable {
-        /* ThreadLocal values pertaining to this thread. This map is maintained
-         * by the ThreadLocal class. 
-         */
-        ThreadLocal.ThreadLocalMap threadLocals = null;
-    }
-</code></pre>
-<h2 id="深入解析threadlocal">深入解析ThreadLocal</h2>
-<p>ThreadLocal类提供如下几个核心方法：</p>
-<pre><code class="language-java">public T get()
-public void set(T value)
-public void remove()
-# get()方法用于获取当前线程的副本变量值。
-# set()方法用于保存当前线程的副本变量值。
-# initialValue()为当前线程初始副本变量值。
-# remove()方法移除当前前程的副本变量值。
-</code></pre>
-<h3 id="get方法">get()方法</h3>
-<pre><code class="language-java">/**
- * Returns the value in the current thread's copy of this
- * thread-local variable.  If the variable has no value for the
- * current thread, it is first initialized to the value returned
- * by an invocation of the {@link #initialValue} method.
- *
- * @return the current thread's value of this thread-local
- */
-public T get() {
-    Thread t = Thread.currentThread();
-    ThreadLocalMap map = getMap(t);
-    if (map != null) {
-        ThreadLocalMap.Entry e = map.getEntry(this);
-        if (e != null)
-            return (T)e.value;
-    }
-    return setInitialValue();
-}
-
-ThreadLocalMap getMap(Thread t) {
-    return t.threadLocals;
-}
-
-private T setInitialValue() {
-    T value = initialValue();
-    Thread t = Thread.currentThread();
-    ThreadLocalMap map = getMap(t);
-    if (map != null)
-        map.set(this, value);
-    else
-        createMap(t, value);
-    return value;
-}
-
-protected T initialValue() {
-    return null;
-}
-</code></pre>
-<h4 id="步骤">步骤：</h4>
-<ol>
-<li>获取当前线程的ThreadLocalMap对象threadLocals</li>
-<li>从map中获取线程存储的K-V Entry节点。</li>
-<li>从Entry节点获取存储的Value副本值返回。</li>
-<li>map为空的话返回初始值null，即线程变量副本为null，在使用时需要注意判断NullPointerException。</li>
-</ol>
-<h3 id="set方法">set()方法</h3>
-<pre><code class="language-java">/**
- * Sets the current thread's copy of this thread-local variable
- * to the specified value.  Most subclasses will have no need to
- * override this method, relying solely on the {@link #initialValue}
- * method to set the values of thread-locals.
- *
- * @param value the value to be stored in the current thread's copy of
- *        this thread-local.
- */
-public void set(T value) {
-    Thread t = Thread.currentThread();
-    ThreadLocalMap map = getMap(t);
-    if (map != null)
-        map.set(this, value);
-    else
-        createMap(t, value);
-}
-
-ThreadLocalMap getMap(Thread t) {
-    return t.threadLocals;
-}
-
-void createMap(Thread t, T firstValue) {
-    t.threadLocals = new ThreadLocalMap(this, firstValue);
-}
-</code></pre>
-<h4 id="步骤-2">步骤：</h4>
-<ol>
-<li>获取当前线程的成员变量map</li>
-<li>map非空，则重新将ThreadLocal和新的value副本放入到map中。</li>
-<li>map空，则对线程的成员变量ThreadLocalMap进行初始化创建，并将ThreadLocal和value副本放入map中。</li>
-</ol>
-<h3 id="remove方法">remove()方法</h3>
-<p>remove方法比较简单，不做赘述。</p>
-<h3 id="threadlocalmap">ThreadLocalMap</h3>
-<p>ThreadLocalMap是ThreadLocal的内部类，没有实现Map接口，用独立的方式实现了Map的功能，其内部的Entry也独立实现。</p>
-<p>ThreadLocalMap类图<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1619599268344.png" alt="" loading="lazy"></p>
-<p>在ThreadLocalMap中，也是用Entry来保存K-V结构数据的。但是Entry中key只能是ThreadLocal对象，这点被Entry的构造方法已经限定死了。</p>
-<pre><code class="language-java">static class Entry extends WeakReference&lt;ThreadLocal&gt; {
-    /** The value associated with this ThreadLocal. */
-    Object value;
-
-    Entry(ThreadLocal k, Object v) {
-        super(k);
-        value = v;
-    }
-}
-</code></pre>
-<p>Entry继承自WeakReference（弱引用，生命周期只能存活到下次GC前），但只有Key是弱引用类型的，Value并非弱引用。<br>
-ThreadLocalMap的成员变量：</p>
-<pre><code class="language-java">static class ThreadLocalMap {
-    /**
-     * The initial capacity -- MUST be a power of two.
-     */
-    private static final int INITIAL_CAPACITY = 16;
-
-    /**
-     * The table, resized as necessary.
-     * table.length MUST always be a power of two.
-     */
-    private Entry[] table;
-
-    /**
-     * The number of entries in the table.
-     */
-    private int size = 0;
-
-    /**
-     * The next size value at which to resize.
-     */
-    private int threshold; // Default to 0
-}
-</code></pre>
-<h3 id="hash冲突怎么解决">Hash冲突怎么解决</h3>
-<p>和HashMap的最大的不同在于，ThreadLocalMap结构非常简单，没有next引用，也就是说ThreadLocalMap中解决Hash冲突的方式并非链表的方式，而是采用线性探测的方式，所谓线性探测，就是根据初始key的hashcode值确定元素在table数组中的位置，如果发现这个位置上已经有其他key值的元素被占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。<br>
-ThreadLocalMap解决Hash冲突的方式就是简单的步长加1或减1，寻找下一个相邻的位置。</p>
-<pre><code class="language-java">/**
- * Increment i modulo len.
- */
-private static int nextIndex(int i, int len) {
-    return ((i + 1 &lt; len) ? i + 1 : 0);
-}
-
-/**
- * Decrement i modulo len.
- */
-private static int prevIndex(int i, int len) {
-    return ((i - 1 &gt;= 0) ? i - 1 : len - 1);
-}
-</code></pre>
-<p>显然ThreadLocalMap采用线性探测的方式解决Hash冲突的效率很低，如果有大量不同的ThreadLocal对象放入map中时发送冲突，或者发生二次冲突，则效率很低。<br>
-<code>所以这里引出的良好建议是：每个线程只存一个变量，这样的话所有的线程存放到map中的Key都是相同的ThreadLocal，如果一个线程要保存多个变量，就需要创建多个ThreadLocal，多个ThreadLocal放入Map中时会极大的增加Hash冲突的可能。 ThreadLocalMap的问题</code><br>
-由于ThreadLocalMap的key是弱引用，而Value是强引用。这就导致了一个问题，ThreadLocal在没有外部对象强引用时，发生GC时弱引用Key会被回收，而Value不会回收，如果创建ThreadLocal的线程一直持续运行，那么这个Entry对象中的value就有可能一直得不到回收，发生内存泄露。</p>
-<h3 id="如何避免泄漏">如何避免泄漏</h3>
-<p>既然Key是弱引用，那么我们要做的事，就是在调用ThreadLocal的get()、set()方法时完成后再调用remove方法，将Entry节点和Map的引用关系移除，这样整个Entry对象在GC Roots分析后就变成不可达了，下次GC的时候就可以被回收。<br>
-如果使用ThreadLocal的set方法之后，没有显示的调用remove方法，就有可能发生内存泄露，所以养成良好的编程习惯十分重要，使用完ThreadLocal之后，记得调用remove方法。</p>
-<pre><code class="language-java">ThreadLocal&lt;Session&gt; threadLocal = new ThreadLocal&lt;Session&gt;();
-try {
-    threadLocal.set(new Session(1, &quot;Misout的博客&quot;));
-    // 其它业务逻辑
-} finally {
-    threadLocal.remove();
-}
-</code></pre>
-<h3 id="应用场景">应用场景</h3>
-<p>还记得Hibernate的session获取场景吗？</p>
-<pre><code class="language-java">private static final ThreadLocal&lt;Session&gt; threadLocal = new ThreadLocal&lt;Session&gt;();
-
-//获取Session
-public static Session getCurrentSession(){
-    Session session =  threadLocal.get();
-    //判断Session是否为空，如果为空，将创建一个session，并设置到本地线程变量中
-    try {
-        if(session ==null&amp;&amp;!session.isOpen()){
-            if(sessionFactory==null){
-                rbuildSessionFactory();// 创建Hibernate的SessionFactory
-            }else{
-                session = sessionFactory.openSession();
-            }
-        }
-        threadLocal.set(session);
-    } catch (Exception e) {
-        // TODO: handle exception
-    }
-
-    return session;
-}
-</code></pre>
-<p>为什么？每个线程访问数据库都应当是一个独立的Session会话，如果多个线程共享同一个Session会话，有可能其他线程关闭连接了，当前线程再执行提交时就会出现会话已关闭的异常，导致系统异常。此方式能避免线程争抢Session，提高并发下的安全性。<br>
-使用ThreadLocal的典型场景正如上面的数据库连接管理，线程会话管理等场景，只适用于独立变量副本的情况，如果变量为全局共享的，则不适用在高并发下使用。</p>
-<h2 id="总结">总结</h2>
-<ol>
-<li>每个ThreadLocal只能保存一个变量副本，如果想要上线一个线程能够保存多个副本以上，就需要创建多个ThreadLocal。</li>
-<li>ThreadLocal内部的ThreadLocalMap键为弱引用，会有内存泄漏的风险。</li>
-<li>适用于无状态，副本变量独立后不影响业务逻辑的高并发场景。如果如果业务逻辑强依赖于副本变量，则不适合用ThreadLocal解决，需要另寻解决方案。</li>
-</ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[HashMap负载因子为什么是0.75，链表转红黑树阈值为什么是8]]></title>
-        <id>https://tinaxiawuhao.github.io/post/mdZO-HjSu/</id>
-        <link href="https://tinaxiawuhao.github.io/post/mdZO-HjSu/">
-        </link>
-        <updated>2021-05-02T13:04:40.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="1hashmap负载因子为什么是075">1.HashMap负载因子为什么是0.75</h3>
-<p>这是时间与空间成本上的折中。</p>
-<h4 id="11时间成本">1.1时间成本</h4>
-<p>假设负载因子是1时，虽然空间利用率高了，但是随之提高的是哈希碰撞的概率。<br>
-而Hashmap中哈希碰撞的解决方法采用的拉链法，哈希冲突高了会导致链表越来越长（虽然后面会转换成红黑树），我们知道链表的查询效率是比较低的，所以负载因子太高会导致时间成本上升。</p>
-<h4 id="12空间成本">1.2空间成本</h4>
-<p>那么为了减少哈希冲突，提高查询效率，负载因子是不是越低越好呢？答案显然是否定的。<br>
-假设负载因子为0.5时，那么空间利用率只有50%。例如大小为64时，至少有32没有被利用，大小为1024时，就有512没有被利用。扩容后的空间越大，空出的空间也就越大。<br>
-所以Java开发人员经过权衡，负载因子不能太大也不能太小，折中选择为0.75。</p>
-<h3 id="2链表转红黑树阈值为什么是8">2.链表转红黑树阈值为什么是8</h3>
-<p>当负载因子是0.75的情况下，哈希碰撞的概率遵循参数约为0.5的泊松分布<br>
-这是概率论的范畴，不知道的同学只需要记住当负载因子是0.75的情况下，我们能够计算出哈希碰撞的概率</p>
-<pre><code class="language-java">Because TreeNodes are about twice the size of regular nodes, we
-use them only when bins contain enough nodes to warrant use
-(see TREEIFY_THRESHOLD). And when they become too small (due to
-removal or resizing) they are converted back to plain bins.  In
-usages with well-distributed user hashCodes, tree bins are
-rarely used.  Ideally, under random hashCodes, the frequency of
-nodes in bins follows a Poisson distribution
-(http://en.wikipedia.org/wiki/Poisson_distribution) with a
-parameter of about 0.5 on average for the default resizing
-threshold of 0.75, although with a large variance because of
-resizing granularity. Ignoring variance, the expected
-occurrences of list size k are (exp(-0.5)*pow(0.5, k)/factorial(k)). 
-The first values are:
-0:    0.60653066
-1:    0.30326533
-2:    0.07581633
-3:    0.01263606
-4:    0.00157952
-5:    0.00015795
-6:    0.00001316
-7:    0.00000094
-8:    0.00000006
-more: less than 1 in ten million
-</code></pre>
-<p>在HashMap源码中，给出了计算出的哈希碰撞的概率。<br>
-我们看到碰撞8次(链表长度达到8)的概率为0.00000006,几乎是一个不可能事件。<br>
-所以Java开发人员将链表转红黑树阈值默认设为8，是为了避免链表转红黑树这种耗时操作的事件发生。</p>
 ]]></content>
     </entry>
 </feed>
