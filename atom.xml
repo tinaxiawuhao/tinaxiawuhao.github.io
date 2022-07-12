@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-07-07T11:02:48.921Z</updated>
+    <updated>2022-07-12T12:35:10.828Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -466,8 +466,8 @@ Reactor 对象通过 select 监控客户端请求事件, 收到事件后，通�
 Handler 只负责响应事件，不做具体的业务处理, 通过 read 读取数据后，会分发给后面的 Worker 线程池的某个线程处理业务<br>
 Worker 线程池会分配独立线程完成真正的业务， 并将结果返回给 Handler<br>
 Handler 收到响应后，通过 send 将结果返回给 Client</p>
-<p>**优点：**可以充分的利用多核cpu 的处理能力<br>
-**缺点：**多线程数据共享和访问比较复杂,单 Reactor 处理所有的事件的监听和响应，在单线程运行， 在高并发场景容易出现性能瓶颈</p>
+<p><strong>优点</strong>：可以充分的利用多核cpu 的处理能力<br>
+<strong>缺点</strong>：多线程数据共享和访问比较复杂,单 Reactor 处理所有的事件的监听和响应，在单线程运行， 在高并发场景容易出现性能瓶颈</p>
 <h4 id="5-主从-reactor-多线程">5. 主从 Reactor 多线程</h4>
 <figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1656503952682.png" alt="" loading="lazy"></figure>
 <p><strong>说明</strong></p>
@@ -7228,7 +7228,7 @@ systemctl enable docker
 <ul>
 <li>有序字节流引出的<strong>队头阻塞</strong>（<a href="https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Head-of-line_blocking">Head-of-line blocking</a>），使得HTTP2的多路复用能力大打折扣；</li>
 <li><strong>TCP与TLS叠加了握手时延</strong>，建链时长还有1倍的下降空间；</li>
-<li>基于TCP四元组确定一个连接，这种诞生于有线网络的设计，并不适合移动状态下的无线网络，这意味着**IP地址的频繁变动会导致TCP连接、TLS会话反复握手，**成本高昂。</li>
+<li>基于TCP四元组确定一个连接，这种诞生于有线网络的设计，并不适合移动状态下的无线网络，这意味着<strong>IP地址的频繁变动会导致TCP连接、TLS会话反复握手</strong>，成本高昂。</li>
 </ul>
 </blockquote>
 <p>HTTP3协议解决了这些问题：</p>
@@ -7473,6 +7473,709 @@ systemctl enable docker
 <p>数据库事务四大特性中有一个是 <strong>原子性</strong> ，具体来说就是 <strong>原子性是指对数据库的一系列操作，要么全部成功，要么全部失败，不可能出现部分成功的情况</strong>。</p>
 <p>实际上， <strong>原子性</strong> 底层就是通过 <code>undo log</code> 实现的。<code>undo log</code>主要记录了数据的逻辑变化，比如一条 <code>INSERT</code> 语句，对应一条<code>DELETE</code> 的 <code>undo log</code> ，对于每个 <code>UPDATE</code> 语句，对应一条相反的 <code>UPDATE</code> 的 <code>undo log</code> ，这样在发生错误时，就能回滚到事务之前的数据状态。</p>
 <p>同时， <code>undo log</code> 也是 <code>MVCC</code>(多版本并发控制)实现的关键。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[RocketMQ]]></title>
+        <id>https://tinaxiawuhao.github.io/post/BvbuvYGnx/</id>
+        <link href="https://tinaxiawuhao.github.io/post/BvbuvYGnx/">
+        </link>
+        <updated>2022-04-27T12:08:50.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="可用性评估">可用性评估</h3>
+<p>系统可用性(Availability)是信息工业界用来衡量一个信息系统提供持续服务的能力，它表示的是在给定时间区间内系统或者系统某一能力在特定环境中能够正常工作的概率。</p>
+<p>简单地说， 可用性是平均故障间隔时间(MTBF)除以平均故障间隔时间(MTBF)和平均故障修复时间(MTTR)之和所得的结果， 即：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657627908926.png" alt="" loading="lazy"></figure>
+<p>通常业界习惯用N个9来表征系统可用性，表示系统可以正常使用时间与总时间(1年)之比，比如：</p>
+<ul>
+<li>99.9%代表3个9的可用性，意味着全年不可用时间在8.76小时以内，表示该系统在连续运行1年时间里最多可能的业务中断时间是8.76小时；</li>
+<li>99.99%代表4个9的可用性，意味着全年不可用时间在52.6分钟以内,表示该系统在连续运行1年时间里最多可能的业务中断时间是52.6分钟；</li>
+<li>99.999%代表5个9的可用性，意味着全年不可用时间必须保证在5.26分钟以内，缺少故障自动恢复机制的系统将很难达到5个9的高可用性。</li>
+</ul>
+<p>那么X个9里的X只代表数字35，为什么没有12，也没有大于6的呢？</p>
+<p>我们接着往下计算：</p>
+<pre><code>1个9：(1-90%)*365=36.5天 
+
+*2个9：(1-99%)*365=3.65天 
+
+6个9：(1-99.9999%)*365*24*60*60=31秒
+</code></pre>
+<p>可以看到1个9和、2个9分别表示一年时间内业务可能中断的时间是36.5天、3.65天，这种级别的可靠性或许还不配使用“可靠性”这个词；</p>
+<p>而6个9则表示一年内业务中断时间最多是31秒，那么这个级别的可靠性并非实现不了，而是要做到从“5个9” 到“6个9”的可靠性提升的话，后者需要付出比前者几倍的成本。</p>
+<h3 id="rocketmq架构设计">RocketMQ架构设计</h3>
+<p>在介绍RocketMQ高可用之前，首先了解一下RocketMQ架构设计</p>
+<ul>
+<li>技术架构</li>
+<li>部署架构</li>
+</ul>
+<h4 id="技术架构">技术架构</h4>
+<p>RocketMQ架构上主要分为四部分，如图所示:</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657627944749.png" alt="" loading="lazy"></figure>
+<ul>
+<li>Producer：消息发布的角色，支持分布式集群方式部署。Producer通过MQ的负载均衡模块选择相应的Broker集群队列进行消息投递，投递的过程支持快速失败并且低延迟。</li>
+<li>Consumer：消息消费的角色，支持分布式集群方式部署。支持以push推，pull拉两种模式对消息进行消费。同时也支持集群方式和广播方式的消费，它提供实时消息订阅机制，可以满足大多数用户的需求。</li>
+<li>NameServer：NameServer是一个非常简单的Topic路由注册中心，其角色类似Dubbo中的zookeeper，支持Broker的动态注册与发现。主要包括两个功能：Broker管理，NameServer接受Broker集群的注册信息并且保存下来作为路由信息的基本数据。然后提供心跳检测机制，检查Broker是否还存活；路由信息管理，每个NameServer将保存关于Broker集群的整个路由信息和用于客户端查询的队列信息。然后Producer和Conumser通过NameServer就可以知道整个Broker集群的路由信息，从而进行消息的投递和消费。NameServer通常也是集群的方式部署，各实例间相互不进行信息通讯。Broker是向每一台NameServer注册自己的路由信息，所以每一个NameServer实例上面都保存一份完整的路由信息。当某个NameServer因某种原因下线了，Broker仍然可以向其它NameServer同步其路由信息，Producer,Consumer仍然可以动态感知Broker的路由的信息。</li>
+<li>BrokerServer：Broker主要负责消息的存储、投递和查询以及服务高可用保证，为了实现这些功能，Broker包含了以下几个重要子模块。
+<ul>
+<li>
+<ol>
+<li>Remoting Module：整个Broker的实体，负责处理来自clients端的请求。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>Client Manager：负责管理客户端(Producer/Consumer)和维护Consumer的Topic订阅信息</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>Store Service：提供方便简单的API接口处理消息存储到物理硬盘和查询功能。</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>HA Service：高可用服务，提供Master Broker 和 Slave Broker之间的数据同步功能。</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>Index Service：根据特定的Message key对投递到Broker的消息进行索引服务，以提供消息的快速查询。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="部署架构">部署架构</h4>
+<p>RocketMQ的Broker有三种集群部署方式：</p>
+<ul>
+<li>1.单台Master部署；</li>
+<li>2.多台Master部署；</li>
+<li>3.多Master多Slave部署；</li>
+</ul>
+<p>基础的rocket高可用，主要采用第3种部署方式</p>
+<p>下图是第3种部署方式的简单图：</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657627968609.png" alt="" loading="lazy"></figure>
+<p>第3种部署方式网络部署特点</p>
+<ul>
+<li>NameServer是一个几乎无状态节点，可集群部署，节点之间无任何信息同步。</li>
+<li>Broker部署相对复杂，Broker分为Master与Slave，一个Master可以对应多个Slave，但是一个Slave只能对应一个Master，Master与Slave 的对应关系通过指定相同的BrokerName，不同的BrokerId 来定义，BrokerId为0表示Master，非0表示Slave。Master也可以部署多个。每个Broker与NameServer集群中的所有节点建立长连接，定时注册Topic信息到所有NameServer。 注意：当前RocketMQ版本在部署架构上支持一Master多Slave，但只有BrokerId=1的从服务器才会参与消息的读负载。</li>
+<li>Producer与NameServer集群中的其中一个节点（随机选择）建立长连接，定期从NameServer获取Topic路由信息，并向提供Topic 服务的Master建立长连接，且定时向Master发送心跳。Producer完全无状态，可集群部署。</li>
+<li>Consumer与NameServer集群中的其中一个节点（随机选择）建立长连接，定期从NameServer获取Topic路由信息，并向提供Topic服务的Master、Slave建立长连接，且定时向Master、Slave发送心跳。Consumer既可以从Master订阅消息，也可以从Slave订阅消息，消费者在向Master拉取消息时，Master服务器会根据拉取偏移量与最大偏移量的距离（判断是否读老消息，产生读I/O），以及从服务器是否可读等因素建议下一次是从Master还是Slave拉取。</li>
+</ul>
+<p>结合部署架构图，描述集群工作流程：</p>
+<ul>
+<li>启动NameServer，NameServer起来后监听端口，等待Broker、Producer、Consumer连上来，相当于一个路由控制中心。</li>
+<li>Broker启动，跟所有的NameServer保持长连接，定时发送心跳包。心跳包中包含当前Broker信息(IP+端口等)以及存储所有Topic信息。注册成功后，NameServer集群中就有Topic跟Broker的映射关系。</li>
+<li>收发消息前，先创建Topic，创建Topic时需要指定该Topic要存储在哪些Broker上，也可以在发送消息时自动创建Topic。</li>
+<li>Producer发送消息，启动时先跟NameServer集群中的其中一台建立长连接，并从NameServer中获取当前发送的Topic存在哪些Broker上，轮询从队列列表中选择一个队列，然后与队列所在的Broker建立长连接从而向Broker发消息。</li>
+<li>Consumer跟Producer类似，跟其中一台NameServer建立长连接，获取当前订阅Topic存在哪些Broker上，然后直接跟Broker建立连接通道，开始消费消息。</li>
+</ul>
+<h4 id="汇总rocketmq-集群部署模式">汇总：RocketMQ 集群部署模式</h4>
+<p>前面介绍到，RocketMQ的Broker有三种集群部署方式：</p>
+<ul>
+<li>1.单台Master部署；</li>
+<li>2.多台Master部署；</li>
+<li>3.多Master多Slave部署；</li>
+</ul>
+<p>第三种模式，根据Master和Slave之节的数据同步方式可以分为：</p>
+<ul>
+<li>多 master 多 slave 异步复制模式</li>
+<li>多 master 多 slave 同步复制模式</li>
+</ul>
+<blockquote>
+<p>同步方式：同步复制和异步复制（指的一组 master 和 slave 之间数据的同步）</p>
+</blockquote>
+<p>所以，总体来说，RocketMQ 集群部署模式为四种：</p>
+<ul>
+<li>
+<p>1.<strong>单 master 模式</strong> 也就是只有一个 master 节点，如果master节点挂掉了，会导致整个服务不可用，线上不宜使用，适合个人学习使用。</p>
+</li>
+<li>
+<p>2.<strong>多 master 模式</strong> 多个 master 节点组成集群，单个 master 节点宕机或者重启对应用没有影响。 优点：所有模式中性能最高 缺点：单个 master 节点宕机期间，未被消费的消息在节点恢复之前不可用，消息的实时性就受到影响。 注意：使用同步刷盘可以保证消息不丢失，同时 Topic 相对应的 queue 应该分布在集群中各个 master 节点，而不是只在某各 master 节点上，否则，该节点宕机会对订阅该 topic 的应用造成影响。</p>
+</li>
+<li>
+<p>3.<strong>多 master 多 slave 异步复制模式</strong> 在多 master 模式的基础上，每个 master 节点都有至少一个对应的 slave。</p>
+<p>master 节点可读可写，但是 slave 只能读不能写，类似于 mysql 的主备模式。 优点： 在 master 宕机时，消费者可以从 slave 读取消息，消息的实时性不会受影响，性能几乎和多 master 一样。 缺点：使用异步复制的同步方式有可能会有消息丢失的问题。</p>
+</li>
+<li>
+<p>4.<strong>多 master 多 slave 同步双写模式</strong> 同多 master 多 slave 异步复制模式类似，区别在于 master 和 slave 之间的数据同步方式。 优点：同步双写的同步模式能保证数据不丢失。 缺点：发送单个消息 RT 会略长，性能相比异步复制低10%左右。 刷盘策略：同步刷盘和异步刷盘（指的是节点自身数据是同步还是异步存储） 注意：要保证数据可靠，需采用同步刷盘和同步双写的方式，但性能会较其他方式低。</p>
+</li>
+</ul>
+<h3 id="rocketmq与zookeeper的爱恨纠葛">RocketMQ与ZooKeeper的爱恨纠葛</h3>
+<p>说到高性能消息中间件，第一个想到的肯定是LinkedIn开源的Kafka，虽然最初Kafka是为日志传输而生，但也非常适合互联网公司消息服务的应用场景，他们不要求数据实时的强一致性（事务），更多是希望达到数据的最终一致性。</p>
+<p>RocketMQ是MetaQ的3.0版本，而MetaQ最初的设计又参考了Kafka。最初的MetaQ 1.x版本由阿里的原作者庄晓丹开发，后面的MetaQ 2.x版本才进行了开源。</p>
+<p>MetaQ 1.x和MetaQ 2.x是依赖ZooKeeper的，但RocketMQ（即MetaQ 3.x）却去掉了ZooKeeper依赖，转而采用自己的NameServer。</p>
+<p>ZooKeeper是著名的分布式协作框架，提供了Master选举、分布式锁、数据的发布和订阅等诸多功能。为什么RocketMQ没有选择ZooKeeper，而是自己开发了NameServer，我们来具体看看NameServer在RocketMQ集群中的作用就明了了。</p>
+<h4 id="rocketmq的broker有三种集群部署方式">RocketMQ的Broker有三种集群部署方式</h4>
+<p>RocketMQ的Broker有三种集群部署方式：</p>
+<ul>
+<li>1.单台Master部署；</li>
+<li>2.多台Master部署；</li>
+<li>3.多Master多Slave部署；</li>
+</ul>
+<p>采用第3种部署方式时，Master和Slave可以采用同步复制和异步复制两种方式。</p>
+<p>下图是第3种部署方式的简单图：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657628006696.png" alt="" loading="lazy"></figure>
+<p>当采用多Master方式时，Master与Master之间是不需要知道彼此的，这样的设计直接降低了Broker实现的复杂性。</p>
+<p>你可以试想，如果Master与Master之间需要知道彼此的存在，这会需要在Master之中维护一个网络的Master列表，而且必然设计到Master发现和活跃Master数量变更等诸多状态更新问题，所以最简单也最可靠的做法就是Master只做好自己的事情（比如和Slave进行数据同步）即可。</p>
+<blockquote>
+<p>这样，在分布式环境中，某台Master宕机或上线，不会对其他Master造成任何影响。</p>
+</blockquote>
+<p>那么怎么才能知道网络中有多少台Master和Slave呢？</p>
+<p>你会很自然想到用ZooKeeper，每个活跃的Master或Slave都去约定的ZooKeeper节点下注册一个状态节点，但RocketMQ没有使用ZooKeeper，所以这件事就交给了NameServer来做了（看上图）。</p>
+<h4 id="nameserver的功能">NameServer的功能</h4>
+<p>功能一：NameServer用来保存活跃的broker列表，包括Master和Slave。</p>
+<p>功能二：NameServer用来保存所有topic和该topic所有队列的列表。</p>
+<p>功能三：NameServer用来保存所有broker的Filter列表。</p>
+<p>功能四：NameServer可以理解承担了注册中心的职能</p>
+<h4 id="nameserver注册中心职能">NameServer注册中心职能</h4>
+<p>NameServer是一个非常简单的路由注册中心，其角色类似Dubbo中的zookeeper，支持Broker的动态注册与发现。</p>
+<ul>
+<li>Broker管理，NameServer接受Broker集群的注册信息并且保存下来作为路由信息的基本数据。然后提供心跳检测机制，检查Broker是否还存活；</li>
+<li>路由信息管理，每个NameServer将保存关于Broker集群的整个路由信息和用于客户端查询的队列信息。然后Producer和Conumser通过NameServer就可以知道整个Broker集群的路由信息，从而进行消息的投递和消费</li>
+</ul>
+<p>整个Rocketmq集群的工作原理如下图所示：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657628018847.png" alt="" loading="lazy"></figure>
+<p>可以看到，Broker集群、Producer集群、Consumer集群都需要与NameServer集群进行通信：</p>
+<p><strong>Broker集群:</strong></p>
+<p>Broker用于接收生产者发送消息，或者消费者消费消息的请求。一个Broker集群由多组Master/Slave组成，Master可写可读，Slave只可以读，Master将写入的数据同步给Slave。</p>
+<p>每个Broker节点，在启动时，都会遍历NameServer列表，与每个NameServer建立长连接，注册自己的信息，之后定时上报。</p>
+<p><strong>Producer集群:</strong></p>
+<p>消息的生产者，通过NameServer集群获得Topic的路由信息，包括Topic下面有哪些Queue，这些Queue分布在哪些Broker上等。Producer只会将消息发送到Master节点上，因此只需要与Master节点建立连接。</p>
+<p><strong>Consumer集群:</strong></p>
+<p>消息的消费者，通过NameServer集群获得Topic的路由信息，连接到对应的Broker上消费消息。注意，由于Master和Slave都可以读取消息，因此Consumer会与Master和Slave都建立连接。</p>
+<p>总之：</p>
+<p>Name Server 是专为 RocketMQ 设计的轻量级注册中心，具有简单、可集群横吐扩展、无状态，节点之间互不通信等特点。</p>
+<h4 id="rocketmq为什么不使用zookeeper">RocketMQ为什么不使用ZooKeeper</h4>
+<p>来看看RocketMQ为什么不使用ZooKeeper？</p>
+<p>ZooKeeper可以提供Master选举功能。比如Kafka用来给每个分区选一个broker作为leader。</p>
+<p>但对于RocketMQ来说，topic的数据在每个Master上是对等的，没有哪个Master上有topic上的全部数据，所以这里选举leader没有意义；</p>
+<p>RockeqMQ集群中，需要有构件来处理一些通用数据，比如broker列表，broker刷新时间。</p>
+<p>虽然ZooKeeper也能存放数据，并有一致性保证。但处理数据之间的一些逻辑关系却比较麻烦，而且数据的逻辑解析操作得交给ZooKeeper客户端来做，如果有多种角色的客户端存在，自己解析多级数据确实是个麻烦事情；</p>
+<p>既然RocketMQ集群中没有用到ZooKeeper的一些重量级的功能，只是使用ZooKeeper的数据一致性和发布订阅的话，与其依赖重量级的ZooKeeper，还不如写个轻量级的NameServer，NameServer也可以集群部署，NameServer与NameServer之间无任何信息同步，不需要保障数据一致性， 比zk简单太多。</p>
+<h4 id="nameserver特性">NameServer特性</h4>
+<ul>
+<li>NameServer通常也是集群的方式部署，各实例间相互不进行信息通讯。Broker是向每一台NameServer注册自己的路由信息，所以每一个NameServer实例上面都保存一份完整的路由信息。当某个NameServer因某种原因下线了，Broker仍然可以向其它NameServer同步其路由信息，Producer，Consumer仍然可以动态感知Broker的路由的信息。</li>
+<li>NameServer实例时间互不通信，这本身也是其设计亮点之一，即允许不同NameServer之间数据不同步(像Zookeeper那样保证各节点数据强一致性会带来额外的性能消耗)</li>
+</ul>
+<h3 id="rocketmq-的消息类型">RocketMQ 的消息类型</h3>
+<p>RocketMQ 支持普通消息，顺序消息、事务消息，等等多种消息类型：</p>
+<ul>
+<li>普通消息：没有特殊功能的消息。</li>
+<li>分区顺序消息：以分区纬度保持顺序进行消费的消息。</li>
+<li>全局顺序消息：全局顺序消息可以看作是只分一个区，始终在同一个分区上进行消费。</li>
+<li>定时/延时消息：消息可以延迟一段特定时间进行消费。</li>
+<li>事务消息：二阶段事务消息，先进行prepare投递消息，此时不能进行消息消费，当二阶段发出commit或者rollback的时候才会进行消息的消费或者回滚。</li>
+</ul>
+<p>虽然配置种类比较繁多，但是使用的还是普通消息和分区顺序消息。</p>
+<p>本文的主要介绍高可用，主要介绍普通消息，其他消息的高可用策略，也是类似侧。</p>
+<h3 id="rocketmq高可用">RocketMQ高可用</h3>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657628078933.png" alt="" loading="lazy"></figure>
+<h4 id="nameserver-高可用">NameServer 高可用</h4>
+<p>由于 NameServer 节点是无状态的，且各个节点直接的数据是一致的，故存在多个 NameServer 节点的情况下，部分 NameServer 不可用也可以保证 MQ 服务正常运行</p>
+<h4 id="brokerserver-高可用">BrokerServer 高可用</h4>
+<p>RocketMQ是通过 Master 和 Slave 的配合达到 BrokerServer 模块的高可用性的</p>
+<p>一个 Master 可以配置多个 Slave，同时也支持配置多个 Master-Slave 组。</p>
+<p><strong>当其中一个 Master 出现问题时：</strong></p>
+<ul>
+<li>由于Slave只负责读，当 Master 不可用，它对应的 Slave 仍能保证消息被正常消费</li>
+<li>由于配置多组 Master-Slave 组，其他的 Master-Slave 组也会保证消息的正常发送和消费</li>
+</ul>
+<p>老版本的RocketMQ不支持把Slave自动转成Master，如果机器资源不足， 需要把Slave转成Master，则要手动停止Slave角色的Broker，更改配置文 件，用新的配置文件启动Broker。</p>
+<p>新版本的RocketMQ，支持Slave自动转成Master。</p>
+<h4 id="consumer高可用">consumer高可用</h4>
+<p>Consumer 的高可用是依赖于 Master-Slave 配置的，由于 Master 能够支持读写消息，Slave 支持读消息，当 Master 不可用或繁忙时， Consumer 会被自动切换到从 Slave 读取(自动切换，无需配置)。</p>
+<p>故当 Master 的机器故障后，消息仍可从 Slave 中被消费</p>
+<h4 id="producer高可用">producer高可用</h4>
+<p>在创建Topic的时候，把Topic的多个Message Queue创建在多个Broker组上（相同Broker名称，不同 brokerId的机器组成一个Broker组）.</p>
+<p>这样当一个Broker组的Master不可用后，其他组的Master仍然可用，Producer仍然可以发送消息。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657628094386.png" alt="" loading="lazy"></figure>
+<h3 id="实现分布式集群多副本的三种方式">实现分布式集群多副本的三种方式</h3>
+<h4 id="ms模式">M/S模式</h4>
+<p>即Master/Slaver模式。</p>
+<p>该模式在过去使用的最多，RocketMq之前也是使用这样的主从模式来实现的。</p>
+<p>主从模式分为同步模式和异步模式，区别是在同步模式下只有主从复制完毕才会返回给客户端；而在异步模式中，主从的复制是异步的，不用等待即可返回。</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657628109179.png" alt="" loading="lazy"></figure>
+<p>同步模式</p>
+<p><strong>同步模式特点</strong></p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657628128161.png" alt="" loading="lazy"></figure>
+<p>异步模式</p>
+<p><strong>异步模式特点</strong></p>
+<h4 id="基于zookeeper服务">基于zookeeper服务</h4>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657628139871.png" alt="" loading="lazy"></figure>
+<p>和M/S模式相比zookeeper模式是自动选举的主节点，新版本rocketMq暂时不支持zookeeper。</p>
+<h4 id="基于raft">基于raft</h4>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657628150637.png" alt="" loading="lazy"></figure>
+<p>相比zookeeper，raft自身就可以实现选举，raft通过投票的方式实现自身选举leader。去除额外依赖。目前RocketMq 4.5.0已经支持</p>
+<h3 id="可用性与可靠性">可用性与可靠性</h3>
+<p><strong>可用性</strong></p>
+<p>由于消息分布在各个broker上，一旦某个broker宕机，则该broker上的消息读写都会受到影响。所以rocketmq提供了master/slave的结构，salve定时从master同步数据，如果master宕机，则slave提供消费服务，但是不能写入消息，此过程对应用透明，由rocketmq内部解决。</p>
+<p>这里有两个关键点：</p>
+<ul>
+<li>一旦某个broker master宕机，生产者和消费者多久才能发现？受限于rocketmq的网络连接机制，默认情况下，最多需要30秒，但这个时间可由应用设定参数来缩短时间。这个时间段内，发往该broker的消息都是失败的，而且该broker的消息无法消费，因为此时消费者不知道该broker已经挂掉。</li>
+<li>消费者得到master宕机通知后，转向slave消费，但是slave不能保证master的消息100%都同步过来了，因此会有少量的消息丢失。但是消息最终不会丢的，一旦master恢复，未同步过去的消息会被消费掉。</li>
+</ul>
+<p><strong>可靠性</strong></p>
+<ul>
+<li>所有发往broker的消息，有同步刷盘和异步刷盘机制，总的来说，可靠性非常高</li>
+<li>同步刷盘时，消息写入物理文件才会返回成功，因此非常可靠</li>
+<li>异步刷盘时，只有机器宕机，才会产生消息丢失，broker挂掉可能会发生，但是机器宕机崩溃是很少发生的，除非突然断电</li>
+</ul>
+<h3 id="broker消息的零丢失方案">Broker消息的零丢失方案</h3>
+<h4 id="同步刷盘-异步刷盘">同步刷盘、异步刷盘</h4>
+<p>RocketMQ的消息是存储到磁盘上的，这样既能保证断电后恢复，又可以让存储的消息量超出内存的限制。RocketMQ为了提高性能，会尽可能地保证磁盘的顺序写。</p>
+<p>消息在通过Producer写入RocketMQ的时候，有两种写磁盘方式：</p>
+<ul>
+<li>异步刷盘方式：</li>
+</ul>
+<p>在返回写成功状态时，消息可能只是被写入了内存的PAGECACHE，写操作的返回快，吞吐量大；当内存里的消息量积累到一定程度时，统一触发写磁盘操作，快速写入<br>
+优点：性能高<br>
+缺点：Master宕机，磁盘损坏的情况下，会丢失少量的消息, 导致MQ的消息状态和生产者/消费者的消息状态不一致</p>
+<ul>
+<li>同步刷盘方式：</li>
+</ul>
+<p>在返回应用写成功状态前，消息已经被写入磁盘。</p>
+<p>具体流程是，消息写入内存的PAGECACHE后，立刻通知刷盘线程刷盘，然后等待刷盘完成，刷盘线程执行完成后唤醒等待的线程，给应用返回消息写成功的状态。</p>
+<p>优点：可以保持MQ的消息状态和生产者/消费者的消息状态一致<br>
+缺点：性能比异步的低<br>
+同步刷盘还是异步刷盘，是通过Broker配置文件里的flushDiskType参数设置的，这个参数被设置成SYNC_FLUSH, ASYNC_FLUSH中的一个。</p>
+<h4 id="同步复制-异步复制">同步复制、异步复制</h4>
+<p>如果一个broker组有Master和Slave，消息需要从Master复制到Slave上，有同步和异步两种复制方式。</p>
+<ul>
+<li>同步复制方式：</li>
+</ul>
+<p>等Master和Slave均写成功后才反馈给客户端写成功状态<br>
+优点：如果Master出故障，Slave上有全部的备份数据，容易恢复，消费者仍可以从Slave消费, 消息不丢失<br>
+缺点：增大数据写入延迟，降低系统吞吐量，性能比异步复制模式略低，大约低10%左右，发送单个Master的响应时间会略高</p>
+<ul>
+<li>异步复制方式：</li>
+</ul>
+<p>只要Master写成功即可反馈给客户端写成功状态<br>
+优点：系统拥有较低的延迟和较高的吞吐量. Master宕机之后，消费者仍可以从Slave消费，此过程对应用透明，不需要人工干预，性能同多个Master模式几乎一样<br>
+缺点：如果Master出了故障，有些数据因为没有被写入Slave，而丢失少量消息。</p>
+<p>若一个 Broker 组有一个 Master 和 Slave，消息需要从 Master 复制到 Slave 上，有同步复制和异步复制两种方式</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>同步复制</strong></th>
+<th><strong>异步复制</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>概念</strong></td>
+<td>即等 Master 和 Slave 均写成功后才反馈给客户端写成功状态</td>
+<td>只要 Master 写成功，就反馈客户端写成功状态</td>
+</tr>
+<tr>
+<td><strong>可靠性</strong></td>
+<td>可靠性高，若 Master 出现故障，Slave 上有全部的备份数据，容易恢复</td>
+<td>若 Master 出现故障，可能存在一些数据还没来得及写入 Slave，可能会丢失</td>
+</tr>
+<tr>
+<td><strong>效率</strong></td>
+<td>由于是同步复制，会增加数据写入延迟，降低系统吞吐量</td>
+<td>由于只要写入 Master 即可，故数据写入延迟较低，吞吐量较高</td>
+</tr>
+</tbody>
+</table>
+<p>同步复制和异步复制是通过Broker配置文件里的brokerRole参数进行设置的，这个参数可以被设置成ASYNC_MASTER、SYNC_MASTER、SLAVE三个值中的一个。</p>
+<p>三个值的说明：</p>
+<ul>
+<li>sync_master是同步方式，Master角色Broker中的消息要立刻同步过去。</li>
+<li>async_master是异步方式，Master角色Broker中的消息通过异步处理的方式同步到Slave角色的机器上。</li>
+<li>SLAVE 表明当前是从节点，无需配置 brokerRole</li>
+</ul>
+<h4 id="消息零丢失方案">消息零丢失方案</h4>
+<p>消息零丢失是一把双刃剑，要想用好，还是要视具体的业务场景，在性能和消息零丢失上做平衡。</p>
+<p>实际应用中的推荐把Master和Slave设置成ASYNC_FLUSH的异步刷盘方式，主从之间配置成SYNC_MASTER的同步复制方式，这样即使有一台机器出故障，仍然可以保证数据不丢。</p>
+<ul>
+<li>刷盘方式</li>
+</ul>
+<p>Master和Slave都设置成ASYNC_FLUSH的异步刷盘</p>
+<ul>
+<li>复制方式</li>
+</ul>
+<p>Master配置成SYNC_MASTER 同步复制</p>
+<p>异步刷盘能够避免频繁触发磁盘写操作，除非服务器宕机，否则不会造成消息丢失。</p>
+<p>主从同步复制能够保证消息不丢失，即使 Master 节点异常，也能保证 Slave 节点存储所有消息并被正常消费掉。</p>
+<h3 id="producer高可用-2">producer高可用</h3>
+<p>producer具备发送到全部master的能力，如果有多个master，消息会发送到所有的master</p>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657628176572.png" alt="" loading="lazy"></figure>
+<p>另外，在topic的不同的queue之间，producer还具备负载均衡能力。</p>
+<p>在实例发送消息时，默认会轮询所有订阅了改 Topic 的 broker 节点上的 message queue，让消息平均落在不同的 queue 上，而由于这些 queue 散落在不同的 broker 节点中，即使某个 broker 节点异常，其他存在订阅了这个 Topic 的 message queue 的 broker 依然能消费消息</p>
+<h3 id="消息者业务代码出现异常怎么办">消息者业务代码出现异常怎么办？</h3>
+<p>再来看一下消费者的代码中监听器的部分，它说如果消息处理成功，那么就返回消息状态为 CONSUME_SUCCESS，也有可能发放优惠券、积分等操作出现了异常，比如说数据库挂掉了。这个时候应该怎么处理呢？</p>
+<pre><code class="language-java">consumer.registerMessageListener(new MessageListenerConcurrently() {
+    @Override
+    public ConsumeConcurrentlyStatus consumeMessage(List &lt;MessageExt&gt; list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
+        // 对消息的处理，比如发放优惠券、积分等
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+});
+</code></pre>
+<p>我们可以把代码改一改，捕获异常之后返回消息的状态为 RECONSUME_LATER 表示稍后重试。</p>
+<pre><code class="language-java">// 这次回调接口，接收消息
+consumer.registerMessageListener(new MessageListenerConcurrently() {
+    @Override
+    public ConsumeConcurrentlyStatus consumeMessage(List &lt;MessageExt&gt; list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
+        try {
+            // 对消息的处理，比如发放优惠券、积分等
+            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+        } catch (Exception e) {
+            // 万一发生数据库宕机等异常，返回稍后重试消息的状态
+            return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+        }
+
+    }
+});
+</code></pre>
+<p>这个时候，消息会进入到 RocketMQ 的重试队列中。</p>
+<h4 id="重试队列">重试队列</h4>
+<p>比如说消费者所属的消息组名称为<strong>AAAConsumerGroup</strong><br>
+其重试队列名称就叫做**%RETRY%AAAConsumerGroup**<br>
+重试队列中的消息过一段时间会再次发送给消费者，如果还是无法正常执行会再次进入重试队列<br>
+默认重试16次，还是无法执行，消息就会从重试队列进入到死信队列</p>
+<h4 id="死信队列">死信队列</h4>
+<p>重试队列中的消息重试16次任然无法执行，将会进入到死信队列<br>
+死信队列的名字是 <strong>%DLQ%AAAConsumerGroup</strong><br>
+死信队列中的消息可以后台开一个线程，订阅**%DLQ%AAAConsumerGroup**，并不停重试</p>
+<h3 id="customer-负载均衡">Customer 负载均衡</h3>
+<h4 id="集群模式">集群模式</h4>
+<p>在集群消费模式下，存在多个消费者同时消费消息，同一条消息只会被某一个消费者获取。即消息只需要被投递到订阅了这个 Topic 的消费者Group下的一个实例中即可。</p>
+<p>消费者采用主动拉去的方式拉去并消费，在拉取的时候需要明确指定拉取那一条消息队列中的消息。</p>
+<p>每当有实例变更，都会触发一次所有消费者实例的负载均衡，这是会按照queue的数量和实例的数量平均分配 queue 给每个消费者实例。</p>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657628194080.png" alt="" loading="lazy"></figure>
+<p><strong>注意：</strong></p>
+<p>1）在集群模式下，一个 queue 只允许分配给一个消费者实例，这是由于若多个实例同时消费一个 queue 的小，由于拉取操作是由 consumer 主动发生的，可能导致同一个消息在不同的 consumer 实例中被消费。故算法保证了一个 queue 只会被一个 consumer 实例消费，但一个 consumer 实例能够消费多个 queue</p>
+<p>2）控制 consumer 数量，应小于 queue 数量。这是由于一个 queue 只允许分配给一个 consumer 实例，若 consumer 实例数量多于 queue，则多出的 consumer 实例无法分配到 queue消费，会浪费系统资源</p>
+<h4 id="广播模式">广播模式</h4>
+<p>广播模式其实不是负载均衡，由于每个消费者都能够拿到所有消息，故不能达到负载均衡的要求</p>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657628208176.png" alt="" loading="lazy"></figure>
+<h3 id="消费者的消息重试">消费者的消息重试</h3>
+<h3 id="顺序消息重试">顺序消息重试</h3>
+<p>对于顺序消息，为了保证消息消费的顺序性，当consumer消费失败后，消息队列会自动不断进行消息重试(每次间隔时间为1s)，</p>
+<p>这时会导致consumer消费被阻塞的情况，故必须保证应用能够及时监控并处理消费失败的情况，避免阻塞现象的发生</p>
+<h3 id="无序消息重试">无序消息重试</h3>
+<h4 id="概述">概述</h4>
+<p>无序消息即普通、定时、延时、事务消息，当consumer消费消息失败时，可以通过设置返回状态实现消息重试</p>
+<blockquote>
+<p>注意：无序消息的重试只针对集群消费方式（非广播方式）生效</p>
+</blockquote>
+<p>广播方式不提供失败重试特性，即消费失败后，失败的消息不再重试，而是继续消费新消息</p>
+<h4 id="重试次数">重试次数</h4>
+<p>消息队列 RocketMQ 默认允许每条消息最多重试 16 次，每次重试的间隔时间如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">第几次重试</th>
+<th style="text-align:left">与上次重试的间隔时间</th>
+<th style="text-align:left">第几次重试</th>
+<th style="text-align:left">与上次重试的间隔时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">10 秒</td>
+<td style="text-align:left">9</td>
+<td style="text-align:left">7 分钟</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">30 秒</td>
+<td style="text-align:left">10</td>
+<td style="text-align:left">8 分钟</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left">1 分钟</td>
+<td style="text-align:left">11</td>
+<td style="text-align:left">9 分钟</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td style="text-align:left">2 分钟</td>
+<td style="text-align:left">12</td>
+<td style="text-align:left">10 分钟</td>
+</tr>
+<tr>
+<td style="text-align:left">5</td>
+<td style="text-align:left">3 分钟</td>
+<td style="text-align:left">13</td>
+<td style="text-align:left">20 分钟</td>
+</tr>
+<tr>
+<td style="text-align:left">6</td>
+<td style="text-align:left">4 分钟</td>
+<td style="text-align:left">14</td>
+<td style="text-align:left">30 分钟</td>
+</tr>
+<tr>
+<td style="text-align:left">7</td>
+<td style="text-align:left">5 分钟</td>
+<td style="text-align:left">15</td>
+<td style="text-align:left">1 小时</td>
+</tr>
+<tr>
+<td style="text-align:left">8</td>
+<td style="text-align:left">6 分钟</td>
+<td style="text-align:left">16</td>
+<td style="text-align:left">2 小时</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>如果消息重试 16 次后仍然失败，消息将不再投递。</p>
+</blockquote>
+<p>如果严格按照上述重试时间间隔计算，某条消息在一直消费失败的前提下，将会在接下来的 4 小时 46 分钟之内进行 16 次重试，超过这个时间范围消息将不再重试投递。</p>
+<p><strong>注意：</strong> 一条消息无论重试多少次，这些重试消息的 Message ID 不会改变。</p>
+<h4 id="消息重试相关的处理方式">消息重试相关的处理方式</h4>
+<h5 id="消费失败后需要重试的处理方式">消费失败后，需要重试的处理方式</h5>
+<p>集群消费方式（非广播方式）下，消息消费失败后期望消息重试，需要在消息监听器接口的实现中明确进行配置（三种方式任选一种）：</p>
+<ul>
+<li>方式 1：返回 Action.ReconsumeLater（推荐）</li>
+<li>方式 2：返回 Null</li>
+<li>方式 3：抛出异常</li>
+</ul>
+<p>示例代码</p>
+<pre><code class="language-java">public class MessageListenerImpl implements MessageListener {
+
+    @Override
+    public Action consume(Message message, ConsumeContext context) {
+        //消息处理逻辑抛出异常，消息将重试
+        doConsumeMessage(message);
+   
+       //方式 1：返回 Action.ReconsumeLater，消息将重试
+        return Action.ReconsumeLater;
+     
+        //方式 2：返回 null，消息将重试
+        return null;
+   
+        //方式 3：直接抛出异常，消息将重试
+        throw new RuntimeException(&quot;Consumer Message exception&quot;);
+    }
+}
+</code></pre>
+<p>集群消费方式下，消息消费失败后期望消息重试，需要在消息监听器接口的实现中明确进行配置</p>
+<h5 id="消费失败后无需重试的处理方式">消费失败后，无需重试的处理方式</h5>
+<p>集群消费方式下，消息失败后期望消息不重试，需要捕获消费逻辑中可能抛出的异常，最终返回 Action.CommitMessage，此后这条消息将不会再重试。</p>
+<pre><code class="language-java">public class MessageListenerImpl implements MessageListener {
+
+    @Override
+    public Action consume(Message message, ConsumeContext context) {
+        try {
+            doConsumeMessage(message);
+        } catch (Throwable e) {
+            //捕获消费逻辑中的所有异常，并返回 Action.CommitMessage;
+            return Action.CommitMessage;
+        }
+        //消息处理正常，直接返回 Action.CommitMessage;
+        return Action.CommitMessage;
+    }
+}
+</code></pre>
+<p><strong>3）自定义消息最大重试次数</strong></p>
+<p>消息队列 RocketMQ 允许 Consumer 启动的时候设置最大重试次数，重试时间间隔将按照如下策略：</p>
+<ul>
+<li>最大重试次数小于等于 16 次，则重试时间间隔同上表描述。</li>
+<li>最大重试次数大于 16 次，超过 16 次的重试时间间隔均为每次 2 小时。</li>
+</ul>
+<p><strong>设置方式：</strong></p>
+<pre><code class="language-java">consumer.setMaxReconsumeTimes(20);
+</code></pre>
+<p>或者：</p>
+<pre><code class="language-java">Properties properties = new Properties();
+//配置对应 Group ID 的最大消息重试次数为 20 次，最大重试次数为字符串类型
+properties.put(PropertyKeyConst.MaxReconsumeTimes,&quot;20&quot;);
+Consumer consumer =ONSFactory.createConsumer(properties);
+</code></pre>
+<p><strong>注意：</strong></p>
+<ul>
+<li>消息最大重试次数设置，对相同 Group ID 下的所有 Consumer 实例有效。</li>
+<li>如果只对相同 Group ID 下两个 Consumer 实例中的其中一个设置了 MaxReconsumeTimes，那么该配置对两个 Consumer 实例均生效。</li>
+<li>配置采用覆盖的方式生效，即最后启动的 Consumer 实例会覆盖之前的启动实例的配置</li>
+</ul>
+<h5 id="获取消息重试次数">获取消息重试次数</h5>
+<p>消费者收到消息后，可以获取到消息的重试次数</p>
+<p><strong>设置方式：</strong></p>
+<pre><code class="language-java">public class MessageListenerImpl implements MessageListener {
+ 
+    @Override
+    public Action consume(Message message, ConsumeContext context) {
+        //获取消息的重试次数
+        System.out.println(message.getReconsumeTimes());
+        return Action.CommitMessage;
+    }
+}
+</code></pre>
+<h3 id="死信队列-2">死信队列</h3>
+<h4 id="死信队列概念">死信队列概念</h4>
+<blockquote>
+<p>在正常情况下无法被消费(超过最大重试次数)的消息称为死信消息(Dead-Letter Message)，存储死信消息的特殊队列就称为死信队列(Dead-Letter Queue)</p>
+</blockquote>
+<p>当一条消息初次消费失败，消息队列 RocketMQ 会自动进行消息重试；</p>
+<p>达到最大重试次数后，若消费依然失败，则表明消费者在正常情况下无法正确地消费该消息，此时，消息队列 RocketMQ 不会立刻将消息丢弃，而是将其发送到该<strong>消费者对应的死信队列</strong>中。</p>
+<p>代码正常执行返回消息状态为CONSUME_SUCCESS，执行异常返回RECONSUME_LATER<br>
+状态为RECONSUME_LATER的消息会进入到重试队列，重试队列的名称为 <code>%RETRY% + ConsumerGroupName</code>；<br>
+重试16次消息任然没有处理成功，消息就会进入到死信队列<code>%DLQ% + ConsumerGroupName</code>;</p>
+<h3 id="死信特性">死信特性</h3>
+<p><strong>死信消息有以下特点：</strong></p>
+<ul>
+<li>不会再被消费者正常消费</li>
+<li>有效期与正常消息相同，均为 3 天，3 天后会被自动删除。故死信消息应在产生的 3 天内及时处理</li>
+</ul>
+<p><strong>死信队列有以下特点：</strong></p>
+<ul>
+<li>一个死信队列对应一个消费者组，而不是对应单个消费者实例</li>
+<li>一个死信队列包含了对应的 Group ID 所产生的所有死信消息，不论该消息属于哪个 Topic</li>
+<li>若一个 Group ID 没有产生过死信消息，则 RocketMQ 不会为其创建相应的死信队列</li>
+</ul>
+<h3 id="查看死信信息和重发">查看死信信息和重发</h3>
+<p>在控制台查看死信队列的主题信息</p>
+<figure data-type="image" tabindex="15"><img src="https://tinaxiawuhao.github.io/post-images/1657628232656.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="https://tinaxiawuhao.github.io/post-images/1657628246206.png" alt="" loading="lazy"></figure>
+<p><strong>重发消息</strong></p>
+<figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1657628261517.png" alt="" loading="lazy"></figure>
+<h3 id="消息幂等性">消息幂等性</h3>
+<h4 id="消费幂等">消费幂等</h4>
+<p>消费幂等即无论消费者消费多少次，其结果都是一样的。</p>
+<p>RocketMQ 是通过业务上的唯一 Key 来对消息做幂等处理</p>
+<h4 id="消费幂等的必要性">消费幂等的必要性</h4>
+<p>在网络环境中，由于网络不稳定等因素，消息队列的消息有可能出现重复，大概有以下几种：</p>
+<ul>
+<li>
+<p><strong>发送时消息重复</strong></p>
+<p>当一条消息已被成功发送到服务端并完成持久化，此时出现了网络闪断或者客户端宕机，导致服务端对客户端应答失败。 如果此时生产者意识到消息发送失败并尝试再次发送消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
+</li>
+<li>
+<p><strong>投递时消息重复</strong></p>
+<p>消息消费的场景下，消息已投递到消费者并完成业务处理，当客户端给服务端反馈应答的时候网络闪断。 为了保证消息至少被消费一次，消息队列 RocketMQ 的服务端将在网络恢复后再次尝试投递之前已被处理过的消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
+</li>
+<li>
+<p><strong>负载均衡时消息重复</strong>（包括但不限于网络抖动、Broker 重启以及订阅方应用重启）</p>
+<p>当消息队列 RocketMQ 的 Broker 或客户端重启、扩容或缩容时，会触发 Rebalance，此时消费者可能会收到重复消息。</p>
+</li>
+</ul>
+<p>结合三种情况，可以发现消息重发的最后结果都是，消费者接收到了重复消息，那么，我们只需要在消费者端统一进行幂等处理就能够实现消息幂等。</p>
+<h4 id="处理方式">处理方式</h4>
+<h5 id="消费端实现消息幂等性">消费端实现消息幂等性</h5>
+<p>RocketMQ 只能够保证消息丢失，但不能保证消息不重复投递，且由于高可用和高性能的考虑，应该在消费端实现消息幂等性。</p>
+<p>那么 RocketMQ 是怎样解决消息重复的问题呢？还是“恰好”不解决。</p>
+<p>造成消息重复的根本原因是：网络不可达。只要通过网络交换数据，就无法避免这个问题。所以解决这个问题的办法就是绕过这个问题。那么问题就变成了：如果消费端收到两条一样的消息，应该怎样处理？</p>
+<blockquote>
+<ul>
+<li>消费端处理消息的业务逻辑保持幂等性</li>
+<li>保证每条消息都有唯一编号且保证消息处理成功与去重表的日志同时出现</li>
+</ul>
+</blockquote>
+<ul>
+<li>第1条很好理解，只要保持幂等性，不管来多少条重复消息，最后处理的结果都一样。</li>
+<li>第2条原理就是利用一张日志表来记录已经处理成功的消息的ID，如果新到的消息ID已经在日志表中，那么就不再处理这条消息。</li>
+</ul>
+<p>第1条解决方案，很明显应该在消费端实现，不属于消息系统要实现的功能。第2条可以消息系统实现，也可以业务端实现。正常情况下出现重复消息的概率其实很小，如果由消息系统来实现的话，肯定会对消息系统的吞吐量和高可用有影响，所以最好还是由业务端自己处理消息重复的问题，这也是 RocketMQ 不解决消息重复的问题的原因。</p>
+<p><strong>RocketMQ 不保证消息不重复，如果你的业务需要保证严格的不重复消息，需要你自己在业务端去重。</strong></p>
+<p>在消费端通过业务逻辑实现幂等性操作，最常用的方式就是唯一ID的形式，若已经消费过的消息就不进行处理。例如在秒杀系统中使用订单ID作为关键ID，分布式系统中常用雪花算法生成ID。</p>
+<blockquote>
+<p>注：如果需要彻底了解雪花算法，以及里边的位运算逻辑，请参见尼恩的秒杀视频。</p>
+</blockquote>
+<p>在发送消息时，可以对 Message 设置标识唯一标识：</p>
+<pre><code class="language-java">Message message = new Message(); # 设置唯一标识，标识由雪花算法生成message.setKey(idWorker.nextId());
+</code></pre>
+<p>订阅方收到消息时，可以获取到这个 Key</p>
+<pre><code class="language-java">consumer.registerMessageListener(new MessageListenerConcurrently()
+{
+    @Override
+    public ConsumeConcurrentlyStatus consumeMessage(List&lt;MessageExt&gt; msgs, ConsumeConcurrentlyContext context)
+    {
+        System.out.printf(&quot;%s Receive New Messages: %s %n&quot;, Thread.currentThread().getName(), msgs);
+        for (MessageExt ext : msgs)
+        {
+            System.out.println(ext.getKeys());
+        }
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+});
+</code></pre>
+<h3 id="一-顺序消息">一、顺序消息</h3>
+<p>顺序消息（FIFO 消息）是消息队列 RocketMQ 提供的一种严格按照顺序来发布和消费的消息。顺序发布和顺序消费是指对于指定的一个 Topic，生 产者按照一定的先后顺序发布消息；消费者按照既定的先后顺序订阅消息，即先发布的消息一定会先被客户端接收到。</p>
+<blockquote>
+<p>顺序消息分为全局顺序消息和分区顺序消息。</p>
+</blockquote>
+<h4 id="11-全局顺序消息">1.1、全局顺序消息</h4>
+<p>RocketMQ 在默认情况下不保证顺序，要保证全局顺序，需要把 Topic 的读写队列数设置为 1，然后生产者和消费者的并发设置也是 1。所以这样的话 高并发，高吞吐量的功能完全用不上。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1657628280551.png" alt="" loading="lazy"></p>
+<h5 id="111-适用场景">1.1.1、适用场景</h5>
+<p>适用于性能要求不高，所有的消息严格按照 FIFO 原则来发布和消费的场景。</p>
+<h5 id="112-示例">1.1.2、示例</h5>
+<p>要确保全局顺序消息，需要先把 Topic 的读写队列数设置为 1，然后生产者和消费者的并发设置也是 1。</p>
+<pre><code class="language-shell">mqadmin update Topic -t AllOrder -c DefaultCluster -r 1 -w 1 -n 127.0.0.1:9876
+</code></pre>
+<p>在证券处理中，以人民币兑换美元为 Topic，在价格相同的情况下，先出价者优先处理，则可以按照 FIFO 的方式发布和消费全局顺序消息。</p>
+<h4 id="12-部分顺序消息">1.2、部分顺序消息</h4>
+<p>对于指定的一个 Topic，所有消息根据 Sharding Key 进行区块分区。同一个分区内的消息按照严格的 FIFO 顺序进行发布和消费。Sharding Key 是顺 序消息中用来区分不同分区的关键字段，和普通消息的 Key 是完全不同的概念。</p>
+<h3 id="二-延时消息">二、延时消息</h3>
+<h4 id="21-概念介绍">2.1、概念介绍</h4>
+<p><strong>延时消息</strong>：Producer 将消息发送到消息队列 RocketMQ 服务端，但并不期望这条消息立马投递，而是延迟一定时间后才投递到 Consumer 进行消费， 该消息即延时消息。</p>
+<h4 id="22-适用场景">2.2、适用场景</h4>
+<p>消息生产和消费有时间窗口要求：比如在电商交易中超时未支付关闭订单的场景，在订单创建时会发送一条延时消息。这条消息将会在 30 分钟以 后投递给消费者，消费者收到此消息后需要判断对应的订单是否已完成支付。 如支付未完成，则关闭订单。如已完成支付则忽略。</p>
+<h4 id="23-使用方式">2.3、使用方式</h4>
+<p>Apache RocketMQ 目前只支持固定精度的定时消息，因为如果要支持任意的时间精度，在 Broker 层面，必须要做消息排序，如果再涉及到持久化， 那么消息排序要不可避免的产生巨大性能开销。<strong>（阿里云 RocketMQ 提供了任意时刻的定时消息功能，Apache 的 RocketMQ 并没有,阿里并没有开源）</strong><br>
+发送延时消息时需要设定一个延时时间长度，消息将从当前发送时间点开始延迟固定时间之后才开始投递。<br>
+延迟消息是根据延迟队列的 level 来的，延迟队列默认是<br>
+**msg.setDelayTimeLevel(5)**代表延迟一分钟<br>
+<strong>&quot;1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h&quot;</strong><br>
+是这 18 个等级（秒（s）、分（m）、小时（h）），level 为 1，表示延迟 1 秒后消费，level 为 5 表示延迟 1 分钟后消费，level 为 18 表示延迟 2 个 小时消费。生产消息跟普通的生产消息类似，只需要在消息上设置延迟队列的 level 即可。消费消息跟普通的消费消息一致。</p>
+<h3 id="三-死信队列">三、死信队列</h3>
+<h4 id="31-概念介绍">3.1、概念介绍</h4>
+<p>死信队列用于处理无法被正常消费的消息。当一条消息初次消费失败，消息队列 <strong>MQ</strong> 会自动进行消息重试；达到最大重试次数后，若消费依然失败， 则表明<strong>Consumer</strong> 在正常情况下无法正确地消费该消息。此时，消息队列<strong>MQ</strong>不会立刻将消息丢弃，而是将这条消息发送到该 <strong>Consumer</strong> 对应的特殊队列中。<br>
+消息队列 <strong>MQ <strong>将这种正常情况下无法被消费的消息称为死信消息</strong>（Dead-Letter Message）</strong>，将存储死信消息的特殊队列称为死信队列 <strong>（Dead-Letter Queue)</strong>。</p>
+<h4 id="32适用场景">3.2适用场景</h4>
+<h5 id="321-死信消息的特性">3.2.1、死信消息的特性</h5>
+<p>不会再被消费者正常消费。 有效期与正常消息相同，均为 3 天，3 天后会被自动删除。因此，请在死信消息产生后的 3 天内及时处理。</p>
+<h5 id="322-死信队列的特性">3.2.2、死信队列的特性</h5>
+<p>一个死信队列对应一个 Group ID， 而不是对应单个消费者实例。<br>
+如果一个 <strong>Group ID</strong> 未产生死信消息，消息队列 <strong>MQ</strong> 不会为其创建相应的死信队列。<br>
+一个死信队列包含了对应 Group ID 产生的所有死信消息，不论该消息属于哪个 <strong>Topic</strong>。<br>
+消息队列 MQ 控制台提供对死信消息的查询的功能。</p>
+<p>一般控制台直接查看死信消息会报错。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1657628298619.png" alt="" loading="lazy"></p>
+<p>进入<strong>RocketMQ</strong>中服务器对应的 <strong>RocketMQ</strong> 中的/bin 目录，执行以下脚本</p>
+<pre><code class="language-shell">sh mqadmin updateTopic -b 192.168.0.128:10911 -n 192.168.0.128:9876 -t %DLQ%group1 -p 6
+</code></pre>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1657628311169.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1657628322848.png" alt="" loading="lazy"></p>
+<h3 id="四-消费幂等">四、消费幂等</h3>
+<p>为了防止消息重复消费导致业务处理异常，消息队列 MQ 的消费者在接收到消息后，有必要根据业务上的唯一 Key 对消息做幂等处理。本文介绍消息幂 等的概念、适用场景以及处理方法。</p>
+<h4 id="41-什么是消息幂等">4.1、什么是消息幂等</h4>
+<p>当出现消费者对某条消息重复消费的情况时，重复消费的结果与消费一次的结果是相同的，并且多次消费并未对业务系统产生任何负面影响，那么 这整个过程就实现可消息幂等。<br>
+例如，在支付场景下，消费者消费扣款消息，对一笔订单执行扣款操作，扣款金额为 100 元。如果因网络不稳定等原因导致扣款消息重复投递，消 费者重复消费了该扣款消息，但最终的业务结果是只扣款一次，扣费 100 元，且用户的扣款记录中对应的订单只有一条扣款流水，不会多次扣除费用。 那么这次扣款操作是符合要求的，整个消费过程实现了消费幂等。</p>
+<h4 id="42-需要处理的场景">4.2、需要处理的场景</h4>
+<p>在互联网应用中，尤其在网络不稳定的情况下，消息队列 MQ 的消息有可能会出现重复。如果消息重复会影响您的业务处理，请对消息做幂等处理。 消息重复的场景如下：<br>
+**1. 发送时消息重复 **<br>
+当一条消息已被成功发送到服务端并完成持久化，此时出现了网络闪断或者客户端宕机，导致服务端对客户端应答失败。 如果此时生产者意识到消 息发送失败并尝试再次发送消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。<br>
+**2. 投递时消息重复 **<br>
+消息消费的场景下，消息已投递到消费者并完成业务处理，当客户端给服务端反馈应答的时候网络闪断。为了保证消息至少被消费一次，消息队列 MQ 的服务端将在网络恢复后再次尝试投递之前已被处理过的消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。<br>
+<strong>3. 负载均衡时消息重复（包括但不限于网络抖动、Broker 重启以及消费者应用重启）</strong><br>
+当消息队列 MQ 的 Broker 或客户端重启、扩容或缩容时，会触发 Rebalance，此时消费者可能会收到重复消息。</p>
+<h4 id="43-处理方法">4.3、处理方法</h4>
+<p>因为 Message ID 有可能出现冲突（重复）的情况，所以真正安全的幂等处理，不建议以 Message ID 作为处理依据。最好的方式是以业务唯一标识 作为幂等处理的关键依据，而业务的唯一标识可以通过消息 Key 设置。<br>
+以支付场景为例，可以将消息的 Key 设置为订单号，作为幂等处理的依据。具体代码示例如下：</p>
+<pre><code class="language-java"> Message message = new Message();
+  message.setKey(&quot;ORDERID_100&quot;); 
+  SendResult sendResult = producer.send(message); 
+</code></pre>
+<p>消费者收到消息时可以根据消息的 Key，即订单号来实现消息幂等：</p>
+<pre><code class="language-java"> consumer.subscribe(&quot;ons_test&quot;, &quot;*&quot;, new MessageListener() {
+    
+    
+  public Action consume(Message message, ConsumeContext context) {
+    
+     
+  String key = message.getKey()
+   // 根据业务唯一标识的 Key 做幂等处理
+    } });
+</code></pre>
 ]]></content>
     </entry>
     <entry>
@@ -8196,6 +8899,681 @@ public class SpringConfiguration {
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[RabbitMQ]]></title>
+        <id>https://tinaxiawuhao.github.io/post/olBu0Tj_j/</id>
+        <link href="https://tinaxiawuhao.github.io/post/olBu0Tj_j/">
+        </link>
+        <updated>2022-04-01T12:19:14.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="思维导图">思维导图：</h1>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657628837809.png" alt="" loading="lazy"></figure>
+<h1 id="1-消息队列">1. 消息队列</h1>
+<h2 id="11-消息队列模式">1.1 消息队列模式</h2>
+<p>消息队列目前主要 2 种模式，分别为“点对点模式”和“发布/订阅模式”。</p>
+<h4 id="111-点对点模式">1.1.1 点对点模式</h4>
+<p>一个具体的消息只能由一个消费者消费，多个生产者可以向同一个消息队列发送消息，但是一个消息在被一个消息者处理的时候，这个消息在队列上会被锁住或者被移除并且其他消费者无法处理该消息。</p>
+<p>需要额外注意的是，如果消费者处理一个消息失败了，消息系统一般会把这个消息放回队列，这样其他消费者可以继续处理。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657628845595.png" alt="" loading="lazy"></figure>
+<h4 id="112-发布订阅模式">1.1.2 发布/订阅模式</h4>
+<p>单个消息可以被多个订阅者并发的获取和处理。一般来说，订阅有两种类型：</p>
+<ul>
+<li><strong>临时（ephemeral）订阅</strong>：这种订阅只有在消费者启动并且运行的时候才存在。一旦消费者退出，相应的订阅以及尚未处理的消息就会丢失。</li>
+<li><strong>持久（durable）订阅</strong>：这种订阅会一直存在，除非主动去删除。消费者退出后，消息系统会继续维护该订阅，并且后续消息可以被继续处理。</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657628852760.png" alt="" loading="lazy"></figure>
+<h2 id="12-衡量标准">1.2 衡量标准</h2>
+<p>对消息队列进行技术选型时，需要通过以下指标衡量你所选择的消息队列，是否可以满足你的需求：</p>
+<ul>
+<li><strong>消息顺序</strong>：发送到队列的消息，消费时是否可以保证消费的顺序，比如A先下单，B后下单，应该是A先去扣库存，B再去扣，顺序不能反。</li>
+<li><strong>消息路由</strong>：根据路由规则，只订阅匹配路由规则的消息，比如有A/B两者规则的消息，消费者可以只订阅A消息，B消息不会消费。</li>
+<li>消息可靠性：是否会存在丢消息的情况，比如有A/B两个消息，最后只有B消息能消费，A消息丢失。</li>
+<li><strong>消息时序</strong>：主要包括“消息存活时间”和“延迟/预定的消息”，“消息存活时间”表示生产者可以对消息设置TTL，如果超过该TTL，消息会自动消失；“延迟/预定的消息”指的是可以延迟或者预订消费消息，比如延时5分钟，那么消息会5分钟后才能让消费者消费，时间未到的话，是不能消费的。</li>
+<li><strong>消息留存</strong>：消息消费成功后，是否还会继续保留在消息队列。</li>
+<li><strong>容错性</strong>：当一条消息消费失败后，是否有一些机制，保证这条消息是一种能成功，比如异步第三方退款消息，需要保证这条消息消费掉，才能确定给用户退款成功，所以必须保证这条消息消费成功的准确性。</li>
+<li><strong>伸缩</strong>：当消息队列性能有问题，比如消费太慢，是否可以快速支持库容；当消费队列过多，浪费系统资源，是否可以支持缩容。</li>
+<li><strong>吞吐量</strong>：支持的最高并发数。</li>
+</ul>
+<h1 id="2-rabbitmq-原理初探">2. RabbitMQ 原理初探</h1>
+<p>RabbitMQ 2007 年发布，是使用 Erlang 语言开发的开源消息队列系统，基于 AMQP 协议来实现。</p>
+<h2 id="21-基本概念">2.1 基本概念</h2>
+<p>提到RabbitMQ，就不得不提AMQP协议。AMQP协议是具有现代特征的二进制协议。是一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计。</p>
+<p>先了解一下AMQP协议中间的几个重要概念：</p>
+<ul>
+<li>Server：接收客户端的连接，实现AMQP实体服务。</li>
+<li>Connection：连接，应用程序与Server的网络连接，TCP连接。</li>
+<li>Channel：信道，消息读写等操作在信道中进行。客户端可以建立多个信道，每个信道代表一个会话任务。</li>
+<li>Message：消息，应用程序和服务器之间传送的数据，消息可以非常简单，也可以很复杂。由Properties和Body组成。Properties为外包装，可以对消息进行修饰，比如消息的优先级、延迟等高级特性；Body就是消息体内容。</li>
+<li>Virtual Host：虚拟主机，用于逻辑隔离。一个虚拟主机里面可以有若干个Exchange和Queue，同一个虚拟主机里面不能有相同名称的Exchange或Queue。</li>
+<li>Exchange：交换器，接收消息，按照路由规则将消息路由到一个或者多个队列。如果路由不到，或者返回给生产者，或者直接丢弃。RabbitMQ常用的交换器常用类型有direct、topic、fanout、headers四种，后面详细介绍。</li>
+<li>Binding：绑定，交换器和消息队列之间的虚拟连接，绑定中可以包含一个或者多个RoutingKey。</li>
+<li>RoutingKey：路由键，生产者将消息发送给交换器的时候，会发送一个RoutingKey，用来指定路由规则，这样交换器就知道把消息发送到哪个队列。路由键通常为一个“.”分割的字符串，例如“com.rabbitmq”。</li>
+<li>Queue：消息队列，用来保存消息，供消费者消费。</li>
+</ul>
+<h2 id="22-工作原理">2.2 工作原理</h2>
+<p>AMQP 协议模型由三部分组成：生产者、消费者和服务端，执行流程如下：</p>
+<ol>
+<li>生产者是连接到 Server，建立一个连接，开启一个信道。</li>
+<li>生产者声明交换器和队列，设置相关属性，并通过路由键将交换器和队列进行绑定。</li>
+<li>消费者也需要进行建立连接，开启信道等操作，便于接收消息。</li>
+<li>生产者发送消息，发送到服务端中的虚拟主机。</li>
+<li>虚拟主机中的交换器根据路由键选择路由规则，发送到不同的消息队列中。</li>
+<li>订阅了消息队列的消费者就可以获取到消息，进行消费。</li>
+</ol>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657628882128.png" alt="" loading="lazy"></figure>
+<h2 id="23-常用交换器">2.3 常用交换器</h2>
+<p>RabbitMQ常用的交换器类型有direct、topic、fanout、headers四种：</p>
+<ul>
+<li>Direct Exchange：见文知意，直连交换机意思是此交换机需要绑定一个队列，要求该消息与一个特定的路由键完全匹配。简单点说就是一对一的，点对点的发送。</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657628894550.png" alt="" loading="lazy"></figure>
+<ul>
+<li>Fanout Exchange：这种类型的交换机需要将队列绑定到交换机上。一个发送到交换机的消息都会被转发到与该交换机绑定的所有队列上。很像子网广播，每台子网内的主机都获得了一份复制的消息。简单点说就是发布订阅。</li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657628908018.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<p>Topic Exchange：直接翻译的话叫做主题交换机，如果从用法上面翻译可能叫通配符交换机会更加贴切。这种交换机是使用通配符去匹配，路由到对应的队列。通配符有两种：&quot;*&quot; 、 &quot;#&quot;。需要注意的是通配符前面必须要加上&quot;.&quot;符号。</p>
+</li>
+<li>
+<ul>
+<li>*符号：有且只匹配一个词。比如 a.*可以匹配到&quot;a.b&quot;、&quot;a.c&quot;，但是匹配不了&quot;a.b.c&quot;。</li>
+<li>#符号：匹配一个或多个词。比如&quot;rabbit.#&quot;既可以匹配到&quot;rabbit.a.b&quot;、&quot;rabbit.a&quot;，也可以匹配到&quot;rabbit.a.b.c&quot;。</li>
+</ul>
+</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657628921955.png" alt="" loading="lazy"></figure>
+<ul>
+<li>Headers Exchange：这种交换机用的相对没这么多。它跟上面三种有点区别，它的路由不是用routingKey进行路由匹配，而是在匹配请求头中所带的键值进行路由。创建队列需要设置绑定的头部信息，有两种模式：全部匹配和部分匹配。如上图所示，交换机会根据生产者发送过来的头部信息携带的键值去匹配队列绑定的键值，路由到对应的队列。</li>
+</ul>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657628934149.png" alt="" loading="lazy"></figure>
+<h2 id="24-消费原理">2.4 消费原理</h2>
+<p>我们先看几个基本概念：</p>
+<ul>
+<li>broker：每个节点运行的服务程序，功能为维护该节点的队列的增删以及转发队列操作请求。</li>
+<li>master queue：每个队列都分为一个主队列和若干个镜像队列。</li>
+<li>mirror queue：镜像队列，作为master queue的备份。在master queue所在节点挂掉之后，系统把mirror queue提升为master queue，负责处理客户端队列操作请求。注意，mirror queue只做镜像，设计目的不是为了承担客户端读写压力。</li>
+</ul>
+<p>集群中有两个节点，每个节点上有一个broker，每个broker负责本机上队列的维护，并且borker之间可以互相通信。集群中有两个队列A和B，每个队列都分为master queue和mirror queue（备份）。那么队列上的生产消费怎么实现的呢？</p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657628950134.png" alt="" loading="lazy"></figure>
+<p>对于消费队列，如下图有两个consumer消费队列A，这两个consumer连在了集群的不同机器上。RabbitMQ集群中的任何一个节点都拥有集群上所有队列的元信息，所以连接到集群中的任何一个节点都可以，主要区别在于有的consumer连在master queue所在节点，有的连在非master queue节点上。</p>
+<p>因为mirror queue要和master queue保持一致，故需要同步机制，正因为一致性的限制，导致所有的读写操作都必须都操作在master queue上（想想，为啥读也要从master queue中读？和数据库读写分离是不一样的），然后由master节点同步操作到mirror queue所在的节点。即使consumer连接到了非master queue节点，该consumer的操作也会被路由到master queue所在的节点上，这样才能进行消费。</p>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657628963515.png" alt="" loading="lazy"></figure>
+<p>对于生成队列，原理和消费一样，如果连接到非 master queue 节点，则路由过去。</p>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657628975743.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>所以，到这里小伙伴们就可以看到 RabbitMQ的不足：由于master queue单节点，导致性能瓶颈，吞吐量受限。虽然为了提高性能，内部使用了Erlang这个语言实现，但是终究摆脱不了架构设计上的致命缺陷。</p>
+</blockquote>
+<h2 id="25-高级特性">2.5 高级特性</h2>
+<h4 id="251-过期时间">2.5.1 过期时间</h4>
+<p>Time To Live，也就是生存时间，是一条消息在队列中的最大存活时间，单位是毫秒，下面看看RabbitMQ过期时间特性：</p>
+<ul>
+<li>RabbitMQ可以对消息和队列设置TTL。</li>
+<li>RabbitMQ支持设置消息的过期时间，在消息发送的时候可以进行指定，每条消息的过期时间可以不同。</li>
+<li>RabbitMQ支持设置队列的过期时间，从消息入队列开始计算，直到超过了队列的超时时间配置，那么消息会变成死信，自动清除。</li>
+<li>如果两种方式一起使用，则过期时间以两者中较小的那个数值为准。</li>
+<li>当然也可以不设置TTL，不设置表示消息不会过期；如果设置为0，则表示除非此时可以直接将消息投递到消费者，否则该消息将被立即丢弃。</li>
+</ul>
+<h4 id="252-消息确认">2.5.2 消息确认</h4>
+<p>为了保证消息从队列可靠地到达消费者，RabbitMQ提供了消息确认机制。</p>
+<p>消费者订阅队列的时候，可以指定autoAck参数，当autoAck为true的时候，RabbitMQ采用自动确认模式，RabbitMQ自动把发送出去的消息设置为确认，然后从内存或者硬盘中删除，而不管消费者是否真正消费到了这些消息。</p>
+<p>当autoAck为false的时候，RabbitMQ会等待消费者回复的确认信号，收到确认信号之后才从内存或者磁盘中删除消息。</p>
+<p>消息确认机制是RabbitMQ消息可靠性投递的基础，只要设置autoAck参数为false，消费者就有足够的时间处理消息，不用担心处理消息的过程中消费者进程挂掉后消息丢失的问题。</p>
+<h4 id="253-持久化">2.5.3 持久化</h4>
+<p>消息的可靠性是RabbitMQ的一大特色，那么RabbitMQ是如何保证消息可靠性的呢？答案就是消息持久化。持久化可以防止在异常情况下丢失数据。RabbitMQ的持久化分为三个部分：交换器持久化、队列持久化和消息的持久化。</p>
+<p>交换器持久化可以通过在声明队列时将durable参数设置为true。如果交换器不设置持久化，那么在RabbitMQ服务重启之后，相关的交换器元数据会丢失，不过消息不会丢失，只是不能将消息发送到这个交换器了。</p>
+<p>队列的持久化能保证其本身的元数据不会因异常情况而丢失，但是不能保证内部所存储的消息不会丢失。要确保消息不会丢失，需要将其设置为持久化。队列的持久化可以通过在声明队列时将durable参数设置为true。</p>
+<p>设置了队列和消息的持久化，当RabbitMQ服务重启之后，消息依然存在。如果只设置队列持久化或者消息持久化，重启之后消息都会消失。</p>
+<p>当然，也可以将所有的消息都设置为持久化，但是这样做会影响RabbitMQ的性能，因为磁盘的写入速度比内存的写入要慢得多。</p>
+<p>对于可靠性不是那么高的消息可以不采用持久化处理以提高整体的吞吐量。鱼和熊掌不可兼得，关键在于选择和取舍。在实际中，需要根据实际情况在可靠性和吞吐量之间做一个权衡。</p>
+<h4 id="254-死信队列">2.5.4 死信队列</h4>
+<p>当消息在一个队列中变成死信之后，他能被重新发送到另一个交换器中，这个交换器成为死信交换器，与该交换器绑定的队列称为死信队列。</p>
+<p>消息变成死信有下面几种情况：</p>
+<ul>
+<li>消息被拒绝。</li>
+<li>消息过期</li>
+<li>队列达到最大长度</li>
+</ul>
+<p>DLX也是一个正常的交换器，和一般的交换器没有区别，他能在任何的队列上面被指定，实际上就是设置某个队列的属性。当这个队列中有死信的时候，RabbitMQ会自动将这个消息重新发送到设置的交换器上，进而被路由到另一个队列，我们可以监听这个队列中消息做相应的处理。</p>
+<p>死信队列有什么用？当发生异常的时候，消息不能够被消费者正常消费，被加入到了死信队列中。后续的程序可以根据死信队列中的内容分析当时发生的异常，进而改善和优化系统。</p>
+<h4 id="255-延迟队列">2.5.5 延迟队列</h4>
+<p>一般的队列，消息一旦进入队列就会被消费者立即消费。延迟队列就是进入该队列的消息会被消费者延迟消费，延迟队列中存储的对象是的延迟消息，“延迟消息”是指当消息被发送以后，等待特定的时间后，消费者才能拿到这个消息进行消费。</p>
+<p>延迟队列用于需要延迟工作的场景。最常见的使用场景：淘宝或者天猫我们都使用过，用户在下单之后通常有30分钟的时间进行支付，如果这30分钟之内没有支付成功，那么订单就会自动取消。</p>
+<p>除了延迟消费，延迟队列的典型应用场景还有延迟重试。比如消费者从队列里面消费消息失败了，可以延迟一段时间以后进行重试。</p>
+<h2 id="26-特性分析">2.6 特性分析</h2>
+<p>这里才是内容的重点，不仅需要知道Rabbit的特性，还需要知道支持这些特性的原因：</p>
+<ul>
+<li><strong>消息路由（支持）</strong>：RabbitMQ可以通过不同的交换器支持不同种类的消息路由；</li>
+<li><strong>消息有序（不支持）</strong>：当消费消息时，如果消费失败，消息会被放回队列，然后重新消费，这样会导致消息无序；</li>
+<li><strong>消息时序（非常好）</strong>：通过延时队列，可以指定消息的延时时间，过期时间TTL等；</li>
+<li><strong>容错处理（非常好）</strong>：通过交付重试和死信交换器（DLX）来处理消息处理故障；</li>
+<li><strong>伸缩（一般）</strong>：伸缩其实没有非常智能，因为即使伸缩了，master queue还是只有一个，负载还是只有这一个master queue去抗，所以我理解RabbitMQ的伸缩很弱（个人理解）。</li>
+<li><strong>持久化（不太好）</strong>：没有消费的消息，可以支持持久化，这个是为了保证机器宕机时消息可以恢复，但是消费过的消息，就会被马上删除，因为RabbitMQ设计时，就不是为了去存储历史数据的。</li>
+<li><strong>消息回溯（不支持）</strong>：因为消息不支持永久保存，所以自然就不支持回溯。</li>
+<li><strong>高吞吐（中等）</strong>：因为所有的请求的执行，最后都是在master queue，它的这个设计，导致单机性能达不到十万级的标准。</li>
+</ul>
+<h1 id="3-rabbitmq环境搭建">3. RabbitMQ环境搭建</h1>
+<p>因为我用的是Mac，所以直接可以参考官网：</p>
+<blockquote>
+<p>https://www.rabbitmq.com/install-homebrew.html</p>
+</blockquote>
+<p>需要注意的是，一定需要先执行：</p>
+<pre><code class="language-shell">brew update
+</code></pre>
+<p>然后再执行：</p>
+<pre><code class="language-shell">brew install rabbitmq
+</code></pre>
+<blockquote>
+<p>之前没有执行brew update，直接执行brew install rabbitmq时，会报各种各样奇怪的错误，其中“403 Forbidde”居多。</p>
+</blockquote>
+<p>但是在执行“brew install rabbitmq”，会自动安装其它的程序，如果你使用源码安装Rabbitmq，因为启动该服务依赖erlang环境，所以你还需手动安装erlang，但是目前官方已经一键给你搞定，会自动安装Rabbitmq依赖的所有程序，是不是很棒！</p>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657628995936.png" alt="" loading="lazy"></figure>
+<p>最后执行成功的输出如下：</p>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657629007811.png" alt="" loading="lazy"></figure>
+<p>启动服务：</p>
+<pre><code class="language-shell"># 启动方式1：后台启动
+brew services start rabbitmq
+# 启动方式2：当前窗口启动
+cd /usr/local/Cellar/rabbitmq/3.8.19
+rabbitmq-server
+</code></pre>
+<p>在浏览器输入：</p>
+<pre><code class="language-java">http://localhost:15672/
+</code></pre>
+<p>会出现RabbitMQ后台管理界面（用户名和密码都为guest）：</p>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657629021755.png" alt="" loading="lazy"></figure>
+<p>通过brew安装，一行命令搞定，真香！</p>
+<h1 id="4-rabbitmq测试">4. RabbitMQ测试</h1>
+<h2 id="41-添加账号">4.1 添加账号</h2>
+<p>首先得启动mq</p>
+<pre><code class="language-java">## 添加账号
+./rabbitmqctl add_user admin admin
+## 添加访问权限
+./rabbitmqctl set_permissions -p &quot;/&quot; admin &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
+## 设置超级权限
+./rabbitmqctl set_user_tags admin administrator
+</code></pre>
+<h2 id="42-编码实测">4.2 编码实测</h2>
+<p>因为代码中引入了java 8的特性，pom引入依赖：</p>
+<pre><code class="language-java">&lt;dependency&gt;
+    &lt;groupId&gt;com.rabbitmq&lt;/groupId&gt;
+    &lt;artifactId&gt;amqp-client&lt;/artifactId&gt;
+    &lt;version&gt;5.5.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;plugins&gt;
+    &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+        &lt;configuration&gt;
+            &lt;source&gt;8&lt;/source&gt;
+            &lt;target&gt;8&lt;/target&gt;
+        &lt;/configuration&gt;
+    &lt;/plugin&gt;
+&lt;/plugins&gt;
+</code></pre>
+<p>开始写代码：</p>
+<pre><code class="language-java">public class RabbitMqTest {
+    //消息队列名称
+    private final static String QUEUE_NAME = &quot;hello&quot;;
+
+    @Test
+    public void send() throws java.io.IOException, TimeoutException {
+        //创建连接工程
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;127.0.0.1&quot;);
+        factory.setPort(5672);
+        factory.setUsername(&quot;admin&quot;);
+        factory.setPassword(&quot;admin&quot;);
+        //创建连接
+        Connection connection = factory.newConnection();
+        //创建消息通道
+        Channel channel = connection.createChannel();
+        //生成一个消息队列
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+
+        for (int i = 0; i &lt; 10; i++) {
+            String message = &quot;Hello World RabbitMQ count: &quot; + i;
+            //发布消息，第一个参数表示路由（Exchange名称），为&quot;&quot;则表示使用默认消息路由
+            channel.basicPublish(&quot;&quot;, QUEUE_NAME, null, message.getBytes());
+            System.out.println(&quot; [x] Sent '&quot; + message + &quot;'&quot;);
+        }
+        //关闭消息通道和连接
+        channel.close();
+        connection.close();
+    }
+
+    @Test
+    public void consumer() throws java.io.IOException, TimeoutException {
+        //创建连接工厂
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;127.0.0.1&quot;);
+        factory.setPort(5672);
+        factory.setUsername(&quot;admin&quot;);
+        factory.setPassword(&quot;admin&quot;);
+        //创建连接
+        Connection connection = factory.newConnection();
+        //创建消息信道
+        final Channel channel = connection.createChannel();
+        //消息队列
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        System.out.println(&quot;[*] Waiting for message. To exist press CTRL+C&quot;);
+
+        DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+            String message = new String(delivery.getBody(), &quot;UTF-8&quot;);
+            System.out.println(&quot; [x] Received '&quot; + message + &quot;'&quot;);
+        };
+        channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -&gt; {});
+    }
+}
+</code></pre>
+<p>执行send()后控制台输出：</p>
+<pre><code class="language-java">[x] Sent 'Hello World RabbitMQ count: 0'
+[x] Sent 'Hello World RabbitMQ count: 1'
+[x] Sent 'Hello World RabbitMQ count: 2'
+[x] Sent 'Hello World RabbitMQ count: 3'
+[x] Sent 'Hello World RabbitMQ count: 4'
+[x] Sent 'Hello World RabbitMQ count: 5'
+[x] Sent 'Hello World RabbitMQ count: 6'
+[x] Sent 'Hello World RabbitMQ count: 7'
+[x] Sent 'Hello World RabbitMQ count: 8'
+[x] Sent 'Hello World RabbitMQ count: 9'
+</code></pre>
+<figure data-type="image" tabindex="15"><img src="https://tinaxiawuhao.github.io/post-images/1657629041941.png" alt="" loading="lazy"></figure>
+<p>执行consumer()后：</p>
+<figure data-type="image" tabindex="16"><img src="https://tinaxiawuhao.github.io/post-images/1657629056060.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>示例中的代码讲解，可以直接参考官网：https://www.rabbitmq.com/tutorials/tutorial-one-java.html</p>
+</blockquote>
+<h1 id="5-基本使用姿势">5. 基本使用姿势</h1>
+<h2 id="51-公共代码封装">5.1 公共代码封装</h2>
+<p>封装工厂类：</p>
+<pre><code class="language-java">public class RabbitUtil {
+    public static ConnectionFactory getConnectionFactory() {
+        //创建连接工程，下面给出的是默认的case
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;127.0.0.1&quot;);
+        factory.setPort(5672);
+        factory.setUsername(&quot;admin&quot;);
+        factory.setPassword(&quot;admin&quot;);
+        factory.setVirtualHost(&quot;/&quot;);
+        return factory;
+    }
+}
+</code></pre>
+<p>封装生成者：</p>
+<pre><code class="language-java">public class MsgProducer {
+    public static void publishMsg(String exchange, BuiltinExchangeType exchangeType, String toutingKey, String message) throws IOException, TimeoutException {
+        ConnectionFactory factory = RabbitUtil.getConnectionFactory();
+        //创建连接
+        Connection connection = factory.newConnection();
+        //创建消息通道
+        Channel channel = connection.createChannel();
+        // 声明exchange中的消息为可持久化，不自动删除
+        channel.exchangeDeclare(exchange, exchangeType, true, false, null);
+        // 发布消息
+        channel.basicPublish(exchange, toutingKey, null, message.getBytes());
+        System.out.println(&quot;Sent '&quot; + message + &quot;'&quot;);
+        channel.close();
+        connection.close();
+    }
+}
+</code></pre>
+<p>封装消费者：</p>
+<pre><code class="language-java">public class MsgConsumer {
+    public static void consumerMsg(String exchange, String queue, String routingKey)
+            throws IOException, TimeoutException {
+        ConnectionFactory factory = RabbitUtil.getConnectionFactory();
+        //创建连接
+        Connection connection = factory.newConnection();
+        //创建消息信道
+        final Channel channel = connection.createChannel();
+        //消息队列
+        channel.queueDeclare(queue, true, false, false, null);
+        //绑定队列到交换机
+        channel.queueBind(queue, exchange, routingKey);
+        System.out.println(&quot;[*] Waiting for message. To exist press CTRL+C&quot;);
+
+        Consumer consumer = new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+                                       byte[] body) throws IOException {
+                String message = new String(body, &quot;UTF-8&quot;);
+                try {
+                    System.out.println(&quot; [x] Received '&quot; + message);
+                } finally {
+                    System.out.println(&quot; [x] Done&quot;);
+                    channel.basicAck(envelope.getDeliveryTag(), false);
+                }
+            }
+        };
+        // 取消自动ack
+        channel.basicConsume(queue, false, consumer);
+    }
+}
+</code></pre>
+<h2 id="52-direct方式">5.2 Direct方式</h2>
+<figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1657629073366.png" alt="" loading="lazy"></figure>
+<h4 id="521-direct示例">5.2.1 Direct示例</h4>
+<p>生产者：</p>
+<pre><code class="language-java">public class DirectProducer {
+    private static final String EXCHANGE_NAME = &quot;direct.exchange&quot;;
+    public void publishMsg(String routingKey, String msg) {
+        try {
+            MsgProducer.publishMsg(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, routingKey, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) throws InterruptedException {
+        DirectProducer directProducer = new DirectProducer();
+        String[] routingKey = new String[]{&quot;aaa&quot;, &quot;bbb&quot;, &quot;ccc&quot;};
+        String msg = &quot;hello &gt;&gt;&gt; &quot;;
+        for (int i = 0; i &lt; 10; i++) {
+            directProducer.publishMsg(routingKey[i % 3], msg + i);
+        }
+        System.out.println(&quot;----over-------&quot;);
+        Thread.sleep(1000 * 60 * 100);
+    }
+}
+</code></pre>
+<p>执行生产者，往消息队列中放入10条消息，其中key分别为“aaa”、“bbb”和“ccc”，分别放入qa、qb、qc三个队列：</p>
+<figure data-type="image" tabindex="18"><img src="https://tinaxiawuhao.github.io/post-images/1657629087994.png" alt="" loading="lazy"></figure>
+<p>下面是qa队列的信息：</p>
+<figure data-type="image" tabindex="19"><img src="https://tinaxiawuhao.github.io/post-images/1657629101075.png" alt="" loading="lazy"></figure>
+<p>消费者：</p>
+<pre><code class="language-java">public class DirectConsumer {
+    private static final String exchangeName = &quot;direct.exchange&quot;;
+    public void msgConsumer(String queueName, String routingKey) {
+        try {
+            MsgConsumer.consumerMsg(exchangeName, queueName, routingKey);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) throws InterruptedException {
+        DirectConsumer consumer = new DirectConsumer();
+        String[] routingKey = new String[]{&quot;aaa&quot;, &quot;bbb&quot;, &quot;ccc&quot;};
+        String[] queueNames = new String[]{&quot;qa&quot;, &quot;qb&quot;, &quot;qc&quot;};
+
+        for (int i = 0; i &lt; 3; i++) {
+            consumer.msgConsumer(queueNames[i], routingKey[i]);
+        }
+        Thread.sleep(1000 * 60 * 100);
+    }
+}
+</code></pre>
+<p>执行后的输出：</p>
+<pre><code class="language-java">[*] Waiting for message. To exist press CTRL+C
+ [x] Received 'hello &gt;&gt;&gt; 0
+ [x] Done
+ [x] Received 'hello &gt;&gt;&gt; 3
+ [x] Done
+ [x] Received 'hello &gt;&gt;&gt; 6
+ [x] Done
+ [x] Received 'hello &gt;&gt;&gt; 9
+ [x] Done
+[*] Waiting for message. To exist press CTRL+C
+ [x] Received 'hello &gt;&gt;&gt; 1
+ [x] Done
+ [x] Received 'hello &gt;&gt;&gt; 4
+ [x] Done
+ [x] Received 'hello &gt;&gt;&gt; 7
+ [x] Done
+[*] Waiting for message. To exist press CTRL+C
+ [x] Received 'hello &gt;&gt;&gt; 2
+ [x] Done
+ [x] Received 'hello &gt;&gt;&gt; 5
+ [x] Done
+ [x] Received 'hello &gt;&gt;&gt; 8
+ [x] Done
+</code></pre>
+<p>可以看到，分别从qa、qb、qc中将不同的key的数据消费掉。</p>
+<h4 id="522-问题探讨">5.2.2 问题探讨</h4>
+<blockquote>
+<p>有个疑问：这个队列的名称qa、qb和qc是RabbitMQ自动生成的么，我们可以指定队列名称么？</p>
+</blockquote>
+<p>我做了个简单的实验，我把消费者代码修改了一下：</p>
+<pre><code class="language-java">public static void main(String[] args) throws InterruptedException {
+    DirectConsumer consumer = new DirectConsumer();
+    String[] routingKey = new String[]{&quot;aaa&quot;, &quot;bbb&quot;, &quot;ccc&quot;};
+    String[] queueNames = new String[]{&quot;qa&quot;, &quot;qb&quot;, &quot;qc1&quot;}; // 将qc修改为qc1
+
+    for (int i = 0; i &lt; 3; i++) {
+        consumer.msgConsumer(queueNames[i], routingKey[i]);
+    }
+    Thread.sleep(1000 * 60 * 100);
+}
+</code></pre>
+<p>执行后如下图所示：</p>
+<figure data-type="image" tabindex="20"><img src="https://tinaxiawuhao.github.io/post-images/1657629118045.png" alt="" loading="lazy"></figure>
+<p>我们可以发现，多了一个qc1，所以可以判断这个界面中的queues，是消费者执行时，会将消费者指定的队列名称和direct.exchange绑定，绑定的依据就是key。</p>
+<p>当我们把队列中的数据全部消费掉，然后重新执行生成者后，会发现qc和qc1中都有3条待消费的数据，因为绑定的key都是“ccc”，所以两者的数据是一样的：</p>
+<figure data-type="image" tabindex="21"><img src="https://tinaxiawuhao.github.io/post-images/1657629135755.png" alt="" loading="lazy"></figure>
+<p>绑定关系如下：</p>
+<figure data-type="image" tabindex="22"><img src="https://tinaxiawuhao.github.io/post-images/1657629148741.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>注意：当没有Queue绑定到Exchange时，往Exchange中写入的消息也不会重新分发到之后绑定的queue上。</p>
+</blockquote>
+<blockquote>
+<p>思考：不执行消费者，看不到这个Queres中信息，我其实可以把这个界面理解为消费者信息界面。不过感觉还是怪怪的，这个queues如果是消费者信息，就不应该叫queues，我理解queues应该是RabbitMQ中实际存放数据的queues，难道是我理解错了？</p>
+</blockquote>
+<h2 id="53-fanout方式指定队列">5.3 Fanout方式（指定队列）</h2>
+<figure data-type="image" tabindex="23"><img src="https://tinaxiawuhao.github.io/post-images/1657629161615.png" alt="" loading="lazy"></figure>
+<p>生产者封装：</p>
+<pre><code class="language-java">public class FanoutProducer {
+    private static final String EXCHANGE_NAME = &quot;fanout.exchange&quot;;
+    public void publishMsg(String routingKey, String msg) {
+        try {
+            MsgProducer.publishMsg(EXCHANGE_NAME, BuiltinExchangeType.FANOUT, routingKey, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        FanoutProducer directProducer = new FanoutProducer();
+        String msg = &quot;hello &gt;&gt;&gt; &quot;;
+        for (int i = 0; i &lt; 10; i++) {
+            directProducer.publishMsg(&quot;&quot;, msg + i);
+        }
+    }
+}
+</code></pre>
+<p>消费者：</p>
+<pre><code class="language-java">public class FanoutConsumer {
+    private static final String EXCHANGE_NAME = &quot;fanout.exchange&quot;;
+    public void msgConsumer(String queueName, String routingKey) {
+        try {
+            MsgConsumer.consumerMsg(EXCHANGE_NAME, queueName, routingKey);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        FanoutConsumer consumer = new FanoutConsumer();
+        String[] queueNames = new String[]{&quot;qa-2&quot;, &quot;qb-2&quot;, &quot;qc-2&quot;};
+        for (int i = 0; i &lt; 3; i++) {
+            consumer.msgConsumer(queueNames[i], &quot;&quot;);
+        }
+    }
+}
+</code></pre>
+<p>执行生成者，结果如下：</p>
+<figure data-type="image" tabindex="24"><img src="https://tinaxiawuhao.github.io/post-images/1657629177410.png" alt="" loading="lazy"></figure>
+<p>我们发现，生产者生产的10条数据，在每个消费者中都可以消费，这个是和Direct不同的地方，但是使用Fanout方式时，有几个点需要注意一下：</p>
+<ul>
+<li>生产者的routkey可以为空，因为生产者的所有数据，会下放到每一个队列，所以不会通过routkey去路由；</li>
+<li>消费者需要指定queues，因为消费者需要绑定到指定的queues才能消费。</li>
+</ul>
+<figure data-type="image" tabindex="25"><img src="https://tinaxiawuhao.github.io/post-images/1657629197886.png" alt="" loading="lazy"></figure>
+<p>这幅图就画出了Fanout的精髓之处，exchange会和所有的queue进行绑定，不区分路由，消费者需要绑定指定的queue才能发起消费。</p>
+<blockquote>
+<p>注意：往队列塞数据时，可能通过界面看不到消息个数的增加，可能是你之前已经开启了消费进程，导致增加的消息马上被消费了。</p>
+</blockquote>
+<h2 id="54-fanout方式随机获取队列">5.4 Fanout方式（随机获取队列）</h2>
+<p>上面我们是指定了队列，这个方式其实很不友好，比如对于Fanout，我其实根本无需关心队列的名字，如果还指定对应队列进行消费，感觉这个很冗余，所以我们这里就采用随机获取队列名字的方式，下面代码直接Copy官网。</p>
+<p>生成者封装：</p>
+<pre><code class="language-java">public static void publishMsgV2(String exchange, BuiltinExchangeType exchangeType, String message) throws IOException, TimeoutException {
+    ConnectionFactory factory = RabbitUtil.getConnectionFactory();
+    //创建连接
+    Connection connection = factory.newConnection();
+    //创建消息通道
+    Channel channel = connection.createChannel();
+
+    // 声明exchange中的消息
+    channel.exchangeDeclare(exchange, exchangeType);
+
+    // 发布消息
+    channel.basicPublish(exchange, &quot;&quot;, null, message.getBytes(&quot;UTF-8&quot;));
+
+    System.out.println(&quot;Sent '&quot; + message + &quot;'&quot;);
+    channel.close();
+    connection.close();
+}
+</code></pre>
+<p>消费者封装：</p>
+<pre><code class="language-java">public static void consumerMsgV2(String exchange) throws IOException, TimeoutException {
+    ConnectionFactory factory = RabbitUtil.getConnectionFactory();
+    Connection connection = factory.newConnection();
+    final Channel channel = connection.createChannel();
+
+    channel.exchangeDeclare(exchange, &quot;fanout&quot;);
+    String queueName = channel.queueDeclare().getQueue();
+    channel.queueBind(queueName, exchange, &quot;&quot;);
+
+    System.out.println(&quot; [*] Waiting for messages. To exit press CTRL+C&quot;);
+
+    DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+        String message = new String(delivery.getBody(), &quot;UTF-8&quot;);
+        System.out.println(&quot; [x] Received '&quot; + message + &quot;'&quot;);
+    };
+    channel.basicConsume(queueName, true, deliverCallback, consumerTag -&gt; { });
+}
+</code></pre>
+<p>生产者：</p>
+<pre><code class="language-java">public class FanoutProducer {
+    private static final String EXCHANGE_NAME = &quot;fanout.exchange.v2&quot;;
+    public void publishMsg(String msg) {
+        try {
+            MsgProducer.publishMsgV2(EXCHANGE_NAME, BuiltinExchangeType.FANOUT, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        FanoutProducer directProducer = new FanoutProducer();
+        String msg = &quot;hello &gt;&gt;&gt; &quot;;
+        for (int i = 0; i &lt; 10000; i++) {
+            directProducer.publishMsg(msg + i);
+        }
+    }
+}
+</code></pre>
+<p>消费者：</p>
+<pre><code class="language-java">public class FanoutConsumer {
+    private static final String EXCHANGE_NAME = &quot;fanout.exchange.v2&quot;;
+    public void msgConsumer() {
+        try {
+            MsgConsumer.consumerMsgV2(EXCHANGE_NAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        FanoutConsumer consumer = new FanoutConsumer();
+        for (int i = 0; i &lt; 3; i++) {
+            consumer.msgConsumer();
+        }
+    }
+}
+</code></pre>
+<p>执行后，管理界面如下：</p>
+<figure data-type="image" tabindex="26"><img src="https://tinaxiawuhao.github.io/post-images/1657629216023.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="27"><img src="https://tinaxiawuhao.github.io/post-images/1657629228908.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="28"><img src="https://tinaxiawuhao.github.io/post-images/1657629242632.png" alt="" loading="lazy"></figure>
+<h2 id="55-topic方式">5.5 Topic方式</h2>
+<figure data-type="image" tabindex="29"><img src="https://tinaxiawuhao.github.io/post-images/1657629257404.png" alt="" loading="lazy"></figure>
+<p>代码详见官网：https://www.rabbitmq.com/tutorials/tutorial-five-java.html</p>
+<blockquote>
+<p>更多方式，请直接查看官网：https://www.rabbitmq.com/getstarted.html</p>
+</blockquote>
+<figure data-type="image" tabindex="30"><img src="https://tinaxiawuhao.github.io/post-images/1657629270305.png" alt="" loading="lazy"></figure>
+<h1 id="6-rabbitmq-进阶">6. RabbitMQ 进阶</h1>
+<h2 id="61-durable-和-autodeleted">6.1 durable 和 autoDeleted</h2>
+<p>在定义Queue时，可以指定这两个参数：</p>
+<pre><code class="language-java">/**
+ * Declare an exchange.
+ * @see com.rabbitmq.client.AMQP.Exchange.Declare
+ * @see com.rabbitmq.client.AMQP.Exchange.DeclareOk
+ * @param exchange the name of the exchange
+ * @param type the exchange type
+ * @param durable true if we are declaring a durable exchange (the exchange will survive a server restart)
+ * @param autoDelete true if the server should delete the exchange when it is no longer in use
+ * @param arguments other properties (construction arguments) for the exchange
+ * @return a declaration-confirm method to indicate the exchange was successfully declared
+ * @throws java.io.IOException if an error is encountered
+ */
+Exchange.DeclareOk exchangeDeclare(String exchange, BuiltinExchangeType type, boolean durable, boolean autoDelete,
+    Map&lt;String, Object&gt; arguments) throws IOException;
+    
+/**
+* Declare a queue
+* @see com.rabbitmq.client.AMQP.Queue.Declare
+* @see com.rabbitmq.client.AMQP.Queue.DeclareOk
+* @param queue the name of the queue
+* @param durable true if we are declaring a durable queue (the queue will survive a server restart)
+* @param exclusive true if we are declaring an exclusive queue (restricted to this connection)
+* @param autoDelete true if we are declaring an autodelete queue (server will delete it when no longer in use)
+* @param arguments other properties (construction arguments) for the queue
+* @return a declaration-confirm method to indicate the queue was successfully declared
+* @throws java.io.IOException if an error is encountered
+*/
+Queue.DeclareOk queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,
+    Map&lt;String, Object&gt; arguments) throws IOException;
+</code></pre>
+<h4 id="611-durable">6.1.1 durable</h4>
+<p>持久化，保证RabbitMQ在退出或者crash等异常情况下数据没有丢失，需要将queue，exchange和Message都持久化。</p>
+<p>若是将queue的持久化标识durable设置为true，则代表是一个持久的队列，那么在服务重启之后，会重新读取之前被持久化的queue。</p>
+<p>虽然队列可以被持久化，但是里面的消息是否为持久化，还要看消息的持久化设置。即重启queue，但是queue里面还没有发出去的消息，那队列里面还存在该消息么？这个取决于该消息的设置。</p>
+<h4 id="612-autodeleted">6.1.2 autoDeleted</h4>
+<p>自动删除，如果该队列没有任何订阅的消费者的话，该队列会被自动删除。这种队列适用于临时队列。</p>
+<p>当一个Queue被设置为自动删除时，当消费者断掉之后，queue会被删除，这个主要针对的是一些不是特别重要的数据，不希望出现消息积累的情况。</p>
+<h4 id="613-小节">6.1.3 小节</h4>
+<ul>
+<li>当一个Queue已经声明好了之后，不能更新durable或者autoDelted值；当需要修改时，需要先删除再重新声明</li>
+<li>消费的Queue声明应该和投递的Queue声明的 durable,autoDelted属性一致，否则会报错</li>
+<li>对于重要的数据，一般设置 durable=true, autoDeleted=false</li>
+<li>对于设置 autoDeleted=true 的队列，当没有消费者之后，队列会自动被删除</li>
+</ul>
+<h2 id="64-ack">6.4 ACK</h2>
+<p>执行一个任务可能需要花费几秒钟，你可能会担心如果一个消费者在执行任务过程中挂掉了。一旦RabbitMQ将消息分发给了消费者，就会从内存中删除。在这种情况下，如果正在执行任务的消费者宕机，会丢失正在处理的消息和分发给这个消费者但尚未处理的消息。</p>
+<p>但是，我们不想丢失任何任务，如果有一个消费者挂掉了，那么我们应该将分发给它的任务交付给另一个消费者去处理。</p>
+<p>为了确保消息不会丢失，RabbitMQ支持消息应答。消费者发送一个消息应答，告诉RabbitMQ这个消息已经接收并且处理完毕了。RabbitMQ就可以删除它了。</p>
+<p>因此手动ACK的常见手段：</p>
+<pre><code class="language-java">// 接收消息之后，主动ack/nak
+Consumer consumer = new DefaultConsumer(channel) {
+    @Override
+    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+            byte[] body) throws IOException {
+        String message = new String(body, &quot;UTF-8&quot;);
+        try {
+            System.out.println(&quot; [ &quot; + queue + &quot; ] Received '&quot; + message);
+            channel.basicAck(envelope.getDeliveryTag(), false);
+        } catch (Exception e) {
+            channel.basicNack(envelope.getDeliveryTag(), false, true);
+        }
+    }
+};
+// 取消自动ack
+channel.basicConsume(queue, false, consumer);
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[ExecutorCompletionService]]></title>
         <id>https://tinaxiawuhao.github.io/post/wT9gsiZx3/</id>
         <link href="https://tinaxiawuhao.github.io/post/wT9gsiZx3/">
@@ -8452,6 +9830,198 @@ ExecutorCompletionService的实际用法应该是这样的：CompletionService�
 submit.get();//直接获取返回值
 </code></pre>
 <p>如上如果我们在使用过程中由于需要的是当前线程任务的返回值，所以没有调用take方法，而是通过get方法获取到当前线程调用的返回值，会导致task任务在队列中一直增加，从而造成OOM</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[消息队列选型]]></title>
+        <id>https://tinaxiawuhao.github.io/post/DyzAzkEVU/</id>
+        <link href="https://tinaxiawuhao.github.io/post/DyzAzkEVU/">
+        </link>
+        <updated>2022-03-15T11:56:34.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="消息队列">消息队列</h3>
+<p>常用的消息队列主要这 4 种，分别为 Kafka、RabbitMQ、RocketMQ 和 ActiveMQ，主要介绍前三，不BB，上思维导图！</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657627504417.png" alt="" loading="lazy"></figure>
+<h3 id="消息队列基础">消息队列基础</h3>
+<h4 id="什么是消息队列">什么是消息队列？</h4>
+<p>消息队列是在消息的传输过程中保存消息的容器，用于接收消息并以文件的方式存储，一个消息队列可以被一个也可以被多个消费者消费，包含以下 3 元素：</p>
+<ul>
+<li>Producer：消息生产者，负责产生和发送消息到 Broker；</li>
+<li>Broker：消息处理中心，负责消息存储、确认、重试等，一般其中会包含多个 Queue；</li>
+<li>Consumer：消息消费者，负责从 Broker 中获取消息，并进行相应处理。</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657627512680.png" alt="" loading="lazy"></figure>
+<h4 id="消息队列模式">消息队列模式</h4>
+<ul>
+<li>点对点模式：多个生产者可以向同一个消息队列发送消息，一个具体的消息只能由一个消费者消费。</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657627520099.png" alt="" loading="lazy"></figure>
+<ul>
+<li>发布/订阅模式：单个消息可以被多个订阅者并发的获取和处理。</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657627527080.png" alt="" loading="lazy"></figure>
+<h4 id="消息队列应用场景">消息队列应用场景</h4>
+<ul>
+<li><strong>应用解耦</strong>：消息队列减少了服务之间的耦合性，不同的服务可以通过消息队列进行通信，而不用关心彼此的实现细节。</li>
+<li><strong>异步处理</strong>：消息队列本身是异步的，它允许接收者在消息发送很长时间后再取回消息。</li>
+<li><strong>流量削锋</strong>：当上下游系统处理能力存在差距的时候，利用消息队列做一个通用的”载体”，在下游有能力处理的时候，再进行分发与处理。</li>
+<li><strong>日志处理</strong>：日志处理是指将消息队列用在日志处理中，比如 Kafka 的应用，解决大量日志传输的问题。</li>
+<li><strong>消息通讯</strong>：消息队列一般都内置了高效的通信机制，因此也可以用在纯的消息通讯，比如实现点对点消息队列，或者聊天室等。</li>
+<li><strong>消息广播</strong>：如果没有消息队列，每当一个新的业务方接入，我们都要接入一次新接口。有了消息队列，我们只需要关心消息是否送达了队列，至于谁希望订阅，是下游的事情，无疑极大地减少了开发和联调的工作量。</li>
+</ul>
+<h3 id="常用消息队列">常用消息队列</h3>
+<p>由于官方社区现在对 ActiveMQ 5.x 维护越来越少，较少在大规模吞吐的场景中使用，所以我们主要讲解 Kafka、RabbitMQ 和 RocketMQ。</p>
+<h4 id="kafka">Kafka</h4>
+<p>Apache Kafka 最初由 LinkedIn 公司基于独特的设计实现为一个分布式的提交日志系统，之后成为 Apache 项目的一部分，<strong>号称大数据的杀手锏，在数据采集、传输、存储的过程中发挥着举足轻重的作用。</strong></p>
+<p><strong>它是一个分布式的，支持多分区、多副本，基于 Zookeeper 的分布式消息流平台</strong>，它同时也是一款开源的基于发布订阅模式的消息引擎系统。</p>
+<h5 id="重要概念">重要概念</h5>
+<ul>
+<li><strong>主题（Topic）</strong>：消息的种类称为主题，可以说一个主题代表了一类消息，相当于是对消息进行分类，主题就像是数据库中的表。</li>
+<li><strong>分区（partition）</strong>：主题可以被分为若干个分区，同一个主题中的分区可以不在一个机器上，有可能会部署在多个机器上，由此来实现 kafka 的伸缩性。</li>
+<li><strong>批次</strong>：为了提高效率， 消息会分批次写入 Kafka，批次就代指的是一组消息。</li>
+<li><strong>消费者群组（Consumer Group）</strong>：消费者群组指的就是由一个或多个消费者组成的群体。</li>
+<li><strong>Broker</strong>: 一个独立的 Kafka 服务器就被称为 broker，broker 接收来自生产者的消息，为消息设置偏移量，并提交消息到磁盘保存。</li>
+<li><strong>Broker 集群</strong>：broker 集群由一个或多个 broker 组成。</li>
+<li><strong>重平衡（Rebalance）</strong>：消费者组内某个消费者实例挂掉后，其他消费者实例自动重新分配订阅主题分区的过程。</li>
+</ul>
+<h5 id="kafka-架构">Kafka 架构</h5>
+<p>一个典型的 Kafka 集群中包含 Producer、broker、Consumer Group、Zookeeper 集群。</p>
+<p>Kafka 通过 Zookeeper 管理集群配置，选举 leader，以及在 Consumer Group 发生变化时进行 rebalance。Producer 使用 push 模式将消息发布到 broker，Consumer 使用 pull 模式从 broker 订阅并消费消息。</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657627597961.png" alt="" loading="lazy"></figure>
+<h5 id="kafka-工作原理">Kafka 工作原理</h5>
+<p>消息经过序列化后，通过不同的分区策略，找到对应的分区。</p>
+<p><strong>相同主题和分区的消息，会被存放在同一个批次里</strong>，然后由一个独立的线程负责把它们发到 Kafka Broker 上。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657627604741.png" alt="" loading="lazy"></figure>
+<p>分区的策略包括顺序轮询、随机轮询和 key hash 这 3 种方式，那什么是分区呢？</p>
+<p>分区是 Kafka 读写数据的最小粒度，比如主题 A 有 15 条消息，有 5 个分区，如果采用顺序轮询的方式，15 条消息会顺序分配给这 5 个分区，后续消费的时候，也是按照分区粒度消费。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657627611867.png" alt="" loading="lazy"></figure>
+<p>由于分区可以部署在多个不同的机器上，所以可以通过分区实现 Kafka 的伸缩性，比如主题 A 的 5 个分区，分别部署在 5 台机器上，如果下线一台，分区就变为 4。</p>
+<p>Kafka 消费是通过消费群组完成，同一个消费者群组，<strong>一个消费者可以消费多个分区，但是一个分区，只能被一个消费者消费。</strong></p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657627618721.png" alt="" loading="lazy"></figure>
+<p><strong>如果消费者增加，会触发 Rebalance，也就是分区和消费者需要重新配对</strong>。</p>
+<p><strong>不同的消费群组互不干涉</strong>，比如下图的 2 个消费群组，可以分别消费这 4 个分区的消息，互不影响。</p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657627625216.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>更多知识，详见<a href="https://tinaxiawuhao.github.io/post/KM-0yw6ab/">Kafka 架构深入</a></p>
+</blockquote>
+<h4 id="rocketmq">RocketMQ</h4>
+<p>RocketMQ 是阿里开源的消息中间件，它是纯 Java 开发，<strong>具有高性能、高可靠、高实时、适合大规模分布式系统应用的特点。</strong></p>
+<p>RocketMQ 思路起源于 Kafka，但并不是 Kafka 的一个 Copy，<strong>它对消息的可靠传输及事务性做了优化</strong>，目前在阿里集团被广泛应用于交易、充值、流计算、消息推送、日志流式处理、binlog 分发等场景。</p>
+<h5 id="重要概念-2">重要概念</h5>
+<ul>
+<li><strong>Name 服务器（NameServer）</strong>：充当注册中心，类似 Kafka 中的 Zookeeper。</li>
+<li><strong>Broker</strong>: 一个独立的 RocketMQ 服务器就被称为 broker，broker 接收来自生产者的消息，为消息设置偏移量。</li>
+<li><strong>主题（Topic）</strong>：消息的第一级类型，一条消息必须有一个 Topic。</li>
+<li><strong>子主题（Tag）</strong>：消息的第二级类型，同一业务模块不同目的的消息就可以用相同 Topic 和不同的 Tag 来标识。</li>
+<li><strong>分组（Group）</strong>：一个组可以订阅多个 Topic，包括生产者组（Producer Group）和消费者组（Consumer Group）。</li>
+<li><strong>队列（Queue）</strong>：可以类比 Kafka 的分区 Partition。</li>
+</ul>
+<h5 id="rocketmq-工作原理">RocketMQ 工作原理</h5>
+<p>RockerMQ 中的消息模型就是按照主题模型所实现的，包括 Producer Group、Topic、Consumer Group 三个角色。</p>
+<p><strong>为了提高并发能力，一个 Topic 包含多个 Queue</strong>，生产者组根据主题将消息放入对应的 Topic，下图是采用轮询的方式找到里面的 Queue。</p>
+<p>RockerMQ 中的消费群组和 Queue，可以类比 Kafka 中的消费群组和 Partition：<strong>不同的消费者组互不干扰，一个 Queue 只能被一个消费者消费，一个消费者可以消费多个 Queue。</strong></p>
+<p>消费 Queue 的过程中，通过偏移量记录消费的位置。</p>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657627636503.png" alt="" loading="lazy"></figure>
+<h5 id="rocketmq-架构">RocketMQ 架构</h5>
+<p>RocketMQ 技术架构中有四大角色 NameServer、Broker、Producer 和 Consumer，下面主要介绍 Broker。</p>
+<p><strong>Broker 用于存放 Queue，一个 Broker 可以配置多个 Topic，一个 Topic 中存在多个 Queue。</strong></p>
+<p>如果某个 Topic 消息量很大，应该给它多配置几个 Queue，并且尽量多分布在不同 broker 上，以减轻某个 broker 的压力。Topic 消息量都比较均匀的情况下，如果某个 broker 上的队列越多，则该 broker 压力越大。</p>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657627647064.png" alt="" loading="lazy"></figure>
+<p>简单提一下，Broker 通过集群部署，并且提供了 master/slave 的结构，slave 定时从 master 同步数据（同步刷盘或者异步刷盘），如果 master 宕机，则 slave 提供消费服务，但是不能写入消息。</p>
+<p>看到这里，大家应该可以发现，RocketMQ 的设计和 Kafka 真的很像！</p>
+<blockquote>
+<p>更多知识，详见</p>
+</blockquote>
+<h4 id="rabbitmq">RabbitMQ</h4>
+<p>RabbitMQ 2007 年发布，是使用 Erlang 语言开发的开源消息队列系统，基于 AMQP 协议来实现。</p>
+<p>AMQP 的主要特征是面向消息、队列、路由、可靠性、安全。<strong>AMQP 协议更多用在企业系统内，对数据一致性、稳定性和可靠性要求很高的场景，对性能和吞吐量的要求还在其次。</strong></p>
+<h5 id="重要概念-3">重要概念</h5>
+<ul>
+<li><strong>信道（Channel）</strong>：消息读写等操作在信道中进行，客户端可以建立多个信道，每个信道代表一个会话任务。</li>
+<li><strong>交换器（Exchange）</strong>：接收消息，按照路由规则将消息路由到一个或者多个队列；如果路由不到，或者返回给生产者，或者直接丢弃。</li>
+<li><strong>路由键（RoutingKey）</strong>：生产者将消息发送给交换器的时候，会发送一个 RoutingKey，用来指定路由规则，这样交换器就知道把消息发送到哪个队列。</li>
+<li><strong>绑定（Binding）</strong>：交换器和消息队列之间的虚拟连接，绑定中可以包含一个或者多个 RoutingKey。</li>
+</ul>
+<h5 id="rabbitmq-工作原理">RabbitMQ 工作原理</h5>
+<p>AMQP 协议模型由三部分组成：生产者、消费者和服务端，执行流程如下：</p>
+<ol>
+<li>生产者是连接到 Server，建立一个连接，开启一个信道。</li>
+<li>生产者声明交换器和队列，设置相关属性，并通过路由键将交换器和队列进行绑定。</li>
+<li>消费者也需要进行建立连接，开启信道等操作，便于接收消息。</li>
+<li>生产者发送消息，发送到服务端中的虚拟主机。</li>
+<li>虚拟主机中的交换器根据路由键选择路由规则，发送到不同的消息队列中。</li>
+<li>订阅了消息队列的消费者就可以获取到消息，进行消费。</li>
+</ol>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657627658105.png" alt="" loading="lazy"></figure>
+<h5 id="常用交换器">常用交换器</h5>
+<p>RabbitMQ 常用的交换器类型有 direct、topic、fanout、headers 四种</p>
+<p>具体的使用方法，可以参考官网：</p>
+<ul>
+<li>官网入口：https://www.rabbitmq.com/getstarted.html</li>
+</ul>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657627665439.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657627671336.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>更多知识，详见</p>
+</blockquote>
+<h3 id="消息队列对比选型">消息队列对比&amp;选型</h3>
+<figure data-type="image" tabindex="15"><img src="https://tinaxiawuhao.github.io/post-images/1657627677983.png" alt="" loading="lazy"></figure>
+<h4 id="消息队列对比">消息队列对比</h4>
+<h5 id="kafka-2">Kafka</h5>
+<p><strong>优点：</strong></p>
+<ul>
+<li><strong>高吞吐、低延迟</strong>：Kafka 最大的特点就是收发消息非常快，Kafka 每秒可以处理几十万条消息，它的最低延迟只有几毫秒；</li>
+<li><strong>高伸缩性</strong>：每个主题（topic）包含多个分区（partition），主题中的分区可以分布在不同的主机（broker）中；</li>
+<li><strong>高稳定性</strong>：Kafka 是分布式的，一个数据多个副本，某个节点宕机，Kafka 集群能够正常工作；</li>
+<li><strong>持久性、可靠性、可回溯</strong>：Kafka 能够允许数据的持久化存储，消息被持久化到磁盘，并支持数据备份防止数据丢失，支持消息回溯；</li>
+<li>消息有序：通过控制能够保证所有消息被消费且仅被消费一次；</li>
+<li>有优秀的第三方 Kafka Web 管理界面 Kafka-Manager，在日志领域比较成熟，被多家公司和多个开源项目使用。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>Kafka 单机超过 64 个队列/分区，Load 会发生明显的飙高现象，队列越多，load 越高，发送消息响应时间变长；</li>
+<li><strong>不支持消息路由，不支持延迟发送，不支持消息重试；</strong></li>
+<li><strong>社区更新较慢。</strong></li>
+</ul>
+<h5 id="rocketmq-2">RocketMQ</h5>
+<p><strong>优点：</strong></p>
+<ul>
+<li><strong>高吞吐</strong>：借鉴 Kafka 的设计，单一队列百万消息的堆积能力；</li>
+<li><strong>高伸缩性</strong>：灵活的分布式横向扩展部署架构，整体架构其实和 kafka 很像；</li>
+<li><strong>高容错性</strong>：通过ACK机制，保证消息一定能正常消费；</li>
+<li><strong>持久化、可回溯</strong>：消息可以持久化到磁盘中，支持消息回溯；</li>
+<li>消息有序：在一个队列中可靠的先进先出（FIFO）和严格的顺序传递；</li>
+<li>支持发布/订阅和点对点消息模型，支持拉、推两种消息模式；</li>
+<li>提供 docker 镜像用于隔离测试和云集群部署，提供配置、指标和监控等功能丰富的 Dashboard。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>不支持消息路由，<strong>支持的客户端语言不多，目前是 java 及 c++，其中 c++ 不成熟</strong>；</li>
+<li>部分支持消息有序：需要将同一类的消息 hash 到同一个队列 Queue 中，才能支持消息的顺序，如果同一类消息散落到不同的 Queue中，就不能支持消息的顺序。</li>
+<li><strong>社区活跃度一般。</strong></li>
+</ul>
+<h5 id="rabbitmq-2">RabbitMQ</h5>
+<p><strong>优点：</strong></p>
+<ul>
+<li><strong>支持几乎所有最受欢迎的编程语言</strong>：Java，C，C ++，C＃，Ruby，Perl，Python，PHP等等；</li>
+<li><strong>支持消息路由</strong>：RabbitMQ 可以通过不同的交换器支持不同种类的消息路由；</li>
+<li><strong>消息时序</strong>：通过延时队列，可以指定消息的延时时间，过期时间TTL等；</li>
+<li>支持容错处理：通过交付重试和死信交换器（DLX）来处理消息处理故障；</li>
+<li>提供了一个易用的用户界面，使得用户可以监控和管理消息 Broker；</li>
+<li><strong>社区活跃度高。</strong></li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>Erlang 开发，很难去看懂源码，不利于做二次开发和维护</strong>，基本只能依赖于开源社区的快速维护和修复 bug；</li>
+<li><strong>RabbitMQ 吞吐量会低一些</strong>，这是因为他做的实现机制比较重；</li>
+<li>不支持消息有序、持久化不好、不支持消息回溯、伸缩性一般。</li>
+</ul>
+<h4 id="消息队列选型">消息队列选型</h4>
+<ul>
+<li>Kafka：追求高吞吐量，一开始的目的就是用于日志收集和传输，<strong>适合产生大量数据的互联网服务的数据收集业务</strong>，大型公司建议可以选用，<strong>如果有日志采集功能，肯定是首选 kafka。</strong></li>
+<li>RocketMQ：<strong>天生为金融互联网领域而生，对于可靠性要求很高的场景</strong>，尤其是电商里面的订单扣款，以及业务削峰，在大量交易涌入时，后端可能无法及时处理的情况。RocketMQ 在稳定性上可能更值得信赖，这些业务场景在阿里双 11 已经经历了多次考验，<strong>如果你的业务有上述并发场景，建议可以选择 RocketMQ。</strong></li>
+<li>RabbitMQ：结合 erlang 语言本身的并发优势，性能较好，社区活跃度也比较高，但是不利于做二次开发和维护，不过 RabbitMQ 的社区十分活跃，可以解决开发过程中遇到的 bug。<strong>如果你的数据量没有那么大，小公司优先选择功能比较完备的 RabbitMQ。</strong></li>
+<li>ActiveMQ：官方社区现在对 ActiveMQ 5.x 维护越来越少，<strong>较少在大规模吞吐的场景中使用。</strong></li>
+</ul>
 ]]></content>
     </entry>
     <entry>
@@ -31448,1492 +33018,6 @@ while ((len = reader.read(cbuf)) != -1) {
      }
 }
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[java基础之一lambda]]></title>
-        <id>https://tinaxiawuhao.github.io/post/7BfPpY68W/</id>
-        <link href="https://tinaxiawuhao.github.io/post/7BfPpY68W/">
-        </link>
-        <updated>2021-05-07T08:14:58.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="一-引言">一、引言</h3>
-<p>java8最大的特性就是引入Lambda表达式，即函数式编程，可以将行为进行传递。<strong>总结就是：使用不可变值与函数，函数对不可变值进行处理，映射成另一个值。</strong></p>
-<h3 id="二-java重要的函数式接口">二、java重要的函数式接口</h3>
-<h4 id="1-什么是函数式接口">1、什么是函数式接口</h4>
-<p><strong>函数接口是只有一个抽象方法的接口，用作 Lambda 表达式的类型。使用@FunctionalInterface注解修饰的类，编译器会检测该类是否只有一个抽象方法或接口，否则，会报错。可以有多个默认方法，静态方法。</strong></p>
-<h5 id="11-java8自带的常用函数式接口">1.1 java8自带的常用函数式接口。</h5>
-<table>
-<thead>
-<tr>
-<th>函数接口</th>
-<th>抽象方法</th>
-<th>功能</th>
-<th>参数</th>
-<th>返回类型</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Predicate</td>
-<td>test(T t)</td>
-<td>判断真假</td>
-<td>T</td>
-<td>boolean</td>
-<td>金刚的身高大于185cm吗？</td>
-</tr>
-<tr>
-<td>Consumer</td>
-<td>accept(T t)</td>
-<td>消费消息</td>
-<td>T</td>
-<td>void</td>
-<td>输出一个值</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>R apply(T t)</td>
-<td>将T映射为R（转换功能）</td>
-<td>T</td>
-<td>R</td>
-<td>获得student对象的名字</td>
-</tr>
-<tr>
-<td>Supplier</td>
-<td>T get()</td>
-<td>生产消息</td>
-<td>None</td>
-<td>T</td>
-<td>工厂方法</td>
-</tr>
-<tr>
-<td>UnaryOperator</td>
-<td>T apply(T t)</td>
-<td>一元操作</td>
-<td>T</td>
-<td>T</td>
-<td>逻辑非（!）</td>
-</tr>
-<tr>
-<td>BinaryOperator</td>
-<td>apply(T t, U u)</td>
-<td>二元操作</td>
-<td>(T，T)</td>
-<td>(T)</td>
-<td>求两个数的乘积（*）</td>
-</tr>
-</tbody>
-</table>
-<pre><code>public class Test {
-    public static void main(String[] args) {
-        Predicate&lt;Integer&gt; predicate = x -&gt; x &gt; 185;
-        Student student = new Student(&quot;金刚&quot;, 23, 175);
-        System.out.println(&quot;金刚的身高高于185吗？：&quot; + predicate.test(student.getStature()));
-
-        Consumer&lt;String&gt; consumer = System.out::println;
-        consumer.accept(&quot;消费消息，输出一个值&quot;);
-
-        Function&lt;Student, String&gt; function = Student::getName;
-        String name = function.apply(student);
-        System.out.println(name);
-
-        Supplier&lt;Integer&gt; supplier = () -&gt; Integer.valueOf(BigDecimal.TEN.toString());
-        System.out.println(supplier.get());
-
-        UnaryOperator&lt;Boolean&gt; unaryOperator = uglily -&gt; !uglily;
-        Boolean apply2 = unaryOperator.apply(true);
-        System.out.println(apply2);
-
-        BinaryOperator&lt;Integer&gt; operator = (x, y) -&gt; x * y;
-        Integer integer = operator.apply(2, 3);
-        System.out.println(integer);
-
-        test(() -&gt; &quot;我是一个演示的函数式接口&quot;);
-    }
-
-    /**
-     * 演示自定义函数式接口使用
-     *
-     * @param worker
-     */
-    public static void test(Worker worker) {
-        String work = worker.work();
-        System.out.println(work);
-    }
-
-    public interface Worker {
-        String work();
-    }
-}
-//金刚的身高高于185吗？：false
-//消费消息，输出一个值
-//金刚
-//10
-//false
-//6
-//我是一个演示的函数式接口
-</code></pre>
-<p>以上演示了lambda接口的使用及自定义一个函数式接口并使用。下面，我们看看java8将函数式接口封装到流中如何高效的帮助我们处理集合。</p>
-<p><strong>注意：Student::getName</strong>例子中这种编写lambda表达式的方式称为<strong>方法引用。<strong>格式为</strong>ClassName::methodName</strong>。</p>
-<p><strong>示例：本篇所有示例都基于以下三个类。OutstandingClass：班级；Student：学生；SpecialityEnum：特长。</strong></p>
-<figure data-type="image" tabindex="1"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638d420acd?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
-<h5 id="12-惰性求值与及早求值">1.2 惰性求值与及早求值</h5>
-<p><strong>惰性求值：只描述Stream，操作的结果也是Stream，这样的操作称为惰性求值</strong>。 惰性求值可以像建造者模式一样链式使用，最后再使用及早求值得到最终结果。</p>
-<p><strong>及早求值：得到最终的结果而不是Stream，这样的操作称为及早求值。</strong></p>
-<h4 id="2-常用的流">2、常用的流</h4>
-<h5 id="21-collectcollectorstolist">2.1 collect(Collectors.toList())</h5>
-<p><strong>将流转换为list。还有toSet()，toMap()等。及早求值</strong>。</p>
-<pre><code class="language-java">public class TestCase {
-    public static void main(String[] args) {
-        List&lt;Student&gt; studentList = Stream.of(new Student(&quot;路飞&quot;, 22, 175),
-                new Student(&quot;红发&quot;, 40, 180),
-                new Student(&quot;白胡子&quot;, 50, 185)).collect(Collectors.toList());
-        System.out.println(studentList);
-    }
-}
-//输出结果
-//[Student{name='路飞', age=22, stature=175, specialities=null}, 
-//Student{name='红发', age=40, stature=180, specialities=null}, 
-//Student{name='白胡子', age=50, stature=185, specialities=null}]
-</code></pre>
-<pre><code class="language-java">//转成map
-public Map&lt;Long, String&gt; getIdNameMap(List&lt;Account&gt; accounts) {
-    return accounts.stream().collect(Collectors.toMap(Account::getId, Account::getUsername));
-}
-//收集成实体本身map
-public Map&lt;Long, Account&gt; getIdAccountMap(List&lt;Account&gt; accounts) {
-    return accounts.stream().collect(Collectors.toMap(Account::getId, account -&gt; account));
-}
-//account -&gt; account是一个返回本身的lambda表达式，其实还可以使用Function接口中的一个默认方法代替，使整个方法更简洁优雅：
-public Map&lt;Long, Account&gt; getIdAccountMap(List&lt;Account&gt; accounts) {
-    return accounts.stream().collect(Collectors.toMap(Account::getId, Function.identity()));
-}
-//重复key的情况，下面name可能重复
-public Map&lt;String, Account&gt; getNameAccountMap(List&lt;Account&gt; accounts) {
-    return accounts.stream().collect(Collectors.toMap(Account::getUsername, Function.identity()));
-}
-//toMap有个重载方法，可以传入一个合并的函数来解决key冲突问题
-public Map&lt;String, Account&gt; getNameAccountMap(List&lt;Account&gt; accounts) {
-    return accounts.stream().collect(Collectors.toMap(Account::getUsername, Function.identity(), (key1, key2) -&gt; key2));
-}
-//按id分组
-Map&lt;Long, List&lt;Account&gt;&gt; map = accounts.stream().collect(Collectors.groupingBy(Account::getId));
-//指定具体收集的map
-public Map&lt;String, Account&gt; getNameAccountMap(List&lt;Account&gt; accounts) {
-    return accounts.stream().collect(Collectors.toMap(Account::getUsername, Function.identity(), (key1, key2) -&gt; key2, LinkedHashMap::new));
-}
-</code></pre>
-<h5 id="22-filter">2.2 filter</h5>
-<p>顾名思义，起<strong>过滤筛选</strong>的作用。<strong>内部就是Predicate接口。惰性求值。</strong></p>
-<figure data-type="image" tabindex="2"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638d2c0a51?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
-<p>比如我们筛选出出身高小于180的同学。</p>
-<pre><code class="language-java">public class TestCase {
-    public static void main(String[] args) {
-        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
-        students.add(new Student(&quot;路飞&quot;, 22, 175));
-        students.add(new Student(&quot;红发&quot;, 40, 180));
-        students.add(new Student(&quot;白胡子&quot;, 50, 185));
-
-        List&lt;Student&gt; list = students.stream()
-            .filter(stu -&gt; stu.getStature() &lt; 180)
-            .collect(Collectors.toList());
-        System.out.println(list);
-    }
-}
-//输出结果
-//[Student{name='路飞', age=22, stature=175, specialities=null}]
-</code></pre>
-<h5 id="23-map">2.3 map</h5>
-<p><strong>转换功能，内部就是Function接口。惰性求值</strong></p>
-<figure data-type="image" tabindex="3"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638d1c6610?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
-<pre><code class="language-java">public class TestCase {
-    public static void main(String[] args) {
-        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
-        students.add(new Student(&quot;路飞&quot;, 22, 175));
-        students.add(new Student(&quot;红发&quot;, 40, 180));
-        students.add(new Student(&quot;白胡子&quot;, 50, 185));
-
-        List&lt;String&gt; names = students.stream().map(student -&gt; student.getName())
-                .collect(Collectors.toList());
-        System.out.println(names);
-    }
-}
-//输出结果
-//[路飞, 红发, 白胡子]
-</code></pre>
-<p>例子中将student对象转换为String对象，获取student的名字。</p>
-<h5 id="24-flatmap">2.4 flatMap</h5>
-<p><strong>将多个Stream合并为一个Stream。惰性求值</strong></p>
-<figure data-type="image" tabindex="4"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638c4cca86?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
-<pre><code class="language-java">public class TestCase {
-    public static void main(String[] args) {
-        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
-        students.add(new Student(&quot;路飞&quot;, 22, 175));
-        students.add(new Student(&quot;红发&quot;, 40, 180));
-        students.add(new Student(&quot;白胡子&quot;, 50, 185));
-
-        List&lt;Student&gt; studentList = Stream.of(students,
-                asList(new Student(&quot;艾斯&quot;, 25, 183),
-                        new Student(&quot;雷利&quot;, 48, 176)))
-                .flatMap(students1 -&gt; students1.stream()).collect(Collectors.toList());
-        System.out.println(studentList);
-    }
-}
-//输出结果
-//[Student{name='路飞', age=22, stature=175, specialities=null}, 
-//Student{name='红发', age=40, stature=180, specialities=null}, 
-//Student{name='白胡子', age=50, stature=185, specialities=null}, 
-//Student{name='艾斯', age=25, stature=183, specialities=null},
-//Student{name='雷利', age=48, stature=176, specialities=null}]
-</code></pre>
-<p>调用Stream.of的静态方法将两个list转换为Stream，再通过flatMap将两个流合并为一个。</p>
-<h5 id="25-max和min">2.5 max和min</h5>
-<p>我们经常会在集合中<strong>求最大或最小值</strong>，使用流就很方便。<strong>及早求值。</strong></p>
-<pre><code class="language-java">public class TestCase {
-    public static void main(String[] args) {
-        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
-        students.add(new Student(&quot;路飞&quot;, 22, 175));
-        students.add(new Student(&quot;红发&quot;, 40, 180));
-        students.add(new Student(&quot;白胡子&quot;, 50, 185));
-
-        Optional&lt;Student&gt; max = students.stream()
-            .max(Comparator.comparing(stu -&gt; stu.getAge()));
-        Optional&lt;Student&gt; min = students.stream()
-            .min(Comparator.comparing(stu -&gt; stu.getAge()));
-        //判断是否有值
-        if (max.isPresent()) {
-            System.out.println(max.get());
-        }
-        if (min.isPresent()) {
-            System.out.println(min.get());
-        }
-    }
-}
-//输出结果
-//Student{name='白胡子', age=50, stature=185, specialities=null}
-//Student{name='路飞', age=22, stature=175, specialities=null}
-</code></pre>
-<p><strong>max、min接收一个Comparator</strong>（例子中使用java8自带的静态函数，只需要传进需要比较值即可。）并且返回一个Optional对象，该对象是java8新增的类，专门为了防止null引发的空指针异常。可以使用max.isPresent()判断是否有值；可以使用max.orElse(new Student())，当值为null时就使用给定值；也可以使用max.orElseGet(() -&gt; new Student());这需要传入一个Supplier的lambda表达式。</p>
-<h5 id="26-count">2.6 count</h5>
-<p><strong>统计功能，一般都是结合filter使用，因为先筛选出我们需要的再统计即可。及早求值</strong></p>
-<pre><code class="language-java">public class TestCase {
-    public static void main(String[] args) {
-        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
-        students.add(new Student(&quot;路飞&quot;, 22, 175));
-        students.add(new Student(&quot;红发&quot;, 40, 180));
-        students.add(new Student(&quot;白胡子&quot;, 50, 185));
-
-        long count = students.stream().filter(s1 -&gt; s1.getAge() &lt; 45).count();
-        System.out.println(&quot;年龄小于45岁的人数是：&quot; + count);
-    }
-}
-//输出结果
-//年龄小于45岁的人数是：2
-</code></pre>
-<h5 id="27-reduce">2.7 reduce</h5>
-<p><strong>reduce 操作可以实现从一组值中生成一个值</strong>。在上述例子中用到的 count 、 min 和 max 方<br>
-法，因为常用而被纳入标准库中。事实上，这些方法都是 reduce 操作。<strong>及早求值。</strong></p>
-<figure data-type="image" tabindex="5"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae40638c52397b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
-<pre><code class="language-java">public class TestCase {
-    public static void main(String[] args) {
-        Integer reduce = Stream.of(1, 2, 3, 4).reduce(0, (acc, x) -&gt; acc+ x);
-        System.out.println(reduce);
-    }
-}
-//输出结果
-//10
-</code></pre>
-<p>我们看得reduce接收了一个初始值为0的累加器，依次取出值与累加器相加，最后累加器的值就是最终的结果。</p>
-<h3 id="三-高级集合类及收集器">三、高级集合类及收集器</h3>
-<h4 id="31-转换成值">3.1 转换成值</h4>
-<p>**收集器，一种通用的、从流生成复杂值的结构。**只要将它传给 collect 方法，所有<br>
-的流就都可以使用它了。标准类库已经提供了一些有用的收集器，<strong>以下示例代码中的收集器都是从 java.util.stream.Collectors 类中静态导入的。</strong></p>
-<pre><code class="language-java">public class CollectorsTest {
-    public static void main(String[] args) {
-        List&lt;Student&gt; students1 = new ArrayList&lt;&gt;(3);
-        students1.add(new Student(&quot;路飞&quot;, 23, 175));
-        students1.add(new Student(&quot;红发&quot;, 40, 180));
-        students1.add(new Student(&quot;白胡子&quot;, 50, 185));
-
-        OutstandingClass ostClass1 = new OutstandingClass(&quot;一班&quot;, students1);
-        //复制students1，并移除一个学生
-        List&lt;Student&gt; students2 = new ArrayList&lt;&gt;(students1);
-        students2.remove(1);
-        OutstandingClass ostClass2 = new OutstandingClass(&quot;二班&quot;, students2);
-        //将ostClass1、ostClass2转换为Stream
-        Stream&lt;OutstandingClass&gt; classStream = Stream.of(ostClass1, ostClass2);
-        OutstandingClass outstandingClass = biggestGroup(classStream);
-        System.out.println(&quot;人数最多的班级是：&quot; + outstandingClass.getName());
-
-        System.out.println(&quot;一班平均年龄是：&quot; + averageNumberOfStudent(students1));
-    }
-
-    /**
-     * 获取人数最多的班级
-     */
-    private static OutstandingClass biggestGroup(Stream&lt;OutstandingClass&gt; outstandingClasses) {
-        return outstandingClasses.collect(
-                maxBy(comparing(ostClass -&gt; ostClass.getStudents().size())))
-                .orElseGet(OutstandingClass::new);
-    }
-
-    /**
-     * 计算平均年龄
-     */
-    private static double averageNumberOfStudent(List&lt;Student&gt; students) {
-        return students.stream().collect(averagingInt(Student::getAge));
-    }
-}
-//输出结果
-//人数最多的班级是：一班
-//一班平均年龄是：37.666666666666664
-</code></pre>
-<p>maxBy或者minBy就是求最大值与最小值。</p>
-<h4 id="32-转换成块">3.2 转换成块</h4>
-<p><strong>常用的流操作是将其分解成两个集合，Collectors.partitioningBy帮我们实现了，接收一个Predicate函数式接口。</strong></p>
-<figure data-type="image" tabindex="6"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae4063943b9487?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
-<p>将示例学生分为会唱歌与不会唱歌的两个集合。</p>
-<pre><code class="language-java">public class PartitioningByTest {
-    public static void main(String[] args) {
-        //省略List&lt;student&gt; students的初始化
-        Map&lt;Boolean, List&lt;Student&gt;&gt; listMap = students.stream().collect(
-            Collectors.partitioningBy(student -&gt; student.getSpecialities().
-                                      contains(SpecialityEnum.SING)));
-    }
-}
-</code></pre>
-<h4 id="33-数据分组">3.3 数据分组</h4>
-<p>数据分组是一种更自然的分割数据操作，与将数据分成 ture 和 false 两部分不同，<strong>可以使</strong><br>
-<strong>用任意值对数据分组。Collectors.groupingBy接收一个Function做转换。</strong></p>
-<figure data-type="image" tabindex="7"><img src="https://user-gold-cdn.xitu.io/2019/5/23/16ae4063f5d78c78?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" loading="lazy"></figure>
-<p><strong>如图，我们使用groupingBy将根据进行分组为圆形一组，三角形一组，正方形一组。</strong></p>
-<p>例子：根据学生第一个特长进行分组</p>
-<pre><code class="language-java">public class GroupingByTest {
-    public static void main(String[] args) {
-        //省略List&lt;student&gt; students的初始化
-         Map&lt;SpecialityEnum, List&lt;Student&gt;&gt; listMap = 
-             students.stream().collect(
-             Collectors.groupingBy(student -&gt; student.getSpecialities().get(0)));
-    }
-}
-</code></pre>
-<p><strong>Collectors.groupingBy与SQL 中的 group by 操作是一样的。</strong></p>
-<h4 id="34-字符串拼接">3.4 字符串拼接</h4>
-<p>如果将所有学生的名字拼接起来，怎么做呢？通常只能创建一个StringBuilder，循环拼接。使用Stream，使用Collectors.joining()简单容易。</p>
-<pre><code class="language-java">public class JoiningTest {
-    public static void main(String[] args) {
-        List&lt;Student&gt; students = new ArrayList&lt;&gt;(3);
-        students.add(new Student(&quot;路飞&quot;, 22, 175));
-        students.add(new Student(&quot;红发&quot;, 40, 180));
-        students.add(new Student(&quot;白胡子&quot;, 50, 185));
-
-         String names = students.stream()
-             .map(Student::getName).collect(Collectors.joining(&quot;,&quot;,&quot;[&quot;,&quot;]&quot;));
-        System.out.println(names);
-    }
-}
-//输出结果
-//[路飞,红发,白胡子]
-</code></pre>
-<p><strong>joining接收三个参数，第一个是分界符，第二个是前缀符，第三个是结束符。也可以不传入参数Collectors.joining()，这样就是直接拼接。</strong></p>
-<blockquote>
-<p>原文地址：https://juejin.cn/post/6844903849753329678#hjava</p>
-</blockquote>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Java基础之—反射]]></title>
-        <id>https://tinaxiawuhao.github.io/post/NjXzyw7sR/</id>
-        <link href="https://tinaxiawuhao.github.io/post/NjXzyw7sR/">
-        </link>
-        <updated>2021-05-06T05:43:10.000Z</updated>
-        <content type="html"><![CDATA[<p>反射是框架设计的灵魂（使用的前提条件：必须先得到代表的字节码的Class，Class类用于表示.class文件（字节码））</p>
-<h2 id="反射的概述">反射的概述</h2>
-<blockquote>
-<p>JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象的方法的功能称为java语言的反射机制。<br>
-要想解剖一个类,必须先要获取到该类的字节码文件对象。而解剖使用的就是Class类中的方法.所以先要获取到每一个字节码文件对应的Class类型的对象.</p>
-</blockquote>
-<blockquote>
-<p>反射就是把java类中的各种成分映射成一个个的Java对象<br>
-例如：一个类有：成员变量、方法、构造方法、包等等信息，利用反射技术可以对一个类进行解剖，把个个组成部分映射成一个个对象。（其实：一个类中这些成员方法、构造方法、在加入类中都有一个类来描述）</p>
-</blockquote>
-<p>如图是类的正常加载过程：Class对象的由来是将class文件读入内存，并为之创建一个Class对象。</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619675125967.png" alt="" loading="lazy"></figure>
-<p>其中这个Class对象很特殊。我们先了解一下这个Class类</p>
-<h3 id="查看class类在java中的api详解">查看Class类在java中的api详解</h3>
-<p>Class 类的实例表示正在运行的 Java 应用程序中的类和接口。也就是jvm中有N多的实例每个类都有该Class对象。（包括基本数据类型）<br>
-Class 没有公共构造方法。Class 对象是在加载类时由 Java 虚拟机以及通过调用类加载器中的defineClass 方法自动构造的。也就是这不需要我们自己去处理创建，JVM已经帮我们创建好了。</p>
-<p>没有公共的构造方法，方法共有64个。<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1619675067633.png" alt="" loading="lazy"></p>
-<h3 id="反射的使用">反射的使用</h3>
-<h4 id="获取class对象的三种方式">获取Class对象的三种方式</h4>
-<p>1.1 Object ——&gt; getClass();<br>
-1.2 任何数据类型（包括基本数据类型）都有一个“静态”的class属性<br>
-1.3 通过Class类的静态方法：forName（String  className）(常用)</p>
-<p>其中1.1是因为Object类中的getClass方法、因为所有类都继承Object类。从而调用Object类来获取</p>
-<pre><code class="language-java">package fanshe;
-/**
- * 获取Class对象的三种方式
- * 1 Object ——&gt; getClass();
- * 2 任何数据类型（包括基本数据类型）都有一个“静态”的class属性
- * 3 通过Class类的静态方法：forName（String  className）(常用)
- *
- */
-public class Fanshe {
-	public static void main(String[] args) {
-		//第一种方式获取Class对象  
-		Student stu1 = new Student();//这一new 产生一个Student对象，一个Class对象。
-		Class stuClass = stu1.getClass();//获取Class对象
-		System.out.println(stuClass.getName());
-		
-		//第二种方式获取Class对象
-		Class stuClass2 = Student.class;
-		System.out.println(stuClass == stuClass2);//判断第一种方式获取的Class对象和第二种方式获取的是否是同一个
-		
-		//第三种方式获取Class对象
-		try {
-			Class stuClass3 = Class.forName(&quot;fanshe.Student&quot;);//注意此字符串必须是真实路径，就是带包名的类路径，包名.类名
-			System.out.println(stuClass3 == stuClass2);//判断三种方式是否获取的是同一个Class对象
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-	}
-}
-</code></pre>
-<p>注意：在运行期间，一个类，只有一个Class对象产生。<br>
-三种方式常用第三种，第一种对象都有了还要反射干什么。第二种需要导入类的包，依赖太强，不导包就抛编译错误。一般都第三种，一个字符串可以传入也可写在配置文件中等多种方法。</p>
-<h4 id="通过反射获取构造方法并使用">通过反射获取构造方法并使用：</h4>
-<pre><code class="language-java">package fanshe;
- 
-public class Student {
-	
-	//---------------构造方法-------------------
-	//（默认的构造方法）
-	Student(String str){
-		System.out.println(&quot;(默认)的构造方法 s = &quot; + str);
-	}
-	
-	//无参构造方法
-	public Student(){
-		System.out.println(&quot;调用了公有、无参构造方法执行了。。。&quot;);
-	}
-	
-	//有一个参数的构造方法
-	public Student(char name){
-		System.out.println(&quot;姓名：&quot; + name);
-	}
-	
-	//有多个参数的构造方法
-	public Student(String name ,int age){
-		System.out.println(&quot;姓名：&quot;+name+&quot;年龄：&quot;+ age);//这的执行效率有问题，以后解决。
-	}
-	
-	//受保护的构造方法
-	protected Student(boolean n){
-		System.out.println(&quot;受保护的构造方法 n = &quot; + n);
-	}
-	
-	//私有构造方法
-	private Student(int age){
-		System.out.println(&quot;私有的构造方法   年龄：&quot;+ age);
-	}
- 
-}
-</code></pre>
-<p>共有6个构造方法；</p>
-<pre><code class="language-java">/*
- * 通过Class对象可以获取某个类中的：构造方法、成员变量、成员方法；并访问成员；
- * 
- * 1.获取构造方法：
- * 	1).批量的方法：
- * 	public Constructor[] getConstructors()：所有&quot;公有的&quot;构造方法
- *  public Constructor[] getDeclaredConstructors()：获取所有的构造方法(包括私有、受保护、默认、公有)
- *
- * 2).获取单个的方法，并调用：
- * 	public Constructor getConstructor(Class... parameterTypes):获取单个的&quot;公有的&quot;构造方法：
- * 	public Constructor getDeclaredConstructor(Class... parameterTypes):获取&quot;某个构造方法&quot;可以是私有的，或受保护、默认、公有；
- * 		
- *调用构造方法：
- * 	Constructor--&gt;newInstance(Object... initargs)
- *	 使用此 Constructor 对象表示的构造方法来创建该构造方法的声明类的新实例，并用指定的初始化参数初始化该实例。
- * 它的返回值是T类型，所以newInstance是创建了一个构造方法的声明类的新实例对象。并为之调用
- */
-package fanshe;
- 
-import java.lang.reflect.Constructor;
- 
-public class Constructors {
- 
-	public static void main(String[] args) throws Exception {
-		//1.加载Class对象
-		Class clazz = Class.forName(&quot;fanshe.Student&quot;);
-		
-		
-		//2.获取所有公有构造方法
-		System.out.println(&quot;**********************所有公有构造方法*********************************&quot;);
-		Constructor[] conArray = clazz.getConstructors();
-		for(Constructor c : conArray){
-			System.out.println(c);
-		}
-		
-		
-		System.out.println(&quot;************所有的构造方法(包括：私有、受保护、默认、公有)***************&quot;);
-		conArray = clazz.getDeclaredConstructors();
-		for(Constructor c : conArray){
-			System.out.println(c);
-		}
-		
-		System.out.println(&quot;*****************获取公有、无参的构造方法*******************************&quot;);
-		Constructor con = clazz.getConstructor(null);
-		//1&gt;、因为是无参的构造方法所以类型是一个null,不写也可以：这里需要的是一个参数的类型，切记是类型
-		//2&gt;、返回的是描述这个无参构造函数的类对象。
-	
-		System.out.println(&quot;con = &quot; + con);
-		//调用构造方法
-		Object obj = con.newInstance();
-	//	System.out.println(&quot;obj = &quot; + obj);
-	//	Student stu = (Student)obj;
-		
-		System.out.println(&quot;******************获取私有构造方法，并调用*******************************&quot;);
-		con = clazz.getDeclaredConstructor(char.class);
-		System.out.println(con);
-		//调用构造方法
-		con.setAccessible(true);//暴力访问(忽略掉访问修饰符)
-		obj = con.newInstance('男');
-	}
-	
-}
-</code></pre>
-<p>后台输出：</p>
-<pre><code class="language-java">**********************所有公有构造方法*********************************
-public fanshe.Student(java.lang.String,int)
-public fanshe.Student(char)
-public fanshe.Student()
-************所有的构造方法(包括：私有、受保护、默认、公有)***************
-private fanshe.Student(int)
-protected fanshe.Student(boolean)
-public fanshe.Student(java.lang.String,int)
-public fanshe.Student(char)
-public fanshe.Student()
-fanshe.Student(java.lang.String)
-*****************获取公有、无参的构造方法*******************************
-con = public fanshe.Student()
-调用了公有、无参构造方法执行了。。。
-******************获取私有构造方法，并调用*******************************
-public fanshe.Student(char)
-姓名：男
-</code></pre>
-<h4 id="获取成员变量并调用">获取成员变量并调用：</h4>
-<pre><code class="language-java">package fanshe.field;
- 
-public class Student {
-	public Student(){
-		
-	}
-	//**********字段*************//
-	public String name;
-	protected int age;
-	char sex;
-	private String phoneNum;
-	
-	@Override
-	public String toString() {
-		return &quot;Student [name=&quot; + name + &quot;, age=&quot; + age + &quot;, sex=&quot; + sex
-				+ &quot;, phoneNum=&quot; + phoneNum + &quot;]&quot;;
-	}
-}
-</code></pre>
-<p>测试类：</p>
-<pre><code class="language-java">/*
- * 获取成员变量并调用：
- * 
- * 1.批量的
- * 		1).Field[] getFields():获取所有的&quot;公有字段&quot;
- * 		2).Field[] getDeclaredFields():获取所有字段，包括：私有、受保护、默认、公有；
- * 2.获取单个的：
- * 		1).public Field getField(String fieldName):获取某个&quot;公有的&quot;字段；
- * 		2).public Field getDeclaredField(String fieldName):获取某个字段(可以是私有的)
- * 
- * 	 设置字段的值：
- * 		Field --&gt; public void set(Object obj,Object value):
- * 					参数说明：
- * 					1.obj:要设置的字段所在的对象；
- * 					2.value:要为字段设置的值；
- * 
- */
-package fanshe.field;
-import java.lang.reflect.Field;
-public class Fields {
- 
-		public static void main(String[] args) throws Exception {
-			//1.获取Class对象
-			Class stuClass = Class.forName(&quot;fanshe.field.Student&quot;);
-			//2.获取字段
-			System.out.println(&quot;************获取所有公有的字段********************&quot;);
-			Field[] fieldArray = stuClass.getFields();
-			for(Field f : fieldArray){
-				System.out.println(f);
-			}
-			System.out.println(&quot;************获取所有的字段(包括私有、受保护、默认的)********************&quot;);
-			fieldArray = stuClass.getDeclaredFields();
-			for(Field f : fieldArray){
-				System.out.println(f);
-			}
-			System.out.println(&quot;*************获取公有字段**并调用***********************************&quot;);
-			Field f = stuClass.getField(&quot;name&quot;);
-			System.out.println(f);
-			//获取一个对象
-			Object obj = stuClass.getConstructor().newInstance();//产生Student对象--》Student stu = new Student();
-			//为字段设置值
-			f.set(obj, &quot;刘德华&quot;);//为Student对象中的name属性赋值--》stu.name = &quot;刘德华&quot;
-			//验证
-			Student stu = (Student)obj;
-			System.out.println(&quot;验证姓名：&quot; + stu.name);
-			
-			
-			System.out.println(&quot;**************获取私有字段****并调用********************************&quot;);
-			f = stuClass.getDeclaredField(&quot;phoneNum&quot;);
-			System.out.println(f);
-			f.setAccessible(true);//暴力反射，解除私有限定
-			f.set(obj, &quot;18888889999&quot;);
-			System.out.println(&quot;验证电话：&quot; + stu);
-			
-		}
-	}
-</code></pre>
-<p>后台输出：</p>
-<pre><code class="language-java">************获取所有公有的字段********************
-public java.lang.String fanshe.field.Student.name
-************获取所有的字段(包括私有、受保护、默认的)********************
-public java.lang.String fanshe.field.Student.name
-protected int fanshe.field.Student.age
-char fanshe.field.Student.sex
-private java.lang.String fanshe.field.Student.phoneNum
-*************获取公有字段**并调用***********************************
-public java.lang.String fanshe.field.Student.name
-验证姓名：刘德华
-**************获取私有字段****并调用********************************
-private java.lang.String fanshe.field.Student.phoneNum
-验证电话：Student [name=刘德华, age=0, sex=，phoneNum=18888889999]
-</code></pre>
-<h4 id="获取成员方法并调用">获取成员方法并调用</h4>
-<pre><code class="language-java">package fanshe.method;
- 
-public class Student {
-	//**************成员方法***************//
-	public void show1(String s){
-		System.out.println(&quot;调用了：公有的，String参数的show1(): s = &quot; + s);
-	}
-	protected void show2(){
-		System.out.println(&quot;调用了：受保护的，无参的show2()&quot;);
-	}
-	void show3(){
-		System.out.println(&quot;调用了：默认的，无参的show3()&quot;);
-	}
-	private String show4(int age){
-		System.out.println(&quot;调用了，私有的，并且有返回值的，int参数的show4(): age = &quot; + age);
-		return &quot;abcd&quot;;
-	}
-}
-</code></pre>
-<p>测试类：</p>
-<pre><code class="language-java">/*
- * 获取成员方法并调用：
- * 
- * 1.批量的：
- * 		public Method[] getMethods():获取所有&quot;公有方法&quot;；（包含了父类的方法也包含Object类）
- * 		public Method[] getDeclaredMethods():获取所有的成员方法，包括私有的(不包括继承的)
- * 2.获取单个的：
- * 		public Method getMethod(String name,Class&lt;?&gt;... parameterTypes):
- * 					参数：
- * 						name : 方法名；
- * 						Class ... : 形参的Class类型对象
- * 		public Method getDeclaredMethod(String name,Class&lt;?&gt;... parameterTypes)
- * 
- * 	 调用方法：
- * 		Method --&gt; public Object invoke(Object obj,Object... args):
- * 					参数说明：
- * 					obj : 要调用方法的对象；
- * 					args:调用方式时所传递的实参；
-):
- */
-package fanshe.method;
- 
-import java.lang.reflect.Method;
- 
-public class MethodClass {
- 
-	public static void main(String[] args) throws Exception {
-		//1.获取Class对象
-		Class stuClass = Class.forName(&quot;fanshe.method.Student&quot;);
-		//2.获取所有公有方法
-		System.out.println(&quot;***************获取所有的”公有“方法*******************&quot;);
-		stuClass.getMethods();
-		Method[] methodArray = stuClass.getMethods();
-		for(Method m : methodArray){
-			System.out.println(m);
-		}
-		System.out.println(&quot;***************获取所有的方法，包括私有的*******************&quot;);
-		methodArray = stuClass.getDeclaredMethods();
-		for(Method m : methodArray){
-			System.out.println(m);
-		}
-		System.out.println(&quot;***************获取公有的show1()方法*******************&quot;);
-		Method m = stuClass.getMethod(&quot;show1&quot;, String.class);
-		System.out.println(m);
-		//实例化一个Student对象
-		Object obj = stuClass.getConstructor().newInstance();
-		m.invoke(obj, &quot;刘德华&quot;);
-		
-		System.out.println(&quot;***************获取私有的show4()方法******************&quot;);
-		m = stuClass.getDeclaredMethod(&quot;show4&quot;, int.class);
-		System.out.println(m);
-		m.setAccessible(true);//解除私有限定
-		Object result = m.invoke(obj, 20);//需要两个参数，一个是要调用的对象（获取有反射），一个是实参
-		System.out.println(&quot;返回值：&quot; + result);
-		
-		
-	}
-}
-</code></pre>
-<p>控制台输出：</p>
-<pre><code class="language-java">***************获取所有的”公有“方法*******************
-public void fanshe.method.Student.show1(java.lang.String)
-public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException
-public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException
-public final void java.lang.Object.wait() throws java.lang.InterruptedException
-public boolean java.lang.Object.equals(java.lang.Object)
-public java.lang.String java.lang.Object.toString()
-public native int java.lang.Object.hashCode()
-public final native java.lang.Class java.lang.Object.getClass()
-public final native void java.lang.Object.notify()
-public final native void java.lang.Object.notifyAll()
-***************获取所有的方法，包括私有的*******************
-public void fanshe.method.Student.show1(java.lang.String)
-private java.lang.String fanshe.method.Student.show4(int)
-protected void fanshe.method.Student.show2()
-void fanshe.method.Student.show3()
-***************获取公有的show1()方法*******************
-public void fanshe.method.Student.show1(java.lang.String)
-调用了：公有的，String参数的show1(): s = 刘德华
-***************获取私有的show4()方法******************
-private java.lang.String fanshe.method.Student.show4(int)
-调用了，私有的，并且有返回值的，int参数的show4(): age = 20
-返回值：abcd
-</code></pre>
-<h4 id="反射main方法">反射main方法</h4>
-<pre><code class="language-java">package fanshe.main;
- 
-public class Student {
- 
-	public static void main(String[] args) {
-		System.out.println(&quot;main方法执行了。。。&quot;);
-	}
-}
-</code></pre>
-<p>测试类：</p>
-<pre><code class="language-java">package fanshe.main;
- 
-import java.lang.reflect.Method;
- 
-/**
- * 获取Student类的main方法、不要与当前的main方法搞混了
- */
-public class Main {
-	
-	public static void main(String[] args) {
-		try {
-			//1、获取Student对象的字节码
-			Class clazz = Class.forName(&quot;fanshe.main.Student&quot;);
-			
-			//2、获取main方法
-			 Method methodMain = clazz.getMethod(&quot;main&quot;, String[].class);//第一个参数：方法名称，第二个参数：方法形参的类型，
-			//3、调用main方法
-			// methodMain.invoke(null, new String[]{&quot;a&quot;,&quot;b&quot;,&quot;c&quot;});
-			 //第一个参数，对象类型，因为方法是static静态的，所以为null可以，第二个参数是String数组，这里要注意在jdk1.4时是数组，jdk1.5之后是可变参数
-			 //这里拆的时候将  new String[]{&quot;a&quot;,&quot;b&quot;,&quot;c&quot;} 拆成3个对象。。。所以需要将它强转。
-			 methodMain.invoke(null, (Object)new String[]{&quot;a&quot;,&quot;b&quot;,&quot;c&quot;});//方式一
-			// methodMain.invoke(null, new Object[]{new String[]{&quot;a&quot;,&quot;b&quot;,&quot;c&quot;}});//方式二
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-	}
-}
-</code></pre>
-<p>控制台输出：</p>
-<pre><code class="language-java">main方法执行了。。。
-</code></pre>
-<h4 id="反射方法的其它使用之-通过反射运行配置文件内容">反射方法的其它使用之---通过反射运行配置文件内容</h4>
-<pre><code class="language-java">public class Student {
-	public void show(){
-		System.out.println(&quot;is show()&quot;);
-	}
-}
-</code></pre>
-<p>配置文件以txt文件为例子（pro.txt）：</p>
-<pre><code class="language-java">className = cn.fanshe.Student
-methodName = show
-</code></pre>
-<p>测试类：</p>
-<pre><code class="language-java">import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Properties;
- 
-/*
- * 我们利用反射和配置文件，可以使：应用程序更新时，对源码无需进行任何修改
- * 我们只需要将新类发送给客户端，并修改配置文件即可
- */
-public class Demo {
-	public static void main(String[] args) throws Exception {
-		//通过反射获取Class对象
-		Class stuClass = Class.forName(getValue(&quot;className&quot;));//&quot;cn.fanshe.Student&quot;
-		//2获取show()方法
-		Method m = stuClass.getMethod(getValue(&quot;methodName&quot;));//show
-		//3.调用show()方法
-		m.invoke(stuClass.getConstructor().newInstance());
-		
-	}
-	
-	//此方法接收一个key，在配置文件中获取相应的value
-	public static String getValue(String key) throws IOException{
-		Properties pro = new Properties();//获取配置文件的对象
-		FileReader in = new FileReader(&quot;pro.txt&quot;);//获取输入流
-		pro.load(in);//将流加载到配置文件对象中
-		in.close();
-		return pro.getProperty(key);//返回根据key获取的value值
-	}
-}
-</code></pre>
-<p>控制台输出：</p>
-<pre><code class="language-java">is show()
-</code></pre>
-<h5 id="需求">需求：</h5>
-<p>当我们升级这个系统时，不要Student类，而需要新写一个Student2的类时，这时只需要更改pro.txt的文件内容就可以了。代码就一点不用改动</p>
-<p>要替换的student2类：</p>
-<pre><code class="language-java">public class Student2 {
-	public void show2(){
-		System.out.println(&quot;is show2()&quot;);
-	}
-}
-</code></pre>
-<p>配置文件更改为：</p>
-<pre><code class="language-java">className = cn.fanshe.Student2
-methodName = show2
-</code></pre>
-<p>控制台输出：</p>
-<pre><code class="language-java">is show2();
-</code></pre>
-<h4 id="反射方法的其它使用之-通过反射越过泛型检查">反射方法的其它使用之---通过反射越过泛型检查</h4>
-<p>泛型用在编译期，编译过后泛型擦除（消失掉）。所以是可以通过反射越过泛型检查的</p>
-<pre><code class="language-java">import java.lang.reflect.Method;
-import java.util.ArrayList;
- 
-/*
- * 通过反射越过泛型检查
- * 
- * 例如：有一个String泛型的集合，怎样能向这个集合中添加一个Integer类型的值？
- */
-public class Demo {
-	public static void main(String[] args) throws Exception{
-		ArrayList&lt;String&gt; strList = new ArrayList&lt;&gt;();
-		strList.add(&quot;aaa&quot;);
-		strList.add(&quot;bbb&quot;);
-		
-	//	strList.add(100);
-		//获取ArrayList的Class对象，反向的调用add()方法，添加数据
-		Class listClass = strList.getClass(); //得到 strList 对象的字节码 对象
-		//获取add()方法
-		Method m = listClass.getMethod(&quot;add&quot;, Object.class);
-		//调用add()方法
-		m.invoke(listClass , 100);
-		
-		//遍历集合
-		for(Object obj : strList){
-			System.out.println(obj);
-		}
-	}
-}
-</code></pre>
-<p>控制台输出：</p>
-<pre><code class="language-java">aaa
-bbb
-100
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[java基础之一集合]]></title>
-        <id>https://tinaxiawuhao.github.io/post/FRRzAbqMV/</id>
-        <link href="https://tinaxiawuhao.github.io/post/FRRzAbqMV/">
-        </link>
-        <updated>2021-05-05T06:41:04.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="基础数据结构说明">基础数据结构说明</h2>
-<p>​		<strong>数组</strong>：采用一段连续的存储单元来存储数据。对于指定下标的查找，时间复杂度为O(1)；通过给定值进行查找，需要遍历数组，逐一比对给定关键字和数组元素，时间复杂度为O(n)，当然，对于有序数组，则可采用二分查找，插值查找，斐波那契查找等方式，可将查找复杂度提高为O(logn)；对于一般的插入删除操作，涉及到数组元素的移动，其平均复杂度也为O(n)</p>
-<p><strong>线性链表</strong>：对于链表的新增，删除等操作（在找到指定操作位置后），仅需处理结点间的引用即可，时间复杂度为O(1)，而查找操作需要遍历链表逐一进行比对，复杂度为O(n)</p>
-<p><strong>二叉树</strong>：对一棵相对平衡的有序二叉树，对其进行插入，查找，删除等操作，平均复杂度均为O(logn)。</p>
-<p><strong>哈希表</strong>：相比上述几种数据结构，在哈希表中进行添加，删除，查找等操作，性能十分之高，不考虑哈希冲突的情况下，仅需一次定位即可完成，时间复杂度为O(1)，接下来我们就来看看哈希表是如何实现达到惊艳的常数阶O(1)的。</p>
-<h3 id="哈希表具体说明">哈希表具体说明</h3>
-<p>我们知道，数据结构的物理存储结构只有两种：<strong>顺序存储结构</strong>和<strong>链式存储结构</strong>（像栈，队列，树，图等是从逻辑结构去抽象的，映射到内存中，也是这两种物理组织形式），而在上面我们提到过，在数组中根据下标查找某个元素，一次定位就可以达到，哈希表利用了这种特性，<strong>哈希表的主干就是数组</strong>。</p>
-<p>比如我们要新增或查找某个元素，我们通过把当前元素的关键字 通过某个函数映射到数组中的某个位置，通过数组下标一次定位就可完成操作。</p>
-<p><strong>存储位置 = f(关键字)</strong></p>
-<p>其中，这个函数f一般称为<strong>哈希函数</strong>，这个函数的设计好坏会直接影响到哈希表的优劣。举个例子，比如我们要在哈希表中执行插入操作：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619592366553.png" alt="" loading="lazy"></figure>
-<p>查找操作同理，先通过哈希函数计算出实际存储地址，然后从数组中对应地址取出即可。</p>
-<p><strong>哈希冲突</strong></p>
-<p>然而万事无完美，如果两个不同的元素，通过哈希函数得出的实际存储地址相同怎么办？也就是说，当我们对某个元素进行哈希运算，得到一个存储地址，然后要进行插入的时候，发现已经被其他元素占用了，其实这就是所谓的<strong>哈希冲突</strong>，也叫哈希碰撞。前面我们提到过，哈希函数的设计至关重要，好的哈希函数会尽可能地保证 <strong>计算简单</strong>和<strong>散列地址分布均匀</strong>但是，我们需要清楚的是，数组是一块连续的固定长度的内存空间，再好的哈希函数也不能保证得到的存储地址绝对不发生冲突。那么哈希冲突如何解决呢？哈希冲突的解决方案有多种:<code>开放定址法（线性探测）</code>（发生冲突，继续寻找下一块未被占用的存储地址），<code>再散列函数法</code>，<code>链地址法</code>。</p>
-<h3 id="r-b-tree简介">R-B Tree简介</h3>
-<p>R-B Tree，全称是Red-Black Tree，又称为“红黑树”，它一种特殊的二叉查找树。红黑树的每个节点上都有存储位表示节点的颜色，可以是红(Red)或黑(Black)。</p>
-<p><strong>红黑树的特性</strong>:<br>
-<strong>（1）每个节点或者是黑色，或者是红色。</strong><br>
-<strong>（2）根节点是黑色。</strong><br>
-<strong>（3）每个叶子节点（NIL）是黑色。 [注意：这里叶子节点，是指为空(NIL或NULL)的叶子节点！]</strong><br>
-<strong>（4）如果一个节点是红色的，则它的子节点必须是黑色的。</strong><br>
-<strong>（5）从一个节点到该节点的子孙节点的所有路径上包含相同数目的黑节点。</strong></p>
-<p><strong>注意</strong>：<br>
-(01) 特性(3)中的叶子节点，是只为空(NIL或null)的节点。<br>
-(02) 特性(5)，确保没有一条路径会比其他路径长出俩倍。因而，红黑树是相对是接近平衡的二叉树。</p>
-<p>红黑树示意图如下：</p>
-<figure data-type="image" tabindex="2"><a href="https://images0.cnblogs.com/i/497634/201403/251730074203156.jpg"><img src="https://images0.cnblogs.com/i/497634/201403/251730074203156.jpg" alt="img" loading="lazy"></a></figure>
-<p><strong>性质</strong><br>
-红黑树是每个节点都带有颜色属性的二叉查找树，颜色或红色或黑色。在二叉查找树强制一般要求以外，对于任何有效的红黑树我们增加了如下的额外要求：<br>
-【1】性质1. 节点是红色或黑色。<br>
-【2】性质2. 根节点是黑色。<br>
-【3】性质3 每个叶节点是黑色的。<br>
-【4】性质4 每个红色节点的两个子节点都是黑色。(从每个叶子到根的所有路径上不能有两个连续的红色节点)<br>
-【5】性质5. 从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点。</p>
-<p><strong>用途和好处</strong><br>
-红黑树和AVL树一样都对插入时间、删除时间和查找时间提供了最好可能的最坏情况担保。这不只是使它们在时间敏感的应用如即时应用(real time application)中有价值，而且使它们有在提供最坏情况担保的其他数据结构中作为建造板块的价值；例如，在计算几何中使用的很多数据结构都可以基于红黑树。</p>
-<p>​	红黑树在函数式编程中也特别有用，在这里它们是最常用的持久数据结构之一，它们用来构造关联数组和集合，在突变之后它们能保持为以前的版本。除了O(log n)的时间之外，红黑树的持久版本对每次插入或删除需要O(log n)的空间。</p>
-<p>​	红黑树是 2-3-4树的一种等同。换句话说，对于每个 2-3-4 树，都存在至少一个数据元素是同样次序的红黑树。在 2-3-4 树上的插入和删除操作也等同于在红黑树中颜色翻转和旋转。这使得 2-3-4 树成为理解红黑树背后的逻辑的重要工具，这也是很多介绍算法的教科书在红黑树之前介绍 2-3-4 树的原因，尽管 2-3-4 树在实践中不经常使用。</p>
-<p><strong>红黑树的数据结构</strong></p>
-<pre><code class="language-java">public class RBTree&lt;T extends Comparable&lt;T&gt;&gt; {
-
-    private RBTNode&lt;T&gt; mRoot;    // 根结点
-
-    private static final boolean RED   = false;
-    private static final boolean BLACK = true;
-
-    public class RBTNode&lt;T extends Comparable&lt;T&gt;&gt; {
-        boolean color;        // 颜色
-        T key;                // 关键字(键值)
-        RBTNode&lt;T&gt; left;    // 左孩子
-        RBTNode&lt;T&gt; right;    // 右孩子
-        RBTNode&lt;T&gt; parent;    // 父结点
-
-        public RBTNode(T key, boolean color, RBTNode&lt;T&gt; parent, RBTNode&lt;T&gt; left, RBTNode&lt;T&gt; right) {
-            this.key = key;
-            this.color = color;
-            this.parent = parent;
-            this.left = left;
-            this.right = right;
-        }
-
-    }
-
-    ...
-}
-
-</code></pre>
-<h2 id="集合说明">集合说明</h2>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619592387947.png" alt="" loading="lazy"></figure>
-<h3 id="arraylist实现原理要点概括">ArrayList实现原理要点概括</h3>
-<ol>
-<li>
-<p>ArrayList是List接口的可变数组非同步实现，并允许包括null在内的所有元素。</p>
-</li>
-<li>
-<p>ArrayList的数据结构如下：</p>
-<p></p>
-</li>
-</ol>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1619592476277.png" alt="" loading="lazy"></figure>
-<p>说明：底层的数据结构就是数组，数组元素类型为Object类型，即可以存放所有类型数据。我们对ArrayList类的实例的所有的操作底层都是基于数组的。</p>
-<ol start="3">
-<li>
-<p>该集合是可变长度数组，数组扩容时，会将老数组中的元素重新拷贝一份到新的数组中，每次数组容量增长大约是其容量的1.5倍，这种操作的代价很高。</p>
-<pre><code class="language-java">newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1)
-</code></pre>
-</li>
-<li>
-<p>采用了Fail-Fast机制，面对并发的修改时，迭代器很快就会完全失败，而不是冒着在将来某个不确定时间发生任意不确定行为的风险</p>
-</li>
-<li>
-<p>remove方法会让下标到数组末尾的元素向前移动一个单位，并把最后一位的值置空，方便GC</p>
-</li>
-</ol>
-<h3 id="linkedlist实现原理要点概括">LinkedList实现原理要点概括</h3>
-<ol>
-<li>
-<p>LinkedList是List接口的双向链表非同步实现，并允许包括null在内的所有元素。从JDK1.7开始，LinkedList 由双向循环链表改为双向链表</p>
-</li>
-<li>
-<p>LinkedList数据结构如下</p>
-</li>
-</ol>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1619592485724.png" alt="" loading="lazy"></figure>
-<p>说明：如上图所示，LinkedList底层使用的双向链表结构，有一个头结点和一个尾结点，双向链表意味着我们可以从头开始正向遍历，或者是从尾开始逆向遍历，并且可以针对头部和尾部进行相应的操作。</p>
-<ol start="3">
-<li>
-<p>双向链表节点对应的类Node的实例，Node中包含成员变量：prev，next，item。其中，prev是该节点的上一个节点，next是该节点的下一个节点，item是该节点所包含的值。</p>
-<pre><code class="language-java">public class LinkedList&lt;E&gt;
-    extends AbstractSequentialList&lt;E&gt;
-    implements List&lt;E&gt;, Deque&lt;E&gt;, Cloneable, java.io.Serializable
-{
-    transient int size = 0;
-
-    /**
-     * Pointer to first node.
-     * Invariant: (first == null &amp;&amp; last == null) ||
-     *            (first.prev == null &amp;&amp; first.item != null)
-     */
-    transient Node&lt;E&gt; first;
-
-    /**
-     * Pointer to last node.
-     * Invariant: (first == null &amp;&amp; last == null) ||
-     *            (last.next == null &amp;&amp; last.item != null)
-     */
-    transient Node&lt;E&gt; last;
-    
-     /**
-     *  节点结构
-     */
-    private static class Node&lt;E&gt; {
-        E item;
-        Node&lt;E&gt; next;
-        Node&lt;E&gt; prev;
-
-        Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) {
-            this.item = element;
-            this.next = next;
-            this.prev = prev;
-        }
-    }
-
-}
-
-</code></pre>
-<p>说明：LinkedList的属性非常简单，一个头结点、一个尾结点、一个表示链表中实际元素个数的变量。注意，头结点、尾结点都有transient关键字修饰，这也意味着在序列化时该域是不会序列化的。</p>
-</li>
-<li>
-<p>它的查找是分两半查找，先判断index是在链表的哪一半，然后再去对应区域查找，这样最多只要遍历链表的一半节点即可找到</p>
-</li>
-</ol>
-<h3 id="hashmap实现原理要点概括">HashMap实现原理要点概括</h3>
-<ol>
-<li>
-<p>HashMap是基于哈希表的Map接口的非同步实现，允许使用null值和null键，但不保证映射的顺序。</p>
-</li>
-<li>
-<p>底层使用数组实现，数组中每一项是个单向链表，即数组和链表的结合体；当链表长度大于8时，链表转换为红黑树，这样减少链表查询时间。</p>
-</li>
-</ol>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1619592496628.png" alt="" loading="lazy"></figure>
-<ol start="3">
-<li>
-<p>HashMap在底层将key-value当成一个整体进行处理，这个整体就是一个Node对象。HashMap底层采用一个Node[]数组来保存所有的key-value对，当需要存储一个Node对象时，会根据key的hash算法来决定其在数组中的存储位置，再根据equals方法决定其在该数组位置上的链表中的存储位置；当需要取出一个Node时，也会根据key的hash算法找到其在数组中的存储位置，再根据equals方法从该位置上的链表中取出该Node。</p>
-</li>
-<li>
-<p>HashMap解决hash冲突是采用了<code>链地址</code>法，也就是<strong>数组+链表</strong>的方式，</p>
-</li>
-<li>
-<p>HashMap进行数组扩容需要重新计算扩容后每个元素在数组中的位置，很耗性能</p>
-</li>
-<li>
-<p>采用了Fail-Fast机制，通过一个modCount值记录修改次数，对HashMap内容的修改都将增加这个值。迭代器初始化过程中会将这个值赋给迭代器的expectedModCount，在迭代过程中，判断modCount跟expectedModCount是否相等，如果不相等就表示已经有其他线程修改了Map，马上抛出异常</p>
-</li>
-</ol>
-<h4 id="重写equals方法需同时重写hashcode方法">重写equals方法需同时重写hashCode方法</h4>
-<pre><code class="language-java">public static void main(String []args){
-    HashMap&lt;Person,String&gt; map = new HashMap&lt;Person, String&gt;();
-    Person person = new Person(1234,&quot;乔峰&quot;);
-    //put到hashmap中去
-    map.put(person,&quot;天龙八部&quot;);
-    //get取出，从逻辑上讲应该能输出“天龙八部”
-    System.out.println(&quot;结果:&quot;+map.get(new Person(1234,&quot;乔峰&quot;)));
-}
-</code></pre>
-<p>​		如果我们已经对HashMap的原理有了一定了解，这个结果就不难理解了。尽管我们在进行get和put操作的时候，使用的key从逻辑上讲是等值的（通过equals比较是相等的），但由于没有重写hashCode方法，所以put操作时，key(hashcode1)--&gt;hash--&gt;indexFor--&gt;最终索引位置 ，而通过key取出value的时候 key(hashcode2)--&gt;hash--&gt;indexFor--&gt;最终索引位置，由于hashcode1不等于hashcode2，导致没有定位到一个数组位置而返回逻辑上错误的值null（也有可能碰巧定位到一个数组位置，但是也会判断其entry的hash值是否相等。）</p>
-<p>所以，在重写equals的方法的时候，必须注意重写hashCode方法，同时还要保证通过equals判断相等的两个对象，调用hashCode方法要返回同样的整数值。而如果equals判断不相等的两个对象，其hashCode可以相同（只不过会发生哈希冲突，应尽量避免）。</p>
-<h3 id="hashtable实现原理要点概括">Hashtable实现原理要点概括</h3>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1619592758082.jfif" alt="" loading="lazy"></figure>
-<ol>
-<li>Hashtable是基于哈希表的Map接口的同步实现，不允许使用null值和null键，Hashtable中的映射不是有序的</li>
-<li>底层使用数组实现，数组中每一项是个单链表，即数组和链表的结合体</li>
-<li>Hashtable在底层将key-value当成一个整体进行处理，这个整体就是一个Entry对象。Hashtable底层采用一个Entry[]数组来保存所有的key-value对，当需要存储一个Entry对象时，会根据key的hash算法来决定其在数组中的存储位置，在根据equals方法决定其在该数组位置上的链表中的存储位置；当需要取出一个Entry时，也会根据key的hash算法找到其在数组中的存储位置，再根据equals方法从该位置上的链表中取出该Entry。</li>
-<li>synchronized是针对整张Hash表的，即每次锁住整张表让线程独占</li>
-</ol>
-<h3 id="concurrenthashmap实现原理要点概括">ConcurrentHashMap实现原理要点概括</h3>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1619592765108.jpeg" alt="" loading="lazy"></figure>
-<ol>
-<li>
-<p>ConcurrentHashMap允许多个修改操作并发进行，其关键在于使用了锁分离技术。</p>
-</li>
-<li>
-<p>它使用了多个锁来控制对hash表的不同段进行的修改，每个段其实就是一个小的hashtable，它们有自己的锁。只要多个并发发生在不同的段上，它们就可以并发进行。</p>
-</li>
-<li>
-<p>ConcurrentHashMap在底层将key-value当成一个整体进行处理，这个整体就是一个Entry对象。Hashtable底层采用一个Entry[]数组来保存所有的key-value对，当需要存储一个Entry对象时，会根据key的hash算法来决定其在数组中的存储位置，在根据equals方法决定其在该数组位置上的链表中的存储位置；当需要取出一个Entry时，也会根据key的hash算法找到其在数组中的存储位置，再根据equals方法从该位置上的链表中取出该Entry。</p>
-</li>
-<li>
-<p>与HashMap不同的是，ConcurrentHashMap使用多个子Hash表，也就是段(Segment)</p>
-</li>
-<li>
-<p>ConcurrentHashMap完全允许多个读操作并发进行，读操作并不需要加锁。如果使用传统的技术，如HashMap中的实现，如果允许可以在hash链的中间添加或删除元素，读操作不加锁将得到不一致的数据。</p>
-</li>
-</ol>
-<p><strong>ConcurrentHashMap 1.8为什么要使用CAS+Synchronized取代Segment+ReentrantLock</strong></p>
-<p>​	大家应该都知道ConcurrentHashMap在1.8的时候有了很大的改动,当然,我这里要说的改动不是指链表长度大于8就转为红黑树这种常识,我要说的是ConcurrentHashMap在1.8为什么用CAS+Synchronized取代Segment+ReentrantLock了</p>
-<p>​	首先,我假设你对CAS,Synchronized,ReentrantLock这些知识很了解,并且知道AQS,自旋锁,偏向锁,轻量级锁,重量级锁这些知识,也知道Synchronized和ReentrantLock在唤醒被挂起线程竞争的时候有什么区别</p>
-<p>​	首先我们说下1.8以前的ConcurrentHashMap是怎么保证线程并发的,首先在初始化ConcurrentHashMap的时候,会初始化一个Segment数组,容量为16,而每个Segment呢,都继承了ReentrantLock类,也就是说每个Segment类本身就是一个锁,之后Segment内部又有一个table数组,而每个table数组里的索引数据呢,又对应着一个Node链表.</p>
-<p>​	那么这样的好处是什么呢?我先从老版本的添加流程说起吧,由于电脑里没有JDK1.7及以下的版本我没法给你看代码,所以使用文字描述的方式,首先,当我们使用put方法的时候,是对我们的key进行hash拿到一个整型,然后将整型对16取模,拿到对应的Segment,之后调用Segment的put方法,然后上锁,请注意,这里lock()的时候其实是this.lock(),也就是说,每个Segment的锁是分开的</p>
-<p>​	其中一个上锁不会影响另一个,此时也就代表了我可以有十六个线程进来,而ReentrantLock上锁的时候如果只有一个线程进来,是不会有线程挂起的操作的,也就是说只需要在AQS里使用CAS改变一个state的值为1,此时就能对代码进行操作,这样一来,我们等于将并发量/16了.</p>
-<p>好,说完了老版本的ConcurrentHashMap,我们再说说新版本的,请看下面的图:</p>
-<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1629875978754.png" alt="" loading="lazy"></figure>
-<p>​	请注意Synchronized上锁的对象,请记住,Synchronized是靠对象的对象头和此对象对应的monitor来保证上锁的,也就是对象头里的重量级锁标志指向了monitor,而monitor呢,内部则保存了一个当前线程,也就是抢到了锁的线程.</p>
-<p>​	那么这里的这个f是什么呢?它是Node链表里的每一个Node,也就是说,Synchronized是将每一个Node对象作为了一个锁,这样做的好处是什么呢?将锁细化了,也就是说,除非两个线程同时操作一个Node,注意,是一个Node而不是一个Node链表哦,那么才会争抢同一把锁.</p>
-<p>​	如果使用ReentrantLock其实也可以将锁细化成这样的,只要让Node类继承ReentrantLock就行了,这样的话调用f.lock()就能做到和Synchronized(f)同样的效果,但为什么不这样做呢?</p>
-<p>​	请大家试想一下,锁已经被细化到这种程度了,那么出现并发争抢的可能性还高吗?还有就是,哪怕出现争抢了,只要线程可以在30到50次自旋里拿到锁,那么Synchronized就不会升级为重量级锁,而等待的线程也就不用被挂起,我们也就少了挂起和唤醒这个上下文切换的过程开销.</p>
-<p>​	但如果是ReentrantLock呢?它则只有在线程没有抢到锁,然后新建Node节点后再尝试一次而已,不会自旋,而是直接被挂起,这样一来,我们就很容易会多出线程上下文开销的代价.当然,你也可以使用tryLock(),但是这样又出现了一个问题,你怎么知道tryLock的时间呢?在时间范围里还好,假如超过了呢?</p>
-<p>​	所以,在锁被细化到如此程度上,使用Synchronized是最好的选择了.这里再补充一句,Synchronized和ReentrantLock他们的开销差距是在释放锁时唤醒线程的数量,Synchronized是唤醒锁池里所有的线程+刚好来访问的线程,而ReentrantLock则是当前线程后进来的第一个线程+刚好来访问的线程.</p>
-<p>​	如果是线程并发量不大的情况下,那么Synchronized因为自旋锁,偏向锁,轻量级锁的原因,不用将等待线程挂起,偏向锁甚至不用自旋,所以在这种情况下要比ReentrantLock高效</p>
-<p><strong>1.8弃用分段锁的原因由以下几点：</strong><br>
-1. 加入多个分段锁浪费内存空间。<br>
-2. 生产环境中， map 在放入时竞争同一个锁的概率非常小，分段锁反而会造成更新等操作的长时间等待。<br>
-3. 为了提高 GC 的效率</p>
-<h3 id="hashset实现原理要点概括">HashSet实现原理要点概括</h3>
-<ol>
-<li>HashSet由哈希表(实际上是一个HashMap实例)支持，不保证set的迭代顺序，并允许使用null元素。</li>
-<li>对于HashSet而言，它是基于HashMap实现的，HashSet底层使用HashMap来保存所有元素，因此HashSet 的实现比较简单，相关HashSet的操作，基本上都是直接调用底层HashMap的相关方法来完成，API也是对HashMap的行为进行了封装，可参考HashMap</li>
-</ol>
-<h3 id="linkedhashmap实现原理要点概括">LinkedHashMap实现原理要点概括</h3>
-<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1619593405140.png" alt="" loading="lazy"></figure>
-<ol>
-<li>LinkedHashMap继承于HashMap，底层使用哈希表和双向链表来保存所有元素，并且它是非同步，允许使用null值和null键。</li>
-<li>基本操作与父类HashMap相似，通过重写HashMap相关方法，重新定义了数组中保存的元素Entry，来实现自己的链接列表特性。该Entry除了保存当前对象的引用外，还保存了其上一个元素before和下一个元素after的引用，从而构成了双向链接列表。</li>
-</ol>
-<h3 id="linkedhashset实现原理要点概括">LinkedHashSet实现原理要点概括</h3>
-<ol>
-<li>对于LinkedHashSet而言，它继承与HashSet、又基于LinkedHashMap来实现的。LinkedHashSet底层使用LinkedHashMap来保存所有元素，它继承与HashSet，其所有的方法操作上又与HashSet相同。</li>
-</ol>
-<h2 id="java集合遍历的几种方式总结及比较">java集合遍历的几种方式总结及比较</h2>
-<h3 id="集合类的通用遍历方式-用迭代器迭代">集合类的通用遍历方式, 用迭代器迭代:</h3>
-<pre><code class="language-java">Iterator it = list.iterator();
-
-while(it.hasNext()) {
-
-　　Object obj = it.next();
-
-}
-</code></pre>
-<h3 id="map遍历方式">Map遍历方式：</h3>
-<p><strong>1、通过获取所有的key按照key来遍历</strong></p>
-<pre><code class="language-java">//Set&lt;Integer&gt; set = map.keySet(); //得到所有key的集合
-for (Integer in : map.keySet()) {
-    String str = map.get(in);//得到每个key多对用value的值
-}
-</code></pre>
-<p><strong>2、通过Map.entrySet使用iterator遍历key和value</strong></p>
-<pre><code class="language-java">Iterator&lt;Map.Entry&lt;Integer, String&gt;&gt; it = map.entrySet().iterator();
-while (it.hasNext()) {
-     Map.Entry&lt;Integer, String&gt; entry = it.next();
-       System.out.println(&quot;key= &quot; + entry.getKey() + &quot; and value= &quot; + entry.getValue());
-}
-</code></pre>
-<p><strong>3、通过Map.entrySet遍历key和value，推荐，尤其是容量大时</strong></p>
-<pre><code class="language-java">for (Map.Entry&lt;Integer, String&gt; entry : map.entrySet()) {
-    //Map.entry&lt;Integer,String&gt; 映射项（键-值对）  有几个方法：用上面的名字entry
-    //entry.getKey() ;entry.getValue(); entry.setValue();
-    //map.entrySet()  返回此映射中包含的映射关系的 Set视图。
-    System.out.println(&quot;key= &quot; + entry.getKey() + &quot; and value= &quot; + entry.getValue());
-}
-</code></pre>
-<p>4、通过Map.values()遍历所有的value，但不能遍历key</p>
-<pre><code class="language-java">for (String v : map.values()) {
-    System.out.println(&quot;value= &quot; + v);
-}
-</code></pre>
-<h3 id="list遍历方式">List遍历方式：</h3>
-<p><strong>第一种：</strong></p>
-<pre><code class="language-java">Iterator iterator = list.iterator();
-while(iterator.hasNext()){
-    int i = (Integer) iterator.next();
-    System.out.println(i);
-}
-</code></pre>
-<p><strong>第二种：</strong></p>
-<pre><code class="language-java">for (Object object : list) { 
-    System.out.println(object); 
-}
-</code></pre>
-<p><strong>第三种：</strong></p>
-<pre><code class="language-java">for(int i = 0 ;i&lt;list.size();i++) {  
-    int j= (Integer) list.get(i);
-    System.out.println(j);  
-}
-</code></pre>
-<h3 id="每个遍历方法的实现原理是什么">每个遍历方法的实现原理是什么？</h3>
-<ol>
-<li>传统的for循环遍历，基于计数器的：</li>
-</ol>
-<p>​    遍历者自己在集合外部维护一个计数器，然后依次读取每一个位置的元素，当读取到最后一个元素后，停止。主要就是需要按元素的位置来读取元素。</p>
-<ol start="2">
-<li>迭代器遍历，Iterator：</li>
-</ol>
-<p>​    每一个具体实现的数据集合，一般都需要提供相应的Iterator。相比于传统for循环，Iterator取缔了显式的遍历计数器。所以基于顺序存储集合的Iterator可以直接按位置访问数据。而基于链式存储集合的Iterator，正常的实现，都是需要保存当前遍历的位置。然后根据当前位置来向前或者向后移动指针。</p>
-<ol start="3">
-<li>foreach循环遍历：</li>
-</ol>
-<p>​    根据反编译的字节码可以发现，foreach内部也是采用了Iterator的方式实现，只不过Java编译器帮我们生成了这些代码。</p>
-<h3 id="各遍历方式对于不同的存储方式性能如何">各遍历方式对于不同的存储方式，性能如何？</h3>
-<p><strong>1、传统的for循环遍历，基于计数器的：</strong></p>
-<p>​    因为是基于元素的位置，按位置读取。所以我们可以知道，对于顺序存储，因为读取特定位置元素的平均时间复杂度是O(1)，所以遍历整个集合的平均时间复杂度为O(n)。而对于链式存储，因为读取特定位置元素的平均时间复杂度是O(n)，所以遍历整个集合的平均时间复杂度为O(n2)（n的平方）。</p>
-<p>ArrayList按位置读取的代码：直接按元素位置读取。</p>
-<pre><code class="language-java">transient Object[] elementData;
-
-public E get(int index) {
-    rangeCheck(index);
-    return elementData(index);
-}
-
-E elementData(int index) {
-    return (E) elementData[index];
-}
-</code></pre>
-<p>LinkedList按位置读取的代码：每次都需要从第0个元素开始向后读取。其实它内部也做了小小的优化。</p>
-<pre><code class="language-java">transient int size = 0;
-transient Node&lt;E&gt; first;
-transient Node&lt;E&gt; last;
-
-public E get(int index) {
-    checkElementIndex(index);
-    return node(index).item;
-}
-
-Node&lt;E&gt; node(int index) {
-    if (index &lt; (size &gt;&gt; 1)) {   //查询位置在链表前半部分，从链表头开始查找
-        Node&lt;E&gt; x = first;
-        for (int i = 0; i &lt; index; i++)
-            x = x.next;
-        return x;
-    } else {                     //查询位置在链表后半部分，从链表尾开始查找
-        Node&lt;E&gt; x = last;
-        for (int i = size - 1; i &gt; index; i--)
-            x = x.prev;
-        return x;
-    }
-}
-</code></pre>
-<p><strong>2、迭代器遍历，Iterator：</strong></p>
-<p>​    那么对于RandomAccess类型的集合来说，没有太多意义，反而因为一些额外的操作，还会增加额外的运行时间。但是对于Sequential Access的集合来说，就有很重大的意义了，因为Iterator内部维护了当前遍历的位置，所以每次遍历，读取下一个位置并不需要从集合的第一个元素开始查找，只要把指针向后移一位就行了，这样一来，遍历整个集合的时间复杂度就降低为O(n)；</p>
-<p>（这里只用LinkedList做例子）LinkedList的迭代器，内部实现，就是维护当前遍历的位置，然后操作指针移动就可以了：</p>
-<pre><code class="language-java">public E next() {
-    checkForComodification();
-    if (!hasNext())
-        throw new NoSuchElementException();
-
-    lastReturned = next;
-    next = next.next;
-    nextIndex++;
-    return lastReturned.item;
-}
-
-public E previous() {
-    checkForComodification();
-    if (!hasPrevious())
-        throw new NoSuchElementException();
-
-    lastReturned = next = (next == null) ? last : next.prev;
-    nextIndex--;
-    return lastReturned.item;
-}
-</code></pre>
-<p><strong>3、foreach循环遍历：</strong></p>
-<p>​    分析Java字节码可知，foreach内部实现原理，也是通过Iterator实现的，只不过这个Iterator是Java编译器帮我们生成的，所以我们不需要再手动去编写。但是因为每次都要做类型转换检查，所以花费的时间比Iterator略长。时间复杂度和Iterator一样。</p>
-<p>Iterator和foreach字节码如下：</p>
-<pre><code class="language-java">//使用Iterator的字节码：
-    Code:
-       0: new           #16                 // class java/util/ArrayList
-       3: dup
-       4: invokespecial #18                 // Method java/util/ArrayList.&quot;&lt;init&gt;&quot;:()V
-       7: astore_1
-       8: aload_1
-       9: invokeinterface #19,  1           // InterfaceMethod java/util/List.iterator:()Ljava/util/Iterator;
-      14: astore_2
-      15: goto          25
-      18: aload_2
-      19: invokeinterface #25,  1           // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
-      24: pop
-      25: aload_2
-      26: invokeinterface #31,  1           // InterfaceMethod java/util/Iterator.hasNext:()Z
-      31: ifne          18
-      34: return
- 
- 
-//使用foreach的字节码：
-    Code:
-       0: new           #16                 // class java/util/ArrayList
-       3: dup
-       4: invokespecial #18                 // Method java/util/ArrayList.&quot;&lt;init&gt;&quot;:()V
-       7: astore_1
-       8: aload_1
-       9: invokeinterface #19,  1           // InterfaceMethod java/util/List.iterator:()Ljava/util/Iterator;
-      14: astore_3
-      15: goto          28
-      18: aload_3
-      19: invokeinterface #25,  1           // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
-      24: checkcast     #31                 // class loop/Model
-      27: astore_2
-      28: aload_3
-      29: invokeinterface #33,  1           // InterfaceMethod java/util/Iterator.hasNext:()Z
-      34: ifne          18
-      37: return
-</code></pre>
-<h3 id="各遍历方式的适用于什么场合">各遍历方式的适用于什么场合？</h3>
-<ol>
-<li>
-<p>传统的for循环遍历，基于计数器的：</p>
-<p>​    顺序存储：读取性能比较高。适用于遍历顺序存储集合。</p>
-<p>​    链式存储：时间复杂度太大，不适用于遍历链式存储的集合。</p>
-</li>
-<li>
-<p>迭代器遍历，Iterator：</p>
-<p>​    顺序存储：如果不是太在意时间，推荐选择此方式，毕竟代码更加简洁，也防止了Off-By-One的问题。</p>
-<p>​    链式存储：意义就重大了，平均时间复杂度降为O(n)，还是挺诱人的，所以推荐此种遍历方式。</p>
-</li>
-<li>
-<p>foreach循环遍历：</p>
-<p>​    foreach只是让代码更加简洁了，但是他有一些缺点，就是遍历过程中不能操作数据集合（删除等），所以有些场合不使用。而且它本身就是基于Iterator实现的，但是由于类型转换的问题，所以会比直接使用Iterator慢一点，但是还好，时间复杂度都是一样的。所以怎么选择，参考上面两种方式，做一个折中的选择。</p>
-</li>
-</ol>
-<h3 id="randomaccess接口标记">RandomAccess接口标记</h3>
-<p>Java数据集合框架中，提供了一个RandomAccess接口，该接口没有方法，只是一个标记。通常被List接口的实现使用，用来标记该List的实现是否支持Random Access。</p>
-<p>一个数据集合实现了该接口，就意味着它支持Random Access，按位置读取元素的平均时间复杂度为O(1)。比如ArrayList。</p>
-<p>而没有实现该接口的，就表示不支持Random Access。比如LinkedList。</p>
-<p>所以看来JDK开发者也是注意到这个问题的，那么推荐的做法就是，如果想要遍历一个List，那么先判断是否支持Random Access，也就是 list instanceof RandomAccess。</p>
-<p>比如：</p>
-<pre><code class="language-java">if (list instanceof RandomAccess) {
-    //使用传统的for循环遍历。
-} else {
-    //使用Iterator或者foreach。
-}
-</code></pre>
-<h2 id="array-list-set互转">Array、List、Set互转</h2>
-<h3 id="array-list互转">Array、List互转</h3>
-<ol>
-<li>Array 转List</li>
-</ol>
-<pre><code class="language-java">String[] s = new String[]{&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;,&quot;E&quot;};
-List&lt;String&gt; list = Arrays.asList(s);
-# 注意这里list里面的元素直接是s里面的元素( list backed by the specified array)，换句话就是说：对s的修改，直接影响list。
-s[0] =&quot;AA&quot;;
-System.out.println(&quot;list: &quot; + list);
-# 输出结果
-list: [AA, B, C, D, E]
-</code></pre>
-<ol start="2">
-<li>List转Array</li>
-</ol>
-<pre><code class="language-java">String[] dest = list.toArray(new String[0]);//new String[0]是指定返回数组的类型
-System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
-# 输出结果
-dest: [AA, B, C, D, E]
-# 注意这里的dest里面的元素不是list里面的元素，换句话就是说：对list中关于元素的修改，不会影响dest。
-list.set(0, &quot;Z&quot;);
-System.out.println(&quot;modified list: &quot; + list);
-System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
-# 输出结果
-modified list: [Z, B, C, D, E]
-dest: [AA, B, C, D, E]
-# 可以看到list虽然被修改了，但是dest数组没有没修改。
-</code></pre>
-<h3 id="list-set互转">List、Set互转</h3>
-<p>因为List和Set都实现了Collection接口，且addAll(Collection&lt;? extends E&gt; c);方法，因此可以采用addAll()方法将List和Set互相转换；另外，List和Set也提供了Collection&lt;? extends E&gt; c作为参数的构造函数，因此通常采用构造函数的形式完成互相转化。</p>
-<pre><code class="language-java">//List转Set
-Set&lt;String&gt; set = new HashSet&lt;&gt;(list);
-System.out.println(&quot;set: &quot; + set);
-//Set转List
-List&lt;String&gt; list_1 = new ArrayList&lt;&gt;(set);
-System.out.println(&quot;list_1: &quot; + list_1);
-# 和toArray()一样，被转换的List(Set)的修改不会对被转化后的Set（List）造成影响。
-</code></pre>
-<h3 id="array-set互转">Array、Set互转</h3>
-<pre><code class="language-java">//array转set
-s = new String[]{&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;,&quot;E&quot;};
-set = new HashSet&lt;&gt;(Arrays.asList(s));
-System.out.println(&quot;set: &quot; + set);
-//set转array
-dest = set.toArray(new String[0]);
-System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
-</code></pre>
-<h2 id="java-中初始化-list-集合的-6-种方式">Java 中初始化 List 集合的 6 种方式!</h2>
-<ol>
-<li>
-<p>常规方式</p>
-<pre><code class="language-java"> # 后面缺失的泛型类型在 JDK 7 之后就可以不用写具体的类型了，改进后会自动推断类型
- List&lt;String&gt; list = new ArrayList&lt;&gt;();
- list.add(&quot;1&quot;);
- list.add(&quot;2&quot;);
- list.add(&quot;3&quot;);
-</code></pre>
-</li>
-<li>
-<p>Arrays 工具类</p>
-<pre><code class="language-java">import static java.util.Arrays.asList;
- List&lt;String&gt; list = asList(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;);
- # 注意，上面的 asList 是 Arrays 的静态方法，这里使用了静态导入。这种方式添加的是不可变的 List, 即不能添加、删除等操作，需要警惕。。
- # 如果要可变，那就使用 ArrayList 再包装一下，如下面所示。
- List&lt;String&gt; numbers = new ArrayList&lt;&gt;(Arrays.asList(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;));
- numbers.add(&quot;4&quot;);
-</code></pre>
-</li>
-<li>
-<p>Collections 工具类</p>
-<pre><code class="language-java">List&lt;String&gt; list = Collections.nCopies(3, &quot;list&quot;);
- # 这种方式添加的是不可变的、复制某个元素N遍的工具类，以上程序输出：
- # [list, list, list]
- # 老规则，如果要可变，使用 ArrayList 包装一遍。
- List&lt;String&gt; list = new ArrayList&lt;&gt;(Collections.nCopies(3, &quot;list&quot;));
- list.add(&quot;list&quot;);
-
- # 还有初始化单个对象的 List 工具类，这种方式也是不可变的，集合内只能有一个元素，这种也用得很少啊。
- List&lt;String&gt; list = Collections.singletonList(&quot;list&quot;);
-
- # 还有一个创建空 List 的工具类，没有默认容量，节省空间，但不知道实际工作中没有用。
- List&lt;String&gt; list = Collections.emptyList(&quot;list&quot;);
-</code></pre>
-</li>
-<li>
-<p>匿名内部类</p>
-<pre><code class="language-java">List&lt;String&gt; list = new ArrayList&lt;&gt;() {{
- add(&quot;1&quot;);
- add(&quot;2&quot;);
- add(&quot;3&quot;);
- }};
-</code></pre>
-<p>这种其实有效率和内存泄漏的问题，参考：</p>
-<p>https://blog.csdn.net/xukun5137/article/details/78275201</p>
-<p>https://www.cnblogs.com/wenbronk/p/7000643.html</p>
-</li>
-<li>
-<p>JDK8 Stream</p>
-<pre><code class="language-java">import static java.util.stream.Collectors.toList;
- List&lt;String&gt; list = Stream.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;).collect(toList());
-</code></pre>
-</li>
-<li>
-<p>JDK 9 List.of</p>
-<pre><code class="language-java">List&lt;String&gt; list = List.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;);
-</code></pre>
-<p>这是 JDK 9 里面新增的 List 接口里面的静态方法，同样也是不可变的。</p>
-</li>
-</ol>
 ]]></content>
     </entry>
 </feed>

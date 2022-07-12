@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1657191760504"
+            <form id="gridea-search-form" style="position: relative" data-update="1657629282835"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1657191760504"
+            <form id="gridea-search-form" style="position: relative" data-update="1657629282835"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -254,8 +254,8 @@ Reactor 对象通过 select 监控客户端请求事件, 收到事件后，通�
 Handler 只负责响应事件，不做具体的业务处理, 通过 read 读取数据后，会分发给后面的 Worker 线程池的某个线程处理业务<br>
 Worker 线程池会分配独立线程完成真正的业务， 并将结果返回给 Handler<br>
 Handler 收到响应后，通过 send 将结果返回给 Client</p>
-<p>**优点：**可以充分的利用多核cpu 的处理能力<br>
-**缺点：**多线程数据共享和访问比较复杂,单 Reactor 处理所有的事件的监听和响应，在单线程运行， 在高并发场景容易出现性能瓶颈</p>
+<p><strong>优点</strong>：可以充分的利用多核cpu 的处理能力<br>
+<strong>缺点</strong>：多线程数据共享和访问比较复杂,单 Reactor 处理所有的事件的监听和响应，在单线程运行， 在高并发场景容易出现性能瓶颈</p>
 <h4 id="5-主从-reactor-多线程">5. 主从 Reactor 多线程</h4>
 <figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1656503952682.png" alt="" loading="lazy"></figure>
 <p><strong>说明</strong></p>
