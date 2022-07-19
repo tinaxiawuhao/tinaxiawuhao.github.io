@@ -10,10 +10,10 @@
 <meta name="keywords" content="">
 <meta name="description" content="欢迎访问[tianxia]的个人博客">
 <meta name="author" content="kveln">
-<title>gradle基础 | tianxia</title>
+<title>gradle详情 | tianxia</title>
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
-<link rel="alternate" type="application/rss+xml" title="gradle基础 | tianxia » Feed"
+<link rel="alternate" type="application/rss+xml" title="gradle详情 | tianxia » Feed"
   href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
@@ -26,7 +26,7 @@
 
 <script>hljs.initHighlightingOnLoad();</script>
 
-  <meta property="og:description" content="gradle基础" />
+  <meta property="og:description" content="gradle详情" />
   <meta property="og:url" content="https://tinaxiawuhao.github.io/post/29jyrX-eN/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1657629282835"
+            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1657629282835"
+            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -150,10 +150,10 @@
                 <a href="https://tinaxiawuhao.github.io/tag/_whMOC5wx/" class="tag">gradle</a>
                 
               </span>
-              <h1>gradle基础</h1>
+              <h1>gradle详情</h1>
               <span class="meta">
                 Posted on
-                2022-07-05，12 min read
+                2021-07-01，17 min read
               </span>
             </div>
           
@@ -171,17 +171,12 @@
           <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/29jyrX-eN.png" alt="封面图">
           </img>
           
-          <h3 id="一-依赖管理">一、依赖管理</h3>
-<ol>
-<li>
-<p>依赖配置</p>
-<blockquote>
+          <h3 id="一-依赖管理">一 依赖管理</h3>
 <p>implementation:会将指定的依赖添加到编译路径，并且会将该依赖打包到输出，但是这个依赖在编译时不能暴露给其他模块，例如依赖此模块的其他模块。这种方式指定的依赖在编译时只能在当前模块中访问。</p>
 <p>api:使用api配置的依赖会将对应的依赖添加到编译路径，并将依赖打包输出，但是这个依赖是可以传递的，比如模块A依赖模块B，B依赖库C，模块B在编译时能够访问到库C，但是与implemetation不同的是，在模块A中库C也是可以访问的。</p>
 <p>compileOnly:compileOnly修饰的依赖会添加到编译路径中，但是不会打包，因此只能在编译时访问，且compileOnly修饰的依赖不会传递。</p>
 <p>runtimeOnly:这个与compileOnly相反，它修饰的依赖不会添加到编译路径中，但是被打包，运行时使用。没有使用过。</p>
 <p>annotationProcessor:用于注解处理器的依赖配置</p>
-</blockquote>
 <pre><code class="language-java">dependencies {
     // 本地项目
     api project(':com.test.core:core-common')  
@@ -192,12 +187,8 @@
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 </code></pre>
-</li>
-</ol>
-<h3 id="二-仓库">二、仓库</h3>
-<ol>
-<li>
-<p>远程仓库<br>
+<h3 id="二-仓库">二 仓库</h3>
+<p><strong>远程仓库</strong><br>
 使用Maven中央仓库，maven仓库的URL为：<a href="https://links.jianshu.com/go?to=http%3A%2F%2Frepo1.maven.org%2Fmaven2%2F">http://repo1.maven.org/maven2/</a></p>
 <pre><code class="language-java">repositories {
     mavenCentral()
@@ -205,17 +196,15 @@
 </code></pre>
 <p>使用Maven远程仓库</p>
 <pre><code class="language-java">repositories {
-    mavenLocal()
+    //阿里云远程仓库
     maven { url 'https://maven.aliyun.com/repository/central'}
 	maven { url 'https://maven.aliyun.com/repository/public' }
     mavenCentral()
 }
 </code></pre>
-</li>
-<li>
-<p>本地仓库<br>
-配置Gradle使用maven本地仓库：CRADLE_USER_HOME：D:.m2\repository</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657022747903.png" alt="" loading="lazy"></figure>
+<p><strong>本地仓库</strong><br>
+配置Gradle使用maven本地仓库：<code>CRADLE_USER_HOME：D:.m2\repository</code></p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657022747903.png" alt="img" loading="lazy"></figure>
 <p>修改配置build.gradle：</p>
 <pre><code class="language-java">/**
  * 指定所使用的仓库，mavenCentral()表示使用中央仓库，
@@ -227,11 +216,10 @@ repositories {
     mavenCentral()
 }
 </code></pre>
-</li>
-<li>
-<p>修改或者添加额外的私有仓库地址<br>
+<p><strong>修改或者添加额外的私有仓库地址</strong><br>
 直接修改 settings.gradle 来添加其它仓库：</p>
 <pre><code class="language-java">// settings.gradle
+//pluginManagement {}块只能出现在settings.gradle文件中，必须是文件中的第一个块，也可以以settings形式出现在初始化脚本中。
 pluginManagement {
     repositories {
 		maven { url 'https://maven.aliyun.com/repository/central'}
@@ -247,104 +235,127 @@ pluginManagement {
 	}
 }
 </code></pre>
-</li>
-</ol>
-<h3 id="三-多项目构建">三、多项目构建</h3>
+<h3 id="三-多项目构建">三 多项目构建</h3>
 <p>多项目构成：allProjects = root项目+各子项目<br>
 settings文件声明了所需的配置来实例化项目的层次结构。在默认情况下，这个文件被命名为settings.gradle，并且和根项目的build.gradle文件放在一起，该文件在初始化阶段被执行。根项目就像一个容器，子项目会迭代访问它的配置并注入到自己的配置中。</p>
-<ol>
-<li>
-<p>多项目构建<br>
+<p><strong>多项目构建</strong><br>
 多项目构建总是需要指定一个树根，树中的每一个节点代表一个项目，每一个Project对象都指定有一个表示在树中位置的路径；在设置文件中我们还可以使用一套方法来自定义构建项目树。<br>
 settings.gradle作用就是用于多项目构建，一般像这样：</p>
-<pre><code class="language-java">// 父模块名称
-rootProject.name = 'iot-cloud-platform'
-/* 引入子模块 */
-include 'iot-commons'
-include 'iot-service:user-center'
+<pre><code class="language-java">//父模块名称
+rootProject.name = 'nacos'
+//引入子模块
+include 'sentinel'
+include 'openfeign'
+include 'loadbalancer'
+include 'gateway'
+include 'rocketmq'
+include 'sleuth'
+include 'seata'
+include 'provide'
 findProject(':iot-service:user-center')?.name = 'user-center'
 </code></pre>
-</li>
-<li>
-<p>subprojects子项目通用配置<br>
-subprojects是对所有Child Project的配置:</p>
-<pre><code class="language-java">subprojects {
-    apply plugin: 'java'
-    apply plugin: 'idea'
-    // spring boot 插件
-    apply plugin: 'org.springframework.boot'
-    // 必须添加spring依赖管理
-    apply plugin: 'io.spring.dependency-management'
-    repositories {
-        mavenLocal()
-        // 阿里云仓库
-        maven { url 'https://maven.aliyun.com/repository/central'}
-		maven { url 'https://maven.aliyun.com/repository/public' }
-        mavenCentral()
-    }
-    dependencies {
-        testImplementation('org.springframework.boot:spring-boot-starter-test') {
-            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-        }
-    }
-    dependencyManagement {
-        imports {
-            // SpringCloud依赖
-            mavenBom &quot;org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}&quot;
-        }
-    }
-    jar {
-        manifest.attributes provider: 'gradle'
-    }
-}
-</code></pre>
-</li>
-<li>
-<p>buildScript<br>
+<p><strong>buildScript</strong><br>
 buildScript块的repositories主要是为了Gradle脚本自身的执行，获取脚本依赖插件。<br>
 buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。<br>
 gradle在执行脚本时，会优先执行buildscript代码块中的内容，然后才会执行剩余的build脚本。</p>
 <pre><code class="language-java">buildscript {
-    // 定义SpringCloud版本，统一规定springboot的版本
     ext {
-        set('springCloudVersion', &quot;Hoxton.RC2&quot;)
-        set('springBootVersion', &quot;2.2.1.RELEASE&quot;)
-        set('version', &quot;1.0.0&quot;)
+        //spring-cloud-dependencies 2020.0.0 默认不在加载bootstrap 配置文件，
+        //如果项目中要用bootstrap 配置文件 需要手动添加spring-cloud-starter-bootstrap 依赖，不然启动项目会报错的。
+        set('springCloudVersion', &quot;2021.0.3&quot;)
+        //定义一个变量，统一规定springboot的版本
+        set('springBootVersion', &quot;2.6.8&quot;)
+        set('alibabaVersion', &quot;2.2.7.RELEASE&quot;)
+        set('lombok', &quot;1.18.16&quot;)
+        set('knife4j', &quot;2.0.9&quot;)
+        set('hutool', &quot;4.6.3&quot;)
+        set('rocketmq', &quot;2.2.2&quot;)
     }
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
     dependencies {
-        // 用来打包
+        //用来打包
         classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}&quot;)
     }
 }
 </code></pre>
-</li>
-</ol>
-<p>​		ext：ext是自定义属性，现在很多人都喜欢把所有关于版本的信息都利用ext放在另一个自己新建的gradle文件中集中管理。</p>
-<ol start="4">
-<li>
-<p>allprojects<br>
+<p>ext：ext是自定义属性，现在很多人都喜欢把所有关于版本的信息都利用ext放在另一个自己新建的gradle文件中集中管理。</p>
+<p><strong>allprojects</strong><br>
 allprojects块的repositories用于多项目构建，为所有项目提供共同所需依赖包。而子项目可以配置自己的repositories以获取自己独需的依赖包。</p>
 <blockquote>
 <p>buildscript和allprojects的作用和区别：<br>
 buildscript中的声明是gradle脚本自身需要使用的资源，就是说它自己需要的资源，跟你其它模块其实并没有什么关系。而allprojects声明的却是<code>所有module</code>所需要使用的资源，就是说你的每个module都需要用同一个第三库的时候，可以在allprojects里面声明。</p>
 </blockquote>
 <pre><code class="language-java">allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+
+    //下面两句必须在所有子项目中添加，否则导致import了看起来没问题，但是编译时找不到其他模块的类。
+    group = 'com.example'
+    version = '0.0.1-SNAPSHOT'
+    // 指定JDK版本
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
     repositories {
         mavenLocal()
-        // 阿里云仓库
-        maven { url 'https://maven.aliyun.com/repository/central'}
-		maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         mavenCentral()
     }
-    // 指定编码格式
+
+    //指定编码格式
     tasks.withType(JavaCompile) {
         options.encoding = &quot;UTF-8&quot;
     }
 }
 </code></pre>
-</li>
-</ol>
-<h3 id="四-gradleproperties">四、gradle.properties</h3>
+<p><strong>subprojects子项目通用配置</strong><br>
+subprojects是对所有Child Project的配置:</p>
+<pre><code class="language-java">subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    //dependency-management 插件
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+    
+    dependencies {
+        implementation(enforcedPlatform(&quot;org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}&quot;))
+        implementation(enforcedPlatform(&quot;com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaVersion}&quot;))
+        implementation(enforcedPlatform(&quot;org.springframework.boot:spring-boot-dependencies:${springBootVersion}&quot;))
+        implementation &quot;com.github.xiaoymin:knife4j-spring-boot-starter:${knife4j}&quot;
+        implementation &quot;cn.hutool:hutool-all:${hutool}&quot;
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+        implementation('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'){
+            exclude group: 'org.springframework.cloud', module: 'spring-cloud-starter-netflix-ribbon'
+        }
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+        compileOnly(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        testImplementation(&quot;org.springframework.boot:spring-boot-starter-test:${springBootVersion}&quot;)
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+}
+</code></pre>
+<h3 id="四-gradleproperties">四 gradle.properties</h3>
 <p>gradle中的常用属性可以写在gradle.properties中。<br>
   一般我们都把全局属性都编写在一个工具类中，如果是有环境的切换的话，那么我们还会定义一个标志来进行相应的变换。对于项目而言，有时候需要配置某些敏感信息。比如密码，帐号等。而这些信息需要被很多类共同使用，所以必须有一个全局的配置。当需要把项目push到git上时，我们不希望别人看到我们项目的key，token等。我们可以将这些信息设置在gradle.properties中。<br>
 只有在Android中才可使用。</p>
@@ -365,23 +376,31 @@ buildscript中的声明是gradle脚本自身需要使用的资源，就是说它
     }
 }
 </code></pre>
-<h3 id="五-gradle-插件plugins">五、Gradle 插件(Plugins)</h3>
+<h3 id="五-gradle-插件plugins">五 Gradle 插件(Plugins)</h3>
 <p>Gradle 也可以用下面的方式声明使用的插件：</p>
-<pre><code class="language-java">plugins {
+<pre><code class="language-java">// plugins DSL
+plugins {
     id 'org.springframework.boot' version '2.2.1.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
 }
+
+// apply plugin
+apply plugin: 'java-library'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+//dependency-management 插件
+apply plugin: 'io.spring.dependency-management'
 </code></pre>
 <p>其实是从 Gradle 官方的插件仓库<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fplugins.gradle.org%2Fm2%2F">https://plugins.gradle.org/m2/</a>下载的。</p>
-<h3 id="六-常见的task命令">六、常见的task命令</h3>
+<h3 id="六-常见的task命令">六 常见的task命令</h3>
 <p><code>build</code>:当运行gradle build命令时Gradle将会编译和测试你的代码，并且创建一个包含类和资源的JAR文件。<br>
 <code>clean</code>:当运行gradle clean命令时Gradle将会删除build生成的目录和所有生成的文件。<br>
 <code>assemble</code>:当运行gradle assemble命令时Gradle将会编译并打包代码，但是并不运行单元测试。<br>
 <code>check</code>:当运行gradle check命令时Gradle将会编译并测试你的代码，其他的插件会加入更多的检查步骤。</p>
-<h3 id="七-gradle-wrapper">七、gradle-wrapper</h3>
+<h3 id="七-gradle-wrapper">七 gradle-wrapper</h3>
 <p>Wrapper是对Gradle的一层包装，便于在团队开发过程中统一Gradle构建的版本号，这样大家都可以使用统一的Gradle版本进行构建。</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657022568864.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657022568864.png" alt="img" loading="lazy"></figure>
 <pre><code class="language-java">distributionBase=GRADLE_USER_HOME
 distributionPath=wrapper/dists
 distributionUrl=https\://services.gradle.org/distributions/gradle-7.4.2-bin.zip
@@ -390,33 +409,25 @@ zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 </code></pre>
 <p>distributionUrl是要下载的gradle的地址，使用哪个版本的gradle，就在这里修改。</p>
-<blockquote>
 <p>gradle的3种版本：<br>
 gradle-xx-all.zip是完整版，包含了各种二进制文件，源代码文件，和离线的文档。<br>
 gradle-xx-bin.zip是二进制版，只包含了二进制文件（可执行文件），没有文档和源代码。<br>
 gradle-xx-src.zip是源码版，只包含了Gradle源代码，不能用来编译你的工程。</p>
-</blockquote>
-<blockquote>
 <p>zipStoreBase和zipStorePath组合在一起，是下载的gradle-3.1-bin.zip所存放的位置。<br>
 zipStorePath是zipStoreBase指定的目录下的子目录。</p>
-</blockquote>
-<blockquote>
 <p>distributionBase和distributionPath组合在一起，是解压gradle-5.6.4-bin.zip之后的文件的存放位置。<br>
 distributionPath是distributionBase指定的目录下的子目录。</p>
-</blockquote>
 <p>下载位置可以和解压位置不一样。</p>
-<blockquote>
 <p>zipStoreBase和distributionBase有两种取值：GRADLE_USER_HOME和PROJECT。<br>
 其中，GRADLE_USER_HOME表示用户目录。<br>
 在windows下是%USERPROFILE%/.gradle，例如C:\Users&lt;user_name&gt;.gradle\。<br>
 在linux下是$HOME/.gradle，例如~/.gradle。<br>
 PROJECT表示工程的当前目录，即gradlew所在的目录。</p>
-</blockquote>
-<h3 id="八-依赖分组">八、依赖分组</h3>
+<h3 id="八-依赖分组">八 依赖分组</h3>
 <p>Gradle 依赖是分组的 ,分组是在 org.gradle.api.Project 中的 configurations 中配置的 ,如 &quot; implementation &quot; , &quot; compile &quot; 等都是分组 , 这些分组都是在 org.gradle.api.Project#configurations 中进行配置 , 也就是 build.gradle#configurations 中配置 ;</p>
 <p><strong>build.gradle#configurations 自定义依赖分组</strong></p>
 <p>在 build.gradle 中配置 configurations :</p>
-<pre><code>configurations {
+<pre><code class="language-groovy">configurations {
   hello {
   }
 }
@@ -426,7 +437,7 @@ PROJECT表示工程的当前目录，即gradlew所在的目录。</p>
   hello 'com.android.support:appcompat-v7:28.0.0'
 }
 </code></pre>
-<h3 id="九-依赖版本冲突">九、依赖版本冲突</h3>
+<h3 id="九-依赖版本冲突">九 依赖版本冲突</h3>
 <p>Gradle对解决传递依赖提供了两种策略，使用最新版本或者直接导致构建失败。默认的策略是使用最新版本。虽然这样的策略能够解决一些问题，但是还是不够。常见的一种情况是，NoSuchMethond或者ClassNotFound。这时候，你可能需要一些特殊手段，比如排除不想要的传递依赖。<br>
 排除传递依赖的方式有两种：</p>
 <blockquote>
@@ -465,11 +476,133 @@ configurations.all {
     }
 }
 </code></pre>
+<h3 id="十-springcloud-gradle管理">十 springcloud-gradle管理</h3>
+<p><strong>parent:settings.gradle</strong></p>
+<pre><code class="language-groovy">rootProject.name = 'nacos'
+include 'sentinel'
+include 'openfeign'
+include 'loadbalancer'
+include 'gateway'
+include 'rocketmq'
+include 'sleuth'
+include 'seata'
+include 'provide'
+</code></pre>
+<p><strong>parent:build.gradle</strong></p>
+<pre><code class="language-groovy">buildscript {
+    ext {
+        //spring-cloud-dependencies 2020.0.0 默认不在加载bootstrap 配置文件，
+        //如果项目中要用bootstrap 配置文件 需要手动添加spring-cloud-starter-bootstrap 依赖，不然启动项目会报错的。
+        set('springCloudVersion', &quot;2021.0.3&quot;)
+        //定义一个变量，统一规定springboot的版本
+        set('springBootVersion', &quot;2.6.8&quot;)
+        set('alibabaVersion', &quot;2.2.7.RELEASE&quot;)
+        set('lombok', &quot;1.18.16&quot;)
+        set('knife4j', &quot;2.0.9&quot;)
+        set('hutool', &quot;4.6.3&quot;)
+        set('rocketmq', &quot;2.2.2&quot;)
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
+    dependencies {
+        //用来打包
+        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}&quot;)
+    }
+}
+
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+
+    //下面两句必须在所有子项目中添加，否则导致import了看起来没问题，但是编译时找不到其他模块的类。
+    group = 'com.example'
+    version = '0.0.1-SNAPSHOT'
+    // 指定JDK版本
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
+    //指定编码格式
+    tasks.withType(JavaCompile) {
+        options.encoding = &quot;UTF-8&quot;
+    }
+}
+
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    //dependency-management 插件
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        implementation(enforcedPlatform(&quot;org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}&quot;))
+        implementation(enforcedPlatform(&quot;com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaVersion}&quot;))
+        implementation(enforcedPlatform(&quot;org.springframework.boot:spring-boot-dependencies:${springBootVersion}&quot;))
+        implementation &quot;com.github.xiaoymin:knife4j-spring-boot-starter:${knife4j}&quot;
+        implementation &quot;cn.hutool:hutool-all:${hutool}&quot;
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+        implementation('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'){
+            exclude group: 'org.springframework.cloud', module: 'spring-cloud-starter-netflix-ribbon'
+        }
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+        compileOnly(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        testImplementation(&quot;org.springframework.boot:spring-boot-starter-test:${springBootVersion}&quot;)
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+}
+</code></pre>
+<p><strong>gateway:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-gateway&quot;
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-loadbalancer&quot;
+}
+</code></pre>
+<p><strong>openfeign:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-openfeign&quot;
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-loadbalancer&quot;
+}
+
+</code></pre>
+<p><strong>rocketmq:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation &quot;org.apache.rocketmq:rocketmq-spring-boot-starter:${rocketmq}&quot;
+}
+</code></pre>
+<p><strong>sentinel:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
+</code></pre>
 <h3 id="项目构建-gradle-docker打包">项目构建--Gradle--Docker打包</h3>
 <p>在<code>build.gradle</code>中引入插件。</p>
 <pre><code class="language-java"> id &quot;com.google.cloud.tools.jib&quot; version &quot;3.2.1&quot;
 </code></pre>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657022594521.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657022594521.png" alt="img" loading="lazy"></figure>
 <p><strong>配置</strong><br>
 配置打包时的基础镜像、容器配置、私服地址等，和Maven 插件中的一样，只是采用闭包的书写方式。</p>
 <p><a href="https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#quickstart">Jib 官网文档</a></p>
@@ -504,18 +637,18 @@ configurations.all {
 </code></pre>
 <h4 id="使用ideadocker插件布署">使用IdeaDocker插件布署</h4>
 <p><strong>Idea安装插件</strong></p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657022607710.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657022616011.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657022607710.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657022616011.png" alt="img" loading="lazy"></figure>
 <p><strong>安装docker插件</strong></p>
 <ol>
 <li>配置docker：</li>
 </ol>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657022629349.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657022637131.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657022644128.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657022629349.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657022637131.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657022644128.png" alt="img" loading="lazy"></figure>
 <p><strong>配置Dockerfile文件</strong><br>
 1）新建Dockerfile文件会自动弹出。</p>
-<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657022651578.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657022651578.png" alt="img" loading="lazy"></figure>
 <p>在工程根目录下新建Dockerfile文件，内容如下：</p>
 <pre><code class="language-dockerfile">FROM openjdk:8
 COPY build/libs/iot-eruake-1.0.0.jar app.jar
@@ -524,27 +657,28 @@ EXPOSE 8080
 ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.jar&quot;]
 </code></pre>
 <p><strong>创建docker镜像</strong></p>
-<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657022660226.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657022667209.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657022673583.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657022680599.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657022660226.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657022667209.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657022673583.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657022680599.png" alt="img" loading="lazy"></figure>
 <p><strong>发布完成</strong></p>
-<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657022687210.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657022687210.png" alt="img" loading="lazy"></figure>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
 <li>
 <ul>
-<li><a href="#%E4%B8%80-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86">一、依赖管理</a></li>
-<li><a href="#%E4%BA%8C-%E4%BB%93%E5%BA%93">二、仓库</a></li>
-<li><a href="#%E4%B8%89-%E5%A4%9A%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA">三、多项目构建</a></li>
-<li><a href="#%E5%9B%9B-gradleproperties">四、gradle.properties</a></li>
-<li><a href="#%E4%BA%94-gradle-%E6%8F%92%E4%BB%B6plugins">五、Gradle 插件(Plugins)</a></li>
-<li><a href="#%E5%85%AD-%E5%B8%B8%E8%A7%81%E7%9A%84task%E5%91%BD%E4%BB%A4">六、常见的task命令</a></li>
-<li><a href="#%E4%B8%83-gradle-wrapper">七、gradle-wrapper</a></li>
-<li><a href="#%E5%85%AB-%E4%BE%9D%E8%B5%96%E5%88%86%E7%BB%84">八、依赖分组</a></li>
-<li><a href="#%E4%B9%9D-%E4%BE%9D%E8%B5%96%E7%89%88%E6%9C%AC%E5%86%B2%E7%AA%81">九、依赖版本冲突</a></li>
+<li><a href="#%E4%B8%80-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86">一 依赖管理</a></li>
+<li><a href="#%E4%BA%8C-%E4%BB%93%E5%BA%93">二 仓库</a></li>
+<li><a href="#%E4%B8%89-%E5%A4%9A%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA">三 多项目构建</a></li>
+<li><a href="#%E5%9B%9B-gradleproperties">四 gradle.properties</a></li>
+<li><a href="#%E4%BA%94-gradle-%E6%8F%92%E4%BB%B6plugins">五 Gradle 插件(Plugins)</a></li>
+<li><a href="#%E5%85%AD-%E5%B8%B8%E8%A7%81%E7%9A%84task%E5%91%BD%E4%BB%A4">六 常见的task命令</a></li>
+<li><a href="#%E4%B8%83-gradle-wrapper">七 gradle-wrapper</a></li>
+<li><a href="#%E5%85%AB-%E4%BE%9D%E8%B5%96%E5%88%86%E7%BB%84">八 依赖分组</a></li>
+<li><a href="#%E4%B9%9D-%E4%BE%9D%E8%B5%96%E7%89%88%E6%9C%AC%E5%86%B2%E7%AA%81">九 依赖版本冲突</a></li>
+<li><a href="#%E5%8D%81-springcloud-gradle%E7%AE%A1%E7%90%86">十 springcloud-gradle管理</a></li>
 <li><a href="#%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA-gradle-docker%E6%89%93%E5%8C%85">项目构建--Gradle--Docker打包</a>
 <ul>
 <li><a href="#%E4%BD%BF%E7%94%A8ideadocker%E6%8F%92%E4%BB%B6%E5%B8%83%E7%BD%B2">使用IdeaDocker插件布署</a></li>
@@ -557,18 +691,27 @@ ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.jar&quot;]
 </ul>
 </div>
           
+              <hr />
+            
           
             
-                <hr />
-              
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/Hbra5M-xo/">
+                <a href="https://tinaxiawuhao.github.io/post/4WluurBt3/">
                   <span class="post-title">
-                    netty&rarr;
+                    IdWorker雪花算法&rarr;
                   </span>
                 </a>
               </p>
             
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/Ke4qDxE4l/">
+                   <span class="post-title">
+                     Gradle基础&rarr;
+                   </span>
+                 </a>
+               </p>
           
           <div class="comment" style="text-align: center;">
             

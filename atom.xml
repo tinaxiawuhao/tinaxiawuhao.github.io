@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-07-12T12:35:10.828Z</updated>
+    <updated>2022-07-19T11:42:28.198Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -10,373 +10,6 @@
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, tianxia</rights>
-    <entry>
-        <title type="html"><![CDATA[gradle基础]]></title>
-        <id>https://tinaxiawuhao.github.io/post/29jyrX-eN/</id>
-        <link href="https://tinaxiawuhao.github.io/post/29jyrX-eN/">
-        </link>
-        <updated>2022-07-05T11:57:30.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="一-依赖管理">一、依赖管理</h3>
-<ol>
-<li>
-<p>依赖配置</p>
-<blockquote>
-<p>implementation:会将指定的依赖添加到编译路径，并且会将该依赖打包到输出，但是这个依赖在编译时不能暴露给其他模块，例如依赖此模块的其他模块。这种方式指定的依赖在编译时只能在当前模块中访问。</p>
-<p>api:使用api配置的依赖会将对应的依赖添加到编译路径，并将依赖打包输出，但是这个依赖是可以传递的，比如模块A依赖模块B，B依赖库C，模块B在编译时能够访问到库C，但是与implemetation不同的是，在模块A中库C也是可以访问的。</p>
-<p>compileOnly:compileOnly修饰的依赖会添加到编译路径中，但是不会打包，因此只能在编译时访问，且compileOnly修饰的依赖不会传递。</p>
-<p>runtimeOnly:这个与compileOnly相反，它修饰的依赖不会添加到编译路径中，但是被打包，运行时使用。没有使用过。</p>
-<p>annotationProcessor:用于注解处理器的依赖配置</p>
-</blockquote>
-<pre><code class="language-java">dependencies {
-    // 本地项目
-    api project(':com.test.core:core-common')  
-    //外部依赖
-    implementation 'org.springframework.boot:spring-boot-starter'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-</code></pre>
-</li>
-</ol>
-<h3 id="二-仓库">二、仓库</h3>
-<ol>
-<li>
-<p>远程仓库<br>
-使用Maven中央仓库，maven仓库的URL为：<a href="https://links.jianshu.com/go?to=http%3A%2F%2Frepo1.maven.org%2Fmaven2%2F">http://repo1.maven.org/maven2/</a></p>
-<pre><code class="language-java">repositories {
-    mavenCentral()
-}
-</code></pre>
-<p>使用Maven远程仓库</p>
-<pre><code class="language-java">repositories {
-    mavenLocal()
-    maven { url 'https://maven.aliyun.com/repository/central'}
-	maven { url 'https://maven.aliyun.com/repository/public' }
-    mavenCentral()
-}
-</code></pre>
-</li>
-<li>
-<p>本地仓库<br>
-配置Gradle使用maven本地仓库：CRADLE_USER_HOME：D:.m2\repository</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657022747903.png" alt="" loading="lazy"></figure>
-<p>修改配置build.gradle：</p>
-<pre><code class="language-java">/**
- * 指定所使用的仓库，mavenCentral()表示使用中央仓库，
- * 此刻项目中所需要的jar包都会默认从中央仓库下载到本地指定目录
- * 配置mavenLocal()表示引入jar包的时候，先从本地仓库中找，没有再去中央仓库下载
- */
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-</code></pre>
-</li>
-<li>
-<p>修改或者添加额外的私有仓库地址<br>
-直接修改 settings.gradle 来添加其它仓库：</p>
-<pre><code class="language-java">// settings.gradle
-pluginManagement {
-    repositories {
-		maven { url 'https://maven.aliyun.com/repository/central'}
-		maven { url 'https://maven.aliyun.com/repository/public' }
-		mavenCentral()
-		gradlePluginPortal()
-		maven {
-			url 'https://repo.spring.io/release'
-		}
-		if (version.endsWith('-SNAPSHOT')) {
-			maven { url &quot;https://repo.spring.io/snapshot&quot; }
-		}
-	}
-}
-</code></pre>
-</li>
-</ol>
-<h3 id="三-多项目构建">三、多项目构建</h3>
-<p>多项目构成：allProjects = root项目+各子项目<br>
-settings文件声明了所需的配置来实例化项目的层次结构。在默认情况下，这个文件被命名为settings.gradle，并且和根项目的build.gradle文件放在一起，该文件在初始化阶段被执行。根项目就像一个容器，子项目会迭代访问它的配置并注入到自己的配置中。</p>
-<ol>
-<li>
-<p>多项目构建<br>
-多项目构建总是需要指定一个树根，树中的每一个节点代表一个项目，每一个Project对象都指定有一个表示在树中位置的路径；在设置文件中我们还可以使用一套方法来自定义构建项目树。<br>
-settings.gradle作用就是用于多项目构建，一般像这样：</p>
-<pre><code class="language-java">// 父模块名称
-rootProject.name = 'iot-cloud-platform'
-/* 引入子模块 */
-include 'iot-commons'
-include 'iot-service:user-center'
-findProject(':iot-service:user-center')?.name = 'user-center'
-</code></pre>
-</li>
-<li>
-<p>subprojects子项目通用配置<br>
-subprojects是对所有Child Project的配置:</p>
-<pre><code class="language-java">subprojects {
-    apply plugin: 'java'
-    apply plugin: 'idea'
-    // spring boot 插件
-    apply plugin: 'org.springframework.boot'
-    // 必须添加spring依赖管理
-    apply plugin: 'io.spring.dependency-management'
-    repositories {
-        mavenLocal()
-        // 阿里云仓库
-        maven { url 'https://maven.aliyun.com/repository/central'}
-		maven { url 'https://maven.aliyun.com/repository/public' }
-        mavenCentral()
-    }
-    dependencies {
-        testImplementation('org.springframework.boot:spring-boot-starter-test') {
-            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-        }
-    }
-    dependencyManagement {
-        imports {
-            // SpringCloud依赖
-            mavenBom &quot;org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}&quot;
-        }
-    }
-    jar {
-        manifest.attributes provider: 'gradle'
-    }
-}
-</code></pre>
-</li>
-<li>
-<p>buildScript<br>
-buildScript块的repositories主要是为了Gradle脚本自身的执行，获取脚本依赖插件。<br>
-buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。<br>
-gradle在执行脚本时，会优先执行buildscript代码块中的内容，然后才会执行剩余的build脚本。</p>
-<pre><code class="language-java">buildscript {
-    // 定义SpringCloud版本，统一规定springboot的版本
-    ext {
-        set('springCloudVersion', &quot;Hoxton.RC2&quot;)
-        set('springBootVersion', &quot;2.2.1.RELEASE&quot;)
-        set('version', &quot;1.0.0&quot;)
-    }
-    dependencies {
-        // 用来打包
-        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}&quot;)
-    }
-}
-</code></pre>
-</li>
-</ol>
-<p>​		ext：ext是自定义属性，现在很多人都喜欢把所有关于版本的信息都利用ext放在另一个自己新建的gradle文件中集中管理。</p>
-<ol start="4">
-<li>
-<p>allprojects<br>
-allprojects块的repositories用于多项目构建，为所有项目提供共同所需依赖包。而子项目可以配置自己的repositories以获取自己独需的依赖包。</p>
-<blockquote>
-<p>buildscript和allprojects的作用和区别：<br>
-buildscript中的声明是gradle脚本自身需要使用的资源，就是说它自己需要的资源，跟你其它模块其实并没有什么关系。而allprojects声明的却是<code>所有module</code>所需要使用的资源，就是说你的每个module都需要用同一个第三库的时候，可以在allprojects里面声明。</p>
-</blockquote>
-<pre><code class="language-java">allprojects {
-    repositories {
-        mavenLocal()
-        // 阿里云仓库
-        maven { url 'https://maven.aliyun.com/repository/central'}
-		maven { url 'https://maven.aliyun.com/repository/public' }
-        mavenCentral()
-    }
-    // 指定编码格式
-    tasks.withType(JavaCompile) {
-        options.encoding = &quot;UTF-8&quot;
-    }
-}
-</code></pre>
-</li>
-</ol>
-<h3 id="四-gradleproperties">四、gradle.properties</h3>
-<p>gradle中的常用属性可以写在gradle.properties中。<br>
-  一般我们都把全局属性都编写在一个工具类中，如果是有环境的切换的话，那么我们还会定义一个标志来进行相应的变换。对于项目而言，有时候需要配置某些敏感信息。比如密码，帐号等。而这些信息需要被很多类共同使用，所以必须有一个全局的配置。当需要把项目push到git上时，我们不希望别人看到我们项目的key，token等。我们可以将这些信息设置在gradle.properties中。<br>
-只有在Android中才可使用。</p>
-<pre><code class="language-java">AppKey = 1234567890
-</code></pre>
-<p>在build.gradle(module app)中进行变量的重定义，即将配置内容转化成java能够使用的形式:</p>
-<pre><code class="language-java">android {
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //buildConfigField用于给BuildConfig文件添加一个字段
-            buildConfigField(&quot;String&quot;,&quot;KEY&quot;,&quot;\&quot;${AppKey}\&quot;&quot;)
-        }
-        debug{
-            buildConfigField(&quot;String&quot;,&quot;KEY&quot;,&quot;\&quot;${AppKey}\&quot;&quot;)
-        }
-    }
-}
-</code></pre>
-<h3 id="五-gradle-插件plugins">五、Gradle 插件(Plugins)</h3>
-<p>Gradle 也可以用下面的方式声明使用的插件：</p>
-<pre><code class="language-java">plugins {
-    id 'org.springframework.boot' version '2.2.1.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-    id 'java'
-}
-</code></pre>
-<p>其实是从 Gradle 官方的插件仓库<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fplugins.gradle.org%2Fm2%2F">https://plugins.gradle.org/m2/</a>下载的。</p>
-<h3 id="六-常见的task命令">六、常见的task命令</h3>
-<p><code>build</code>:当运行gradle build命令时Gradle将会编译和测试你的代码，并且创建一个包含类和资源的JAR文件。<br>
-<code>clean</code>:当运行gradle clean命令时Gradle将会删除build生成的目录和所有生成的文件。<br>
-<code>assemble</code>:当运行gradle assemble命令时Gradle将会编译并打包代码，但是并不运行单元测试。<br>
-<code>check</code>:当运行gradle check命令时Gradle将会编译并测试你的代码，其他的插件会加入更多的检查步骤。</p>
-<h3 id="七-gradle-wrapper">七、gradle-wrapper</h3>
-<p>Wrapper是对Gradle的一层包装，便于在团队开发过程中统一Gradle构建的版本号，这样大家都可以使用统一的Gradle版本进行构建。</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657022568864.png" alt="" loading="lazy"></figure>
-<pre><code class="language-java">distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-7.4.2-bin.zip
-#distributionUrl=file:///E:/gradle/gradle-7.4.2-all.zip
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-</code></pre>
-<p>distributionUrl是要下载的gradle的地址，使用哪个版本的gradle，就在这里修改。</p>
-<blockquote>
-<p>gradle的3种版本：<br>
-gradle-xx-all.zip是完整版，包含了各种二进制文件，源代码文件，和离线的文档。<br>
-gradle-xx-bin.zip是二进制版，只包含了二进制文件（可执行文件），没有文档和源代码。<br>
-gradle-xx-src.zip是源码版，只包含了Gradle源代码，不能用来编译你的工程。</p>
-</blockquote>
-<blockquote>
-<p>zipStoreBase和zipStorePath组合在一起，是下载的gradle-3.1-bin.zip所存放的位置。<br>
-zipStorePath是zipStoreBase指定的目录下的子目录。</p>
-</blockquote>
-<blockquote>
-<p>distributionBase和distributionPath组合在一起，是解压gradle-5.6.4-bin.zip之后的文件的存放位置。<br>
-distributionPath是distributionBase指定的目录下的子目录。</p>
-</blockquote>
-<p>下载位置可以和解压位置不一样。</p>
-<blockquote>
-<p>zipStoreBase和distributionBase有两种取值：GRADLE_USER_HOME和PROJECT。<br>
-其中，GRADLE_USER_HOME表示用户目录。<br>
-在windows下是%USERPROFILE%/.gradle，例如C:\Users&lt;user_name&gt;.gradle\。<br>
-在linux下是$HOME/.gradle，例如~/.gradle。<br>
-PROJECT表示工程的当前目录，即gradlew所在的目录。</p>
-</blockquote>
-<h3 id="八-依赖分组">八、依赖分组</h3>
-<p>Gradle 依赖是分组的 ,分组是在 org.gradle.api.Project 中的 configurations 中配置的 ,如 &quot; implementation &quot; , &quot; compile &quot; 等都是分组 , 这些分组都是在 org.gradle.api.Project#configurations 中进行配置 , 也就是 build.gradle#configurations 中配置 ;</p>
-<p><strong>build.gradle#configurations 自定义依赖分组</strong></p>
-<p>在 build.gradle 中配置 configurations :</p>
-<pre><code>configurations {
-  hello {
-  }
-}
-</code></pre>
-<p>则可以在 dependencies 中使上述在 configurations 配置的依赖分组 hello ,</p>
-<pre><code class="language-java">dependencies {
-  hello 'com.android.support:appcompat-v7:28.0.0'
-}
-</code></pre>
-<h3 id="九-依赖版本冲突">九、依赖版本冲突</h3>
-<p>Gradle对解决传递依赖提供了两种策略，使用最新版本或者直接导致构建失败。默认的策略是使用最新版本。虽然这样的策略能够解决一些问题，但是还是不够。常见的一种情况是，NoSuchMethond或者ClassNotFound。这时候，你可能需要一些特殊手段，比如排除不想要的传递依赖。<br>
-排除传递依赖的方式有两种：</p>
-<blockquote>
-<p>1.使用transitive = false排除</p>
-<p>2.在具体的某个dependency中使用exclude排除</p>
-<p>3.使用force强制依赖某个版本</p>
-</blockquote>
-<pre><code class="language-java">(1) 方案一：针对 A 或 D 配置 transitive。
-    这里针对A配置，不解析A模块的传递依赖，因此当前Module的依赖关系树中不再包含 B1 和 C，这里需要手动添加依赖 C
-dependencies {
-    implementation A {
-      transitive = false
-    }
-    implementation C
-    implementation D {
-      //transitive = false
-    }
-}
-
-(2) 方案二：针对 A 或 D 配置 exclude规则，此处针对A配置，依赖关系树中不再包含B1
-dependencies {
-    implementation A {
-      exclude  B1
-    }
-    implementation D {
-      //exclude  B2
-    }
-}
-
-(3) 方案三：使用force强制依赖某个版本，如强制依赖 B1 或者 B2
-        以下是在顶层build.gradle中配置，强制所有module依赖B1
-configurations.all {
-    resolutionStrategy {
-       force B1
-       // force B2
-    }
-}
-</code></pre>
-<h3 id="项目构建-gradle-docker打包">项目构建--Gradle--Docker打包</h3>
-<p>在<code>build.gradle</code>中引入插件。</p>
-<pre><code class="language-java"> id &quot;com.google.cloud.tools.jib&quot; version &quot;3.2.1&quot;
-</code></pre>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657022594521.png" alt="" loading="lazy"></figure>
-<p><strong>配置</strong><br>
-配置打包时的基础镜像、容器配置、私服地址等，和Maven 插件中的一样，只是采用闭包的书写方式。</p>
-<p><a href="https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#quickstart">Jib 官网文档</a></p>
-<pre><code class="language-java">jib {
-    // 基础镜像，来自dockerhub,如果是私服，需要加上鉴权信息，和to下的auth节点相同
-    // https://hub.docker.com/
-    from {
-        image = 'xx'
-    }
-    // 构建后的镜像名称以及私服地址、鉴权信息
-    to {
-        image = 'xx'
-        auth {
-            username = '登录账号'
-            password = '登录密码'
-        }
-    }
-    // 容器相关设置
-    container {
-        // 创建时间
-        creationTime = new Date()
-        // JVM 启动参数
-        jvmFlags = ['-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=prod', '-Dfile.encoding=utf-8', '-Duser.timezone=GMT+08']
-        // 启动类
-        // mainClass = 'com.xxx.RunApplication'
-        // 容器在运行时公开的端口
-        ports = ['8080']
-        // 放置应用程序内容的容器上的根目录
-        appRoot = '/deploy/service'
-    }
-}
-</code></pre>
-<h4 id="使用ideadocker插件布署">使用IdeaDocker插件布署</h4>
-<p><strong>Idea安装插件</strong></p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657022607710.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657022616011.png" alt="" loading="lazy"></figure>
-<p><strong>安装docker插件</strong></p>
-<ol>
-<li>配置docker：</li>
-</ol>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657022629349.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657022637131.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657022644128.png" alt="" loading="lazy"></figure>
-<p><strong>配置Dockerfile文件</strong><br>
-1）新建Dockerfile文件会自动弹出。</p>
-<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657022651578.png" alt="" loading="lazy"></figure>
-<p>在工程根目录下新建Dockerfile文件，内容如下：</p>
-<pre><code class="language-dockerfile">FROM openjdk:8
-COPY build/libs/iot-eruake-1.0.0.jar app.jar
-RUN bash -c &quot;touch /app.jar&quot;
-EXPOSE 8080
-ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.jar&quot;]
-</code></pre>
-<p><strong>创建docker镜像</strong></p>
-<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657022660226.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657022667209.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657022673583.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657022680599.png" alt="" loading="lazy"></figure>
-<p><strong>发布完成</strong></p>
-<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657022687210.png" alt="" loading="lazy"></figure>
-]]></content>
-    </entry>
     <entry>
         <title type="html"><![CDATA[netty]]></title>
         <id>https://tinaxiawuhao.github.io/post/Hbra5M-xo/</id>
@@ -21404,6 +21037,2999 @@ public class ContainerNotSafeDemo {
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[gradle依赖,插件]]></title>
+        <id>https://tinaxiawuhao.github.io/post/Fe3q50EYd/</id>
+        <link href="https://tinaxiawuhao.github.io/post/Fe3q50EYd/">
+        </link>
+        <updated>2021-07-06T11:35:25.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="依赖">依赖</h1>
+<h2 id="configurations">configurations</h2>
+<p>设置configurations 配置依赖信息</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations {
+    // 针对需要组件API的消费者的配置
+    exposedApi {
+        // canBeResolved 为true 则为可解析配置，为消费者
+        canBeResolved = false
+        // canBeConsumed 为true 则为消费析配置，为生产者
+        canBeConsumed = true
+    }
+    // 为需要实现该组件的消费者提供的配置。
+    exposedRuntime {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+</code></pre>
+<h2 id="依赖方式">依赖方式</h2>
+<h3 id="模块依赖">模块依赖</h3>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    runtimeOnly group: 'org.springframework', name: 'spring-core', version: '2.5'
+    runtimeOnly 'org.springframework:spring-core:2.5',
+            'org.springframework:spring-aop:2.5'
+    runtimeOnly(
+        [group: 'org.springframework', name: 'spring-core', version: '2.5'],
+        [group: 'org.springframework', name: 'spring-aop', version: '2.5']
+    )
+    runtimeOnly('org.hibernate:hibernate:3.0.5') {
+        transitive = true
+    }
+    runtimeOnly group: 'org.hibernate', name: 'hibernate', version: '3.0.5', transitive: true
+    runtimeOnly(group: 'org.hibernate', name: 'hibernate', version: '3.0.5') {
+        transitive = true
+    }
+}
+</code></pre>
+<h3 id="文件依赖">文件依赖</h3>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    runtimeOnly files('libs/a.jar', 'libs/b.jar')
+    runtimeOnly fileTree('libs') { include '*.jar' }
+}
+</code></pre>
+<h3 id="项目依赖">项目依赖</h3>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    implementation project(':shared')
+}
+</code></pre>
+<h2 id="依赖方式-2">依赖方式</h2>
+<ul>
+<li>compileOnly —用于编译生产代码所必需的依赖关系，但不应该属于运行时类路径的一部分</li>
+<li>implementation（取代compile）-用于编译和运行时</li>
+<li>runtimeOnly（取代runtime）-仅在运行时使用，不用于编译</li>
+<li>testCompileOnly—与compileOnly测试相同</li>
+<li>testImplementation —测试相当于 implementation</li>
+<li>testRuntimeOnly —测试相当于 runtimeOnly</li>
+</ul>
+<h2 id="repositories">repositories</h2>
+<p>流行的公共存储库包括Maven Central， Bintray JCenter和Google Android存储库。<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1658230851306.png" alt="" loading="lazy"></p>
+<pre><code class="language-groovy">repositories {
+    
+    mavenCentral() // Maven Central存储库  
+    jcenter() // JCenter Maven存储库
+    google() // Google Maven存储库
+        
+    mavenLocal()   // 将本地Maven缓存添加为存储库（不推荐）
+    //flat存储库解析器
+    flatDir {
+        dirs 'lib'
+    }
+    flatDir {
+        dirs 'lib1', 'lib2'
+    }
+    
+    //添加定制的Maven仓库
+    maven {
+        url &quot;http://repo.mycompany.com/maven2&quot;
+        // 为JAR文件添加附加的Maven存储库
+        artifactUrls &quot;http://repo.mycompany.com/jars&quot;
+    }
+    
+    //Ivy
+     ivy {
+        url &quot;http://repo.mycompany.com/repo&quot;
+        layout &quot;maven&quot;  // 有效的命名布局值是'gradle'（默认值）'maven'和'ivy'。
+    }
+}
+</code></pre>
+<h3 id="声明存储库过滤器">声明存储库过滤器</h3>
+<p>声明存储库内容</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">repositories {
+    maven {
+        url &quot;https://repo.mycompany.com/maven2&quot;
+        content {
+            // this repository *only* contains artifacts with group &quot;my.company&quot;
+            includeGroup &quot;my.company&quot;
+        }
+    }
+    jcenter {
+        content {
+            // this repository contains everything BUT artifacts with group starting with &quot;my.company&quot;
+            excludeGroupByRegex &quot;my\\.company.*&quot;
+        }
+    }
+}
+</code></pre>
+<p>默认情况下，存储库包含所有内容，不包含任何内容：</p>
+<ul>
+<li>如果声明include，那么它排除了一切 include 以外的内容。</li>
+<li>如果声明exclude，则它将包括除exclude之外的所有内容。</li>
+<li>如果声明include和exclude，则它仅包括显式包括但不排除的内容。</li>
+</ul>
+<h3 id="分割快照和发行版">分割快照和发行版</h3>
+<p>build.gradle</p>
+<pre><code class="language-groovy">repositories {
+    maven {
+        url &quot;https://repo.mycompany.com/releases&quot;
+        mavenContent {
+            releasesOnly()
+        }
+    }
+    maven {
+        url &quot;https://repo.mycompany.com/snapshots&quot;
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+}
+</code></pre>
+<h3 id="支持的元数据源">支持的元数据源</h3>
+<p>受支持的元数据源</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">元数据源</th>
+<th style="text-align:left">描述</th>
+<th style="text-align:left">排序</th>
+<th style="text-align:left">Maven</th>
+<th style="text-align:left">Ivy/flat dir</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">gradleMetadata()</td>
+<td style="text-align:left">寻找Gradle.module文件</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">是</td>
+</tr>
+<tr>
+<td style="text-align:left">mavenPom()</td>
+<td style="text-align:left">查找Maven.pom文件</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">是</td>
+</tr>
+<tr>
+<td style="text-align:left">ivyDescriptor()</td>
+<td style="text-align:left">查找ivy.xml文件</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">没有</td>
+<td style="text-align:left">是</td>
+</tr>
+<tr>
+<td style="text-align:left">artifact()</td>
+<td style="text-align:left">直接寻找artifact</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">是</td>
+<td style="text-align:left">是</td>
+</tr>
+</tbody>
+</table>
+<p>从Gradle 5.3开始，解析元数据文件（无论是Ivy还是Maven）时，Gradle将寻找一个标记，指示存在匹配的Gradle Module元数据文件。如果找到它，它将代替Ivy或Maven文件使用。</p>
+<p>从Gradle5.6开始，您可以通过添加ignoreGradleMetadataRedirection()到metadataSources声明来禁用此行为。</p>
+<p>例.不使用gradle元数据重定向的Maven存储库</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">repositories {
+    maven {
+        url &quot;http://repo.mycompany.com/repo&quot;
+        metadataSources {
+            mavenPom()
+            artifact()
+            ignoreGradleMetadataRedirection()
+        }
+    }
+}
+</code></pre>
+<h2 id="gav坐标">GAV坐标</h2>
+<p>GAV坐标一般指group，artifact，version</p>
+<h2 id="变体">变体</h2>
+<p>构建变体是针对不同环境的配置，例如android开发中一般有debug和release两种变体<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1658230892932.png" alt="" loading="lazy"></p>
+<h3 id="声明功能变体">声明功能变体</h3>
+<p>可以通过应用<code>java</code>或<code>java-library</code>插件来声明功能变体。以下代码说明了如何声明名为<code>mongodbSupport</code>的功能：</p>
+<p>示例1.声明一个功能变量</p>
+<pre><code class="language-groovy">Groovy``Kotlin
+</code></pre>
+<p>build.gradle</p>
+<pre><code class="language-groovy">group = 'org.gradle.demo'
+version = '1.0'
+ 
+java {
+    registerFeature('mongodbSupport') {
+        usingSourceSet(sourceSets.main)
+    }
+}
+</code></pre>
+<h2 id="元数据">元数据</h2>
+<p>从存储库中提取的每个模块都有与之关联的元数据，例如其组，名称，版本以及它提供的带有工件和依赖项的不同变体</p>
+<p>可配置组件元数据规则的示例</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">class TargetJvmVersionRule implements ComponentMetadataRule {
+    final Integer jvmVersion
+    @Inject TargetJvmVersionRule(Integer jvmVersion) {
+        this.jvmVersion = jvmVersion
+    }
+ 
+    @Inject ObjectFactory getObjects() { }
+ 
+    void execute(ComponentMetadataContext context) {
+        context.details.withVariant(&quot;compile&quot;) {
+            attributes {
+                attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, jvmVersion)
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_API))
+            }
+        }
+    }
+}
+dependencies {
+    components {
+        withModule(&quot;commons-io:commons-io&quot;, TargetJvmVersionRule) {
+            params(7)
+        }
+        withModule(&quot;commons-collections:commons-collections&quot;, TargetJvmVersionRule) {
+            params(8)
+        }
+    }
+    implementation(&quot;commons-io:commons-io:2.6&quot;)
+    implementation(&quot;commons-collections:commons-collections:3.2.2&quot;)
+}
+</code></pre>
+<p>可以通过以下方法进行修改变体：</p>
+<ul>
+<li>allVariants：修改组件的所有变体</li>
+<li>withVariant(name)：修改由名称标识的单个变体</li>
+<li>addVariant(name)或addVariant(name, base)：从头开始 或通过 复制 现有变体的详细信息（基础）向组件添加新变体</li>
+</ul>
+<p>可以调整每个变体的以下详细信息：</p>
+<ul>
+<li>标识变体的属性-attributes {}块</li>
+<li>该变体提供的功能-withCapabilities { }块</li>
+<li>变体的依赖项，包括丰富的版本-withDependencies {}块</li>
+<li>变体的依赖关系约束，包括丰富版本-withDependencyConstraints {}块</li>
+<li>构成变体实际内容的已发布文件的位置-withFiles { }块</li>
+</ul>
+<h2 id="平台">平台</h2>
+<h3 id="使用平台">使用平台</h3>
+<p>获取平台中声明的版本</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    // get recommended versions from the platform project
+    api platform(project(':platform'))
+    // no version required
+    api 'commons-httpclient:commons-httpclient'
+}
+</code></pre>
+<p>platform表示法是一种简写表示法，实际上在后台执行了一些操作：</p>
+<ul>
+<li>它将org.gradle.category属性设置为platform，这意味着Gradle将选择依赖项的 平台 组件。</li>
+<li>它默认设置endorseStrictVersions行为， 这意味着如果平台声明了严格的依赖关系，则将强制执行它们。</li>
+</ul>
+<p>这意味着默认情况下，对平台的依赖项会触发该平台中定义的所有严格版本的继承， 这对于平台作者确保所有使用者在依赖项的版本方面都遵循自己的决定很有用。 可以通过显式调用doNotEndorseStrictVersions方法来将其关闭。</p>
+<p>例.依靠一个BOM导入其依赖约束</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    // import a BOM
+    implementation platform('org.springframework.boot:spring-boot-dependencies:1.5.8.RELEASE')
+ 
+    // define dependencies without versions
+    implementation 'com.google.code.gson:gson'
+    implementation 'dom4j:dom4j'
+}
+</code></pre>
+<p>导入BOM，确保其定义的版本覆盖找到的任何其他版本</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    // import a BOM. The versions used in this file will override any other version found in the graph
+    implementation enforcedPlatform('org.springframework.boot:spring-boot-dependencies:1.5.8.RELEASE')
+ 
+    // define dependencies without versions
+    implementation 'com.google.code.gson:gson'
+    implementation 'dom4j:dom4j'
+ 
+    // this version will be overridden by the one found in the BOM
+    implementation 'org.codehaus.groovy:groovy:1.8.6'
+}
+</code></pre>
+<h2 id="capability">Capability</h2>
+<h3 id="声明组件的capability">声明组件的capability</h3>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations {
+    apiElements {
+        outgoing {
+            capability(&quot;com.acme:my-library:1.0&quot;)
+            capability(&quot;com.other:module:1.1&quot;)
+        }
+    }
+    runtimeElements {
+        outgoing {
+            capability(&quot;com.acme:my-library:1.0&quot;)
+            capability(&quot;com.other:module:1.1&quot;)
+        }
+    }
+}
+</code></pre>
+<h3 id="解决冲突">解决冲突</h3>
+<p>按Capability（能力）解决冲突，（若存在相同能力的依赖性会失败）</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">@CompileStatic
+class AsmCapability implements ComponentMetadataRule {
+    void execute(ComponentMetadataContext context) {
+        context.details.with {
+            if (id.group == &quot;asm&quot; &amp;&amp; id.name == &quot;asm&quot;) {
+                allVariants {
+                    it.withCapabilities {
+                        // Declare that ASM provides the org.ow2.asm:asm capability, but with an older version
+                        it.addCapability(&quot;org.ow2.asm&quot;, &quot;asm&quot;, id.version)
+                    }
+                }
+            }
+        }
+    }
+}
+ 
+</code></pre>
+<p>一个带有日志框架隐式冲突的构建文件</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    // Activate the &quot;LoggingCapability&quot; rule
+    components.all(LoggingCapability)
+}
+ 
+@CompileStatic
+class LoggingCapability implements ComponentMetadataRule {
+    final static Set&lt;String&gt; LOGGING_MODULES = [&quot;log4j&quot;, &quot;log4j-over-slf4j&quot;] as Set&lt;String&gt;
+ 
+    void execute(ComponentMetadataContext context) {
+        context.details.with {
+            if (LOGGING_MODULES.contains(id.name)) {
+                allVariants {
+                    it.withCapabilities {
+                        // Declare that both log4j and log4j-over-slf4j provide the same capability
+                        it.addCapability(&quot;log4j&quot;, &quot;log4j&quot;, id.version)
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<h2 id="版本">版本</h2>
+<h3 id="版本规则">版本规则</h3>
+<p>Gradle支持不同的版本字符串声明方式：</p>
+<ul>
+<li>
+<p>一个确切的版本：比如<code>1.3</code>，<code>1.3.0-beta3</code>，<code>1.0-20150201.131010-1</code></p>
+</li>
+<li>
+<p>一个Maven风格的版本范围：例如</p>
+<pre><code class="language-groovy">[1.0,)
+</code></pre>
+<pre><code class="language-groovy">[1.1, 2.0)
+</code></pre>
+<pre><code class="language-groovy">(1.2, 1.5]
+</code></pre>
+<ul>
+<li><code>[</code>和<code>]</code>的符号表示包含性约束; <code>(</code>和<code>)</code>表示排他性约束。</li>
+<li>当上界或下界缺失时，该范围没有上界或下界。</li>
+<li>符号<code>]</code>可以被用来代替<code>(</code>用于排他性下界，<code>[</code>代替<code>)</code>用于排他性上界。例如<code>]1.0, 2.0[</code></li>
+</ul>
+</li>
+<li>
+<p>前缀版本范围：例如</p>
+<pre><code class="language-groovy">1.+
+</code></pre>
+<pre><code class="language-groovy">1.3.+
+</code></pre>
+<ul>
+<li>仅包含与<code>+</code>之前部分完全匹配的版本。</li>
+<li><code>+</code>本身的范围将包括任何版本。</li>
+</ul>
+</li>
+<li>
+<p>一个latest-status版本：例如latest.integration，latest.release</p>
+</li>
+<li>
+<p>Maven的SNAPSHOT版本标识符：例如1.0-SNAPSHOT，1.4.9-beta1-SNAPSHOT</p>
+</li>
+</ul>
+<h3 id="版本排序">版本排序</h3>
+<ul>
+<li>每个版本均分为其组成的“部分”：
+<ul>
+<li>字符[. - _ +]用于分隔版本的不同“部分”。</li>
+<li>同时包含数字和字母的任何部分都将分为以下各个部分： <code>1a1 == 1.a.1</code></li>
+<li>仅比较版本的各个部分。实际的分隔符并不重要：<code>1.a.1 == 1-a+1 == 1.a-1 == 1a1</code></li>
+</ul>
+</li>
+<li>使用以下规则比较2个版本的等效部分：
+<ul>
+<li>如果两个部分都是数字，则最高数字值 较高 ：<code>1.1&lt;1.2</code></li>
+<li>如果一个部分是数值，则认为它 高于 非数字部分：<code>1.a&lt;1.1</code></li>
+<li>如果两个部分都不是数字，则按字母顺序比较，区分大小写：<code>1.A&lt; 1.B&lt; 1.a&lt;1.b</code></li>
+<li>有额外数字部分的版本被认为比没有数字部分的版本高：<code>1.1&lt;1.1.0</code></li>
+<li>带有额外的非数字部分的版本被认为比没有数字部分的版本低：<code>1.1.a&lt;1.1</code></li>
+</ul>
+</li>
+<li>某些字符串值出于排序目的具有特殊含义：
+<ul>
+<li>字符串dev被认为比任何其他字符串部分低：<code>1.0-dev&lt; 1.0-alpha&lt; 1.0-rc</code>。</li>
+<li>字符串rc、release和final被认为比任何其他字符串部分都高（按顺序排列：<code>1.0-zeta&lt; 1.0-rc&lt; 1.0-release&lt; 1.0-final&lt; 1.0</code>。</li>
+<li>字符串SNAPSHOT没有特殊意义，和其他字符串部分一样按字母顺序排序：<code>1.0-alpha&lt; 1.0-SNAPSHOT&lt; 1.0-zeta&lt; 1.0-rc&lt; 1.0</code>。</li>
+<li>数值快照版本没有特殊意义，和其他数值部分一样进行排序：<code>1.0&lt; 1.0-20150201.121010-123&lt; 1.1</code>。</li>
+</ul>
+</li>
+</ul>
+<p>简单来说:数字&gt;final&gt;release&gt;rc&gt;字母&gt;dev</p>
+<h3 id="声明没有版本的依赖">声明没有版本的依赖</h3>
+<p>对于较大的项目，建议的做法是声明没有版本的依赖项， 并将依赖项约束 用于版本声明。 优势在于，依赖关系约束使您可以在一处管理所有依赖关系的版本，包括可传递的依赖关系。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    implementation 'org.springframework:spring-web'
+}
+ 
+dependencies {
+    constraints {
+        implementation 'org.springframework:spring-web:5.0.2.RELEASE'
+    }
+}
+</code></pre>
+<h3 id="依赖方式-3">依赖方式</h3>
+<h4 id="strictly">strictly</h4>
+<blockquote>
+<p>与该版本符号不匹配的任何版本将被排除。这是最强的版本声明。<br>
+在声明的依赖项上，strictly可以降级版本。<br>
+在传递依赖项上，如果无法选择此子句可接受的版本，将导致依赖项解析失败。<br>
+有关详细信息，请参见覆盖依赖项版本。<br>
+该术语支持动态版本。</p>
+</blockquote>
+<p>定义后，将覆盖先前的require声明并清除之前的 reject。</p>
+<h4 id="require">require</h4>
+<blockquote>
+<p>表示所选版本不能低于require可接受的版本，但可以通过冲突解决方案提高，即使更高版本具有排他性更高的界限。<br>
+这就是依赖项上的直接版本所转换的内容。该术语支持动态版本。</p>
+</blockquote>
+<p>定义后，将覆盖先前的strictly声明并清除之前的 reject。</p>
+<h4 id="prefer">prefer</h4>
+<blockquote>
+<p>这是一个非常软的版本声明。仅当对该模块的版本没有更强的非动态观点时，才适用。<br>
+该术语不支持动态版本。</p>
+</blockquote>
+<p>定义可以补充strictly或require。</p>
+<p>在级别层次结构之外还有一个附加术语：</p>
+<h4 id="reject">reject</h4>
+<blockquote>
+<p>声明模块不接受特定版本。如果唯一的可选版本也被拒绝，这将导致依赖项解析失败。该术语支持动态版本。</p>
+</blockquote>
+<h3 id="动态版本">动态版本</h3>
+<p>build.gradle</p>
+<pre><code class="language-groovy">plugins {
+    id 'java-library'
+}
+ 
+repositories {
+    mavenCentral()
+}
+ 
+dependencies {
+    implementation 'org.springframework:spring-web:5.+'
+}
+</code></pre>
+<h3 id="版本快照">版本快照</h3>
+<p>声明一个版本变化的依赖</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy"> 
+plugins {
+    id 'java-library'
+}
+ 
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://repo.spring.io/snapshot/'
+    }
+}
+ 
+dependencies {
+    implementation 'org.springframework:spring-web:5.0.3.BUILD-SNAPSHOT'
+}
+ 
+</code></pre>
+<h3 id="以编程方式控制依赖项缓存">以编程方式控制依赖项缓存</h3>
+<p>您可以使用ResolutionStrategy 对配置进行编程来微调缓存的某些方面。 如果您想永久更改设置，则编程方式非常有用。</p>
+<p>默认情况下，Gradle将动态版本缓存24小时。 要更改Gradle将解析后的版本缓存为动态版本的时间，请使用：</p>
+<p>例.动态版本缓存控制</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 10, 'minutes'
+}
+ 
+</code></pre>
+<p>默认情况下，Gradle会将更改的模块缓存24小时。 要更改Gradle将为更改的模块缓存元数据和工件的时间，请使用：</p>
+<p>例.改变模块缓存控制</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 4, 'hours'
+}
+</code></pre>
+<h3 id="锁定配置">锁定配置</h3>
+<p>锁定特定配置</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations {
+    compileClasspath {
+        resolutionStrategy.activateDependencyLocking()
+    }
+}
+</code></pre>
+<p>锁定所有配置</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencyLocking {
+    lockAllConfigurations()
+}
+</code></pre>
+<p>解锁特定配置</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations {
+    compileClasspath {
+        resolutionStrategy.deactivateDependencyLocking()
+    }
+}
+</code></pre>
+<h4 id="锁定buildscript类路径配置">锁定buildscript类路径配置</h4>
+<p>如果将插件应用于构建，则可能还需要利用依赖锁定。为了锁定用于脚本插件的classpath配置，请执行以下操作：</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">buildscript {
+    configurations.classpath {
+        resolutionStrategy.activateDependencyLocking()
+    }
+}
+ 
+</code></pre>
+<h4 id="使用锁定模式微调依赖项锁定行为">使用锁定模式微调依赖项锁定行为</h4>
+<p>虽然默认锁定模式的行为如上所述，但是还有其他两种模式可用：</p>
+<ul>
+<li>Strict模式 ：在该模式下，除了上述验证外，如果被标记为锁定的配置没有与之相关联的锁定状态，则依赖性锁定将失败。</li>
+<li>Lenient模式：在这种模式下，依存关系锁定仍将固定动态版本，但除此之外，依赖解析的变化不再是错误。</li>
+</ul>
+<p>锁定模式可以从dependencyLocking块中进行控制，如下所示：</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencyLocking {
+    lockMode = LockMode.STRICT
+}
+</code></pre>
+<h3 id="版本冲突">版本冲突</h3>
+<p>用force强制执行一个依赖版本</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    implementation 'org.apache.httpcomponents:httpclient:4.5.4'
+    implementation('commons-codec:commons-codec:1.9') {
+        force = true
+    }
+}
+</code></pre>
+<p>排除特定依赖声明的传递依赖</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">dependencies {
+    implementation('commons-beanutils:commons-beanutils:1.9.4') {
+        exclude group: 'commons-collections', module: 'commons-collections'
+    }
+}
+</code></pre>
+<p>版本冲突时失败</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+    }
+}
+ 
+</code></pre>
+<p>使用动态版本时失败</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations.all {
+    resolutionStrategy {
+        failOnDynamicVersions()
+    }
+}
+</code></pre>
+<p>改变版本时失败</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations.all {
+    resolutionStrategy {
+        failOnChangingVersions()
+    }
+}
+</code></pre>
+<p>解析无法再现时失败</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">configurations.all {
+    resolutionStrategy {
+        failOnNonReproducibleResolution()
+    }
+}
+ 
+</code></pre>
+<h1 id="插件">插件</h1>
+<p>插件作用：将插件应用于项目可以使插件扩展项目的功能。它可以执行以下操作：</p>
+<ul>
+<li>扩展Gradle模型（例如，添加可以配置的新DSL元素）</li>
+<li>根据约定配置项目（例如，添加新任务或配置合理的默认值）</li>
+<li>应用特定的配置（例如，添加组织存储库或强制执行标准）</li>
+</ul>
+<p>简单来说，插件可以拓展项目功能，如任务，依赖，拓展属性，约束</p>
+<h2 id="插件类型">插件类型</h2>
+<ul>
+<li>二进制插件 ：通过实现插件接口以编程方式编写二进制插件，或使用Gradle的一种DSL语言以声明方式编写二进制插件</li>
+<li>脚本插件 ：脚本插件是其他构建脚本，可以进一步配置构建，并通常采用声明式方法来操纵构建</li>
+</ul>
+<p>插件通常起初是脚本插件（因为它们易于编写），然后，随着代码变得更有价值，它被迁移到可以轻松测试并在多个项目或组织之间共享的二进制插件。</p>
+<h2 id="应用插件">应用插件</h2>
+<h3 id="二进制插件">二进制插件</h3>
+<p>实现了org.gradle.api.Plugin接口</p>
+<pre><code class="language-groovy">apply plugin: 'com.android.application'
+</code></pre>
+<h4 id="apply-plugin">apply plugin</h4>
+<pre><code class="language-groovy">apply plugin: 'java'  //id
+==
+apply plugin: org.gradle.api.plugins.JavaPlugin //类型
+==
+apply plugin: JavaPlugin          //org.gradle.api.plugins默认导入
+</code></pre>
+<h4 id="plugins-dsl">plugins DSL</h4>
+<pre><code class="language-groovy">plugins {
+    id 'java' //应用核心插件
+    id 'com.jfrog.bintray' version '0.4.1' //应用社区插件
+    id 'com.example.hello' version '1.0.0' apply false //使用`apply false`语法告诉Gradle不要将插件应用于当前项目
+}
+</code></pre>
+<h3 id="脚本插件">脚本插件</h3>
+<p>脚本插件会自动解析，可以从本地文件系统或远程位置的脚本中应用。可以将多个脚本插件（任意一种形式）应用于给定目标。</p>
+<pre><code class="language-groovy">apply from:'version.gradle'
+</code></pre>
+<p>apply可传入内容</p>
+<pre><code class="language-groovy">void apply(Map&lt;String,? options);
+void apply(Closure closure);
+void apply(Action&lt;? super ObjectConfigurationAction&gt; action);
+</code></pre>
+<h2 id="定义插件">定义插件</h2>
+<p>定义一个带有ID的buildSrc插件<br>
+buildSrc / build.gradle</p>
+<pre><code class="language-groovy">plugins {
+    id 'java-gradle-plugin'
+}
+gradlePlugin {
+    plugins {
+        myPlugins {
+            id = 'my-plugin'
+            implementationClass = 'my.MyPlugin'
+        }
+    }
+}
+</code></pre>
+<h2 id="第三方插件">第三方插件</h2>
+<p>通过将插件添加到构建脚本classpath中，然后应用该插件，可以将已发布为外部jar文件的二进制插件添加到项目中。可以使用buildscript {}块将外部jar添加到构建脚本classpath中。</p>
+<pre><code class="language-groovy">buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath &quot;com.android.tools.build:gradle:4.0.1&quot;
+    }
+}
+</code></pre>
+<h2 id="插件管理">插件管理</h2>
+<p>pluginManagement {}块只能出现在settings.gradle文件中，必须是文件中的第一个块，也可以以settings形式出现在初始化脚本中。</p>
+<p>settings.gradle</p>
+<pre><code class="language-groovy">pluginManagement {
+    plugins {
+    }
+    resolutionStrategy {
+    }
+    repositories {
+    }
+}
+rootProject.name = 'plugin-management'
+</code></pre>
+<p>init.gradle</p>
+<pre><code class="language-groovy">settingsEvaluated { settings -&gt;
+    settings.pluginManagement {
+        plugins {
+        }
+        resolutionStrategy {
+        }
+        repositories {
+        }
+    }
+}
+</code></pre>
+<p>例：通过pluginManagement管理插件版本。</p>
+<p>settings.gradle</p>
+<pre><code class="language-groovy">pluginManagement {
+  plugins {
+        id 'com.example.hello' version &quot;${helloPluginVersion}&quot;
+  }
+}
+ 
+</code></pre>
+<p>gradle.properties</p>
+<pre><code class="language-groovy">helloPluginVersion=1.0.0
+</code></pre>
+<h2 id="自定义插件存储库">自定义插件存储库</h2>
+<p>要指定自定义插件存储库，请使用repositories {}块其中的pluginManagement {}：</p>
+<p>settings.gradle</p>
+<pre><code class="language-groovy">pluginManagement {
+    repositories {
+        maven {
+            url '../maven-repo'
+        }
+        gradlePluginPortal()
+        ivy {
+            url '../ivy-repo'
+        }
+    }
+}
+</code></pre>
+<h1 id="java库">java库</h1>
+<p>导入java</p>
+<pre><code class="language-groovy">apply plugin:'java'
+</code></pre>
+<p>自定义路径</p>
+<pre><code class="language-groovy">sourceSets {
+    main {
+         java {
+            srcDirs = ['src']
+         }
+    }
+ 
+    test {
+        java {
+            srcDirs = ['test']
+        }
+    }
+}
+sourceSets {
+    main {
+        java {
+            srcDir 'thirdParty/src/main/java'
+        }
+    }
+}
+</code></pre>
+<p>导入依赖</p>
+<pre><code class="language-groovy"> repositories {
+        jcenter()
+ }
+dependencies {
+     implementation group:'com.android.support',name:'appcompat-v7',version:'28.0.0'
+     implementation 'com.android.support:appcompat-v7:28.0.0'
+     implementation protect(':p')
+     implementation file('libs/ss.jar','libs/ss2.jar')
+         
+    implementation fileTree(dir: &quot;libs&quot;, include: [&quot;*.jar&quot;])
+}
+</code></pre>
+<p>多项目 设置 settings.gradle</p>
+<pre><code class="language-groovy">include ':app'
+rootProject.name = &quot;GradleTest&quot;
+</code></pre>
+<h1 id="安卓实用">安卓实用</h1>
+<h2 id="设置签名">设置签名</h2>
+<pre><code class="language-groovy">android  {
+    signingConfig = {
+        release {
+            storeFile file(&quot;MYKEY.keystore&quot;)
+            storePassword &quot;storePassword&quot;
+            keyAlias &quot;keyAlias&quot;
+            keyPassword &quot;keyPassword&quot;
+        }
+    }
+}
+</code></pre>
+<h2 id="自定义输出apk文件名称">自定义输出apk文件名称</h2>
+<pre><code class="language-groovy">applicationVariants.all { variant -&gt;
+       variant.outputs.all { output -&gt;
+           def fileName = &quot;自定义名称_${variant.versionName}_release.apk&quot;
+           def outFile = output.outputFile
+           if (outFile != null &amp;&amp; outFile.name.endsWith('.apk')) {
+               outputFileName = fileName
+           }
+       }
+   }
+</code></pre>
+<h2 id="动态androidmanifest">动态AndroidManifest</h2>
+<pre><code class="language-groovy">&lt;meta-data android:name=&quot;paramName&quot; android:value=&quot;${PARAM_NAME}&quot;&gt;
+android {
+    productFlavors{
+        google{
+            manifestPlaceholders.put(&quot;PARAM_NAME&quot;,'google')
+        }
+    }
+}
+</code></pre>
+<h2 id="多渠道">多渠道</h2>
+<pre><code class="language-groovy">android {
+    productFlavors{
+        google{
+            
+        },
+        baidu{
+            
+        }
+    }
+    productFlavors.all{ flavor-&gt;
+        manifestPlaceholders.put(&quot;PARAM_NAME&quot;,name)
+    }
+}
+</code></pre>
+<h2 id="adb设置">adb设置</h2>
+<p>adb工具</p>
+<pre><code class="language-groovy">android {
+    adbOptions{
+        timeOutInMs = 5000 //5s超时
+        installOptions '-r','-s' //安装指令
+    }
+}
+</code></pre>
+<h2 id="dexoptions">dexOptions</h2>
+<p>dex工具</p>
+<pre><code class="language-groovy">android {
+    dexOptions{
+        incremental true //增量
+        javaMaxHeapSize '4G'//dx最大队内存
+        jumboMode true //强制开启jumbo跳过65535限制
+        preDexLibraries true //提高增量构建速度
+            threadCount 1 //dx线程数量
+    }
+}
+</code></pre>
+<h2 id="ant">Ant</h2>
+<p>例.将嵌套元素传递给Ant任</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">task zip {
+    doLast {
+        ant.zip(destfile: 'archive.zip') {
+            fileset(dir: 'src') {
+                include(name: '**.xml')
+                exclude(name: '**.java')
+            }
+        }
+    }
+}
+</code></pre>
+<p>例.使用Ant类型</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">task list {
+    doLast {
+        def path = ant.path {
+            fileset(dir: 'libs', includes: '*.jar')
+        }
+        path.list().each {
+            println it
+        }
+    }
+}
+</code></pre>
+<p>例.使用定制的Ant任务</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">task check {
+    doLast {
+        ant.taskdef(resource: 'checkstyletask.properties') {
+            classpath {
+                fileset(dir: 'libs', includes: '*.jar')
+            }
+        }
+        ant.checkstyle(config: 'checkstyle.xml') {
+            fileset(dir: 'src')
+        }
+    }
+}
+</code></pre>
+<h2 id="lint">Lint</h2>
+<p>Lint：android tool目录下的工具，一个代码扫描工具，能够帮助我们识别资源、代码结构存在的问题</p>
+<pre><code class="language-groovy">lintOptions
+android {
+    lintOptions{
+        abortOnError true //发生错误时推出Gradle
+        absolutePaths true //配置错误输出是否显示绝对路径
+        check 'NewApi','InlinedApi' // 检查lint check的issue id            
+        enable 'NewApi','InlinedApi' //启动 lint check的issue id
+        disable 'NewApi','InlinedApi' //关闭 lint check的issue id
+        checkAllWarnings true //检查所有警告issue
+        ignoreWarning true //忽略警告检查，默认false
+        checkReleaseBuilds true //检查致命错误，默认true
+        explainIssues true //错误报告是否包含解释说明，默认true
+        htmlOutput new File(&quot;/xx.html&quot;) //html报告输出路径
+        htmlReport true // 是否生成html报告，默认true
+        lintConfig new File(&quot;/xx.xml&quot;) //lint配置
+        noLines true // 输出不带行号 默认true
+        quite true // 安静模式
+        showAll true //是否显示所有输出，不截断
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[gradle-Logging]]></title>
+        <id>https://tinaxiawuhao.github.io/post/wYNztHepH/</id>
+        <link href="https://tinaxiawuhao.github.io/post/wYNztHepH/">
+        </link>
+        <updated>2021-07-05T11:34:29.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="logging">Logging</h3>
+<h3 id="日志级别">日志级别</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">日志级别</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ERROR</td>
+<td style="text-align:left">错误讯息</td>
+</tr>
+<tr>
+<td style="text-align:left">QUIET</td>
+<td style="text-align:left">重要信息消息</td>
+</tr>
+<tr>
+<td style="text-align:left">WARNING</td>
+<td style="text-align:left">警告讯息</td>
+</tr>
+<tr>
+<td style="text-align:left">LIFECYCLE</td>
+<td style="text-align:left">进度信息消息</td>
+</tr>
+<tr>
+<td style="text-align:left">INFO</td>
+<td style="text-align:left">信息讯息</td>
+</tr>
+<tr>
+<td style="text-align:left">DEBUG</td>
+<td style="text-align:left">调试信息</td>
+</tr>
+</tbody>
+</table>
+<h3 id="选择日志级别">选择日志级别</h3>
+<p>可以通过命令行选项或者gradle.properties文件配置</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">输出日志级别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">没有记录选项</td>
+<td style="text-align:left">LIFECYCLE及更高</td>
+</tr>
+<tr>
+<td style="text-align:left">-q or--quiet</td>
+<td style="text-align:left">QUIET及更高</td>
+</tr>
+<tr>
+<td style="text-align:left">-w or --warn</td>
+<td style="text-align:left">WARNING及更高</td>
+</tr>
+<tr>
+<td style="text-align:left">-i or --info</td>
+<td style="text-align:left">INFO及更高</td>
+</tr>
+<tr>
+<td style="text-align:left">-d or --debug</td>
+<td style="text-align:left">DEBUG及更高版本（即所有日志消息）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stacktrace命令行选项">Stacktrace命令行选项</h3>
+<p><strong>-s or --stacktrace</strong></p>
+<p>打印简洁的堆栈跟踪信息，推荐使用</p>
+<p><strong>-S or --full-stacktrace</strong></p>
+<p>打印完整的堆栈跟踪信息。</p>
+<h3 id="编写日志">编写日志</h3>
+<h4 id="使用stdout编写日志消息">使用stdout编写日志消息</h4>
+<pre><code class="language-shell">println 'A message which is logged at QUIET level'
+</code></pre>
+<h4 id="编写自己的日志消息">编写自己的日志消息</h4>
+<pre><code class="language-groovy">logger.quiet('An info log message which is always logged.')
+logger.error('An error log message.')
+logger.warn('A warning log message.')
+logger.lifecycle('A lifecycle info log message.')
+logger.info('An info log message.')
+logger.debug('A debug log message.')
+logger.trace('A trace log message.') // Gradle never logs TRACE level logs
+ 
+// 用占位符写一条日志消息
+logger.info('A {} log message', 'info')
+</code></pre>
+<p>logger构建脚本提供了一个属性，该脚本是Logger的实例。该接口扩展了SLF4JLogger接口，并向其中添加了一些Gradle特定的方法</p>
+<h3 id="使用slf4j写入日志消息">使用SLF4J写入日志消息</h3>
+<pre><code class="language-groovy">import org.slf4j.LoggerFactory
+ 
+def slf4jLogger = LoggerFactory.getLogger('some-logger')
+slf4jLogger.info('An info log message logged using SLF4j')
+</code></pre>
+<h3 id="构建生命周期">构建生命周期</h3>
+<p>Gradle的核心是一种基于依赖性的编程语言，这意味着你可以定义任务和任务之间的依赖关系。 Gradle保证这些任务按照其依赖关系的顺序执行，并且每个任务只执行一次。 这些任务形成一个定向无环图。</p>
+<h4 id="构建阶段">构建阶段</h4>
+<p>Gradle构建具有三个不同的阶段。</p>
+<ul>
+<li>
+<p>初始化</p>
+<p>Gradle支持单项目和多项目构建。在初始化阶段，Gradle决定要参与构建的项目，并为每个项目创建一个Project实例。</p>
+</li>
+<li>
+<p>配置</p>
+<p>在此阶段，将配置项目对象。执行作为构建一部分的 所有 项目的构建脚本。</p>
+</li>
+<li>
+<p>执行</p>
+<p>Gradle确定要在配置阶段创建和配置的任务子集。子集由传递给gradle命令的任务名称参数和当前目录确定。然后Gradle执行每个选定的任务。</p>
+</li>
+</ul>
+<h4 id="设置文件">设置文件</h4>
+<p>默认名称是settings.gradle</p>
+<p>项目构建在多项目层次结构的根项目中必须具有一个settings.gradle文件。</p>
+<p>对于单项目构建，设置文件是可选的</p>
+<h4 id="初始化">初始化</h4>
+<p>查找settings.gradle文件判断是否多项目</p>
+<p>没有settings.gradle或settings.gradle没有多项目配置则为单项目</p>
+<p>例：将test任务添加到每个具有特定属性集的项目</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy"> allprojects {
+    afterEvaluate { project -&gt;
+        if (project.hasTests) {
+            println &quot;Adding test task to $project&quot;
+            project.task('test') {
+                doLast {
+                    println &quot;Running tests for $project&quot;
+                }
+            }
+        }
+    }
+}
+ 
+</code></pre>
+<p>输出 gradle -q test</p>
+<pre><code class="language-shell">&gt; gradle -q test
+Adding test task to project ':project-a'
+Running tests for project ':project-a'
+</code></pre>
+<h3 id="初始化脚本">初始化脚本</h3>
+<p>初始化脚本与Gradle中的其他脚本相似。但是，这些脚本在构建开始之前运行。初始化脚本不能访问buildSrc项目中的类。</p>
+<h4 id="使用初始化脚本">使用初始化脚本</h4>
+<p>有几种使用初始化脚本的方法：</p>
+<ul>
+<li>在命令行中指定一个文件。命令行选项是-I或-init-script，后面是脚本的路径。</li>
+</ul>
+<p>命令行选项可以出现一次以上，每次都会添加另一个 init 脚本。 如果命令行上指定的文件不存在，编译将失败。</p>
+<ul>
+<li>在 <em>USER_HOME</em> /.gradle/目录中放置一个名为init.gradle（或init.gradle.ktsKotlin）的文件。</li>
+<li>在 <em>USER_HOME</em> /.gradle/init.d/目录中放置一个以.gradle（或.init.gradle.ktsKotlin）结尾的文件。</li>
+<li>在Gradle发行版的 <em>GRADLE_HOME</em> /init.d/目录中放置一个以.gradle（或.init.gradle.ktsKotlin）结尾的文件。这使您可以打包包含一些自定义构建逻辑和插件的自定义Gradle发行版。您可以将其与Gradle Wrapper结合使用，以使自定义逻辑可用于企业中的所有内部版本。</li>
+</ul>
+<p>如果发现一个以上的初始化脚本，它们将按照上面指定的顺序依次执行。</p>
+<p>示例</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">repositories {
+    mavenCentral()
+}
+ 
+task showRepos {
+    doLast {
+        println &quot;All repos:&quot;
+        println repositories.collect { it.name }
+    }
+}
+ 
+</code></pre>
+<p>init.gradle</p>
+<pre><code class="language-groovy">allprojects {
+    repositories {
+        mavenLocal()
+    }
+}
+</code></pre>
+<p>运行任务：</p>
+<pre><code class="language-shell">gradle --init-script init.gradle -q showRepos
+</code></pre>
+<h4 id="初始化脚本里面依赖添加依赖">初始化脚本里面依赖添加依赖</h4>
+<p>init.gradle</p>
+<pre><code class="language-groovy">initscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.apache.commons:commons-math:2.0'
+    }
+}
+</code></pre>
+<h3 id="多项目">多项目</h3>
+<p>可在settings.gradle文件中设置多个项目关系，如下项目结构</p>
+<pre><code class="language-shell">.
+├── app
+│   ...
+│   └── build.gradle
+└── settings.gradle
+</code></pre>
+<p>settings.gradle</p>
+<pre><code class="language-groovy">rootProject.name = 'basic-multiproject' //根项目名
+include 'app' //子项目
+ 
+</code></pre>
+<p>子项目间依赖</p>
+<pre><code class="language-groovy">dependencies {
+    implementation(project(&quot;:shared&quot;))
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Groovy基础]]></title>
+        <id>https://tinaxiawuhao.github.io/post/4WWjxpN2N/</id>
+        <link href="https://tinaxiawuhao.github.io/post/4WWjxpN2N/">
+        </link>
+        <updated>2021-07-04T11:33:24.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="groovy基础">Groovy基础</h3>
+<h3 id="基本规则">基本规则</h3>
+<ul>
+<li>没有分号</li>
+<li>方法括号可以省略</li>
+<li>方法可以不写return，返回最后一句代码</li>
+<li>代码块可以作为参数传递</li>
+</ul>
+<h3 id="定义">定义</h3>
+<pre><code class="language-groovy">def param = 'hello world'
+def param1 = &quot;hello world&quot;
+println &quot;${param1} ,li&quot; 
+</code></pre>
+<p>${}里面可以放变量，也可以是表达式，只有双引号里面可以使用</p>
+<h3 id="声明变量">声明变量</h3>
+<p>可以在构建脚本中声明两种变量：局部变量和额外属性。</p>
+<h4 id="局部变量">局部变量</h4>
+<p>局部变量用def关键字声明。它们仅在声明它们的范围内可见。局部变量是基础Groovy语言的功能。</p>
+<pre><code class="language-groovy">def dest = &quot;dest&quot;
+task copy(type: Copy) {
+    from &quot;source&quot;
+    into dest
+}
+</code></pre>
+<h4 id="ext属性">ext属性</h4>
+<p>Gradle的域模型中的所有增强对象都可以容纳额外的用户定义属性。</p>
+<p>可以通过拥有对象的ext属性添加，读取和设置其他属性。可以使用一个ext块一次添加多个属性。</p>
+<pre><code class="language-groovy">plugins {
+    id 'java'
+}
+ 
+ext {
+    springVersion = &quot;3.1.0.RELEASE&quot;
+    emailNotification = &quot;build@master.org&quot;
+}
+ 
+sourceSets.all { ext.purpose = null }
+ 
+sourceSets {
+    main {
+        purpose = &quot;production&quot;
+    }
+    test {
+        purpose = &quot;test&quot;
+    }
+    plugin {
+        purpose = &quot;production&quot;
+    }
+}
+ 
+task printProperties {
+    doLast {
+        println springVersion
+        println emailNotification
+        sourceSets.matching { it.purpose == &quot;production&quot; }.each { println it.name }
+    }
+}
+</code></pre>
+<p>输出 gradle -q printProperties</p>
+<pre><code class="language-shell">&gt; gradle -q printProperties
+3.1.0.RELEASE
+build@master.org
+main
+plugin
+</code></pre>
+<h4 id="变量范围本地和脚本范围">变量范围：本地和脚本范围</h4>
+<p>用类型修饰符声明的变量在闭包中可见，但在方法中不可见。</p>
+<pre><code class="language-groovy">String localScope1 = 'localScope1'
+def localScope2 = 'localScope2'
+scriptScope = 'scriptScope'
+ 
+println localScope1
+println localScope2
+println scriptScope
+ 
+closure = {
+    println localScope1
+    println localScope2
+    println scriptScope
+}
+ 
+def method() {
+    try {
+        localScope1
+    } catch (MissingPropertyException e) {
+        println 'localScope1NotAvailable'
+    }
+    try {
+        localScope2
+    } catch(MissingPropertyException e) {
+        println 'localScope2NotAvailable'
+    }
+    println scriptScope
+}
+ 
+closure.call()
+method()
+</code></pre>
+<p>输出 groovy scope.groovy</p>
+<pre><code class="language-shell">&gt; groovy作用域
+localScope1
+localScope2
+scriptScope
+localScope1
+localScope2
+scriptScope
+localScope1NotAvailable
+localScope2NotAvailable
+scriptScope
+</code></pre>
+<h3 id="对象">对象</h3>
+<h4 id="使用对象">使用对象</h4>
+<p>您可以按照以下易读的方式配置任意对象。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">import java.text.FieldPosition
+ 
+task configure {
+    doLast {
+        def pos = configure(new FieldPosition(10)) {
+            beginIndex = 1
+            endIndex = 5
+        }
+        println pos.beginIndex
+        println pos.endIndex
+    }
+}
+&gt; gradle -q configure
+1
+5
+</code></pre>
+<h4 id="使用外部脚本配置任意对象">使用外部脚本配置任意对象</h4>
+<p>您也可以使用外部脚本配置任意对象。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">task configure {
+    doLast {
+        def pos = new java.text.FieldPosition(10)
+        // Apply the script
+        apply from: 'other.gradle', to: pos
+        println pos.beginIndex
+        println pos.endIndex
+    }
+}
+</code></pre>
+<p>other.gradle</p>
+<pre><code class="language-groovy">// Set properties.
+beginIndex = 1
+endIndex = 5
+</code></pre>
+<p>输出 gradle -q configure</p>
+<pre><code class="language-shell">&gt; gradle -q configure
+1
+5
+</code></pre>
+<h3 id="属性访问器">属性访问器</h3>
+<p>Groovy自动将属性引用转换为对适当的getter或setter方法的调用。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">// Using a getter method
+println project.buildDir
+println getProject().getBuildDir()
+ 
+// Using a setter method
+project.buildDir = 'target'
+getProject().setBuildDir('target')
+</code></pre>
+<h3 id="闭包">闭包</h3>
+<p>闭包（闭合代码块，可以引用传入的变量）</p>
+<pre><code class="language-groovy">task testClosure {
+    doLast {
+        func {
+            println it
+        }
+        funa { a, b -&gt;
+            println a + b
+        }
+    }
+}
+ 
+def funa(closure) {
+    closure(10, 3)
+}
+ 
+def func(closure) {
+    closure(10)
+}
+</code></pre>
+<h4 id="闭包委托">闭包委托</h4>
+<p>每个闭包都有一个<code>delegate</code>对象，Groovy使用该对象来查找不是闭包的局部变量或参数的变量和方法引用。</p>
+<p>例.闭包委托</p>
+<pre><code class="language-groovy">class Info {
+    int id;
+    String code;
+ 
+    def log() {
+        println(&quot;code:${code};id:${id}&quot;)
+    }
+}
+ 
+def info(Closure&lt;Info&gt; closure) {
+    Info p = new Info()
+    closure.delegate = p
+    // 委托模式优先
+    closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+    closure(p)
+}
+ 
+task configClosure {
+    doLast {
+        info {
+            code = &quot;cix&quot;
+            id = 1
+            log()
+        }
+    }
+}
+</code></pre>
+<p>输出</p>
+<pre><code class="language-shell">&gt; Task :configClosure
+code:cix;id:1
+ 
+BUILD SUCCESSFUL in 276ms
+</code></pre>
+<p>例：使用必包委托设置依赖</p>
+<pre><code class="language-groovy">dependencies {
+    assert delegate == project.dependencies
+    testImplementation('junit:junit:4.13')
+    delegate.testImplementation('junit:junit:4.13')
+}
+</code></pre>
+<h3 id="方法">方法</h3>
+<h4 id="方法调用上的可选括号">方法调用上的可选括号</h4>
+<p>括号对于方法调用是可选的。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">test.systemProperty 'some.prop', 'value'
+test.systemProperty('some.prop', 'value')
+</code></pre>
+<h4 id="闭包作为方法中的最后一个参数">闭包作为方法中的最后一个参数</h4>
+<p>当方法的最后一个参数是闭包时，可以将闭包放在方法调用之后：</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">repositories {
+    println &quot;in a closure&quot;
+}
+repositories() { println &quot;in a closure&quot; }
+repositories({ println &quot;in a closure&quot; })
+</code></pre>
+<h3 id="集合">集合</h3>
+<h4 id="list">List</h4>
+<pre><code class="language-groovy">def list = [1,2,3,4]
+println list[0] // 1
+println list[-1] // 4 最后一个
+println list[-2] // 3 倒数第二个
+println list[0..2] // 第1-3个
+ 
+list.each { //迭代
+    println it
+}
+</code></pre>
+<h4 id="map">Map</h4>
+<pre><code class="language-groovy">def map= ['name':'li', 'age':18]
+println map[name] // li
+println map.age // 18
+ 
+list.each { //迭代
+    println &quot;${it.key}:${it.value}&quot;
+}
+ 
+</code></pre>
+<h3 id="javabean">JavaBean</h3>
+<pre><code class="language-groovy">class A{
+    private int a; //可通过A().a 获取修改
+    public int getB(){//可通过A().b获取，但不能修改
+        1
+    }
+}
+</code></pre>
+<p>build.gradle</p>
+<pre><code class="language-groovy">// List literal
+test.includes = ['org/gradle/api/**', 'org/gradle/internal/**']
+ 
+List&lt;String&gt; list = new ArrayList&lt;String&gt;()
+list.add('org/gradle/api/**')
+list.add('org/gradle/internal/**')
+test.includes = list
+ 
+// Map literal.
+Map&lt;String, String&gt; map = [key1:'value1', key2: 'value2']
+ 
+// Groovy will coerce named arguments
+// into a single map argument
+apply plugin: 'java'
+</code></pre>
+<h3 id="默认导入">默认导入</h3>
+<p>为了使构建脚本更简洁，Gradle自动向Gradle脚本添加了一些类。</p>
+<pre><code class="language-groovy">import org.gradle.*
+import org.gradle.api.*
+import org.gradle.api.artifacts.*
+import org.gradle.api.artifacts.component.*
+import org.gradle.api.artifacts.dsl.*
+import org.gradle.api.artifacts.ivy.*
+import org.gradle.api.artifacts.maven.*
+import org.gradle.api.artifacts.query.*
+import org.gradle.api.artifacts.repositories.*
+import org.gradle.api.artifacts.result.*
+import org.gradle.api.artifacts.transform.*
+import org.gradle.api.artifacts.type.*
+import org.gradle.api.artifacts.verification.*
+import org.gradle.api.attributes.*
+import org.gradle.api.attributes.java.*
+import org.gradle.api.capabilities.*
+import org.gradle.api.component.*
+import org.gradle.api.credentials.*
+import org.gradle.api.distribution.*
+import org.gradle.api.distribution.plugins.*
+import org.gradle.api.execution.*
+import org.gradle.api.file.*
+import org.gradle.api.initialization.*
+import org.gradle.api.initialization.definition.*
+import org.gradle.api.initialization.dsl.*
+import org.gradle.api.invocation.*
+import org.gradle.api.java.archives.*
+import org.gradle.api.jvm.*
+import org.gradle.api.logging.*
+import org.gradle.api.logging.configuration.*
+import org.gradle.api.model.*
+import org.gradle.api.plugins.*
+import org.gradle.api.plugins.antlr.*
+import org.gradle.api.plugins.quality.*
+import org.gradle.api.plugins.scala.*
+import org.gradle.api.provider.*
+import org.gradle.api.publish.*
+import org.gradle.api.publish.ivy.*
+import org.gradle.api.publish.ivy.plugins.*
+import org.gradle.api.publish.ivy.tasks.*
+import org.gradle.api.publish.maven.*
+import org.gradle.api.publish.maven.plugins.*
+import org.gradle.api.publish.maven.tasks.*
+import org.gradle.api.publish.plugins.*
+import org.gradle.api.publish.tasks.*
+import org.gradle.api.reflect.*
+import org.gradle.api.reporting.*
+import org.gradle.api.reporting.components.*
+import org.gradle.api.reporting.dependencies.*
+import org.gradle.api.reporting.dependents.*
+import org.gradle.api.reporting.model.*
+import org.gradle.api.reporting.plugins.*
+import org.gradle.api.resources.*
+import org.gradle.api.services.*
+import org.gradle.api.specs.*
+import org.gradle.api.tasks.*
+import org.gradle.api.tasks.ant.*
+import org.gradle.api.tasks.application.*
+import org.gradle.api.tasks.bundling.*
+import org.gradle.api.tasks.compile.*
+import org.gradle.api.tasks.diagnostics.*
+import org.gradle.api.tasks.incremental.*
+import org.gradle.api.tasks.javadoc.*
+import org.gradle.api.tasks.options.*
+import org.gradle.api.tasks.scala.*
+import org.gradle.api.tasks.testing.*
+import org.gradle.api.tasks.testing.junit.*
+import org.gradle.api.tasks.testing.junitplatform.*
+import org.gradle.api.tasks.testing.testng.*
+import org.gradle.api.tasks.util.*
+import org.gradle.api.tasks.wrapper.*
+import org.gradle.authentication.*
+import org.gradle.authentication.aws.*
+import org.gradle.authentication.http.*
+import org.gradle.build.event.*
+import org.gradle.buildinit.plugins.*
+import org.gradle.buildinit.tasks.*
+import org.gradle.caching.*
+import org.gradle.caching.configuration.*
+import org.gradle.caching.http.*
+import org.gradle.caching.local.*
+import org.gradle.concurrent.*
+import org.gradle.external.javadoc.*
+import org.gradle.ide.visualstudio.*
+import org.gradle.ide.visualstudio.plugins.*
+import org.gradle.ide.visualstudio.tasks.*
+import org.gradle.ide.xcode.*
+import org.gradle.ide.xcode.plugins.*
+import org.gradle.ide.xcode.tasks.*
+import org.gradle.ivy.*
+import org.gradle.jvm.*
+import org.gradle.jvm.application.scripts.*
+import org.gradle.jvm.application.tasks.*
+import org.gradle.jvm.platform.*
+import org.gradle.jvm.plugins.*
+import org.gradle.jvm.tasks.*
+import org.gradle.jvm.tasks.api.*
+import org.gradle.jvm.test.*
+import org.gradle.jvm.toolchain.*
+import org.gradle.language.*
+import org.gradle.language.assembler.*
+import org.gradle.language.assembler.plugins.*
+import org.gradle.language.assembler.tasks.*
+import org.gradle.language.base.*
+import org.gradle.language.base.artifact.*
+import org.gradle.language.base.compile.*
+import org.gradle.language.base.plugins.*
+import org.gradle.language.base.sources.*
+import org.gradle.language.c.*
+import org.gradle.language.c.plugins.*
+import org.gradle.language.c.tasks.*
+import org.gradle.language.coffeescript.*
+import org.gradle.language.cpp.*
+import org.gradle.language.cpp.plugins.*
+import org.gradle.language.cpp.tasks.*
+import org.gradle.language.java.*
+import org.gradle.language.java.artifact.*
+import org.gradle.language.java.plugins.*
+import org.gradle.language.java.tasks.*
+import org.gradle.language.javascript.*
+import org.gradle.language.jvm.*
+import org.gradle.language.jvm.plugins.*
+import org.gradle.language.jvm.tasks.*
+import org.gradle.language.nativeplatform.*
+import org.gradle.language.nativeplatform.tasks.*
+import org.gradle.language.objectivec.*
+import org.gradle.language.objectivec.plugins.*
+import org.gradle.language.objectivec.tasks.*
+import org.gradle.language.objectivecpp.*
+import org.gradle.language.objectivecpp.plugins.*
+import org.gradle.language.objectivecpp.tasks.*
+import org.gradle.language.plugins.*
+import org.gradle.language.rc.*
+import org.gradle.language.rc.plugins.*
+import org.gradle.language.rc.tasks.*
+import org.gradle.language.routes.*
+import org.gradle.language.scala.*
+import org.gradle.language.scala.plugins.*
+import org.gradle.language.scala.tasks.*
+import org.gradle.language.scala.toolchain.*
+import org.gradle.language.swift.*
+import org.gradle.language.swift.plugins.*
+import org.gradle.language.swift.tasks.*
+import org.gradle.language.twirl.*
+import org.gradle.maven.*
+import org.gradle.model.*
+import org.gradle.nativeplatform.*
+import org.gradle.nativeplatform.platform.*
+import org.gradle.nativeplatform.plugins.*
+import org.gradle.nativeplatform.tasks.*
+import org.gradle.nativeplatform.test.*
+import org.gradle.nativeplatform.test.cpp.*
+import org.gradle.nativeplatform.test.cpp.plugins.*
+import org.gradle.nativeplatform.test.cunit.*
+import org.gradle.nativeplatform.test.cunit.plugins.*
+import org.gradle.nativeplatform.test.cunit.tasks.*
+import org.gradle.nativeplatform.test.googletest.*
+import org.gradle.nativeplatform.test.googletest.plugins.*
+import org.gradle.nativeplatform.test.plugins.*
+import org.gradle.nativeplatform.test.tasks.*
+import org.gradle.nativeplatform.test.xctest.*
+import org.gradle.nativeplatform.test.xctest.plugins.*
+import org.gradle.nativeplatform.test.xctest.tasks.*
+import org.gradle.nativeplatform.toolchain.*
+import org.gradle.nativeplatform.toolchain.plugins.*
+import org.gradle.normalization.*
+import org.gradle.platform.base.*
+import org.gradle.platform.base.binary.*
+import org.gradle.platform.base.component.*
+import org.gradle.platform.base.plugins.*
+import org.gradle.play.*
+import org.gradle.play.distribution.*
+import org.gradle.play.platform.*
+import org.gradle.play.plugins.*
+import org.gradle.play.plugins.ide.*
+import org.gradle.play.tasks.*
+import org.gradle.play.toolchain.*
+import org.gradle.plugin.devel.*
+import org.gradle.plugin.devel.plugins.*
+import org.gradle.plugin.devel.tasks.*
+import org.gradle.plugin.management.*
+import org.gradle.plugin.use.*
+import org.gradle.plugins.ear.*
+import org.gradle.plugins.ear.descriptor.*
+import org.gradle.plugins.ide.*
+import org.gradle.plugins.ide.api.*
+import org.gradle.plugins.ide.eclipse.*
+import org.gradle.plugins.ide.idea.*
+import org.gradle.plugins.javascript.base.*
+import org.gradle.plugins.javascript.coffeescript.*
+import org.gradle.plugins.javascript.envjs.*
+import org.gradle.plugins.javascript.envjs.browser.*
+import org.gradle.plugins.javascript.envjs.http.*
+import org.gradle.plugins.javascript.envjs.http.simple.*
+import org.gradle.plugins.javascript.jshint.*
+import org.gradle.plugins.javascript.rhino.*
+import org.gradle.plugins.signing.*
+import org.gradle.plugins.signing.signatory.*
+import org.gradle.plugins.signing.signatory.pgp.*
+import org.gradle.plugins.signing.type.*
+import org.gradle.plugins.signing.type.pgp.*
+import org.gradle.process.*
+import org.gradle.swiftpm.*
+import org.gradle.swiftpm.plugins.*
+import org.gradle.swiftpm.tasks.*
+import org.gradle.testing.base.*
+import org.gradle.testing.base.plugins.*
+import org.gradle.testing.jacoco.plugins.*
+import org.gradle.testing.jacoco.tasks.*
+import org.gradle.testing.jacoco.tasks.rules.*
+import org.gradle.testkit.runner.*
+import org.gradle.vcs.*
+import org.gradle.vcs.git.*
+import org.gradle.work.*
+import org.gradle.workers.*
+</code></pre>
+<h3 id="导入依赖">导入依赖</h3>
+<pre><code class="language-groovy">buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[gradle项目与任务]]></title>
+        <id>https://tinaxiawuhao.github.io/post/lhyr_DiZc/</id>
+        <link href="https://tinaxiawuhao.github.io/post/lhyr_DiZc/">
+        </link>
+        <updated>2021-07-03T11:32:31.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="项目与任务">项目与任务</h3>
+<p>Gradle中的所有内容都位于两个基本概念之上：</p>
+<ul>
+<li>projects ：每个Gradle构建都由一个或多个 projects组成 ，一个projects代表什么取决于您使用Gradle做的事情。例如，一个projects可能代表一个JAR库或一个Web应用程序。</li>
+<li>tasks ：每个projects由一个或多个 tasks组成 。tasks代表构建执行的一些原子工作。这可能是编译某些类，创建JAR，生成Javadoc或将一些存档发布到存储库。</li>
+</ul>
+<h3 id="项目">项目</h3>
+<p>表.项目属性</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">project</td>
+<td style="text-align:left">Project</td>
+<td style="text-align:left">该Project实例</td>
+</tr>
+<tr>
+<td style="text-align:left">name</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">项目目录的名称。</td>
+</tr>
+<tr>
+<td style="text-align:left">path</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">项目的绝对路径。</td>
+</tr>
+<tr>
+<td style="text-align:left">description</td>
+<td style="text-align:left">String 项目说明。</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">projectDir</td>
+<td style="text-align:left">File</td>
+<td style="text-align:left">包含构建脚本的目录。</td>
+</tr>
+<tr>
+<td style="text-align:left">buildDir</td>
+<td style="text-align:left">File</td>
+<td style="text-align:left"><em>projectDir</em> /build</td>
+</tr>
+<tr>
+<td style="text-align:left">group</td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">unspecified</td>
+</tr>
+<tr>
+<td style="text-align:left">version</td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">unspecified</td>
+</tr>
+<tr>
+<td style="text-align:left">ant</td>
+<td style="text-align:left">ant build</td>
+<td style="text-align:left">一个AntBuilder实例</td>
+</tr>
+</tbody>
+</table>
+<h3 id="任务">任务</h3>
+<h4 id="定义任务">定义任务</h4>
+<ol>
+<li>使用字符串作为任务名称定义任务</li>
+<li>使用tasks容器定义任务</li>
+<li>使用DSL特定语法定义任务</li>
+</ol>
+<p>例：<br>
+<strong>build.gradle</strong></p>
+<pre><code class="language-groovy">// 使用字符串作为任务名称定义任务
+task('hello') {
+    doLast {
+        println &quot;hello&quot;
+    }
+}
+// 使用tasks容器定义任务
+tasks.create('hello') {
+    doLast {
+        println &quot;hello&quot;
+    }
+}
+// 使用DSL特定语法定义任务
+task(hello) {
+    doLast {
+        println &quot;hello&quot;
+    }
+}
+task('copy', type: Copy) {
+    from(file('srcDir'))
+    into(buildDir)
+}
+</code></pre>
+<h4 id="定位任务">定位任务</h4>
+<ul>
+<li>使用DSL特定语法访问任务</li>
+<li>通过任务集合访问任务</li>
+<li>通过路径访问</li>
+<li>按任务类型访问任务</li>
+</ul>
+<pre><code class="language-groovy">task hello
+task copy(type: Copy)
+ 
+ 
+// 使用DSL特定语法访问任务
+println hello.name
+println project.hello.name
+ 
+println copy.destinationDir
+println project.copy.destinationDir
+ 
+// 通过任务集合访问任务
+println tasks.hello.name
+println tasks.named('hello').get().name
+ 
+println tasks.copy.destinationDir
+println tasks.named('copy').get().destinationDir
+ 
+ 
+//按任务类型访问任务
+tasks.withType(Tar).configureEach {
+    enabled = false
+}
+ 
+task test {
+    dependsOn tasks.withType(Copy)
+}
+</code></pre>
+<p>通过路径访问</p>
+<p><strong>project-a / build.gradle</strong></p>
+<pre><code class="language-shell">task hello
+</code></pre>
+<p><strong>build.gradle</strong></p>
+<pre><code class="language-groovy">task hello
+ 
+println tasks.getByPath('hello').path
+println tasks.getByPath(':hello').path
+println tasks.getByPath('project-a:hello').path
+println tasks.getByPath(':project-a:hello').path
+</code></pre>
+<h4 id="配置任务">配置任务</h4>
+<h5 id="使用api配置任务">使用API配置任务</h5>
+<p>例：<br>
+<strong>build.gradle</strong></p>
+<pre><code class="language-groovy">Copy myCopy = tasks.getByName(&quot;myCopy&quot;)
+myCopy.from 'resources'
+myCopy.into 'target'
+myCopy.include('**/*.txt', '**/*.xml', '**/*.properties')
+</code></pre>
+<h5 id="使用dsl特定语法配置任务">使用DSL特定语法配置任务</h5>
+<p>例：<br>
+<strong>build.gradle</strong></p>
+<pre><code class="language-groovy">// Configure task using Groovy dynamic task configuration block
+myCopy {
+   from 'resources'
+   into 'target'
+}
+myCopy.include('**/*.txt', '**/*.xml', '**/*.properties')
+</code></pre>
+<h5 id="用配置块定义一个任务">用配置块定义一个任务</h5>
+<p>例：<br>
+<strong>build.gradle</strong></p>
+<pre><code class="language-groovy">task copy(type: Copy) {
+   from 'resources'
+   into 'target'
+   include('**/*.txt', '**/*.xml', '**/*.properties')
+}
+</code></pre>
+<h4 id="将参数传递给任务构造函数">将参数传递给任务构造函数</h4>
+<p>与Task在创建后配置可变属性相反，您可以将参数值传递给Task类的构造函数。为了将值传递给Task构造函数，您必须使用@javax.inject.Inject注释相关的构造函数。</p>
+<p>首先创建带有@Inject构造函数的任务类</p>
+<pre><code class="language-groovy">class CustomTask extends DefaultTask {
+    final String message
+    final int number
+ 
+    @Inject
+    CustomTask(String message, int number) {
+        this.message = message
+        this.number = number
+    }
+}
+</code></pre>
+<p>然后创建一个任务，并在参数列表的末尾传递构造函数参数。</p>
+<pre><code class="language-groovy">tasks.create('myTask', CustomTask, 'hello', 42)
+</code></pre>
+<p>你也可以使用Map创建带有构造函数参数的任务</p>
+<pre><code class="language-groovy">task myTask(type: CustomTask, constructorArgs: ['hello', 42])
+</code></pre>
+<h4 id="向任务添加依赖项">向任务添加依赖项</h4>
+<p>从另一个项目添加对任务的依赖</p>
+<pre><code class="language-groovy">project('project-a') {
+    task taskX {
+        dependsOn ':project-b:taskY'
+        doLast {
+            println 'taskX'
+        }
+    }
+}
+ 
+project('project-b') {
+    task taskY {
+        doLast {
+            println 'taskY'
+        }
+    }
+}
+</code></pre>
+<h4 id="使用任务对象添加依赖">使用任务对象添加依赖</h4>
+<pre><code class="language-groovy">task taskX {
+    doLast {
+        println 'taskX'
+    }
+}
+ 
+task taskY {
+    doLast {
+        println 'taskY'
+    }
+}
+ 
+ 
+taskX.dependsOn taskY
+</code></pre>
+<h4 id="使用惰性块添加依赖项">使用惰性块添加依赖项</h4>
+<pre><code class="language-groovy">task taskX {
+    doLast {
+        println 'taskX'
+    }
+}
+ 
+// Using a Groovy Closure
+taskX.dependsOn {
+    tasks.findAll { task -&gt; task.name.startsWith('lib') }
+}
+ 
+task lib1 {
+    doLast {
+        println 'lib1'
+    }
+}
+ 
+task lib2 {
+    doLast {
+        println 'lib2'
+    }
+}
+ 
+task notALib {
+    doLast {
+        println 'notALib'
+    }
+}
+</code></pre>
+<h4 id="任务排序">任务排序</h4>
+<p>控制任务排序的两种方式：</p>
+<ul>
+<li>must run after ：必须在之后运行</li>
+<li>should run after：应该在之后运行</li>
+</ul>
+<p>例</p>
+<pre><code class="language-groovy">task taskX {
+    doLast {
+        println 'taskX'
+    }
+}
+task taskY {
+    doLast {
+        println 'taskY'
+    }
+}
+taskY.mustRunAfter taskX
+</code></pre>
+<p>should run after被忽略的情况</p>
+<ul>
+<li>引入排序周期。</li>
+<li>使用并行执行时，除了 &quot;should run after &quot;任务外，一个任务的所有依赖关系都已被满足，</li>
+</ul>
+<p>引入排序周期例子</p>
+<pre><code class="language-groovy">task taskX {
+    doLast {
+        println 'taskX'
+    }
+}
+task taskY {
+    doLast {
+        println 'taskY'
+    }
+}
+task taskZ {
+    doLast {
+        println 'taskZ'
+    }
+}
+taskX.dependsOn taskY
+taskY.dependsOn taskZ
+taskZ.shouldRunAfter taskX
+</code></pre>
+<h4 id="为任务添加描述">为任务添加描述</h4>
+<p>您可以在任务中添加描述。执行gradle tasks时将显示此描述。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">task copy(type: Copy) {
+   description 'Copies the resource directory to the target directory.'
+   from 'resources'
+   into 'target'
+   include('**/*.txt', '**/*.xml', '**/*.properties')
+}
+</code></pre>
+<h4 id="跳过任务">跳过任务</h4>
+<p>onlyIf跳过</p>
+<pre><code class="language-groovy">hello.onlyIf { !project.hasProperty('skipHello') }
+//StopExecutionException跳过
+compile.doFirst {
+    if (true) { throw new StopExecutionException() }
+}
+</code></pre>
+<p>禁用任务</p>
+<pre><code class="language-groovy">task disableMe {
+    doLast {
+        println 'This should not be printed if the task is disabled.'
+    }
+}
+disableMe.enabled = false
+</code></pre>
+<p>任务超时</p>
+<pre><code class="language-groovy">task hangingTask() {
+    doLast {
+        Thread.sleep(100000)
+    }
+    timeout = Duration.ofMillis(500)
+}
+</code></pre>
+<h4 id="任务规则">任务规则</h4>
+<p>有时您想执行一个任务，该任务的行为取决于较大或无限数量的参数值范围。提供此类任务的一种非常好的表达方式是任务规则：</p>
+<p>任务规则</p>
+<pre><code class="language-groovy">tasks.addRule(&quot;Pattern: ping&lt;ID&gt;&quot;) { String taskName -&gt;
+    if (taskName.startsWith(&quot;ping&quot;)) {
+        task(taskName) {
+            doLast {
+                println &quot;Pinging: &quot; + (taskName - 'ping')
+            }
+        }
+    }
+}
+ 
+task groupPing {
+    dependsOn pingServer1, pingServer2
+}
+&gt; gradle -q groupPing
+ 
+Ping：Server1
+Ping：Server2
+</code></pre>
+<h4 id="终结器任务">终结器任务</h4>
+<p>计划运行终结任务时，终结任务会自动添加到任务图中。即使完成任务失败，也将执行终结器任务。</p>
+<pre><code class="language-groovy">task taskX {
+    doLast {
+        println 'taskX'
+    }
+}
+task taskY {
+    doLast {
+        println 'taskY'
+    }
+}
+taskX.finalizedBy taskY
+&gt; gradle -q taskX
+ 
+TaskX
+TaskY
+</code></pre>
+<h4 id="动态任务">动态任务</h4>
+<p>Groovy或Kotlin的功能可用于定义任务以外的其他功能。例如，您还可以使用它来动态创建任务。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">4.times { counter -&gt;
+    task &quot;task$counter&quot; {
+        doLast {
+            println &quot;I'm task number $counter&quot;
+        }
+    }
+}
+</code></pre>
+<p>gradle -q task1 输出</p>
+<pre><code class="language-shell">&gt; gradle -q task1
+I'm task number 1
+</code></pre>
+<h4 id="groovy_dsl快捷方式符号">Groovy_DSL快捷方式符号</h4>
+<p>访问任务有一种方便的表示法。每个任务都可以作为构建脚本的属性来使用：</p>
+<p>例.作为构建脚本的属性访问任务</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">task hello {
+    doLast {
+        println 'Hello world!'
+    }
+}
+hello.doLast {
+    println &quot;Greetings from the $hello.name task.&quot;
+}
+</code></pre>
+<p>输出 gradle -q hello</p>
+<pre><code class="language-shell">&gt; gradle -q hello
+Hello world!
+Greetings from the hello task.
+</code></pre>
+<p>这将启用非常可读的代码，尤其是在使用插件提供的任务（例如compile任务）时。</p>
+<h4 id="额外任务属性">额外任务属性</h4>
+<p>您可以将自己的属性添加到任务。要添加名为的属性myProperty，请设置ext.myProperty为初始值。从那时起，可以像预定义的任务属性一样读取和设置属性。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">task myTask {
+    ext.myProperty = &quot;myValue&quot;
+}
+ 
+task printTaskProperties {
+    doLast {
+        println myTask.myProperty
+    }
+}
+</code></pre>
+<p>输出 gradle -q printTaskProperties</p>
+<pre><code class="language-shell">&gt; gradle -q printTaskProperties
+myValue
+</code></pre>
+<p>额外的属性不仅限于任务。您可以在Extra属性中阅读有关它们的更多信息。</p>
+<h4 id="默认任务">默认任务</h4>
+<p>Gradle允许您定义一个或多个默认任务。</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">defaultTasks 'clean', 'run'
+ 
+task clean {
+    doLast {
+        println 'Default Cleaning!'
+    }
+}
+ 
+task run {
+    doLast {
+        println 'Default Running!'
+    }
+}
+ 
+task other {
+    doLast {
+        println &quot;I'm not a default task!&quot;
+    }
+}
+</code></pre>
+<p>输出 gradle -q</p>
+<pre><code class="language-shell">&gt; gradle -q
+Default Cleaning!
+Default Running!
+</code></pre>
+<p>这等效于运行gradle clean run。在多项目构建中，每个子项目可以有其自己的特定默认任务。如果子项目未指定默认任务，则使用父项目的默认任务（如果已定义）。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Gradle基础]]></title>
+        <id>https://tinaxiawuhao.github.io/post/Ke4qDxE4l/</id>
+        <link href="https://tinaxiawuhao.github.io/post/Ke4qDxE4l/">
+        </link>
+        <updated>2021-07-02T11:31:04.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="gradle概述">Gradle概述</h1>
+<p>Gradle是专注于灵活性和性能的开源构建自动化工具，一般使用Groovy或KotlinDSL编写构建脚本。 本文只使用Groovy</p>
+<h2 id="gradle的特点">Gradle的特点：</h2>
+<ul>
+<li>高性能</li>
+</ul>
+<p>Gradle通过仅运行需要运行的任务来避免不必要的工作。 可以使用构建缓存来重用以前运行的任务输出，甚至可以使用其他计算机（具有共享的构建缓存）重用任务输出。</p>
+<ul>
+<li>JVM基础</li>
+</ul>
+<p>Gradle在JVM上运行。熟悉Java的用户来可以在构建逻辑中使用标准Java API，例如自定义任务类型和插件。 这使得Gradle跨平台更加简单。（Gradle不仅限于构建JVM项目，它甚至附带对构建本机项目的支持。）</p>
+<ul>
+<li>约束</li>
+</ul>
+<p>和Maven一样，Gradle通过实现约束使常见类型的项目（例如Java项目）易于构建。 应用适当的插件，您可以轻松地为许多项目使用精简的构建脚本。 但是这些约定并没有限制您：Gradle允许您覆盖它们，添加自己的任务以及对基于约定的构建进行许多其他自定义操作。</p>
+<ul>
+<li>可扩展性</li>
+</ul>
+<p>您可以轻松扩展Gradle以提供您自己的任务类型甚至构建模型。</p>
+<ul>
+<li>IDE支持</li>
+</ul>
+<p>支持IDE：Android Studio，IntelliJ IDEA，Eclipse和NetBeans。 Gradle还支持生成将项目加载到Visual Studio所需的解决方案文件。</p>
+<ul>
+<li>可洞察性</li>
+</ul>
+<p>构建扫描提供了有关构建运行的广泛信息，可用于识别构建问题。他们特别擅长帮助您确定构建性能的问题。 您还可以与其他人共享构建扫描，如果您需要咨询以解决构建问题，这将特别有用。</p>
+<h2 id="您需要了解有关gradle的五件事">您需要了解有关Gradle的五件事</h2>
+<p>本节在官方文档里面反复提及，具体可见<a href="https://docs.gradle.org/current/userguide/what_is_gradle.html#five_things">Gradle文档</a></p>
+<h3 id="1-gradle是通用的构建工具">1. Gradle是通用的构建工具</h3>
+<p>Gradle允许您构建任何软件，因为它不关心你具体的工作。</p>
+<h3 id="2-核心模型基于任务">2. 核心模型基于任务</h3>
+<p>Gradle将其构建模型建模为任务（工作单元）的有向无环图（DAG）。这意味着构建实质上配置了一组任务，并根据它们的依赖关系将它们连接在一起以创建该DAG。创建任务图后，Gradle将确定需要按顺序运行的任务，然后继续执行它们。</p>
+<p>任务本身包括以下部分，它们通过依赖链接在一起：</p>
+<ul>
+<li>动作-做某事的工作，例如复制文件或编译源代码</li>
+<li>输入-操作使用或对其进行操作的值，文件和目录</li>
+<li>输出-操作修改或生成的文件和目录</li>
+</ul>
+<h3 id="3-gradle有几个固定的构建阶段">3. Gradle有几个固定的构建阶段</h3>
+<p>重要的是要了解Gradle分三个阶段评估和执行构建脚本：</p>
+<ul>
+<li>初始化</li>
+</ul>
+<p>设置构建环境，并确定哪些项目将参与其中。</p>
+<ul>
+<li>配置</li>
+</ul>
+<p>构造和配置构建的任务图，然后根据用户要运行的任务确定需要运行的任务和运行顺序。</p>
+<ul>
+<li>执行</li>
+</ul>
+<p>运行在配置阶段结束时选择的任务。</p>
+<p>这些阶段构成了Gradle的构建生命周期。</p>
+<h3 id="4-gradle的扩展方式不止一种">4. Gradle的扩展方式不止一种</h3>
+<p>Gradle捆绑的构建逻辑不可能满足所有构建情况，大多数构建都有一些特殊要求，你需要添加自定义构建逻辑。Gradle提供了多种机制来扩展它，例如：</p>
+<ul>
+<li>自定义任务类型。</li>
+<li>自定义任务动作。</li>
+<li>项目和任务的额外属性。</li>
+<li>自定义约束。</li>
+<li>自定义module。</li>
+</ul>
+<h3 id="5-构建脚本针对api运行">5. 构建脚本针对API运行</h3>
+<p>可以将Gradle的构建脚本视为可执行代码，但设计良好的构建脚本描述了构建软件需要哪些步骤，而不关心这些步骤应该如何完成工作。</p>
+<p>由于Gradle在JVM上运行，因此构建脚本也可以使用标准Java API。Groovy构建脚本可以另外使用Groovy API，而Kotlin构建脚本可以使用Kotlin。</p>
+<h2 id="功能的生命周期">功能的生命周期</h2>
+<p>功能可以处于以下四种状态之一：</p>
+<ul>
+<li>Internal：内部功能，不提供接口</li>
+<li>Incubating： 孵化功能。在成为公共功能之前会继续更改</li>
+<li>Public：公共功能，可放心使用</li>
+<li>Deprecated：废弃功能，将在未来删除</li>
+</ul>
+<h1 id="gradle安装">Gradle安装</h1>
+<h2 id="安装jdk">安装JDK</h2>
+<p>安装JDK过程已有太多资料，本文不做详细介绍。可使用命令检测自己电脑是否成功安装</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658230657737.png" alt="" loading="lazy"></figure>
+<h2 id="安装gradle">安装Gradle</h2>
+<h3 id="用软件包安装gradle">用软件包安装Gradle</h3>
+<p>SDKMAN</p>
+<pre><code class="language-shell">sdk install gradle
+</code></pre>
+<p>Homebrew</p>
+<pre><code class="language-shell">brew install gradle
+</code></pre>
+<h3 id="手动安装推荐方式">手动安装（推荐方式）</h3>
+<h4 id="下载">下载</h4>
+<p><a href="https://services.gradle.org/distributions/">services.gradle.org/distributions</a> （全部版本目录地址，可以查看最新版本）<br>
+<a href="https://services.gradle.org/distributions/gradle-7.5-all.zip">services.gradle.org/distributions/gradle-7.5-all.zip</a> （截止至2022.07.18最新）</p>
+<p>建议下载：<a href="https://services.gradle.org/distributions/gradle-7.0.3-all.zip">services.gradle.org/distributions/gradle-7.0.2-all.zip</a> (支持jdk8)</p>
+<h4 id="文件介绍">文件介绍</h4>
+<pre><code class="language-java">gradle-7.0.2-docs.zip  //文档
+gradle-7.0.2-src.zip  //源码
+gradle-7.0.2-bin.zip  //软件包
+gradle-7.0.2-all.zip   //全部文件
+   bin ：运行文件
+   lib：依赖库
+   docs：文档
+   src：源文件
+   init.d :初始化脚本目录，可自己添加
+</code></pre>
+<h4 id="配置环境变量">配置环境变量</h4>
+<pre><code class="language-shell">export GRADLE_HOME=/Users/temp/gradle-7.0.2
+export PATH=$PATH:$GRADLE_HOME/bin
+</code></pre>
+<h4 id="运行">运行</h4>
+<p>输入gradle -v 检测是否配置成功</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658230676105.png" alt="" loading="lazy"></figure>
+<h3 id="helloword">HelloWord</h3>
+<p>编写一个build.gradle文件，输入以下内容</p>
+<pre><code class="language-groovy">task hello{
+    doLast {
+        println 'Hello World'
+    }
+}
+</code></pre>
+<p>命令行输入<code>gradle -q hello</code>即可运行</p>
+<h1 id="gradle-wrapper">Gradle Wrapper</h1>
+<h2 id="定义">定义</h2>
+<p>Gradle Wrapper是一个脚本，可调用Gradle的声明版本，并在必要时预先下载。因此，开发人员可以快速启动并运行Gradle项目，而无需遵循手动安装过程<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1658230693887.png" alt="" loading="lazy"></p>
+<h2 id="添加wrapper">添加wrapper</h2>
+<p>在build.gradle同级目录下使用命令<code>gradle wrapper</code>可以生成gradle wrapper目录</p>
+<pre><code class="language-java">gradle wrapper
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658230710999.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<p>gradle-wrapper.jar</p>
+<p>WrapJAR文件，其中包含用于下载Gradle发行版的代码。</p>
+</li>
+<li>
+<p>gradle-wrapper.properties</p>
+<p>一个属性文件，负责配置Wrapper运行时行为，例如与该版本兼容的Gradle版本。请注意，更多常规设置（例如，将 Wrap配置为使用代理）需要进入其他文件。</p>
+</li>
+<li>
+<p>gradlew， gradlew.bat</p>
+<p>一个shell脚本和一个Windows批处理脚本，用于使用 Wrap程序执行构建。</p>
+</li>
+</ul>
+<p>可以通过命令控制生成选项</p>
+<pre><code class="language-shell">#用于下载和执行 Wrap程序的Gradle版本。
+--gradle-version
+
+#Wrap使用的Gradle分布类型。可用的选项是bin和all。默认值为bin。
+--distribution-type
+
+#指向Gradle分发ZIP文件的完整URL。使用此选项，--gradle-version并且--distribution-     type过时的网址已经包含此信息。如果您想在公司网络内部托管Gradle发行版，则此选项非常有价值。
+--gradle-distribution-url
+
+#SHA256哈希和用于验证下载的Gradle分布。
+--gradle-distribution-sha256-sum
+</code></pre>
+<p>例：</p>
+<pre><code class="language-shell">gradle wrapper --gradle-version 7.0.2 --distribution-type all
+</code></pre>
+<h2 id="wrapper属性文件">Wrapper属性文件</h2>
+<p>一般生成Wrapper会得到如下属性文件 gradle-wrapper.properties</p>
+<pre><code class="language-java">distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-7.4.1-bin.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+</code></pre>
+<p>GRADLE_USER_HOME是你的环境变量，如果没配置，则默认是用户目录下的.gradle文件夹</p>
+<ul>
+<li>distributionBase 下载的 Gradle压缩包解压后存储的主目录</li>
+<li>distributionPath 相对于 distributionBase的解压后的 Gradle压缩包的路径</li>
+<li>zipStoreBase 同 distributionBase，只不过是存放 zip压缩包的</li>
+<li>zipStorePath 同 distributionPath，只不过是存放 zip压缩包的</li>
+<li>distributionUrl Gradle发行版压缩包的下载地址</li>
+</ul>
+<h2 id="使用wrapper构建">使用wrapper构建</h2>
+<p>在 gradlew目录下执行命令：<br>
+windows：</p>
+<pre><code class="language-shell">gradlew.bat build
+</code></pre>
+<p>shell：</p>
+<pre><code class="language-shell">./gradlew build
+</code></pre>
+<h2 id="升级">升级</h2>
+<ul>
+<li>更改gradle-wrapper.properties文件中的distributionUrl属性</li>
+<li>使用gradlew wrap --gradle-version 命令</li>
+</ul>
+<pre><code class="language-shell">./gradlew wrap --gradle-version 7.4.2
+</code></pre>
+<h2 id="自定义gradle_wrap">自定义Gradle_Wrap</h2>
+<p>可以通过自定义wrapper少去一些重复操作或定制功能，如</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">tasks.named('wrapper') {
+    distributionType = Wrapper.DistributionType.ALL
+}
+task wrapper(type: Wrapper) {
+    gradleVersion = '7.4.2'
+}
+</code></pre>
+<h1 id="gradle-环境">Gradle 环境</h1>
+<h2 id="环境变量">环境变量</h2>
+<p><code>GRADLE_OPTS</code></p>
+<p>指定启动Gradle客户端VM时要使用的JVM参数。客户端VM仅处理命令行输入/输出，因此很少需要更改其VM选项。实际的构建由Gradle守护程序运行，不受此环境变量的影响。</p>
+<p><code>GRADLE_USER_HOME</code></p>
+<p>指定Gradle用户的主目录（如果未设置，则默认为$USER_HOME/.gradle）。</p>
+<p><code>JAVA_HOME</code></p>
+<p>指定要用于客户端VM的JDK安装目录。除非Gradle属性文件使用org.gradle.java.home指定了另一个虚拟机，否则此虚拟机也用于守护程序。</p>
+<p>注意：命令行选项和系统属性优先于环境变量。</p>
+<h2 id="gradle属性">Gradle属性</h2>
+<p>你可以通过以下方式自己配置你的项目属性，如果存在多个，则从上到下优先读取 ：</p>
+<ul>
+<li>系统属性，例如在命令行上设置 <code>-Dgradle.user.home</code></li>
+<li>GRADLE_USER_HOME目录中的<code>gradle.properties</code></li>
+<li>项目根目录中的<code>gradle.properties</code></li>
+<li>Gradle安装目录中的<code>gradle.properties</code></li>
+</ul>
+<p>gradle.properties</p>
+<pre><code class="language-shell"># 当设置为true时，Gradle将在可能的情况下重用任何先前构建的任务输出，从而使构建速度更快
+org.gradle.caching=true
+ 
+# 设置为true时，单个输入属性哈希值和每个任务的构建缓存键都记录在控制台上。
+org.gradle.caching.debug=true
+ 
+# 启用按需孵化配置，Gradle将尝试仅配置必要的项目。
+org.gradle.configureondemand=true
+ 
+# 自定义控制台输出的颜色或详细程度。默认值取决于Gradle的调用方式。可选(auto,plain,rich,verbose)
+org.gradle.console=auto
+ 
+# 当设置true的Gradle守护进程来运行构建。默认值为true。
+org.gradle.daemon=true
+ 
+# 在指定的空闲毫秒数后，Gradle守护程序将自行终止。默认值为10800000（3小时）。
+org.gradle.daemon.idletimeout=10800000
+ 
+# 设置true为时，Gradle将在启用远程调试的情况下运行构建，侦听端口5005。
+# 请注意，这等同于添加-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005到JVM命令行，并且将挂起虚拟机，直到连接了调试器。
+# 默认值为false。
+org.gradle.debug=true
+ 
+# 指定用于Gradle构建过程的Java主页。可以将值设置为jdk或jre位置，但是，根据您的构建方式，使用JDK更安全。
+# 如果未指定设置，则从您的环境（JAVA_HOME或的路径java）派生合理的默认值。这不会影响用于启动Gradle客户端VM的Java版本（请参阅环境变量）。
+org.gradle.java.home=/usr/bin/java
+        
+# 指定用于Gradle守护程序的JVM参数。该设置对于配置JVM内存设置以提高构建性能特别有用。这不会影响Gradle客户端VM的JVM设置。
+org.gradle.jvmargs=-Xmx2048m
+ 
+# 当设置为quiet,warn,lifecycle,info,debug时，Gradle将使用此日志级别。这些值不区分大小写。该lifecycle级别是默认级别。
+# 可选(quiet,warn,lifecycle,info,debug)
+org.gradle.logging.level=debug
+ 
+# 配置后，Gradle将分叉到org.gradle.workers.maxJVM以并行执行项目
+org.gradle.parallel=true
+        
+# 指定Gradle守护程序及其启动的所有进程的调度优先级。默认值为normal。(low,normal)
+org.gradle.priority=normal
+        
+# 在监视文件系统时配置详细日志记录。 默认为关闭 。
+org.gradle.vfs.verbose=true
+ 
+# 切换观看文件系统。允许Gradle在下一个版本中重用有关文件系统的信息。 默认为关闭 。
+org.gradle.vfs.watch=true
+ 
+# 当设置为all，summary或者none，Gradle会使用不同的预警类型的显示器。(all,fail,summary,none)
+org.gradle.warning.mode=all
+ 
+# 配置后，Gradle将最多使用给定数量的工人。默认值为CPU处理器数。
+org.gradle.workers.max=5
+</code></pre>
+<h3 id="系统属性">系统属性</h3>
+<pre><code class="language-shell"># 指定用户名以使用HTTP基本认证从服务器下载Gradle发行版
+systemProp.gradle.wrapperUser = myuser
+# 指定使用Gradle Wrapper下载Gradle发行版的密码
+systemProp.gradle.wrapperPassword = mypassword
+# 指定Gradle用户的主目录
+systemProp.gradle.user.home=(path to directory)
+</code></pre>
+<h3 id="项目属性">项目属性</h3>
+<pre><code class="language-shell">org.gradle.project.foo = bar
+</code></pre>
+<h2 id="守护程序">守护程序</h2>
+<p>Gradle在Java虚拟机（JVM）上运行，并使用一些支持库，这些库需要很短的初始化时间。但有时启动会比较慢。<br>
+解决此问题的方法是Gradle Daemon ：这是一个长期存在的后台进程，与以前相比，它可以更快地执行构建。</p>
+<p>可通过命令获取运行守护程序状态</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658230731202.png" alt="" loading="lazy"></figure>
+<p>IDLE为空闲，BUSY为繁忙，STOPPED则已关闭</p>
+<p>守护程序默认打开，可通过以下属性关闭<br>
+<code>.gradle/gradle.properties</code></p>
+<pre><code class="language-shell">org.gradle.daemon=false
+</code></pre>
+<p>也可用命令gradle --stop手动关闭守护程序</p>
+<h1 id="gradle命令行">Gradle命令行</h1>
+<p>命令行格式</p>
+<pre><code class="language-shell">gradle [taskName ...] [--option-name ...]
+</code></pre>
+<p>如果指定了多个任务，则应以空格分隔。</p>
+<p>选项和参数之间建议使用<code>=</code>来指定。</p>
+<pre><code class="language-shell">--console=plain
+</code></pre>
+<p>启用行为的选项具有长形式的选项，并带有由指定的反函数<code>--no-</code>。以下是相反的情况。</p>
+<pre><code class="language-shell">--build-cache
+--no-build-cache
+</code></pre>
+<p>许多命令具有缩写。例如以下命令是等效的：</p>
+<pre><code class="language-shell">--help
+-h
+</code></pre>
+<p>使用Wrapper时候应该用<code>./gradlew</code>或<code>gradlew.bat</code>取代<code>gradle</code></p>
+<pre><code class="language-shell">#获取帮助
+gradle -?
+gradle -h
+gradle -help
+ 
+# 显示所选项目的子项目列表，以层次结构显示。
+gradle projects
+#查看可执行task
+gradle task
+#查看可执行task帮助
+gradle help -task
+ 
+# 在Gradle构建中，通常的`build`任务是指定组装所有输出并运行所有检查。
+gradle build
+# 执行所有验证任务（包括test和linting）。
+gradle check
+# 清理项目
+gradle clean
+#强制刷新依赖
+gradle --refresh-dependencies assemble
+ 
+#缩写调用
+gradle startCmd
+== 
+gradle sc
+ 
+ 
+# 执行任务
+gradle myTask
+# 执行多个任务
+gradle myTask test
+# 执行 dist任务但排除test任务
+gradle dist --exclude-task test
+# 强制执行任务
+gradle test --rerun-tasks
+ 
+# 持续构建
+# gradle test --continue
+ 
+# 生成扫描会提供完整的可视化报告，说明哪些依赖项存在于哪些配置，可传递依赖项和依赖项版本选择中。
+$ gradle myTask --scan
+ 
+# 所选项目的依赖项列表
+$ gradle dependencies
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[gradle详情]]></title>
+        <id>https://tinaxiawuhao.github.io/post/29jyrX-eN/</id>
+        <link href="https://tinaxiawuhao.github.io/post/29jyrX-eN/">
+        </link>
+        <updated>2021-07-01T11:57:30.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="一-依赖管理">一 依赖管理</h3>
+<p>implementation:会将指定的依赖添加到编译路径，并且会将该依赖打包到输出，但是这个依赖在编译时不能暴露给其他模块，例如依赖此模块的其他模块。这种方式指定的依赖在编译时只能在当前模块中访问。</p>
+<p>api:使用api配置的依赖会将对应的依赖添加到编译路径，并将依赖打包输出，但是这个依赖是可以传递的，比如模块A依赖模块B，B依赖库C，模块B在编译时能够访问到库C，但是与implemetation不同的是，在模块A中库C也是可以访问的。</p>
+<p>compileOnly:compileOnly修饰的依赖会添加到编译路径中，但是不会打包，因此只能在编译时访问，且compileOnly修饰的依赖不会传递。</p>
+<p>runtimeOnly:这个与compileOnly相反，它修饰的依赖不会添加到编译路径中，但是被打包，运行时使用。没有使用过。</p>
+<p>annotationProcessor:用于注解处理器的依赖配置</p>
+<pre><code class="language-java">dependencies {
+    // 本地项目
+    api project(':com.test.core:core-common')  
+    //外部依赖
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+</code></pre>
+<h3 id="二-仓库">二 仓库</h3>
+<p><strong>远程仓库</strong><br>
+使用Maven中央仓库，maven仓库的URL为：<a href="https://links.jianshu.com/go?to=http%3A%2F%2Frepo1.maven.org%2Fmaven2%2F">http://repo1.maven.org/maven2/</a></p>
+<pre><code class="language-java">repositories {
+    mavenCentral()
+}
+</code></pre>
+<p>使用Maven远程仓库</p>
+<pre><code class="language-java">repositories {
+    //阿里云远程仓库
+    maven { url 'https://maven.aliyun.com/repository/central'}
+	maven { url 'https://maven.aliyun.com/repository/public' }
+    mavenCentral()
+}
+</code></pre>
+<p><strong>本地仓库</strong><br>
+配置Gradle使用maven本地仓库：<code>CRADLE_USER_HOME：D:.m2\repository</code></p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657022747903.png" alt="img" loading="lazy"></figure>
+<p>修改配置build.gradle：</p>
+<pre><code class="language-java">/**
+ * 指定所使用的仓库，mavenCentral()表示使用中央仓库，
+ * 此刻项目中所需要的jar包都会默认从中央仓库下载到本地指定目录
+ * 配置mavenLocal()表示引入jar包的时候，先从本地仓库中找，没有再去中央仓库下载
+ */
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+</code></pre>
+<p><strong>修改或者添加额外的私有仓库地址</strong><br>
+直接修改 settings.gradle 来添加其它仓库：</p>
+<pre><code class="language-java">// settings.gradle
+//pluginManagement {}块只能出现在settings.gradle文件中，必须是文件中的第一个块，也可以以settings形式出现在初始化脚本中。
+pluginManagement {
+    repositories {
+		maven { url 'https://maven.aliyun.com/repository/central'}
+		maven { url 'https://maven.aliyun.com/repository/public' }
+		mavenCentral()
+		gradlePluginPortal()
+		maven {
+			url 'https://repo.spring.io/release'
+		}
+		if (version.endsWith('-SNAPSHOT')) {
+			maven { url &quot;https://repo.spring.io/snapshot&quot; }
+		}
+	}
+}
+</code></pre>
+<h3 id="三-多项目构建">三 多项目构建</h3>
+<p>多项目构成：allProjects = root项目+各子项目<br>
+settings文件声明了所需的配置来实例化项目的层次结构。在默认情况下，这个文件被命名为settings.gradle，并且和根项目的build.gradle文件放在一起，该文件在初始化阶段被执行。根项目就像一个容器，子项目会迭代访问它的配置并注入到自己的配置中。</p>
+<p><strong>多项目构建</strong><br>
+多项目构建总是需要指定一个树根，树中的每一个节点代表一个项目，每一个Project对象都指定有一个表示在树中位置的路径；在设置文件中我们还可以使用一套方法来自定义构建项目树。<br>
+settings.gradle作用就是用于多项目构建，一般像这样：</p>
+<pre><code class="language-java">//父模块名称
+rootProject.name = 'nacos'
+//引入子模块
+include 'sentinel'
+include 'openfeign'
+include 'loadbalancer'
+include 'gateway'
+include 'rocketmq'
+include 'sleuth'
+include 'seata'
+include 'provide'
+findProject(':iot-service:user-center')?.name = 'user-center'
+</code></pre>
+<p><strong>buildScript</strong><br>
+buildScript块的repositories主要是为了Gradle脚本自身的执行，获取脚本依赖插件。<br>
+buildscript中的声明是gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。<br>
+gradle在执行脚本时，会优先执行buildscript代码块中的内容，然后才会执行剩余的build脚本。</p>
+<pre><code class="language-java">buildscript {
+    ext {
+        //spring-cloud-dependencies 2020.0.0 默认不在加载bootstrap 配置文件，
+        //如果项目中要用bootstrap 配置文件 需要手动添加spring-cloud-starter-bootstrap 依赖，不然启动项目会报错的。
+        set('springCloudVersion', &quot;2021.0.3&quot;)
+        //定义一个变量，统一规定springboot的版本
+        set('springBootVersion', &quot;2.6.8&quot;)
+        set('alibabaVersion', &quot;2.2.7.RELEASE&quot;)
+        set('lombok', &quot;1.18.16&quot;)
+        set('knife4j', &quot;2.0.9&quot;)
+        set('hutool', &quot;4.6.3&quot;)
+        set('rocketmq', &quot;2.2.2&quot;)
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
+    dependencies {
+        //用来打包
+        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}&quot;)
+    }
+}
+</code></pre>
+<p>ext：ext是自定义属性，现在很多人都喜欢把所有关于版本的信息都利用ext放在另一个自己新建的gradle文件中集中管理。</p>
+<p><strong>allprojects</strong><br>
+allprojects块的repositories用于多项目构建，为所有项目提供共同所需依赖包。而子项目可以配置自己的repositories以获取自己独需的依赖包。</p>
+<blockquote>
+<p>buildscript和allprojects的作用和区别：<br>
+buildscript中的声明是gradle脚本自身需要使用的资源，就是说它自己需要的资源，跟你其它模块其实并没有什么关系。而allprojects声明的却是<code>所有module</code>所需要使用的资源，就是说你的每个module都需要用同一个第三库的时候，可以在allprojects里面声明。</p>
+</blockquote>
+<pre><code class="language-java">allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+
+    //下面两句必须在所有子项目中添加，否则导致import了看起来没问题，但是编译时找不到其他模块的类。
+    group = 'com.example'
+    version = '0.0.1-SNAPSHOT'
+    // 指定JDK版本
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
+    //指定编码格式
+    tasks.withType(JavaCompile) {
+        options.encoding = &quot;UTF-8&quot;
+    }
+}
+</code></pre>
+<p><strong>subprojects子项目通用配置</strong><br>
+subprojects是对所有Child Project的配置:</p>
+<pre><code class="language-java">subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    //dependency-management 插件
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+    
+    dependencies {
+        implementation(enforcedPlatform(&quot;org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}&quot;))
+        implementation(enforcedPlatform(&quot;com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaVersion}&quot;))
+        implementation(enforcedPlatform(&quot;org.springframework.boot:spring-boot-dependencies:${springBootVersion}&quot;))
+        implementation &quot;com.github.xiaoymin:knife4j-spring-boot-starter:${knife4j}&quot;
+        implementation &quot;cn.hutool:hutool-all:${hutool}&quot;
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+        implementation('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'){
+            exclude group: 'org.springframework.cloud', module: 'spring-cloud-starter-netflix-ribbon'
+        }
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+        compileOnly(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        testImplementation(&quot;org.springframework.boot:spring-boot-starter-test:${springBootVersion}&quot;)
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+}
+</code></pre>
+<h3 id="四-gradleproperties">四 gradle.properties</h3>
+<p>gradle中的常用属性可以写在gradle.properties中。<br>
+  一般我们都把全局属性都编写在一个工具类中，如果是有环境的切换的话，那么我们还会定义一个标志来进行相应的变换。对于项目而言，有时候需要配置某些敏感信息。比如密码，帐号等。而这些信息需要被很多类共同使用，所以必须有一个全局的配置。当需要把项目push到git上时，我们不希望别人看到我们项目的key，token等。我们可以将这些信息设置在gradle.properties中。<br>
+只有在Android中才可使用。</p>
+<pre><code class="language-java">AppKey = 1234567890
+</code></pre>
+<p>在build.gradle(module app)中进行变量的重定义，即将配置内容转化成java能够使用的形式:</p>
+<pre><code class="language-java">android {
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //buildConfigField用于给BuildConfig文件添加一个字段
+            buildConfigField(&quot;String&quot;,&quot;KEY&quot;,&quot;\&quot;${AppKey}\&quot;&quot;)
+        }
+        debug{
+            buildConfigField(&quot;String&quot;,&quot;KEY&quot;,&quot;\&quot;${AppKey}\&quot;&quot;)
+        }
+    }
+}
+</code></pre>
+<h3 id="五-gradle-插件plugins">五 Gradle 插件(Plugins)</h3>
+<p>Gradle 也可以用下面的方式声明使用的插件：</p>
+<pre><code class="language-java">// plugins DSL
+plugins {
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+}
+
+// apply plugin
+apply plugin: 'java-library'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+//dependency-management 插件
+apply plugin: 'io.spring.dependency-management'
+</code></pre>
+<p>其实是从 Gradle 官方的插件仓库<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fplugins.gradle.org%2Fm2%2F">https://plugins.gradle.org/m2/</a>下载的。</p>
+<h3 id="六-常见的task命令">六 常见的task命令</h3>
+<p><code>build</code>:当运行gradle build命令时Gradle将会编译和测试你的代码，并且创建一个包含类和资源的JAR文件。<br>
+<code>clean</code>:当运行gradle clean命令时Gradle将会删除build生成的目录和所有生成的文件。<br>
+<code>assemble</code>:当运行gradle assemble命令时Gradle将会编译并打包代码，但是并不运行单元测试。<br>
+<code>check</code>:当运行gradle check命令时Gradle将会编译并测试你的代码，其他的插件会加入更多的检查步骤。</p>
+<h3 id="七-gradle-wrapper">七 gradle-wrapper</h3>
+<p>Wrapper是对Gradle的一层包装，便于在团队开发过程中统一Gradle构建的版本号，这样大家都可以使用统一的Gradle版本进行构建。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657022568864.png" alt="img" loading="lazy"></figure>
+<pre><code class="language-java">distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-7.4.2-bin.zip
+#distributionUrl=file:///E:/gradle/gradle-7.4.2-all.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+</code></pre>
+<p>distributionUrl是要下载的gradle的地址，使用哪个版本的gradle，就在这里修改。</p>
+<p>gradle的3种版本：<br>
+gradle-xx-all.zip是完整版，包含了各种二进制文件，源代码文件，和离线的文档。<br>
+gradle-xx-bin.zip是二进制版，只包含了二进制文件（可执行文件），没有文档和源代码。<br>
+gradle-xx-src.zip是源码版，只包含了Gradle源代码，不能用来编译你的工程。</p>
+<p>zipStoreBase和zipStorePath组合在一起，是下载的gradle-3.1-bin.zip所存放的位置。<br>
+zipStorePath是zipStoreBase指定的目录下的子目录。</p>
+<p>distributionBase和distributionPath组合在一起，是解压gradle-5.6.4-bin.zip之后的文件的存放位置。<br>
+distributionPath是distributionBase指定的目录下的子目录。</p>
+<p>下载位置可以和解压位置不一样。</p>
+<p>zipStoreBase和distributionBase有两种取值：GRADLE_USER_HOME和PROJECT。<br>
+其中，GRADLE_USER_HOME表示用户目录。<br>
+在windows下是%USERPROFILE%/.gradle，例如C:\Users&lt;user_name&gt;.gradle\。<br>
+在linux下是$HOME/.gradle，例如~/.gradle。<br>
+PROJECT表示工程的当前目录，即gradlew所在的目录。</p>
+<h3 id="八-依赖分组">八 依赖分组</h3>
+<p>Gradle 依赖是分组的 ,分组是在 org.gradle.api.Project 中的 configurations 中配置的 ,如 &quot; implementation &quot; , &quot; compile &quot; 等都是分组 , 这些分组都是在 org.gradle.api.Project#configurations 中进行配置 , 也就是 build.gradle#configurations 中配置 ;</p>
+<p><strong>build.gradle#configurations 自定义依赖分组</strong></p>
+<p>在 build.gradle 中配置 configurations :</p>
+<pre><code class="language-groovy">configurations {
+  hello {
+  }
+}
+</code></pre>
+<p>则可以在 dependencies 中使上述在 configurations 配置的依赖分组 hello ,</p>
+<pre><code class="language-java">dependencies {
+  hello 'com.android.support:appcompat-v7:28.0.0'
+}
+</code></pre>
+<h3 id="九-依赖版本冲突">九 依赖版本冲突</h3>
+<p>Gradle对解决传递依赖提供了两种策略，使用最新版本或者直接导致构建失败。默认的策略是使用最新版本。虽然这样的策略能够解决一些问题，但是还是不够。常见的一种情况是，NoSuchMethond或者ClassNotFound。这时候，你可能需要一些特殊手段，比如排除不想要的传递依赖。<br>
+排除传递依赖的方式有两种：</p>
+<blockquote>
+<p>1.使用transitive = false排除</p>
+<p>2.在具体的某个dependency中使用exclude排除</p>
+<p>3.使用force强制依赖某个版本</p>
+</blockquote>
+<pre><code class="language-java">(1) 方案一：针对 A 或 D 配置 transitive。
+    这里针对A配置，不解析A模块的传递依赖，因此当前Module的依赖关系树中不再包含 B1 和 C，这里需要手动添加依赖 C
+dependencies {
+    implementation A {
+      transitive = false
+    }
+    implementation C
+    implementation D {
+      //transitive = false
+    }
+}
+
+(2) 方案二：针对 A 或 D 配置 exclude规则，此处针对A配置，依赖关系树中不再包含B1
+dependencies {
+    implementation A {
+      exclude  B1
+    }
+    implementation D {
+      //exclude  B2
+    }
+}
+
+(3) 方案三：使用force强制依赖某个版本，如强制依赖 B1 或者 B2
+        以下是在顶层build.gradle中配置，强制所有module依赖B1
+configurations.all {
+    resolutionStrategy {
+       force B1
+       // force B2
+    }
+}
+</code></pre>
+<h3 id="十-springcloud-gradle管理">十 springcloud-gradle管理</h3>
+<p><strong>parent:settings.gradle</strong></p>
+<pre><code class="language-groovy">rootProject.name = 'nacos'
+include 'sentinel'
+include 'openfeign'
+include 'loadbalancer'
+include 'gateway'
+include 'rocketmq'
+include 'sleuth'
+include 'seata'
+include 'provide'
+</code></pre>
+<p><strong>parent:build.gradle</strong></p>
+<pre><code class="language-groovy">buildscript {
+    ext {
+        //spring-cloud-dependencies 2020.0.0 默认不在加载bootstrap 配置文件，
+        //如果项目中要用bootstrap 配置文件 需要手动添加spring-cloud-starter-bootstrap 依赖，不然启动项目会报错的。
+        set('springCloudVersion', &quot;2021.0.3&quot;)
+        //定义一个变量，统一规定springboot的版本
+        set('springBootVersion', &quot;2.6.8&quot;)
+        set('alibabaVersion', &quot;2.2.7.RELEASE&quot;)
+        set('lombok', &quot;1.18.16&quot;)
+        set('knife4j', &quot;2.0.9&quot;)
+        set('hutool', &quot;4.6.3&quot;)
+        set('rocketmq', &quot;2.2.2&quot;)
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
+    dependencies {
+        //用来打包
+        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}&quot;)
+    }
+}
+
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+
+    //下面两句必须在所有子项目中添加，否则导致import了看起来没问题，但是编译时找不到其他模块的类。
+    group = 'com.example'
+    version = '0.0.1-SNAPSHOT'
+    // 指定JDK版本
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
+    //指定编码格式
+    tasks.withType(JavaCompile) {
+        options.encoding = &quot;UTF-8&quot;
+    }
+}
+
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    //dependency-management 插件
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        implementation(enforcedPlatform(&quot;org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}&quot;))
+        implementation(enforcedPlatform(&quot;com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaVersion}&quot;))
+        implementation(enforcedPlatform(&quot;org.springframework.boot:spring-boot-dependencies:${springBootVersion}&quot;))
+        implementation &quot;com.github.xiaoymin:knife4j-spring-boot-starter:${knife4j}&quot;
+        implementation &quot;cn.hutool:hutool-all:${hutool}&quot;
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+        implementation('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'){
+            exclude group: 'org.springframework.cloud', module: 'spring-cloud-starter-netflix-ribbon'
+        }
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+        compileOnly(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor(&quot;org.projectlombok:lombok:${lombok}&quot;)
+        testImplementation(&quot;org.springframework.boot:spring-boot-starter-test:${springBootVersion}&quot;)
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+}
+</code></pre>
+<p><strong>gateway:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-gateway&quot;
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-loadbalancer&quot;
+}
+</code></pre>
+<p><strong>openfeign:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-openfeign&quot;
+	implementation &quot;org.springframework.cloud:spring-cloud-starter-loadbalancer&quot;
+}
+
+</code></pre>
+<p><strong>rocketmq:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation &quot;org.apache.rocketmq:rocketmq-spring-boot-starter:${rocketmq}&quot;
+}
+</code></pre>
+<p><strong>sentinel:build.gradle</strong></p>
+<pre><code class="language-groovy">dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
+</code></pre>
+<h3 id="项目构建-gradle-docker打包">项目构建--Gradle--Docker打包</h3>
+<p>在<code>build.gradle</code>中引入插件。</p>
+<pre><code class="language-java"> id &quot;com.google.cloud.tools.jib&quot; version &quot;3.2.1&quot;
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657022594521.png" alt="img" loading="lazy"></figure>
+<p><strong>配置</strong><br>
+配置打包时的基础镜像、容器配置、私服地址等，和Maven 插件中的一样，只是采用闭包的书写方式。</p>
+<p><a href="https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin#quickstart">Jib 官网文档</a></p>
+<pre><code class="language-java">jib {
+    // 基础镜像，来自dockerhub,如果是私服，需要加上鉴权信息，和to下的auth节点相同
+    // https://hub.docker.com/
+    from {
+        image = 'xx'
+    }
+    // 构建后的镜像名称以及私服地址、鉴权信息
+    to {
+        image = 'xx'
+        auth {
+            username = '登录账号'
+            password = '登录密码'
+        }
+    }
+    // 容器相关设置
+    container {
+        // 创建时间
+        creationTime = new Date()
+        // JVM 启动参数
+        jvmFlags = ['-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=prod', '-Dfile.encoding=utf-8', '-Duser.timezone=GMT+08']
+        // 启动类
+        // mainClass = 'com.xxx.RunApplication'
+        // 容器在运行时公开的端口
+        ports = ['8080']
+        // 放置应用程序内容的容器上的根目录
+        appRoot = '/deploy/service'
+    }
+}
+</code></pre>
+<h4 id="使用ideadocker插件布署">使用IdeaDocker插件布署</h4>
+<p><strong>Idea安装插件</strong></p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657022607710.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657022616011.png" alt="img" loading="lazy"></figure>
+<p><strong>安装docker插件</strong></p>
+<ol>
+<li>配置docker：</li>
+</ol>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657022629349.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657022637131.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657022644128.png" alt="img" loading="lazy"></figure>
+<p><strong>配置Dockerfile文件</strong><br>
+1）新建Dockerfile文件会自动弹出。</p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657022651578.png" alt="img" loading="lazy"></figure>
+<p>在工程根目录下新建Dockerfile文件，内容如下：</p>
+<pre><code class="language-dockerfile">FROM openjdk:8
+COPY build/libs/iot-eruake-1.0.0.jar app.jar
+RUN bash -c &quot;touch /app.jar&quot;
+EXPOSE 8080
+ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;,&quot;app.jar&quot;]
+</code></pre>
+<p><strong>创建docker镜像</strong></p>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657022660226.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657022667209.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657022673583.png" alt="img" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657022680599.png" alt="img" loading="lazy"></figure>
+<p><strong>发布完成</strong></p>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657022687210.png" alt="img" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[IdWorker雪花算法]]></title>
         <id>https://tinaxiawuhao.github.io/post/4WluurBt3/</id>
         <link href="https://tinaxiawuhao.github.io/post/4WluurBt3/">
@@ -31435,1589 +34061,6 @@ public class DemoApplication {
 <p>3、采用单线程，避免了不必要的上下文切换和竞争条件，也不存在多进程或者多线程导致的切换而消耗 CPU，不用去考虑各种锁的问题，不存在加锁释放锁操作，没有因为可能出现死锁而导致的性能消耗；</p>
 <p>4、使用多路 I/O 复用模型，非阻塞 IO；</p>
 <p>5、使用底层模型不同，它们之间底层实现方式以及与客户端之间通信的应用协议不一样，Redis 直接自己构建了 VM 机制 ，因为一般的系统调用系统函数的话，会浪费一定的时间去移动和请求；</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[多线程基础概念四]]></title>
-        <id>https://tinaxiawuhao.github.io/post/b7Jq-wpXZ/</id>
-        <link href="https://tinaxiawuhao.github.io/post/b7Jq-wpXZ/">
-        </link>
-        <updated>2021-05-12T06:59:14.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="lock-接口lock-interface简介">Lock 接口(Lock interface)简介</h3>
-<blockquote>
-<p>Lock 接口比同步方法和同步块提供了更具扩展性的锁操作。他们允许更灵活的结构，可以具有完全不同的性质，并且可以支持多个相关类的条件对象。</p>
-</blockquote>
-<p><strong>优势</strong><br>
-它的优势有：</p>
-<p>（1）可以使锁更公平</p>
-<p>（2）可以使线程在等待锁的时候响应中断</p>
-<p>（3）可以让线程尝试获取锁，并在无法获取锁的时候立即返回或者等待一段时间</p>
-<p>（4）可以在不同的范围，以不同的顺序获取和释放锁</p>
-<p>整体上来说 Lock 是 synchronized 的扩展版，Lock 提供了无条件的、可轮询的(tryLock 方法)、定时的(tryLock 带参方法)、可中断的(lockInterruptibly)、可多条件队列的(newCondition 方法)锁操作。另外 Lock 的实现类基本都支持非公平锁(默认)和公平锁，synchronized 只支持非公平锁，当然，在大部分情况下，非公平锁是高效的选择。</p>
-<h4 id="乐观锁和悲观锁">乐观锁和悲观锁</h4>
-<p>悲观锁：总是假设最坏的情况，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会阻塞直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。再比如 Java 里面的同步原语 <code>synchronized</code> 关键字的实现也是悲观锁。</p>
-<p>乐观锁：顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量，像数据库提供的类似于 write_condition 机制，其实都是提供的乐观锁。在 Java中 <code>java.util.concurrent.atomic</code> 包下面的原子变量类就是使用了乐观锁的一种实现方式 <code>CAS</code> 实现的。</p>
-<h5 id="乐观锁的实现方式">乐观锁的实现方式：</h5>
-<p>1、使用版本标识来确定读到的数据与提交时的数据是否一致。提交后修改版本标识，不一致时可以采取丢弃和再次尝试的策略。</p>
-<p>2、java 中的 Compare and Swap 即 CAS ，当多个线程尝试使用 CAS 同时更新同一个变量时，只有其中一个线程能更新变量的值，而其它线程都失败，失败的线程并不会被挂起，而是被告知这次竞争中失败，并可以再次尝试。 CAS 操作中包含三个操作数 —— 需要读写的内存位置（V），进行比较的预期原值（A）和拟写入的新值(B)。如果内存位置 V 的值与预期原值 A 相匹配，那么处理器会自动将该位置值更新为新值 B。否则处理器不做任何操作。</p>
-<h5 id="cas">CAS</h5>
-<p>CAS 是 compare and swap 的缩写，即我们所说的比较交换。</p>
-<p>CAS 是一种基于锁的操作，而且是乐观锁。在 java 中锁分为乐观锁和悲观锁。悲观锁是将资源锁住，等一个之前获得锁的线程释放锁之后，下一个线程才可以访问。而乐观锁采取了一种宽泛的态度，通过某种方式不加锁来处理资源，比如通过给记录加 version 来获取数据，性能较悲观锁有很大的提高。</p>
-<p>CAS 操作包含三个操作数 —— 内存位置（V）、预期原值（A）和新值(B)。如果内存地址里面的值和 A 的值是一样的，那么就将内存里面的值更新成 B。CAS是通过无限循环来获取数据的，若果在第一轮循环中，a 线程获取地址里面的值被b 线程修改了，那么 a 线程需要自旋，到下次循环才有可能机会执行。</p>
-<p><code>java.util.concurrent.atomic</code> 包下的类大多是使用 CAS 操作来实现的(<code>AtomicInteger</code>,<code>AtomicBoolean</code>,<code>AtomicLong</code>)。</p>
-<h6 id="cas产生的问题">CAS产生的问题</h6>
-<ol>
-<li>
-<p>ABA 问题：</p>
-<p>比如说一个线程 one 从内存位置 V 中取出 A，这时候另一个线程 two 也从内存中取出 A，并且 two 进行了一些操作变成了 B，然后 two 又将 V 位置的数据变成 A，这时候线程 one 进行 CAS 操作发现内存中仍然是 A，然后 one 操作成功。尽管线程 one 的 CAS 操作成功，但可能存在潜藏的问题。从 Java1.5 开始 JDK 的 atomic包里提供了一个类<code>AtomicStampedReference</code> 来解决 ABA 问题。</p>
-</li>
-<li>
-<p>循环时间长开销大：</p>
-<p>对于资源竞争严重（线程冲突严重）的情况，CAS 自旋的概率会比较大，从而浪费更多的 CPU 资源，效率低于 synchronized。</p>
-</li>
-<li>
-<p>只能保证一个共享变量的原子操作：</p>
-<p>当对一个共享变量执行操作时，我们可以使用循环 CAS 的方式来保证原子操作，但是对多个共享变量操作时，循环 CAS 就无法保证操作的原子性，这个时候就可以用锁。</p>
-</li>
-</ol>
-<h4 id="公平锁锁和非公平锁">公平锁锁和非公平锁</h4>
-<p>公平锁：多个线程按照申请锁的顺序去获得锁，线程会直接进入队列去排队，永远都是队列的第一位才能得到锁。</p>
-<ul>
-<li>优点：所有的线程都能得到资源，不会饿死在队列中。</li>
-<li>缺点：吞吐量会下降很多，队列里面除了第一个线程，其他的线程都会阻塞，cpu唤醒阻塞线程的开销会很大。</li>
-</ul>
-<p>非公平锁：多个线程去获取锁的时候，会直接去尝试获取，获取不到，再去进入等待队列，如果能获取到，就直接获取到锁。</p>
-<ul>
-<li>优点：可以减少CPU唤醒线程的开销，整体的吞吐效率会高点，CPU也不必取唤醒所有线程，会减少唤起线程的数量。</li>
-<li>缺点：你们可能也发现了，这样可能导致队列中间的线程一直获取不到锁或者长时间获取不到锁，导致饿死。</li>
-</ul>
-<h4 id="伪共享">伪共享</h4>
-<p><strong>一、伪共享的定义：</strong></p>
-<blockquote>
-<p>缓存系统中是以缓存行（cache line）为单位存储的，当多线程修改互相独立的变量时，如果这些变量共享同一个缓存行，就会无意中影响彼此的性能，这就是伪共享。</p>
-</blockquote>
-<p><strong>二、CPU缓存机制</strong></p>
-<blockquote>
-<p>CPU 缓存（Cache Memory）是位于 CPU 与内存之间的临时存储器，它的容量比内存小的多但是交换速度却比内存要快得多。<br>
-高速缓存的出现主要是为了解决 CPU 运算速度与内存读写速度不匹配的矛盾，因为 CPU 运算速度要比内存读写速度快很多，这样会使 CPU 花费很长时间等待数据到来或把数据写入内存。<br>
-在缓存中的数据是内存中的一小部分，但这一小部分是短时间内 CPU 即将访问的，当 CPU 调用大量数据时，就可避开内存直接从缓存中调用，从而加快读取速度。</p>
-</blockquote>
-<p>CPU 和主内存之间有好几层缓存，因为即使直接访问主内存也是非常慢的。如果你正在多次对一块数据做相同的运算，那么在执行运算的时候把它加载到离 CPU 很近的地方就有意义了。</p>
-<p>按照数据读取顺序和与 CPU 结合的紧密程度，CPU 缓存可以分为一级缓存，二级缓存，部分高端 CPU 还具有三级缓存。每一级缓存中所储存的全部数据都是下一级缓存的一部分，越靠近 CPU 的缓存越快也越小。所以 L1 缓存很小但很快(译注：L1 表示一级缓存)，并且紧靠着在使用它的 CPU 内核。L2 大一些，也慢一些，并且仍然只能被一个单独的 CPU 核使用。L3 在现代多核机器中更普遍，仍然更大，更慢，并且被单个插槽上的所有 CPU 核共享。最后，你拥有一块主存，由全部插槽上的所有 CPU 核共享。拥有三级缓存的的 CPU，到三级缓存时能够达到 95% 的命中率，只有不到 5% 的数据需要从内存中查询。</p>
-<p>多核机器的存储结构如下图所示：</p>
-<figure data-type="image" tabindex="1"><img src="https://images2015.cnblogs.com/blog/897247/201608/897247-20160823201221667-1059026925.png" alt="img" loading="lazy"></figure>
-<p>当 CPU 执行运算的时候，它先去 L1 查找所需的数据，再去 L2，然后是 L3，最后如果这些缓存中都没有，所需的数据就要去主内存拿。走得越远，运算耗费的时间就越长。所以如果你在做一些很频繁的事，你要确保数据在 L1 缓存中。</p>
-<p>Martin Thompson 给出了一些缓存未命中的消耗数据，如下所示：</p>
-<figure data-type="image" tabindex="2"><img src="https://images2015.cnblogs.com/blog/897247/201608/897247-20160823201305464-895015043.png" alt="img" loading="lazy"></figure>
-<p><strong>三、缓存行</strong></p>
-<p>缓存系统中是以缓存行（cache line）为单位存储的。缓存行通常是 64 字节（译注：本文基于 64 字节，其他长度的如 32 字节等不适本文讨论的重点），并且它有效地引用主内存中的一块地址。例如一个 的 long 类型是 8 字节，因此在一个缓存行中可以存 8 个 long 类型的变量。所以，如果你访问一个 long 数组，当数组中的一个值被加载到缓存中，它会额外加载另外 7 个，以致你能非常快地遍历这个数组。事实上，你可以非常快速的遍历在连续的内存块中分配的任意数据结构。而如果你在数据结构中的项在内存中不是彼此相邻的（如链表），你将得不到免费缓存加载所带来的优势，并且在这些数据结构中的每一个项都可能会出现缓存未命中。</p>
-<p>如果存在这样的场景，有多个线程操作不同的成员变量，但是相同的缓存行，这个时候会发生什么？。没错，伪共享（False Sharing）问题就发生了！有张 Disruptor 项目的经典示例图，如下：</p>
-<figure data-type="image" tabindex="3"><img src="https://images2015.cnblogs.com/blog/897247/201608/897247-20160823202002573-736704844.png" alt="img" loading="lazy"></figure>
-<p>上图中，一个运行在处理器 core1上的线程想要更新变量 X 的值，同时另外一个运行在处理器 core2 上的线程想要更新变量 Y 的值。但是，这两个频繁改动的变量都处于同一条缓存行。两个线程就会轮番发送 RFO 消息，占得此缓存行的拥有权。当 core1 取得了拥有权开始更新 X，则 core2 对应的缓存行需要设为 I 状态。当 core2 取得了拥有权开始更新 Y，则 core1 对应的缓存行需要设为 I 状态(失效态)。轮番夺取拥有权不但带来大量的 RFO 消息，而且如果某个线程需要读此行数据时，L1 和 L2 缓存上都是失效数据，只有 L3 缓存上是同步好的数据。从前一篇我们知道，读 L3 的数据非常影响性能。更坏的情况是跨槽读取，L3 都要 miss，只能从内存上加载。</p>
-<p>表面上 X 和 Y 都是被独立线程操作的，而且两操作之间也没有任何关系。只不过它们共享了一个缓存行，但所有竞争冲突都是来源于共享。</p>
-<p>因此，当两个以上CPU都要访问同一个缓存行大小的内存区域时，就会引起冲突，这种情况就叫“共享”。但是，这种情况里面又包含了“其实不是共享”的“伪共享”情况。比如，两个处理器各要访问一个word，这两个word却存在于同一个cache line大小的区域里，这时，从应用逻辑层面说，这两个处理器并没有共享内存，因为他们访问的是不同的内容（不同的word）。但是因为cache line的存在和限制，这两个CPU要访问这两个不同的word时，却一定要访问同一个cache line块，产生了事实上的“共享”。显然，由于cache line大小限制带来的这种“伪共享”是我们不想要的，会浪费系统资源。</p>
-<p><strong>四、如何避免伪共享</strong>？</p>
-<p>1）让不同线程操作的对象处于不同的缓存行。</p>
-<p>可以进行缓存行填充（Padding） 。例如，如果一条缓存行有 64 字节，而 Java 程序的对象头固定占 8 字节(32位系统)或 12 字节( 64 位系统默认开启压缩, 不开压缩为 16 字节)，所以我们只需要填 6 个无用的长整型补上6*8=48字节，让不同的 VolatileLong 对象处于不同的缓存行，就避免了伪共享( 64 位系统超过缓存行的 64 字节也无所谓，只要保证不同线程不操作同一缓存行就可以)。</p>
-<p>2）使用编译指示，强制使每一个变量对齐。</p>
-<p>强制使对象按照缓存行的边界对齐。例如可以使数据按64位对齐，那么一个缓存行只有一个可操作对象，这样发生伪共享之后，也只是对应缓存行的数据变化，并不影响其他的对象。</p>
-<h4 id="无锁队列">无锁队列</h4>
-<pre><code class="language-java">import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReferenceArray;
- 
- 
-/**
- * 用数组实现无锁有界队列
- */
- 
-public class LockFreeQueue {
- 
-    private AtomicReferenceArray atomicReferenceArray;
-    //代表为空，没有元素
-    private static final  Integer EMPTY = null;
-    //头指针,尾指针
-    AtomicInteger head,tail;
- 
- 
-    public LockFreeQueue(int size){
-        atomicReferenceArray = new AtomicReferenceArray(new Integer[size + 1]);
-        head = new AtomicInteger(0);
-        tail = new AtomicInteger(0);
-    }
- 
-    /**
-     * 入队
-     * @param element
-     * @return
-     */
-    public boolean add(Integer element){
-        int index = (tail.get() + 1) % atomicReferenceArray.length();
-        if( index == head.get() % atomicReferenceArray.length()){
-            System.out.println(&quot;当前队列已满,&quot;+ element+&quot;无法入队!&quot;);
-            return false;
-        }
-        while(!atomicReferenceArray.compareAndSet(index,EMPTY,element)){
-            return add(element);
-        }
-        tail.incrementAndGet(); //移动尾指针
-        System.out.println(&quot;入队成功!&quot; + element);
-        return true;
-    }
- 
-    /**
-     * 出队
-     * @return
-     */
-    public Integer poll(){
-        if(head.get() == tail.get()){
-            System.out.println(&quot;当前队列为空&quot;);
-            return null;
-        }
-        int index = (head.get() + 1) % atomicReferenceArray.length();
-        Integer ele = (Integer) atomicReferenceArray.get(index);
-        if(ele == null){ //有可能其它线程也在出队
-            return poll();
-        }
-        while(!atomicReferenceArray.compareAndSet(index,ele,EMPTY)){
-            return poll();
-        }
-        head.incrementAndGet();
-        System.out.println(&quot;出队成功!&quot; + ele);
-        return ele;
-    }
- 
-    public void print(){
-       StringBuffer buffer = new StringBuffer(&quot;[&quot;);
-       for(int i = 0; i &lt; atomicReferenceArray.length() ; i++){
-           if(i == head.get() || atomicReferenceArray.get(i) == null){
-               continue;
-           }
-           buffer.append(atomicReferenceArray.get(i) + &quot;,&quot;);
-       }
-       buffer.deleteCharAt(buffer.length() - 1);
-       buffer.append(&quot;]&quot;);
-       System.out.println(&quot;队列内容:&quot;    +buffer.toString());
- 
-    }
- 
-}
-</code></pre>
-<h4 id="死锁">死锁</h4>
-<p>当线程 A 持有独占锁a，并尝试去获取独占锁 b 的同时，线程 B 持有独占锁 b，并尝试获取独占锁 a 的情况下，就会发生 AB 两个线程由于互相持有对方需要的锁，而发生的阻塞现象，我们称为死锁。</p>
-<h5 id="1-产生死锁的条件和防止死锁">1. 产生死锁的条件和防止死锁</h5>
-<p>**互斥 请求与保持 不可剥夺 循环等待 **</p>
-<p>产生死锁的必要条件：</p>
-<ol>
-<li>
-<p>互斥条件：所谓互斥就是进程在某一时间内独占资源。</p>
-</li>
-<li>
-<p>请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。</p>
-</li>
-<li>
-<p>不可剥夺条件：进程已获得资源，在末使用完之前，不能强行剥夺。</p>
-</li>
-<li>
-<p>循环等待条件：若干进程之间形成一种头尾相接的循环等待资源关系。</p>
-</li>
-</ol>
-<p>这四个条件是死锁的必要条件，只要系统发生死锁，这些条件必然成立，而只要上述条件之 一不满足，就不会发生死锁。</p>
-<p>理解了死锁的原因，尤其是产生死锁的四个必要条件，就可以最大可能地避免、预防和 解除死锁。</p>
-<p>防止死锁可以采用以下的方法：</p>
-<ul>
-<li>尽量使用 <code>tryLock(long timeout, TimeUnit unit)</code>的方法<code>(ReentrantLock、ReentrantReadWriteLock)</code>，设置超时时间，超时可以退出防止死锁。</li>
-<li>尽量使用 <code>Java. util. concurrent</code> 并发类代替自己手写锁。</li>
-<li>尽量降低锁的使用粒度，尽量不要几个功能用同一把锁。</li>
-<li>尽量减少同步的代码块。</li>
-</ul>
-<pre><code class="language-java">import lombok.SneakyThrows;
-import java.util.concurrent.TimeUnit;
-
-class HoldLockThread implements Runnable{
-    private String lockOne;
-    private String lockTwo;
-
-    public HoldLockThread(String lockOne, String lockTwo) {
-        this.lockOne = lockOne;
-        this.lockTwo = lockTwo;
-    }
-
-    @Override
-    @SneakyThrows
-    public void run(){
-        synchronized (lockOne){
-            System.out.println(Thread.currentThread().getName()+&quot;自己获取&quot;+lockOne+&quot;尝试获取&quot;+lockTwo);
-            TimeUnit.SECONDS.sleep(2L);
-            synchronized (lockTwo){
-                System.out.println(Thread.currentThread().getName()+&quot;自己获取&quot;+lockTwo+&quot;尝试获取&quot;+lockOne);
-            }
-        }
-    }
-}
-public class DeadLockDemo {
-    public static void main(String[] args) {
-        String lockA=&quot;lockA&quot;;
-        String lockB=&quot;lockB&quot;;
-
-        new Thread(new HoldLockThread(lockA,lockB),&quot;ThreadAAA&quot;).start();
-        new Thread(new HoldLockThread(lockB,lockA),&quot;ThreadBBB&quot;).start();
-    }
-}
-</code></pre>
-<h5 id="2-死锁与活锁与饥饿的区别">2. 死锁与活锁与饥饿的区别</h5>
-<p>死锁：是指两个或两个以上的进程（或线程）在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去。</p>
-<p>活锁：任务或者执行者没有被阻塞，由于某些条件没有满足，导致一直重复尝试，失败，尝试，失败。</p>
-<p>活锁和死锁的区别在于，处于活锁的实体是在不断的改变状态，这就是所谓的“活”， 而处于死锁的实体表现为等待；活锁有可能自行解开，死锁则不能。</p>
-<p>饥饿：一个或者多个线程因为种种原因无法获得所需要的资源，导致一直无法执行的状态。</p>
-<p>Java 中导致饥饿的原因：</p>
-<p>1、高优先级线程吞噬所有的低优先级线程的 CPU 时间。</p>
-<p>2、线程被永久堵塞在一个等待进入同步块的状态，因为其他线程总是能在它之前持续地对该同步块进行访问。</p>
-<p>3、线程在等待一个本身也处于永久等待完成的对象(比如调用这个对象的 wait 方法)，因为其他线程总是被持续地获得唤醒。</p>
-<h3 id="reentrantlock重入锁">ReentrantLock(重入锁)</h3>
-<p><code>ReentrantLock</code>重入锁，是实现Lock接口的一个类，也是在实际编程中使用频率很高的一个锁，支持重入性，表示能够对共享资源能够重复加锁，即当前线程获取该锁再次获取不会被阻塞。</p>
-<p>在java关键字synchronized隐式支持重入性，synchronized通过获取自增，释放自减的方式实现重入。与此同时，ReentrantLock还支持公平锁和非公平锁两种方式。那么，要想完完全全的弄懂ReentrantLock的话，主要也就是ReentrantLock同步语义的学习：</p>
-<ol>
-<li>重入性的实现原理；</li>
-<li>公平锁和非公平锁</li>
-</ol>
-<h4 id="1-重入性的实现原理">1. 重入性的实现原理</h4>
-<p>要想支持重入性，就要解决两个问题：</p>
-<p><strong>1. 在线程获取锁的时候，如果已经获取锁的线程是当前线程的话则直接再次获取成功；</strong></p>
-<p><strong>2. 由于锁会被获取n次，那么只有锁在被释放同样的n次之后，该锁才算是完全释放成功</strong>。</p>
-<p>ReentrantLock支持两种锁：<strong>公平锁</strong>和<strong>非公平锁</strong>。<strong>何谓公平性，是针对获取锁而言的，如果一个锁是公平的，那么锁的获取顺序就应该符合请求上的绝对时间顺序，满足FIFO</strong>。</p>
-<h4 id="2-reentrantlock使用">2. ReentrantLock使用</h4>
-<pre><code class="language-java">class Bank{
-      /**
-       * volatile实现
-       */
-      private  int count=0;
-      /**
-       * 使用可重入锁
-       */
-      private Lock lock=new ReentrantLock();
-
-      public void getCount(){
-            System.out.println(&quot;账户余额为：&quot;+count);
-      }
-      /**
-       * 同步方法实现存钱
-       * @param money
-       */
-      public void save(int money){
-            lock.lock();
-            try {
-                  count+=money;
-                  System.out.println(System.currentTimeMillis()+&quot;存进：&quot;+money);
-            } catch (Exception e) {
-                  // TODO Auto-generated catch block
-                  e.printStackTrace();
-            }finally {
-                  lock.unlock();//释放锁
-            }
-      }
-      /**
-       * 同步代码块实现取钱
-       * @param money
-       */
-      public  void remove(int money){
-            if (count-money&lt;0) {
-                  System.err.println(&quot;余额不足。&quot;);
-                  return;
-            }
-                lock.lock();
-                  try {
-                        count-=money;
-                        System.err.println(System.currentTimeMillis()+&quot;取出：&quot;+money);
-                  } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                  }finally {
-                        lock.unlock();
-                  }
-
-      }
-}
-</code></pre>
-<h4 id="读写锁reentrantreadwritelock">读写锁ReentrantReadWriteLock</h4>
-<p>首先明确一下，不是说 ReentrantLock 不好，只是 ReentrantLock 某些时候有局限。如果使用 ReentrantLock，可能本身是为了防止线程 A 在写数据、线程 B 在读数据造成的数据不一致，但这样，如果线程 C 在读数据、线程 D 也在读数据，读数据是不会改变数据的，没有必要加锁，但是还是加锁了，降低了程序的性能。因为这个，才诞生了读写锁 ReadWriteLock。</p>
-<p>ReadWriteLock 是一个读写锁接口，读写锁是用来提升并发程序性能的锁分离技术，ReentrantReadWriteLock 是 ReadWriteLock 接口的一个具体实现，实现了读写的分离，读锁是共享的，写锁是独占的，读和读之间不会互斥，读和写、写和读、写和写之间才会互斥，提升了读写的性能。</p>
-<p>而读写锁有以下三个重要的特性：</p>
-<p>（1）公平选择性：支持非公平（默认）和公平的锁获取方式，吞吐量还是非公平优于公平。</p>
-<p>（2）重进入：读锁和写锁都支持线程重进入。</p>
-<h3 id="并发容器">并发容器</h3>
-<h4 id="1-concurrenthashmap">1. ConcurrentHashMap</h4>
-<p><code>ConcurrentHashMap</code>是Java中的一个<strong>线程安全且高效的HashMap实现</strong>。平时涉及高并发如果要用map结构，那第一时间想到的就是它。相对于hashmap来说，<code>ConcurrentHashMap</code>就是线程安全的map，其中利用了锁分段的思想提高了并发度。</p>
-<p>那么它到底是如何实现线程安全的？</p>
-<p>JDK 1.6版本关键要素：</p>
-<ul>
-<li>segment继承了<code>ReentrantLock</code>充当锁的角色，为每一个segment提供了线程安全的保障；</li>
-<li>segment维护了哈希散列表的若干个桶，每个桶由<code>HashEntry</code>构成的链表。</li>
-</ul>
-<p>JDK1.8后，<code>ConcurrentHashMap</code>抛弃了原有的<strong>Segment 分段锁，而采用了 CAS + synchronized 来保证并发安全性</strong>。</p>
-<h5 id="11-concurrenthashmap-的并发度">1.1 ConcurrentHashMap 的并发度</h5>
-<p><code>ConcurrentHashMap</code> 把实际 map 划分成若干部分来实现它的可扩展性和线程安全。这种划分是使用并发度获得的，它是 <code>ConcurrentHashMap</code> 类构造函数的一个可选参数，默认值为 16，这样在多线程情况下就能避免争用。</p>
-<p>在 JDK8 后，它摒弃了 Segment（锁段）的概念，而是启用了一种全新的方式实现,利用 CAS 算法。同时加入了更多的辅助变量来提高并发度，</p>
-<h5 id="12-并发容器的实现">1.2 并发容器的实现</h5>
-<p>何为同步容器：可以简单地理解为通过 synchronized 来实现同步的容器，如果有多个线程调用同步容器的方法，它们将会串行执行。比如<code>Vector</code>，<code>Hashtable</code>，以及 <code>Collections.synchronizedSet</code>，<code>synchronizedList</code> 等方法返回的容器。可以通过查看 <code>Vector</code>，<code>Hashtable</code>等这些同步容器的实现代码，可以看到这些容器实现线程安全的方式就是将它们的状态封装起来，并在需要同步的方法上加上关键字 synchronized。</p>
-<p>并发容器使用了与同步容器完全不同的加锁策略来提供更高的并发性和伸缩性，例如在 <code>ConcurrentHashMap</code> 中采用了一种粒度更细的加锁机制，可以称为分段锁，在这种锁机制下，允许任意数量的读线程并发地访问 map，并且执行读操作的线程和写操作的线程也可以并发的访问 map，同时允许一定数量的写操作线程并发地修改 map，所以它可以在并发环境下实现更高的吞吐量。</p>
-<h5 id="13-同步集合与并发集合区别">1.3 同步集合与并发集合区别</h5>
-<p>同步集合与并发集合都为多线程和并发提供了合适的线程安全的集合，不过并发集合的可扩展性更高。在 Java1.5 之前程序员们只有同步集合来用且在多线程并发的时候会导致争用，阻碍了系统的扩展性。Java5 介绍了并发集合像<code>ConcurrentHashMap</code>，不仅提供线程安全还用锁分离和内部分区等现代技术提高了可扩展性。</p>
-<h5 id="14-synchronizedmap-和-concurrenthashmap-比较">1.4 SynchronizedMap 和 ConcurrentHashMap 比较</h5>
-<p><code>SynchronizedMap</code> 一次锁住整张表来保证线程安全，所以每次只能有一个线程来访为 map。</p>
-<p><code>ConcurrentHashMap</code> 使用分段锁来保证在多线程下的性能。</p>
-<p><code>ConcurrentHashMap</code> 中则是一次锁住一个桶。<code>ConcurrentHashMap</code> 默认将hash 表分为 16 个桶，诸如 get，put，remove 等常用操作只锁当前需要用到的桶。</p>
-<p>这样，原来只能一个线程进入，现在却能同时有 16 个写线程执行，并发性能的提升是显而易见的。</p>
-<p>另外 <code>ConcurrentHashMap</code> 使用了一种不同的迭代方式。在这种迭代方式中，当iterator 被创建后集合再发生改变就不再是抛出<code>ConcurrentModificationException</code>，取而代之的是在改变时 new 新的数据从而不影响原有的数据，iterator 完成后再将头指针替换为新的数据 ，这样 iterator线程可以使用原来老的数据，而写线程也可以并发的完成改变。</p>
-<h4 id="2-copyonwritearraylist">2. CopyOnWriteArrayList</h4>
-<p><code>CopyOnWriteArrayList</code> 是一个并发容器。有很多人称它是线程安全的，我认为这句话不严谨，缺少一个前提条件，那就是非复合场景下操作它是线程安全的。</p>
-<p><code>CopyOnWriteArrayList</code>(免锁容器)的好处之一是当多个迭代器同时遍历和修改这个列表时，不会抛出<code>ConcurrentModificationException</code>。在<code>CopyOnWriteArrayList</code> 中，写入将导致创建整个底层数组的副本，而源数组将保留在原地，使得复制的数组在被修改时，读取操作可以安全地执行。</p>
-<p><code>CopyOnWriteArrayList</code> 的使用场景</p>
-<p>通过源码分析，我们看出它的优缺点比较明显，所以使用场景也就比较明显。就是合适读多写少的场景。</p>
-<p><code>CopyOnWriteArrayList</code> 的缺点</p>
-<ol>
-<li>由于写操作的时候，需要拷贝数组，会消耗内存，如果原数组的内容比较多的情况下，可能导致 young gc 或者 full gc。</li>
-<li>不能用于实时读的场景，像拷贝数组、新增元素都需要时间，所以调用一个 set 操作后，读取到数据可能还是旧的，虽然<code>CopyOnWriteArrayList</code> 能做到最终一致性,但是还是没法满足实时性要求。</li>
-<li>由于实际使用中可能没法保证 <code>CopyOnWriteArrayList</code> 到底要放置多少数据，万一数据稍微有点多，每次 add/set 都要重新复制数组，这个代价实在太高昂了。在高性能的互联网应用中，这种操作分分钟引起故障。</li>
-</ol>
-<p><code>CopyOnWriteArrayList</code> 的设计思想</p>
-<ol>
-<li>读写分离，读和写分开</li>
-<li>最终一致性</li>
-<li>使用另外开辟空间的思路，来解决并发冲突</li>
-</ol>
-<h4 id="3-threadlocal">3. ThreadLocal</h4>
-<p>ThreadLocal 是一个本地线程副本变量工具类，在每个线程中都创建了一个 ThreadLocalMap 对象，简单说 ThreadLocal 就是一种以空间换时间的做法，每个线程可以访问自己内部 ThreadLocalMap 对象内的 value。通过这种方式，避免资源在多线程间共享。</p>
-<p>原理：线程局部变量是局限于线程内部的变量，属于线程自身所有，不在多个线程间共享。Java提供ThreadLocal类来支持线程局部变量，是一种实现线程安全的方式。但是在管理环境下（如 web 服务器）使用线程局部变量的时候要特别小心，在这种情况下，工作线程的生命周期比任何应用变量的生命周期都要长。任何线程局部变量一旦在工作完成后没有释放，Java 应用就存在内存泄露的风险。</p>
-<p>经典的使用场景是为每个线程分配一个 JDBC 连接 Connection。这样就可以保证每个线程的都在各自的 Connection 上进行数据库的操作，不会出现 A 线程关了 B线程正在使用的 Connection； 还有 Session 管理 等问题。</p>
-<p>ThreadLocal 使用例子：</p>
-<pre><code class="language-java">public class TestThreadLocal {
-    
-    //线程本地存储变量
-    private static final ThreadLocal&lt;Integer&gt; THREAD_LOCAL_NUM 
-        = new ThreadLocal&lt;Integer&gt;() {
-        @Override
-        protected Integer initialValue() {
-            return 0;
-        }
-    };
- 
-    public static void main(String[] args) {
-        for (int i = 0; i &lt;3; i++) {//启动三个线程
-            Thread t = new Thread() {
-                @Override
-                public void run() {
-                    add10ByThreadLocal();
-                }
-            };
-            t.start();
-        }
-    }
-    
-    /**
-     * 线程本地存储变量加 5
-     */
-    private static void add10ByThreadLocal() {
-        for (int i = 0; i &lt;5; i++) {
-            Integer n = THREAD_LOCAL_NUM.get();
-            n += 1;
-            THREAD_LOCAL_NUM.set(n);
-            System.out.println(Thread.currentThread().getName() + &quot; : ThreadLocal num=&quot; + n);
-        }
-    }
-    
-}
-</code></pre>
-<p>打印结果：启动了 3 个线程，每个线程最后都打印到 “ThreadLocal num=5”，而不是 num 一直在累加直到值等于 15</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1620459942353.png" alt="" loading="lazy"></figure>
-<h5 id="31什么是线程局部变量">3.1什么是线程局部变量？</h5>
-<p>线程局部变量是局限于线程内部的变量，属于线程自身所有，不在多个线程间共享。Java 提供 ThreadLocal 类来支持线程局部变量，是一种实现线程安全的方式。但是在管理环境下（如 web 服务器）使用线程局部变量的时候要特别小心，在这种情况下，工作线程的生命周期比任何应用变量的生命周期都要长。任何线程局部变量一旦在工作完成后没有释放，Java 应用就存在内存泄露的风险。</p>
-<h5 id="32-threadlocal内存泄漏分析与解决方案">3.2 ThreadLocal内存泄漏分析与解决方案</h5>
-<p><strong>ThreadLocal造成内存泄漏的原因？</strong></p>
-<p>ThreadLocalMap 中使用的 key 为 ThreadLocal 的弱引用,而 value 是强引用。所以，如果 ThreadLocal 没有被外部强引用的情况下，在垃圾回收的时候，key 会被清理掉，而 value 不会被清理掉。这样一来，ThreadLocalMap 中就会出现key为null的Entry。假如我们不做任何措施的话，value 永远无法被GC 回收，这个时候就可能会产生内存泄露。ThreadLocalMap实现中已经考虑了这种情况，在调用 set()、get()、remove() 方法的时候，会清理掉 key 为 null 的记录。使用完 ThreadLocal方法后 最好手动调用remove()方法</p>
-<p><strong>ThreadLocal内存泄漏解决方案？</strong></p>
-<ul>
-<li>每次使用完ThreadLocal，都调用它的remove()方法，清除数据。</li>
-<li>在使用线程池的情况下，没有及时清理ThreadLocal，不仅是内存泄漏的问题，更严重的是可能导致业务逻辑出现问题。所以，使用ThreadLocal就跟加锁完要解锁一样，用完就清理。</li>
-</ul>
-<h4 id="4-blockingqueue">4. BlockingQueue</h4>
-<p><code>阻塞队列（BlockingQueue）</code>是一个支持两个附加操作的队列。</p>
-<p>这两个附加的操作是：在队列为空时，获取元素的线程会等待队列变为非空。当队列满时，存储元素的线程会等待队列可用。</p>
-<p>阻塞队列常用于生产者和消费者的场景，生产者是往队列里添加元素的线程，消费者是从队列里拿元素的线程。阻塞队列就是生产者存放元素的容器，而消费者也只从容器里拿元素。</p>
-<p>JDK7 提供了 7 个阻塞队列。分别是：</p>
-<p><code>ArrayBlockingQueue</code> ：一个由数组结构组成的有界阻塞队列。</p>
-<p><code>LinkedBlockingQueue</code> ：一个由链表结构组成的有界阻塞队列。</p>
-<p><code>PriorityBlockingQueue</code> ：一个支持优先级排序的无界阻塞队列。</p>
-<p><code>DelayQueue</code>：一个使用优先级队列实现的无界阻塞队列。</p>
-<p><code>SynchronousQueue</code>：一个不存储元素的阻塞队列。</p>
-<p><code>LinkedTransferQueue</code>：一个由链表结构组成的无界阻塞队列。</p>
-<p><code>LinkedBlockingDeque</code>：一个由链表结构组成的双向阻塞队列。</p>
-<p>Java 5 之前实现同步存取时，可以使用普通的一个集合，然后在使用线程的协作和线程同步可以实现生产者，消费者模式，主要的技术就是用好，<code>wait</code>,<code>notify</code>,<code>notifyAll</code>,<code>sychronized</code> 这些关键字。而在 java 5 之后，可以使用阻塞队列来实现，此方式大大简少了代码量，使得多线程编程更加容易，安全方面也有保障。</p>
-<p><code>BlockingQueue</code> 接口是 Queue 的子接口，它的主要用途并不是作为容器，而是作为线程同步的的工具，因此他具有一个很明显的特性，当生产者线程试图向 <code>BlockingQueue</code> 放入元素时，如果队列已满，则线程被阻塞，当消费者线程试图从中取出一个元素时，如果队列为空，则该线程会被阻塞，正是因为它所具有这个特性，所以在程序中多个线程交替向 BlockingQueue 中放入元素，取出元素，它可以很好的控制线程之间的通信。</p>
-<p>阻塞队列使用最经典的场景就是 socket 客户端数据的读取和解析，读取数据的线程不断将数据放入队列，然后解析线程不断从队列取数据解析。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[多线程基础概念三]]></title>
-        <id>https://tinaxiawuhao.github.io/post/c-lkdzfwM/</id>
-        <link href="https://tinaxiawuhao.github.io/post/c-lkdzfwM/">
-        </link>
-        <updated>2021-05-11T06:13:04.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="java内存模型和线程相关">Java内存模型和线程相关</h3>
-<p><strong>Java中垃圾回收有什么目的？什么时候进行垃圾回收？</strong></p>
-<p>垃圾回收的目的是识别并且丢弃应用不再使用的对象来释放和重用资源。</p>
-<p><strong>如果对象的引用被置为null，垃圾收集器是否会立即释放对象占用的内存？</strong></p>
-<p>不会，在本次垃圾回收周期中，这个对象将被标记为可回收的。也就是说并不会立即被垃圾收集器立刻回收，而是在下一次垃圾回收时对象依旧不可达才会释放其占用的内存。</p>
-<p><strong>finalize()方法什么时候被调用？析构函数(finalization)的目的是什么？</strong></p>
-<p>1）垃圾回收器（garbage colector）决定回收某对象时，就会运行该对象的finalize()方法；</p>
-<p>finalize是Object类的一个方法，该方法在Object类中的声明<code>protected void finalize() throws Throwable { }</code></p>
-<p>在垃圾回收器执行时会调用被回收对象的finalize()方法，可以覆盖此方法来实现对其资源的回收。注意：一旦垃圾回收器准备释放对象占用的内存，将首先调用该对象的finalize()方法，并且下一次垃圾回收动作发生时，才真正回收对象占用的内存空间</p>
-<p>2）GC本来就是内存回收了，应用还需要在finalization做什么呢？ 答案是大部分时候，什么都不用做(也就是不需要重载)。只有在某些很特殊的情况下，比如你调用了一些native的方法(一般是C写的)，可以要在finaliztion里去调用C的释放函数。</p>
-<h4 id="重排序与数据依赖性">重排序与数据依赖性</h4>
-<h5 id="为什么代码会重排序">为什么代码会重排序？</h5>
-<p>在执行程序时，为了提供性能，处理器和编译器常常会对指令进行重排序，但是不能随意重排序，不是你想怎么排序就怎么排序，它需要满足以下两个条件：</p>
-<ul>
-<li>在单线程环境下不能改变程序运行的结果；</li>
-<li>存在数据依赖关系的不允许重排序</li>
-</ul>
-<p>需要注意的是：重排序不会影响单线程环境的执行结果，但是会破坏多线程的执行语义。</p>
-<h5 id="as-if-serial规则和happens-before规则的区别">as-if-serial规则和happens-before规则的区别</h5>
-<ul>
-<li>as-if-serial语义保证单线程内程序的执行结果不被改变，happens-before关系保证正确同步的多线程程序的执行结果不被改变。</li>
-<li>as-if-serial语义给编写单线程程序的程序员创造了一个幻境：单线程程序是按程序的顺序来执行的。happens-before关系给编写正确同步的多线程程序的程序员创造了一个幻境：正确同步的多线程程序是按happens-before指定的顺序来执行的。</li>
-<li>as-if-serial语义和happens-before这么做的目的，都是为了在不改变程序执行结果的前提下，尽可能地提高程序执行的并行度。</li>
-</ul>
-<h4 id="synchronized">synchronized</h4>
-<p>在 Java 中,synchronized 关键字是用来控制线程同步的,就是在多线程的环境下,控制synchronized 代码段不被多个线程同时执行。synchronized 可以修饰类、方法、变量。</p>
-<p>另外，在 Java 早期版本中，synchronized属于重量级锁，效率低下，因为监视器锁（monitor）是依赖于底层的操作系统的 Mutex Lock 来实现的，Java 的线程是映射到操作系统的原生线程之上的。如果要挂起或者唤醒一个线程，都需要操作系统帮忙完成，而操作系统实现线程之间的切换时需要从用户态转换到内核态，这个状态之间的转换需要相对比较长的时间，时间成本相对较高，这也是为什么早期的 synchronized 效率低的原因。庆幸的是在 Java 6 之后 Java 官方对从 JVM 层面对synchronized 较大优化，所以现在的 synchronized 锁效率也优化得很不错了。JDK1.6对锁的实现引入了大量的优化，如自旋锁、适应性自旋锁、锁消除、锁粗化、偏向锁、轻量级锁等技术来减少锁操作的开销。</p>
-<h5 id="synchronized关键字最主要的三种使用方式">synchronized关键字最主要的三种使用方式：</h5>
-<ul>
-<li><strong>修饰实例方法:</strong> 作用于当前对象实例加锁，进入同步代码前要获得当前对象实例的锁</li>
-<li><strong>修饰静态方法:</strong> 也就是给当前类加锁，会作用于类的所有对象实例，因为静态成员不属于任何一个实例对象，是类成员（ static 表明这是该类的一个静态资源，不管new了多少个对象，只有一份）。所以如果一个线程A调用一个实例对象的非静态 synchronized 方法，而线程B需要调用这个实例对象所属类的静态 synchronized 方法，是允许的，不会发生互斥现象，<strong>因为访问静态 synchronized 方法占用的锁是当前类的锁，而访问非静态 synchronized 方法占用的锁是当前实例对象锁</strong>。</li>
-<li><strong>修饰代码块:</strong> 指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。</li>
-</ul>
-<p><strong>总结：</strong> synchronized 关键字加到 static 静态方法和 synchronized(class)代码块上都是是给 Class 类上锁。synchronized 关键字加到实例方法上是给对象实例上锁。尽量不要使用 synchronized(String a) 因为JVM中，字符串常量池具有缓存功能！</p>
-<p>下面我以一个常见的面试题为例讲解一下 synchronized 关键字的具体使用。</p>
-<p>面试中面试官经常会说：“单例模式了解吗？来给我手写一下！给我解释一下双重检验锁方式实现单例模式的原理呗！”</p>
-<p><strong>双重校验锁实现对象单例（线程安全）</strong></p>
-<pre><code class="language-java">public class Singleton {
-
-    private volatile static Singleton uniqueInstance;
-
-    private Singleton() {
-    }
-
-    public static Singleton getUniqueInstance() {
-       //先判断对象是否已经实例过，没有实例化过才进入加锁代码
-        if (uniqueInstance == null) {
-            //类对象加锁
-            synchronized (Singleton.class) {
-                if (uniqueInstance == null) {
-                    uniqueInstance = new Singleton();
-                }
-            }
-        }
-        return uniqueInstance;
-    }
-}
-</code></pre>
-<p>另外，需要注意<code>uniqueInstance</code> 采用 volatile 关键字修饰也是很有必要。</p>
-<p><code>uniqueInstance</code> 采用 volatile 关键字修饰也是很有必要的， <code>uniqueInstance = new Singleton();</code> 这段代码其实是分为三步执行：</p>
-<ol>
-<li>为 uniqueInstance 分配内存空间</li>
-<li>初始化 uniqueInstance</li>
-<li>将 uniqueInstance 指向分配的内存地址</li>
-</ol>
-<p>使用 volatile 可以禁止 JVM 的指令重排，保证在多线程环境下也能正常运行。</p>
-<h5 id="说一下-synchronized-底层实现原理">说一下 synchronized 底层实现原理？</h5>
-<p>synchronized是Java中的一个关键字，在使用的过程中并没有看到显示的加锁和解锁过程。因此有必要通过javap命令，查看相应的字节码文件。</p>
-<p>synchronized 同步语句块的情况</p>
-<pre><code class="language-java">public class SynchronizedDemo {
-    public void method() {
-        synchronized (this) {
-            System.out.println(&quot;synchronized 代码块&quot;);
-        }
-    }
-}
-</code></pre>
-<p>通过JDK 反汇编指令 javap -c -v SynchronizedDemo</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620456899828.png" alt="" loading="lazy"></figure>
-<p>可以看出在执行同步代码块之前之后都有一个monitor字样，其中前面的是<code>monitorenter</code>，后面的是离开<code>monitorexit</code>，不难想象一个线程也执行同步代码块，首先要获取锁，而获取锁的过程就是<code>monitorenter</code> ，在执行完代码块之后，要释放锁，释放锁就是执行<code>monitorexit</code>指令。</p>
-<p>为什么会有两个<code>monitorexit</code>呢？</p>
-<p>这个主要是防止在同步代码块中线程因异常退出，而锁没有得到释放，这必然会造成死锁（等待的线程永远获取不到锁）。因此最后一个<code>monitorexit</code>是保证在异常情况下，锁也可以得到释放，避免死锁。</p>
-<p>仅有ACC_SYNCHRONIZED这么一个标志，该标记表明线程进入该方法时，需要<code>monitorenter</code>，退出该方法时需要<code>monitorexit</code>。</p>
-<p>synchronized可重入的原理</p>
-<p>重入锁是指一个线程获取到该锁之后，该线程可以继续获得该锁。底层原理维护一个计数器，当线程获取该锁时，计数器加一，再次获得该锁时继续加一，释放锁时，计数器减一，当计数器值为0时，表明该锁未被任何线程所持有，其它线程可以竞争获取锁。</p>
-<h5 id="什么是自旋">什么是自旋</h5>
-<p>很多 synchronized 里面的代码只是一些很简单的代码，执行时间非常快，此时等待的线程都加锁可能是一种不太值得的操作，因为线程阻塞涉及到用户态和内核态切换的问题。既然 synchronized 里面的代码执行得非常快，不妨让等待锁的线程不要被阻塞，而是在 synchronized 的边界做忙循环，这就是自旋。如果做了多次循环发现还没有获得锁，再阻塞，这样可能是一种更好的策略。</p>
-<h5 id="锁状态">锁状态</h5>
-<p>锁的状态总共有四种：无锁状态、偏向锁、轻量级锁和重量级锁。随着锁的竞争，锁可以从偏向锁升级到轻量级锁，再升级的重量级锁（但是锁的升级是单向的，也就是说只能从低到高升级，不会出现锁的降级）。JDK 1.6中默认是开启偏向锁和轻量级锁的，我们也可以通过-XX:-UseBiasedLocking来禁用偏向锁。锁的状态保存在对象的头文件中，以32位的JDK为例：</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620463288509.png" alt="" loading="lazy"></figure>
-<p>“轻量级”是相对于使用操作系统互斥量来实现的传统锁而言的。但是，首先需要强调一点的是，轻量级锁并不是用来代替重量级锁的，它的本意是在没有多线程竞争的前提下，减少传统的重量级锁使用产生的性能消耗。在解释轻量级锁的执行过程之前，先明白一点，轻量级锁所适应的场景是线程交替执行同步块的情况，如果存在同一时间访问同一锁的情况，就会导致轻量级锁膨胀为重量级锁。</p>
-<h5 id="多线程中-synchronized-锁升级的原理是什么">多线程中 synchronized 锁升级的原理是什么？</h5>
-<p>synchronized 锁升级原理：在锁对象的对象头里面有一个 <code>threadid</code> 字段，在第一次访问的时候<code>threadid</code> 为空，jvm 让其持有偏向锁，并将 <code>threadid</code> 设置为其线程 id，再次进入的时候会先判断 <code>threadid</code> 是否与其线程 id 一致，如果一致则可以直接使用此对象，如果不一致，则升级偏向锁为轻量级锁，通过自旋循环一定次数来获取锁，执行一定次数之后，如果还没有正常获取到要使用的对象，此时就会把锁从轻量级升级为重量级锁，此过程就构成了 synchronized 锁的升级。</p>
-<p>锁的升级的目的：锁升级是为了减低了锁带来的性能消耗。在 Java 6 之后优化 synchronized 的实现方式，使用了偏向锁升级为轻量级锁再升级到重量级锁的方式，从而减低了锁带来的性能消耗。</p>
-<figure data-type="image" tabindex="3"><img src="https://images2015.cnblogs.com/blog/820406/201604/820406-20160424163618101-624122079.png" alt="img" loading="lazy"></figure>
-<p>重量级锁、轻量级锁和偏向锁之间转换图</p>
-<h5 id="线程-b-怎么知道线程-a-修改了变量">线程 B 怎么知道线程 A 修改了变量</h5>
-<p>（1）volatile 修饰变量</p>
-<p>（2）synchronized 修饰修改变量的方法</p>
-<p>（3）wait/notify</p>
-<p>（4）while 轮询</p>
-<p><strong>当一个线程进入一个对象的 synchronized 方法 A 之后，其它线程是否可进入此对象的 synchronized 方法 B？</strong></p>
-<p>不能。其它线程只能访问该对象的非同步方法，同步方法则不能进入。因为非静态方法上的 synchronized 修饰符要求执行方法时要获得对象的锁，如果已经进入A 方法说明对象锁已经被取走，那么试图进入 B 方法的线程就只能在等锁池（注意不是等待池哦）中等待对象的锁。</p>
-<h5 id="synchronized-volatile-cas-比较">synchronized、volatile、CAS 比较</h5>
-<p>（1）synchronized 是悲观锁，属于抢占式，会引起其他线程阻塞。</p>
-<p>（2）volatile 提供多线程共享变量可见性和禁止指令重排序优化。</p>
-<p>（3）CAS 是基于冲突检测的乐观锁（非阻塞）</p>
-<h5 id="synchronized-和-lock-有什么区别">synchronized 和 Lock 有什么区别？</h5>
-<ul>
-<li>首先synchronized是Java内置关键字，在JVM层面，Lock是个Java类；</li>
-<li>synchronized 可以给类、方法、代码块加锁；而 lock 只能给代码块加锁。</li>
-<li>synchronized 不需要手动获取锁和释放锁，使用简单，发生异常会自动释放锁，不会造成死锁；而 lock 需要自己加锁和释放锁，如果使用不当没有 unLock()去释放锁就会造成死锁。</li>
-<li>通过 Lock 可以知道有没有成功获取锁，而 synchronized 却无法办到。</li>
-</ul>
-<h5 id="synchronized-和-reentrantlock-区别是什么">synchronized 和 ReentrantLock 区别是什么？</h5>
-<p>synchronized 是和 if、else、for、while 一样的关键字，ReentrantLock 是类，这是二者的本质区别。既然 ReentrantLock 是类，那么它就提供了比synchronized 更多更灵活的特性，可以被继承、可以有方法、可以有各种各样的类变量</p>
-<p>synchronized 早期的实现比较低效，对比 ReentrantLock，大多数场景性能都相差较大，但是在 Java 6 中对 synchronized 进行了非常多的改进。</p>
-<p>相同点：两者都是可重入锁</p>
-<p>两者都是可重入锁。“可重入锁”概念是：自己可以再次获取自己的内部锁。比如一个线程获得了某个对象的锁，此时这个对象锁还没有释放，当其再次想要获取这个对象的锁的时候还是可以获取的，如果不可锁重入的话，就会造成死锁。同一个线程每次获取锁，锁的计数器都自增1，所以要等到锁的计数器下降为0时才能释放锁。</p>
-<p>主要区别如下：</p>
-<ul>
-<li>ReentrantLock 使用起来比较灵活，但是必须有释放锁的配合动作；</li>
-<li>ReentrantLock 必须手动获取与释放锁，而 synchronized 不需要手动释放和开启锁；</li>
-<li>ReentrantLock 只适用于代码块锁，而 synchronized 可以修饰类、方法、变量等。</li>
-<li>二者的锁机制其实也是不一样的。ReentrantLock 底层调用的是 Unsafe 的park 方法加锁，synchronized 操作的应该是对象头中 mark word</li>
-</ul>
-<p>Java中每一个对象都可以作为锁，这是synchronized实现同步的基础：</p>
-<ul>
-<li>普通同步方法，锁是当前实例对象</li>
-<li>静态同步方法，锁是当前类的class对象</li>
-<li>同步方法块，锁是括号里面的对象</li>
-</ul>
-<h4 id="尽可能去使用synchronized而不要去使用lock">尽可能去使用synchronized而不要去使用LOCK</h4>
-<p>什么概念呢？我和大家打个比方：你叫jdk，你生了一个孩子叫synchronized，后来呢，你领养了一个孩子叫LOCK。起初，LOCK刚来到新家的时候，它很乖，很懂事，各个方面都表现的比synchronized好。你很开心，但是你内心深处又有一点淡淡的忧伤，你不希望你自己亲生的孩子竟然还不如一个领养的孩子乖巧。这个时候，你对亲生的孩子教育更加深刻了，你想证明，你的亲生孩子synchronized并不会比领养的孩子LOCK差。<br>
-那如何教育呢？<br>
-在jdk1.6~jdk1.7的时候，你作为爸爸，你给他优化了，具体优化在哪里呢：</p>
-<ol>
-<li>
-<p>线程自旋和适应性自旋<br>
-我们知道，java’线程其实是映射在内核之上的，线程的挂起和恢复会极大的影响开销。并且jdk官方人员发现，很多线程在等待锁的时候，在很短的一段时间就获得了锁，所以它们在线程等待的时候，并不需要把线程挂起，而是让他无目的的循环，一般设置10次。这样就避免了线程切换的开销，极大的提升了性能。<br>
-而适应性自旋，是赋予了自旋一种学习能力，它并不固定自旋10次一下。他可以根据它前面线程的自旋情况，从而调整它的自旋，甚至是不经过自旋而直接挂起。</p>
-</li>
-<li>
-<p>锁消除<br>
-什么叫锁消除呢？就是把不必要的同步在编译阶段进行移除。<br>
-那么有的小伙伴又迷糊了，我自己写的代码我会不知道这里要不要加锁？我加了锁就是表示这边会有同步呀？<br>
-并不是这样，这里所说的锁消除并不一定指代是你写的代码的锁消除，我打一个比方：<br>
-在jdk1.5以前，我们的String字符串拼接操作其实底层是StringBuffer来实现的（写一个简单的demo，然后查看class文件中的字节码指令就清楚了），而在jdk1.5之后，那么是用StringBuilder来拼接的。我们考虑前面的情况，比如如下代码：</p>
-<pre><code class="language-java">String str1=&quot;qwe&quot;;
-String str2=&quot;asd&quot;;
-String str3=str1+str2;
-</code></pre>
-<p>底层实现会变成这样：</p>
-<pre><code class="language-java">StringBuffer sb = new StringBuffer();
-sb.append(&quot;qwe&quot;);
-sb.append(&quot;asd&quot;);
-</code></pre>
-<p>我们知道，StringBuffer是一个线程安全的类，也就是说两个append方法都会同步，通过指针逃逸分析（就是变量不会外泄），我们发现在这段代码并不存在线程安全问题，这个时候就会把这个同步锁消除。</p>
-</li>
-<li>
-<p>锁粗化<br>
-在用synchronized的时候，我们都讲究为了避免大开销，尽量同步代码块要小。那么为什么还要加粗呢？<br>
-我们继续以上面的字符串拼接为例，我们知道在这一段代码中，每一个append都需要同步一次，那么我可以把锁粗化到第一个append和最后一个append（这里不要去纠结前面的锁消除，我只是打个比方）</p>
-</li>
-<li>
-<p>轻量级锁</p>
-<p><strong>轻量级锁的加锁过程</strong></p>
-<p>（1）在代码进入同步块的时候，如果同步对象锁状态为无锁状态（锁标志位为“01”状态，是否为偏向锁为“0”），虚拟机首先将在当前线程的栈帧中建立一个名为锁记录（Lock Record）的空间，用于存储锁对象目前的Mark Word的拷贝，官方称之为 Displaced Mark Word。这时候线程堆栈与对象头的状态如图2.1所示。</p>
-<p>（2）拷贝对象头中的Mark Word复制到锁记录中。</p>
-<p>（3）拷贝成功后，虚拟机将使用CAS操作尝试将对象的Mark Word更新为指向Lock Record的指针，并将Lock record里的owner指针指向object mark word。如果更新成功，则执行步骤（3），否则执行步骤（4）。</p>
-<p>（4）如果这个更新动作成功了，那么这个线程就拥有了该对象的锁，并且对象Mark Word的锁标志位设置为“00”，即表示此对象处于轻量级锁定状态，这时候线程堆栈与对象头的状态如图2.2所示。</p>
-<p>（5）如果这个更新操作失败了，虚拟机首先会检查对象的Mark Word是否指向当前线程的栈帧，如果是就说明当前线程已经拥有了这个对象的锁，那就可以直接进入同步块继续执行。否则说明多个线程竞争锁，轻量级锁就要膨胀为重量级锁，锁标志的状态值变为“10”，Mark Word中存储的就是指向重量级锁（互斥量）的指针，后面等待锁的线程也要进入阻塞状态。 而当前线程便尝试使用自旋来获取锁，自旋就是为了不让线程阻塞，而采用循环去获取锁的过程。</p>
-<figure data-type="image" tabindex="4"><img src="https://images2015.cnblogs.com/blog/820406/201604/820406-20160424105442866-2111954866.png" alt="img" loading="lazy"></figure>
-<p>​           图2.1 轻量级锁CAS操作之前堆栈与对象的状态</p>
-<figure data-type="image" tabindex="5"><img src="https://images2015.cnblogs.com/blog/820406/201604/820406-20160424105540163-1019388398.png" alt="img" loading="lazy"></figure>
-<p>​           图2.2 轻量级锁CAS操作之后堆栈与对象的状态</p>
-<p><strong>轻量级锁的解锁过程：</strong></p>
-<p>（1）通过CAS操作尝试把线程中复制的Displaced Mark Word对象替换当前的Mark Word。</p>
-<p>（2）如果替换成功，整个同步过程就完成了。</p>
-<p>（3）如果替换失败，说明有其他线程尝试过获取该锁（此时锁已膨胀），那就要在释放锁的同时，唤醒被挂起的线程。</p>
-</li>
-<li>
-<p>偏向锁</p>
-<p>引入偏向锁是为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖一次CAS原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗必须小于节省下来的CAS原子指令的性能消耗）。上面说过，轻量级锁是为了在线程交替执行同步块时提高性能，而偏向锁则是在只有一个线程执行同步块时进一步提高性能。</p>
-<p><strong>1、偏向锁获取过程：</strong></p>
-<p>（1）访问Mark Word中偏向锁的标识是否设置成1，锁标志位是否为01——确认为可偏向状态。</p>
-<p>（2）如果为可偏向状态，则测试线程ID是否指向当前线程，如果是，进入步骤（5），否则进入步骤（3）。</p>
-<p>（3）如果线程ID并未指向当前线程，则通过CAS操作竞争锁。如果竞争成功，则将Mark Word中线程ID设置为当前线程ID，然后执行（5）；如果竞争失败，执行（4）。</p>
-<p>（4）如果CAS获取偏向锁失败，则表示有竞争。当到达全局安全点（safepoint）时获得偏向锁的线程被挂起，偏向锁升级为轻量级锁，然后被阻塞在安全点的线程继续往下执行同步代码。</p>
-<p>（5）执行同步代码。</p>
-<p><strong>2、偏向锁的释放：</strong></p>
-<p>偏向锁的撤销在上述第四步骤中有提到**。**偏向锁只有遇到其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁，线程不会主动去释放偏向锁。偏向锁的撤销，需要等待全局安全点（在这个时间点上没有字节码正在执行），它会首先暂停拥有偏向锁的线程，判断锁对象是否处于被锁定状态，撤销偏向锁后恢复到未锁定（标志位为“01”）或轻量级锁（标志位为“00”）的状态。</p>
-</li>
-</ol>
-<h4 id="volatile">volatile</h4>
-<p>对于可见性，Java 提供了 volatile 关键字来保证可见性和禁止指令重排。 volatile 提供 happens-before 的保证，确保一个线程的修改能对其他线程是可见的。当一个共享变量被 volatile 修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值。</p>
-<p>从实践角度而言，volatile 的一个重要作用就是和 CAS 结合，保证了原子性，详细的可以参见 java.util.concurrent.atomic 包下的类，比如 AtomicInteger。</p>
-<p>volatile 常用于多线程环境下的单次操作(单次读或者单次写)。</p>
-<h5 id="java-中能创建-volatile-数组吗">Java 中能创建 volatile 数组吗？</h5>
-<p>能，Java 中可以创建 volatile 类型数组，不过只是一个指向数组的引用，而不是整个数组。意思是，如果改变引用指向的数组，将会受到 volatile 的保护，但是如果多个线程同时改变数组的元素，volatile 标示符就不能起到之前的保护作用了。</p>
-<h5 id="volatile-变量和-atomic-变量有什么不同">volatile 变量和 atomic 变量有什么不同？</h5>
-<p>volatile 变量可以确保先行关系，即写操作会发生在后续的读操作之前, 但它并不能保证原子性。例如用 volatile 修饰 count 变量，那么 count++ 操作就不是原子性的。</p>
-<p>而 AtomicInteger 类提供的 atomic 方法可以让这种操作具有原子性如getAndIncrement()方法会原子性的进行增量操作把当前值加一，其它数据类型和引用变量也可以进行相似操作。</p>
-<h5 id="volatile-能使得一个非原子操作变成原子操作吗">volatile 能使得一个非原子操作变成原子操作吗？</h5>
-<p>关键字volatile的主要作用是使变量在多个线程间可见，但无法保证原子性，对于多个线程访问同一个实例变量需要加锁进行同步。</p>
-<p>虽然volatile只能保证可见性不能保证原子性，但用volatile修饰long和double可以保证其操作原子性。</p>
-<p>所以从Oracle Java Spec里面可以看到：</p>
-<ul>
-<li>对于64位的long和double，如果没有被volatile修饰，那么对其操作可以不是原子的。在操作的时候，可以分成两步，每次对32位操作。</li>
-<li>如果使用volatile修饰long和double，那么其读写都是原子操作</li>
-<li>对于64位的引用地址的读写，都是原子操作</li>
-<li>在实现JVM时，可以自由选择是否把读写long和double作为原子操作</li>
-<li>推荐JVM实现为原子操作</li>
-</ul>
-<h5 id="volatile-修饰符的有过什么实践">volatile 修饰符的有过什么实践？</h5>
-<p>单例模式</p>
-<p>是否 Lazy 初始化：是</p>
-<p>是否多线程安全：是</p>
-<p>实现难度：较复杂</p>
-<p>描述：对于Double-Check这种可能出现的问题（当然这种概率已经非常小了，但毕竟还是有的嘛~），解决方案是：只需要给instance的声明加上volatile关键字即可volatile关键字的一个作用是禁止指令重排，把instance声明为volatile之后，对它的写操作就会有一个内存屏障（什么是内存屏障？），这样，在它的赋值完成之前，就不用会调用读操作。注意：volatile阻止的不是singleton = newSingleton()这句话内部[1-2-3]的指令重排，而是保证了在一个写操作（[1-2-3]）完成之前，不会调用读操作（if (instance == null)）。</p>
-<pre><code class="language-java">public class Singleton7 {
-
-    private static volatile Singleton7 instance = null;
-
-    private Singleton7() {}
-
-    public static Singleton7 getInstance() {
-        if (instance == null) {
-            synchronized (Singleton7.class) {
-                if (instance == null) {
-                    instance = new Singleton7();
-                }
-            }
-        }
-
-        return instance;
-    }
-
-}
-</code></pre>
-<h5 id="synchronized-和-volatile-的区别是什么">synchronized 和 volatile 的区别是什么？</h5>
-<p>synchronized 表示只有一个线程可以获取作用对象的锁，执行代码，阻塞其他线程。</p>
-<p>volatile 表示变量在 CPU 的寄存器中是不确定的，必须从主存中读取。保证多线程环境下变量的可见性；禁止指令重排序。</p>
-<p><strong>区别</strong></p>
-<ul>
-<li>volatile 是变量修饰符；synchronized 可以修饰类、方法、变量。</li>
-<li>volatile 仅能实现变量的修改可见性，不能保证原子性；而 synchronized 则可以保证变量的修改可见性和原子性。</li>
-<li>volatile 不会造成线程的阻塞；synchronized 可能会造成线程的阻塞。</li>
-<li>volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。</li>
-<li><strong>volatile关键字</strong>是线程同步的<strong>轻量级实现</strong>，所以<strong>volatile性能肯定比synchronized关键字要好</strong>。但是<strong>volatile关键字只能用于变量而synchronized关键字可以修饰方法以及代码块</strong>。synchronized关键字在JavaSE1.6之后进行了主要包括为了减少获得锁和释放锁带来的性能消耗而引入的偏向锁和轻量级锁以及其它各种优化之后执行效率有了显著提升，<strong>实际开发中使用 synchronized 关键字的场景还是更多一些</strong>。</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>类别</th>
-<th>synchronized</th>
-<th>Lock</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>存在层次</td>
-<td>Java的关键字，在jvm层面上</td>
-<td>是一个类</td>
-</tr>
-<tr>
-<td>锁的释放</td>
-<td>1、已获取锁的线程执行完同步代码，释放锁 2、线程执行发生异常，jvm会让线程释放锁</td>
-<td>在finally中必须释放锁，不然容易造成线程死锁</td>
-</tr>
-<tr>
-<td>锁的获取</td>
-<td>假设A线程获得锁，B线程等待。如果A线程阻塞，B线程会一直等待</td>
-<td>分情况而定，Lock有多个锁获取的方式，具体下面会说道，大致就是可以尝试获得锁，线程可以不用一直等待</td>
-</tr>
-<tr>
-<td>锁状态</td>
-<td>无法判断</td>
-<td>可以判断</td>
-</tr>
-<tr>
-<td>锁类型</td>
-<td>可重入 不可中断 非公平</td>
-<td>可重入 可判断 可公平（两者皆可）</td>
-</tr>
-<tr>
-<td>性能</td>
-<td>少量同步</td>
-<td>大量同步</td>
-</tr>
-</tbody>
-</table>
-<h4 id="final">final</h4>
-<p>不可变对象(Immutable Objects)即对象一旦被创建它的状态（对象的数据，也即对象属性值）就不能改变，反之即为可变对象(Mutable Objects)。</p>
-<p>不可变对象的类即为不可变类(Immutable Class)。Java 平台类库中包含许多不可变类，如 String、基本类型的包装类、BigInteger 和 BigDecimal 等。</p>
-<p>只有满足如下状态，一个对象才是不可变的；</p>
-<ul>
-<li>它的状态不能在创建后再被修改；</li>
-<li>所有域都是 final 类型；并且，它被正确创建（创建期间没有发生 this 引用的逸出）。</li>
-</ul>
-<p>不可变对象保证了对象的内存可见性，对不可变对象的读取不需要进行额外的同步手段，提升了代码执行效率。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[多线程基础概念二]]></title>
-        <id>https://tinaxiawuhao.github.io/post/h9DSVN_A0/</id>
-        <link href="https://tinaxiawuhao.github.io/post/h9DSVN_A0/">
-        </link>
-        <updated>2021-05-10T05:50:50.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="线程的状态和基本操作">线程的状态和基本操作</h3>
-<p><strong>线程的生命周期及五种基本状态</strong></p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620454342415.png" alt="" loading="lazy"></figure>
-<ol>
-<li>
-<p><strong>新建(new)</strong>：新创建了一个线程对象。</p>
-</li>
-<li>
-<p><strong>可运行(runnable)</strong>：线程对象创建后，当调用线程对象的 start()方法，该线程处于就绪状态，等待被线程调度选中，获取cpu的使用权。</p>
-</li>
-<li>
-<p><strong>运行(running)</strong>：可运行状态(runnable)的线程获得了cpu时间片（timeslice），执行程序代码。注：就绪状态是进入到运行状态的唯一入口，也就是说，线程要想进入运行状态执行，首先必须处于就绪状态中；</p>
-</li>
-<li>
-<p><strong>阻塞(block)</strong>：处于运行状态中的线程由于某种原因，暂时放弃对 CPU的使用权，停止执行，此时进入阻塞状态，直到其进入到就绪状态，才 有机会再次被 CPU 调用以进入到运行状态。</p>
-<p>阻塞的情况分三种：</p>
-<p>(一). 等待阻塞：运行状态中的线程执行 wait()方法，JVM会把该线程放入等待队列(waitting queue)中，使本线程进入到等待阻塞状态；</p>
-<p>(二). 同步阻塞：线程在获取 synchronized 同步锁失败(因为锁被其它线程所占用)，，则JVM会把该线程放入锁池(lock pool)中，线程会进入同步阻塞状态；</p>
-<p>(三). 其他阻塞: 通过调用线程的 sleep()或 join()或发出了 I/O 请求时，线程会进入到阻塞状态。当 sleep()状态超时、join()等待线程终止或者超时、或者 I/O 处理完毕时，线程重新转入就绪状态。</p>
-</li>
-<li>
-<p><strong>死亡(dead)</strong>：线程run()、main()方法执行结束，或者因异常退出了run()方法，则该线程结束生命周期。死亡的线程不可再次复生。</p>
-</li>
-</ol>
-<h4 id="java-中用到的线程调度算法是什么">Java 中用到的线程调度算法是什么？</h4>
-<p>计算机通常只有一个 CPU，在任意时刻只能执行一条机器指令，每个线程只有获得CPU 的使用权才能执行指令。所谓多线程的并发运行，其实是指从宏观上看，各个线程轮流获得 CPU 的使用权，分别执行各自的任务。在运行池中，会有多个处于就绪状态的线程在等待 CPU，JAVA 虚拟机的一项任务就是负责线程的调度，线程调度是指按照特定机制为多个线程分配 CPU 的使用权。</p>
-<p>有两种调度模型：分时调度模型和抢占式调度模型。</p>
-<p>分时调度模型是指让所有的线程轮流获得 cpu 的使用权，并且平均分配每个线程占用的 CPU 的时间片这个也比较好理解。</p>
-<p>Java虚拟机采用抢占式调度模型，是指优先让可运行池中优先级高的线程占用CPU，如果可运行池中的线程优先级相同，那么就随机选择一个线程，使其占用CPU。处于运行状态的线程会一直运行，直至它不得不放弃 CPU。</p>
-<h5 id="线程的调度策略">线程的调度策略</h5>
-<p>线程调度器选择优先级最高的线程运行，但是，如果发生以下情况，就会终止线程的运行：</p>
-<p>（1）线程体中调用了 yield 方法让出了对 cpu 的占用权利</p>
-<p>（2）线程体中调用了 sleep 方法使线程进入睡眠状态</p>
-<p>（3）线程由于 IO 操作受到阻塞</p>
-<p>（4）另外一个更高优先级线程出现</p>
-<p>（5）在支持时间片的系统中，该线程的时间片用完</p>
-<h5 id="什么是线程调度器thread-scheduler和时间分片time-slicing">什么是线程调度器(Thread Scheduler)和时间分片(Time Slicing )？</h5>
-<p>线程调度器是一个操作系统服务，它负责为 Runnable 状态的线程分配 CPU 时间。一旦我们创建一个线程并启动它，它的执行便依赖于线程调度器的实现。</p>
-<p>时间分片是指将可用的 CPU 时间分配给可用的 Runnable 线程的过程。分配 CPU 时间可以基于线程优先级或者线程等待的时间。</p>
-<p>线程调度并不受到 Java 虚拟机控制，所以由应用程序来控制它是更好的选择（也就是说不要让你的程序依赖于线程的优先级）。</p>
-<h5 id="请说出与线程同步以及线程调度相关的方法">请说出与线程同步以及线程调度相关的方法。</h5>
-<p>（1） wait()：使一个线程处于等待（阻塞）状态，并且释放所持有的对象的锁；</p>
-<p>（2）sleep()：使一个正在运行的线程处于睡眠状态，是一个静态方法，调用此方法要处理 <code>InterruptedException</code> 异常；</p>
-<p>（3）notify()：唤醒一个处于等待状态的线程，当然在调用此方法的时候，并不能确切的唤醒某一个等待状态的线程，而是由 JVM 确定唤醒哪个线程，而且与优先级无关；</p>
-<p>（4）notityAll()：唤醒所有处于等待状态的线程，该方法并不是将对象的锁给所有线程，而是让它们竞争，只有获得锁的线程才能进入就绪状态；</p>
-<h5 id="sleep-和-wait-有什么区别">sleep() 和 wait() 有什么区别？</h5>
-<p>两者都可以暂停线程的执行</p>
-<ul>
-<li>类的不同：sleep() 是 Thread线程类的静态方法，wait() 是 Object类的方法。</li>
-<li>是否释放锁：sleep() 不释放锁；wait() 释放锁。</li>
-<li>用途不同：Wait 通常被用于线程间交互/通信，sleep 通常被用于暂停执行。</li>
-<li>用法不同：wait() 方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的 notify() 或者 notifyAll() 方法。sleep() 方法执行完成后，线程会自动苏醒。或者可以使用wait(long timeout)超时后线程会自动苏醒。</li>
-</ul>
-<h5 id="你是如何调用-wait-方法的使用-if-块还是循环为什么">你是如何调用 wait() 方法的？使用 if 块还是循环？为什么？</h5>
-<p>处于等待状态的线程可能会收到错误警报和伪唤醒，如果不在循环中检查等待条件，程序就会在没有满足结束条件的情况下退出。</p>
-<p>wait() 方法应该在循环调用，因为当线程获取到 CPU 开始执行的时候，其他条件可能还没有满足，所以在处理前，循环检测条件是否满足会更好。下面是一段标准的使用 wait 和 notify 方法的代码：</p>
-<pre><code class="language-java">synchronized (monitor) {
-    //  判断条件谓词是否得到满足
-    while(!locked) {
-        //  等待唤醒
-        monitor.wait();
-    }
-    //  处理其他的业务逻辑
-}
-</code></pre>
-<h5 id="为什么线程通信的方法-wait-notify和-notifyall被定义在-object-类里">为什么线程通信的方法 wait(), notify()和 notifyAll()被定义在 Object 类里？</h5>
-<p>Java中，任何对象都可以作为锁，并且 wait()，notify()等方法用于等待对象的锁或者唤醒线程，在 Java 的线程中并没有可供任何对象使用的锁，所以任意对象调用方法一定要定义在Object类中。</p>
-<p>wait(), notify()和 notifyAll()这些方法在同步代码块中调用</p>
-<p>有的人会说，既然是线程放弃对象锁，那也可以把wait()定义在Thread类里面啊，新定义的线程继承于Thread类，也不需要重新定义wait()方法的实现。然而，这样做有一个非常大的问题，一个线程完全可以持有很多锁，你一个线程放弃锁的时候，到底要放弃哪个锁？当然了，这种设计并不是不能实现，只是管理起来更加复杂。</p>
-<p>综上所述，wait()、notify()和notifyAll()方法要定义在Object类中。</p>
-<h5 id="为什么-wait-notify和-notifyall必须在同步方法或者同步块中被调用">为什么 wait(), notify()和 notifyAll()必须在同步方法或者同步块中被调用？</h5>
-<p>当一个线程需要调用对象的 wait()方法的时候，这个线程必须拥有该对象的锁，接着它就会释放这个对象锁并进入等待状态直到其他线程调用这个对象上的 notify()方法。同样的，当一个线程需要调用对象的 notify()方法时，它会释放这个对象的锁，以便其他在等待的线程就可以得到这个对象锁。由于所有的这些方法都需要线程持有对象的锁，这样就只能通过同步来实现，所以他们只能在同步方法或者同步块中被调用。</p>
-<h5 id="thread-类中的-yield-方法有什么作用">Thread 类中的 yield 方法有什么作用？</h5>
-<p>使当前线程从执行状态（运行状态）变为可执行态（就绪状态）。</p>
-<p>当前线程到了就绪状态，那么接下来哪个线程会从就绪状态变成执行状态呢？可能是当前线程，也可能是其他线程，看系统的分配了。</p>
-<h5 id="为什么-thread-类的-sleep和-yield-方法是静态的">为什么 Thread 类的 sleep()和 yield ()方法是静态的？</h5>
-<p>Thread 类的 sleep()和 yield()方法将在当前正在执行的线程上运行。所以在其他处于等待状态的线程上调用这些方法是没有意义的。这就是为什么这些方法是静态的。它们可以在当前正在执行的线程中工作，并避免程序员错误的认为可以在其他非运行线程调用这些方法。</p>
-<h5 id="线程的-sleep方法和-yield方法有什么区别">线程的 sleep()方法和 yield()方法有什么区别？</h5>
-<p>（1） sleep()方法给其他线程运行机会时不考虑线程的优先级，因此会给低优先级的线程以运行的机会；yield()方法只会给相同优先级或更高优先级的线程以运行的机会；</p>
-<p>（2） 线程执行 sleep()方法后转入阻塞（blocked）状态，而执行 yield()方法后转入就绪（ready）状态；</p>
-<p>（3）sleep()方法声明抛出 InterruptedException，而 yield()方法没有声明任何异常；</p>
-<p>（4）sleep()方法比 yield()方法（跟操作系统 CPU 调度相关）具有更好的可移植性，通常不建议使用yield()方法来控制并发线程的执行。</p>
-<h5 id="如何停止一个正在运行的线程">如何停止一个正在运行的线程？</h5>
-<p>在java中有以下3种方法可以终止正在运行的线程：</p>
-<ol>
-<li>使用退出标志，使线程正常退出，也就是当run方法完成后线程终止。</li>
-<li>使用stop方法强行终止，但是不推荐这个方法，因为stop和suspend及resume一样都是过期作废的方法。</li>
-<li>使用interrupt方法中断线程。</li>
-</ol>
-<h5 id="java-中-interrupted-和-isinterrupted-方法的区别">Java 中 interrupted 和 isInterrupted 方法的区别？</h5>
-<p>interrupt：用于中断线程。调用该方法的线程的状态为将被置为”中断”状态。</p>
-<p>注意：线程中断仅仅是置线程的中断状态位，不会停止线程。需要用户自己去监视线程的状态为并做处理。支持线程中断的方法（也就是线程中断后会抛出interruptedException 的方法）就是在监视线程的中断状态，一旦线程的中断状态被置为“中断状态”，就会抛出中断异常。</p>
-<p>interrupted：是静态方法，查看当前中断信号是true还是false并且清除中断信号。如果一个线程被中断了，第一次调用 interrupted 则返回 true，第二次和后面的就返回 false 了。</p>
-<p>isInterrupted：查看当前中断信号是true还是false</p>
-<h5 id="什么是阻塞式方法">什么是阻塞式方法？</h5>
-<p>阻塞式方法是指程序会一直等待该方法完成期间不做其他事情，ServerSocket 的accept()方法就是一直等待客户端连接。这里的阻塞是指调用结果返回之前，当前线程会被挂起，直到得到结果之后才会返回。此外，还有异步和非阻塞式方法在任务完成前就返回。</p>
-<h5 id="java-中你怎样唤醒一个阻塞的线程">Java 中你怎样唤醒一个阻塞的线程？</h5>
-<p>首先 ，wait()、notify() 方法是针对对象的，调用任意对象的 wait()方法都将导致线程阻塞，阻塞的同时也将释放该对象的锁，相应地，调用任意对象的 notify()方法则将随机解除该对象阻塞的线程，但它需要重新获取该对象的锁，直到获取成功才能往下执行；</p>
-<p>其次，wait、notify 方法必须在 synchronized 块或方法中被调用，并且要保证同步块或方法的锁对象与调用 wait、notify 方法的对象是同一个，如此一来在调用 wait 之前当前线程就已经成功获取某对象的锁，执行 wait 阻塞后当前线程就将之前获取的对象锁释放。</p>
-<h5 id="notify-和-notifyall-有什么区别">notify() 和 notifyAll() 有什么区别？</h5>
-<p>如果线程调用了对象的 wait()方法，那么线程便会处于该对象的等待池中，等待池中的线程不会去竞争该对象的锁。</p>
-<p>notifyAll() 会唤醒所有的线程，notify() 只会唤醒一个线程。</p>
-<p>notifyAll() 调用后，会将全部线程由等待池移到锁池，然后参与锁的竞争，竞争成功则继续执行，如果不成功则留在锁池等待锁被释放后再次参与竞争。而 notify()只会唤醒一个线程，具体唤醒哪一个线程由虚拟机控制。</p>
-<h4 id="如何在两个线程间共享数据">如何在两个线程间共享数据？</h4>
-<p>在两个线程间共享变量即可实现共享。</p>
-<p>一般来说，共享变量要求变量本身是线程安全的，然后在线程内使用的时候，如果有对共享变量的复合操作，那么也得保证复合操作的线程安全性。</p>
-<p>可以通过中断 和 共享变量的方式实现线程间的通讯和协作</p>
-<p>比如说最经典的生产者-消费者模型：当队列满时，生产者需要等待队列有空间才能继续往里面放入商品，而<strong>在等待的期间内，生产者必须释放对临界资源（即队列）的占用权</strong>。因为生产者如果不释放对临界资源的占用权，那么<strong>消费者就无法消费队列中的商品</strong>，就不会让队列有空间，那么生产者就会一直无限等待下去。因此，一般情况下，当队列满时，会让生产者交出对临界资源的占用权，并进入挂起状态。然后等待消费者消费了商品，然后消费者通知生产者队列有空间了。同样地，当队列空时，消费者也必须等待，等待生产者通知它队列中有商品了。这种互相通信的过程就是线程间的协作。</p>
-<p>Java中线程通信协作的最常见的两种方式：</p>
-<ol>
-<li>
-<p>syncrhoized加锁的线程的<strong>Object类</strong>的wait()/notify()/notifyAll()</p>
-</li>
-<li>
-<p>ReentrantLock类加锁的线程的<strong>Condition类的</strong>await()/signal()/signalAll()</p>
-</li>
-</ol>
-<p>线程间直接的数据交换：</p>
-<ol start="3">
-<li>通过管道进行线程间通信：1）字节流；2）字符流</li>
-</ol>
-<h4 id="同步方法和同步块哪个是更好的选择">同步方法和同步块，哪个是更好的选择？</h4>
-<pre><code class="language-java">Lock lock = new ReentrantLock();
-lock. lock();
-try {
-    System. out. println(&quot;获得锁&quot;);
-} catch (Exception e) {
-    // TODO: handle exception
-} finally {
-    System. out. println(&quot;释放锁&quot;);
-    lock. unlock();
-}
-</code></pre>
-<p>同步块更要符合开放调用的原则，只在需要锁住的代码块锁住相应的对象，这样从侧面来说也可以避免死锁。</p>
-<p>请知道一条原则：同步的范围越小越好。</p>
-<h5 id="什么是线程同步和线程互斥有哪几种实现方式">什么是线程同步和线程互斥，有哪几种实现方式？</h5>
-<p>当一个线程对共享的数据进行操作时，应使之成为一个&quot;原子操作&quot;，即在没有完成相关操作之前，不允许其他线程打断它，否则，就会破坏数据的完整性，必然会得到错误的处理结果，这就是线程的同步。</p>
-<p>在多线程应用中，考虑不同线程之间的数据同步和防止死锁。当两个或多个线程之间同时等待对方释放资源的时候就会形成线程之间的死锁。为了防止死锁的发生，需要通过同步来实现线程安全。</p>
-<p>线程互斥是指对于共享的进程系统资源，在各单个线程访问时的排它性。当有若干个线程都要使用某一共享资源时，任何时刻最多只允许一个线程去使用，其它要使用该资源的线程必须等待，直到占用资源者释放该资源。线程互斥可以看成是一种特殊的线程同步。</p>
-<p>线程间的同步方法大体可分为两类：用户模式和内核模式。顾名思义，内核模式就是指利用系统内核对象的单一性来进行同步，使用时需要切换内核态与用户态，而用户模式就是不需要切换到内核态，只在用户态完成操作。</p>
-<p>用户模式下的方法有：原子操作（例如一个单一的全局变量），临界区。<br>
-内核模式下的方法有：事件，信号量，互斥量。</p>
-<p>实现线程同步的方法</p>
-<ul>
-<li>同步代码方法：sychronized 关键字修饰的方法</li>
-<li>同步代码块：sychronized 关键字修饰的代码块</li>
-<li>使用特殊变量域volatile实现线程同步：volatile关键字为域变量的访问提供了一种免锁机制</li>
-<li>使用重入锁实现线程同步：reentrantlock类是可重入、互斥、实现了lock接口的锁，它与sychronized方法具有相同的基本行为和语义</li>
-</ul>
-<h5 id="在监视器monitor内部是如何做线程同步的程序应该做哪种级别的同步">在监视器(Monitor)内部，是如何做线程同步的？程序应该做哪种级别的同步？</h5>
-<p>在 java 虚拟机中，每个对象( Object 和 class )通过某种逻辑关联监视器,每个监视器和一个对象引用相关联，为了实现监视器的互斥功能，每个对象都关联着一把锁。</p>
-<p>一旦方法或者代码块被 <strong>synchronized</strong> 修饰，那么这个部分就放入了监视器的监视区域，<strong>确保一次只能有一个线程执行该部分的代码</strong>，线程在获取锁之前不允许执行该部分的代码</p>
-<p>另外 java 还提供了显式监视器( Lock )和隐式监视器( synchronized )两种锁方案</p>
-<h4 id="如果你提交任务时线程池队列已满这时会发生什么">如果你提交任务时，线程池队列已满，这时会发生什么</h4>
-<p>这里区分一下：</p>
-<p>（1）如果使用的是无界队列 LinkedBlockingQueue，也就是无界队列的话，没关系，继续添加任务到阻塞队列中等待执行，因为 LinkedBlockingQueue 可以近乎认为是一个无穷大的队列，可以无限存放任务</p>
-<p>（2）如果使用的是有界队列比如 ArrayBlockingQueue，任务首先会被添加到ArrayBlockingQueue 中，ArrayBlockingQueue 满了，会根据maximumPoolSize 的值增加线程数量，如果增加了线程数量还是处理不过来，ArrayBlockingQueue 继续满，那么则会使用拒绝策略RejectedExecutionHandler 处理满了的任务，默认是 AbortPolicy</p>
-<h4 id="什么叫线程安全servlet-是线程安全吗">什么叫线程安全？servlet 是线程安全吗?</h4>
-<p>线程安全是编程中的术语，指某个方法在多线程环境中被调用时，能够正确地处理多个线程之间的共享变量，使程序功能正确完成。</p>
-<p>Servlet 不是线程安全的，servlet 是单实例多线程的，当多个线程同时访问同一个方法，是不能保证共享变量的线程安全性的。</p>
-<p>Struts2 的 action 是多实例多线程的，是线程安全的，每个请求过来都会 new 一个新的 action 分配给这个请求，请求完成后销毁。</p>
-<p>SpringMVC 的 Controller 是线程安全的吗？不是的，和 Servlet 类似的处理流程。</p>
-<p>Struts2 好处是不用考虑线程安全问题；Servlet 和 SpringMVC 需要考虑线程安全问题，但是性能可以提升不用处理太多的 gc，可以使用 ThreadLocal 来处理多线程的问题。</p>
-<h4 id="在-java-程序中怎么保证多线程的运行安全">在 Java 程序中怎么保证多线程的运行安全？</h4>
-<ul>
-<li>方法一：使用安全类，比如 java.util.concurrent 下的类，使用原子类AtomicInteger</li>
-<li>方法二：使用自动锁 synchronized。</li>
-<li>方法三：使用手动锁 Lock。</li>
-</ul>
-<p>手动锁 Java 示例代码如下：</p>
-<pre><code class="language-java">Lock lock = new ReentrantLock();
-lock. lock();
-try {
-    System. out. println(&quot;获得锁&quot;);
-} catch (Exception e) {
-    // TODO: handle exception
-} finally {
-    System. out. println(&quot;释放锁&quot;);
-    lock. unlock();
-}
-</code></pre>
-<h4 id="你对线程优先级的理解是什么">你对线程优先级的理解是什么？</h4>
-<p>每一个线程都是有优先级的，一般来说，高优先级的线程在运行时会具有优先权，但这依赖于线程调度的实现，这个实现是和操作系统相关的(OS dependent)。我们可以定义线程的优先级，但是这并不能保证高优先级的线程会在低优先级的线程前执行。线程优先级是一个 int 变量(从 1-10)，1 代表最低优先级，10 代表最高优先级。</p>
-<p>Java 的线程优先级调度会委托给操作系统去处理，所以与具体的操作系统优先级有关，如非特别需要，一般无需设置线程优先级。</p>
-<h4 id="线程类的构造方法-静态块是被哪个线程调用的">线程类的构造方法、静态块是被哪个线程调用的</h4>
-<p>这是一个非常刁钻和狡猾的问题。请记住：线程类的构造方法、静态块是被 new这个线程类所在的线程所调用的，而 run 方法里面的代码才是被线程自身所调用的。</p>
-<p>如果说上面的说法让你感到困惑，那么我举个例子，假设 Thread2 中 new 了Thread1，main 函数中 new 了 Thread2，那么：</p>
-<p>（1）Thread2 的构造方法、静态块是 main 线程调用的，Thread2 的 run()方法是Thread2 自己调用的</p>
-<p>（2）Thread1 的构造方法、静态块是 Thread2 调用的，Thread1 的 run()方法是Thread1 自己调用的</p>
-<h4 id="一个线程运行时发生异常会怎样">一个线程运行时发生异常会怎样？</h4>
-<p>如果异常没有被捕获该线程将会停止执行。<code>Thread.UncaughtExceptionHandler</code>是用于处理未捕获异常造成线程突然中断情况的一个内嵌接口。当一个未捕获异常将造成线程中断的时候，JVM 会使用 <code>Thread.getUncaughtExceptionHandler()</code>来查询线程的 <code>UncaughtExceptionHandler</code>并将线程和异常作为参数传递给 handler 的 <code>uncaughtException()</code>方法进行处理。</p>
-<h4 id="java-线程数过多会造成什么异常">Java 线程数过多会造成什么异常？</h4>
-<ul>
-<li>线程的生命周期开销非常高</li>
-<li>消耗过多的 CPU</li>
-</ul>
-<p>资源如果可运行的线程数量多于可用处理器的数量，那么有线程将会被闲置。大量空闲的线程会占用许多内存，给垃圾回收器带来压力，而且大量的线程在竞争 CPU资源时还将产生其他性能的开销。</p>
-<ul>
-<li>降低JVM稳定性</li>
-</ul>
-<p>在可创建线程的数量上存在一个限制，这个限制值将随着平台的不同而不同，并且承受着多个因素制约，包括 JVM 的启动参数、Thread 构造函数中请求栈的大小，以及底层操作系统对线程的限制等。如果破坏了这些限制，那么可能抛出<code>OutOfMemoryError</code> 异常。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[ 多线程基础概念]]></title>
-        <id>https://tinaxiawuhao.github.io/post/ddmZREDcW/</id>
-        <link href="https://tinaxiawuhao.github.io/post/ddmZREDcW/">
-        </link>
-        <updated>2021-05-09T05:18:21.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="什么是线程">什么是线程</h2>
-<blockquote>
-<p>是操作系统能够进行运算调度的最小单位。它被包含在进程之中，是进程中的实际运作单位。</p>
-</blockquote>
-<h3 id="线程安全的问题">线程安全的问题</h3>
-<p><strong>并发编程三要素是什么？在 Java 程序中怎么保证多线程的运行安全？</strong></p>
-<p>并发编程三要素（线程的安全性问题体现在）：</p>
-<p>原子性：原子，即一个不可再被分割的颗粒。原子性指的是一个或多个操作要么全部执行成功要么全部执行失败。(<code>synchronized</code>,<code>lock</code>,<code>unlock</code>)</p>
-<p>可见性：一个线程对共享变量的修改,另一个线程能够立刻看到。（<code>synchronized</code>,<code>volatile</code>,<code>final</code>）</p>
-<p>有序性：程序执行的顺序按照代码的先后顺序执行。（处理器可能会对指令进行重排序）（<code>synchronized</code>,<code>volatile</code>）</p>
-<p>出现线程安全问题的原因：</p>
-<ul>
-<li>线程切换带来的原子性问题</li>
-<li>缓存导致的可见性问题</li>
-<li>编译优化带来的有序性问题</li>
-</ul>
-<p>解决办法：</p>
-<ul>
-<li>JDK Atomic开头的原子类、synchronized、LOCK，可以解决原子性问题</li>
-<li>synchronized、volatile、LOCK，可以解决可见性问题</li>
-<li>Happens-Before 规则可以解决有序性问题</li>
-</ul>
-<h3 id="并发与并行">并发与并行</h3>
-<ul>
-<li>并发：多个任务在同一个 CPU 核上，按细分的时间片轮流(交替)执行，从逻辑上来看那些任务是同时执行。</li>
-<li>并行：单位时间内，多个处理器或多核处理器同时处理多个任务，是真正意义上的“同时进行”。</li>
-<li>串行：有n个任务，由一个线程按顺序执行。由于任务、方法都在一个线程执行所以不存在线程不安全情况，也就不存在临界区的问题。</li>
-</ul>
-<h3 id="并发编程多线程的优点">并发编程（多线程）的优点</h3>
-<ol>
-<li>
-<p>早期的CPU是单核的，为了提升计算能力，将多个计算单元整合到一起。形成了多核CPU。<strong>多线程就是为了将多核CPU发挥到极致，一边提高性能</strong>。</p>
-</li>
-<li>
-<p>方便进行业务拆分，提升系统并发能力和性能：在特殊的业务场景下，先天的就适合于并发编程。现在的系统动不动就要求百万级甚至千万级的并发量，而多线程并发编程正是开发高并发系统的基础，利用好多线程机制可以大大提高系统整体的并发能力以及性能。面对复杂业务模型，并行程序会比串行程序更适应业务需求，而并发编程更能吻合这种业务拆分</p>
-</li>
-</ol>
-<h3 id="并发编程多线程的缺点">并发编程（多线程）的缺点</h3>
-<p>上面说了多线程的优点是：为了提高计算性能。那么一定会提高？答案是不一定的。有时候多线程不一定比单线程计算快</p>
-<p>多线程会带来额外的开销和复杂的问题</p>
-<ul>
-<li>上下文切换</li>
-<li>死锁</li>
-<li>内存泄漏</li>
-</ul>
-<h4 id="上下文切换">上下文切换</h4>
-<p>时间片是CPU分配给各个线程的时间，因为时间非常短，所以CPU不断通过切换线程，让我们觉得多个线程是同时执行的，时间片一般是几十毫秒。而每次切换时，需要保存当前的状态起来，以便能够进行恢复先前状态，而这个切换时非常损耗性能，过于频繁反而无法发挥出多线程编程的优势。<br>
-减少上下文切换可以采用无锁并发编程，CAS算法，使用最少的线程和使用协程。</p>
-<ul>
-<li>
-<p>无锁并发编程：可以参照concurrentHashMap锁分段的思想，不同的线程处理不同段的数据，这样在多线程竞争的条件下，可以减少上下文切换的时间。</p>
-</li>
-<li>
-<p>CAS算法，利用Atomic下使用CAS算法来更新数据，使用了乐观锁，可以有效的减少一部分不必要的锁竞争带来的上下文切换</p>
-</li>
-<li>
-<p>使用最少线程：避免创建不需要的线程，比如任务很少，但是创建了很多的线程，这样会造成大量的线程都处于等待状态</p>
-</li>
-<li>
-<p>协程：在单线程里实现多任务的调度，并在单线程里维持多个任务间的切换</p>
-</li>
-</ul>
-<h4 id="线程死锁">线程死锁</h4>
-<blockquote>
-<p>死锁是指两个或两个以上的进程（线程）在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程（线程）称为死锁进程（线程）。</p>
-</blockquote>
-<p>多个线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放。由于线程被无限期地阻塞，因此程序不可能正常终止。</p>
-<p>如下图所示，线程 A 持有资源 2，线程 B 持有资源 1，他们同时都想申请对方的资源，所以这两个线程就会互相等待而进入死锁状态。</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620451228802.png" alt="" loading="lazy"></figure>
-<p>下面通过一个例子来说明线程死锁：</p>
-<pre><code class="language-java">public class DeadLockDemo {
-    private static Object resource1 = new Object();//资源 1
-    private static Object resource2 = new Object();//资源 2
-
-    public static void main(String[] args) {
-        new Thread(() -&gt; {
-            synchronized (resource1) {
-                System.out.println(Thread.currentThread() + &quot;get resource1&quot;);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(Thread.currentThread() + &quot;waiting get resource2&quot;);
-                synchronized (resource2) {
-                    System.out.println(Thread.currentThread() + &quot;get resource2&quot;);
-                }
-            }
-        }, &quot;线程 1&quot;).start();
-
-        new Thread(() -&gt; {
-            synchronized (resource2) {
-                System.out.println(Thread.currentThread() + &quot;get resource2&quot;);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(Thread.currentThread() + &quot;waiting get resource1&quot;);
-                synchronized (resource1) {
-                    System.out.println(Thread.currentThread() + &quot;get resource1&quot;);
-                }
-            }
-        }, &quot;线程 2&quot;).start();
-    }
-}
-</code></pre>
-<p>输出结果</p>
-<pre><code class="language-java">Thread[线程 1,5,main]get resource1
-Thread[线程 2,5,main]get resource2
-Thread[线程 1,5,main]waiting get resource2
-Thread[线程 2,5,main]waiting get resource1
-</code></pre>
-<p>线程 A 通过 synchronized (resource1) 获得 resource1 的监视器锁，然后通过Thread.sleep(1000)；让线程 A 休眠 1s 为的是让线程 B 得到CPU执行权，然后获取到 resource2 的监视器锁。线程 A 和线程 B 休眠结束了都开始企图请求获取对方的资源，然后这两个线程就会陷入互相等待的状态，这也就产生了死锁。上面的例子符合产生死锁的四个必要条件。</p>
-<p><strong>形成死锁的四个必要条件是什么</strong></p>
-<ol>
-<li>互斥条件：线程(进程)对于所分配到的资源具有排它性，即一个资源只能被一个线程(进程)占用，直到被该线程(进程)释放</li>
-<li>请求与保持条件：一个线程(进程)因请求被占用资源而发生阻塞时，对已获得的资源保持不放。</li>
-<li>不剥夺条件：线程(进程)已获得的资源在末使用完之前不能被其他线程强行剥夺，只有自己使用完毕后才释放资源。</li>
-<li>循环等待条件：当发生死锁时，所等待的线程(进程)必定会形成一个环路（类似于死循环），造成永久阻塞</li>
-</ol>
-<p><strong>如何避免线程死锁</strong></p>
-<p>我们只要破坏产生死锁的四个条件中的其中一个就可以了。</p>
-<ol>
-<li>
-<p><strong>破坏互斥条件</strong></p>
-<p>这个条件我们没有办法破坏，因为我们用锁本来就是想让他们互斥的（临界资源需要互斥访问）。</p>
-</li>
-<li>
-<p><strong>破坏请求与保持条件</strong></p>
-<p>一次性申请所有的资源。</p>
-</li>
-<li>
-<p><strong>破坏不剥夺条件</strong></p>
-<p>占用部分资源的线程进一步申请其他资源时，如果申请不到，可以主动释放它占有的资源。</p>
-</li>
-<li>
-<p><strong>破坏循环等待条件</strong></p>
-<p>靠按序申请资源来预防。按某一顺序申请资源，释放资源则反序释放。破坏循环等待条件。</p>
-</li>
-</ol>
-<h3 id="创建线程的四种方式">创建线程的四种方式</h3>
-<p>创建线程有四种方式：</p>
-<ul>
-<li>继承 Thread 类；</li>
-<li>实现 Runnable 接口；</li>
-<li>实现 Callable 接口；</li>
-<li>使用 Executors 工具类创建线程池</li>
-</ul>
-<h4 id="继承-thread-类">继承 Thread 类</h4>
-<p>步骤</p>
-<ol>
-<li>定义Thread 类的子类，并重写该类的run() 方法，该run() 方法的方法体就代表类线程需要完成的任务。因此把run() 方法称为线程执行体。</li>
-<li>创建 Thread 子类的实例，即创建线程对象</li>
-<li>调用子类实例的star()方法来启动线程</li>
-</ol>
-<pre><code class="language-java">/**
-   * 继承 thread 的内部类，以买票例子
-   */
-public class FirstThread extends Thread{
-    private int i;
-    private int ticket = 10;
-
-    @Override
-    public void run() {
-        for (;i&lt;20;i++) {
-			//当继承thread 时，直接使用this 可以获取当前的线程,getName()获取当前线程的名字
-            if(this.ticket&gt;0){
-               	Log.e(TAG, getName() + &quot;, 卖票：ticket=&quot; + ticket--);
-            }
-        }
-
-    }
-}
-
-private void starTicketThread(){
-    Log.d(TAG,&quot;starTicketThread, &quot;+Thread.currentThread().getName());
-
-    FirstThread thread1 = new FirstThread();
-    FirstThread thread2 = new FirstThread();
-    FirstThread thread3 = new FirstThread();
-
-    thread1.start();
-    thread2.start();
-    thread3.start();
-
-    //开启3个线程进行买票，每个线程都卖了10张，总共就30张票
-
-}
-</code></pre>
-<p>运行结果</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620451264035.png" alt="" loading="lazy"></figure>
-<p><strong>注意</strong> ：可以看到 3 个线程输入的 票数变量不连续，注意：ticket 是 FirstThread 的实例属性，而不是局部变量，但是因为程序每次创建线程对象都需要创建一个FirstThread 的对象，所有多个线程不共享该实例的属性。</p>
-<pre><code class="language-java">//使用Lambda表达式，实现多线程
-  new Thread(() -&gt; {
-    System.out.println(Thread.currentThread().getName() + &quot;新线程创建了！&quot;);
-  }
-  ).start();
-</code></pre>
-<h4 id="实现-runnable-接口">实现 Runnable 接口</h4>
-<p>步骤</p>
-<ol>
-<li>定义Runnable接口实现类SecondThread，并重写run()方法</li>
-<li>创建SecondThread实例secondThread，以secondThread作为target创建Thead对象，<strong>该Thread对象才是真正的线程对象</strong></li>
-<li>调用线程对象的start()方法</li>
-</ol>
-<pre><code class="language-java">/**
-   * 实现 runnable 接口，创建线程类
-   */
-public class SecondThread implements Runnable{
-
-    private int i;
-    private int ticket = 100;
-
-    @Override
-    public void run() {
-        for (;i&lt;20;i++) {
-            //如果线程类实现 runnable 接口
-            //获取当前的线程，只能用 Thread.currentThread() 获取当前的线程名
-            Log.d(TAG,Thread.currentThread().getName()+&quot; &quot;+i);
-
-            if(this.ticket&gt;0){
-                Log.e(TAG, Thread.currentThread().getName() + &quot;, 卖票：ticket=&quot; + ticket--);
-            }
-        }
-    }
-}
-
-
-private void starTicketThread2(){
-    Log.d(TAG,&quot;starTicketThread2, &quot;+Thread.currentThread().getName());
-
-    SecondThread secondThread = new SecondThread();
-
-    //通过new Thread(target,name)创建新的线程
-    new Thread(secondThread,&quot;买票人1&quot;).start();
-    new Thread(secondThread,&quot;买票人2&quot;).start();
-    new Thread(secondThread,&quot;买票人3&quot;).start();
-
-    //虽然是开启了3个线程，但是一共只买了100张票
-}
-</code></pre>
-<p>执行结果</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1620451273746.png" alt="" loading="lazy"></figure>
-<p><strong>注意</strong>：可以看到 3 个线程输入的 票数变量是连续的，采用 Runnable 接口的方式创建多个线程可以共享线程类的实例的属性。这是因为在这种方式下，程序所创建的Runnable 对象只是线程的 target ,而多个线程可以共享同一个 target,所以多个线程可以共享同一个线程类（实际上应该是该线程的target 类）的实例属性。</p>
-<pre><code class="language-java">//使用匿名内部类的方式，实现多线程
-  new Thread(new Runnable() {
-    @Override
-    public void run() {
-      System.out.println(Thread.currentThread().getName() + &quot;新线程创建了！&quot;);
-    }
-  }).start();
-</code></pre>
-<h4 id="实现-callable-接口">实现 Callable 接口</h4>
-<p>步骤</p>
-<ol>
-<li>创建callable接口的实现类，并实现call() 方法，该call() 方法将作为线程的执行体，且该call() 方法是有返回值的。</li>
-<li>创建 callable实现类的实例，使用 FutureTask 类来包装Callable对象，该FutureTask 对象封装 call() 方法的返回值。</li>
-<li>使用FutureTask 对象作为Thread对象的target创建并启动新线程。</li>
-<li>调用FutureTask对象的get()方法来获取子线程执行结束后的返回值。</li>
-</ol>
-<pre><code class="language-java">/**
-       * 使用callable 来实现线程类
-       */
-public class ThirdThread implements Callable&lt;Integer&gt;{
-
-    private int ticket = 20;
-
-    @Override
-    public Integer call(){
-
-        for ( int i = 0;i&lt;10;i++) {
-            //获取当前的线程，只能用 Thread.currentThread() 获取当前的线程名
-            //        Log.d(TAG,Thread.currentThread().getName()+&quot; &quot;+i);
-
-            if(this.ticket&gt;0){
-                Log.e(TAG, Thread.currentThread().getName() + &quot;, 卖票：ticket=&quot; + ticket--);
-            }
-        }
-
-
-        return ticket;
-    }
-}
-
-private void starCallableThread(){
-    ThirdThread thirdThread = new ThirdThread();
-    FutureTask&lt;Integer&gt; task = new FutureTask&lt;Integer&gt;(thirdThread);
-
-    new Thread(task,&quot;有返回值的线程&quot;).start();
-
-    try {
-        Integer integer = task.get();
-        Log.d(TAG,&quot;starCallableThread, 子线程的返回值=&quot;+integer);
-
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    } catch (ExecutionException e) {
-        e.printStackTrace();
-    }
-
-}
-</code></pre>
-<p>执行结果</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1620451283904.png" alt="" loading="lazy"></figure>
-<p><strong>注意</strong>：注意：Callable的call() 方法允许声明抛出异常，并且允许带有返回值。</p>
-<p>程序最后调用FutureTask 对象的get()方法来返回Call(）方法的返回值，导致主线程被阻塞，直到call()方法结束并返回为止。</p>
-<h4 id="使用-executors-工具类创建线程池">使用 Executors 工具类创建线程池</h4>
-<p>Executors提供了一系列工厂方法用于创先线程池，返回的线程池都实现了<code>ExecutorService</code>接口。</p>
-<p>主要有<code>newFixedThreadPool</code>，<code>newCachedThreadPool</code>，<code>newSingleThreadExecutor</code>，<code>newScheduledThreadPool</code>，后续详细介绍这四种线程池</p>
-<pre><code class="language-java">public class MyRunnable implements Runnable {
-
-    @Override
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + &quot; run()方法执行中...&quot;);
-    }
-
-}
-public class SingleThreadExecutorTest {
-    
-    public static void main(String[] args) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        MyRunnable runnableTest = new MyRunnable();
-        for (int i = 0; i &lt; 5; i++) {
-            executorService.execute(runnableTest);
-        }
-
-        System.out.println(&quot;线程任务开始执行&quot;);
-        executorService.shutdown();
-    }
-
-}
-</code></pre>
-<p>执行结果</p>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1620451292701.png" alt="" loading="lazy"></figure>
-<h4 id="说一下-runnable-和-callable-有什么区别">说一下 runnable 和 callable 有什么区别？</h4>
-<p>相同点</p>
-<ul>
-<li>都是接口</li>
-<li>都可以编写多线程程序</li>
-<li>都采用Thread.start()启动线程</li>
-</ul>
-<p>主要区别</p>
-<ul>
-<li>Runnable 接口 run 方法无返回值；Callable 接口 call 方法有返回值，是个泛型，和Future、FutureTask配合可以用来获取异步执行的结果</li>
-<li>Runnable 接口 run 方法只能抛出运行时异常，且无法捕获处理；Callable 接口 call 方法允许抛出异常，可以获取异常信息</li>
-</ul>
-<p><strong>注</strong>：Callalbe接口支持返回执行结果，需要调用FutureTask.get()得到，此方法会阻塞主进程的继续往下执行，如果不调用不会阻塞。</p>
-<h4 id="线程的-run和-start有什么区别">线程的 run()和 start()有什么区别？</h4>
-<p>每个线程都是通过某个特定Thread对象所对应的方法run()来完成其操作的，run()方法称为线程体。通过调用Thread类的start()方法来启动一个线程。</p>
-<p>start() 方法用于启动线程，run() 方法用于执行线程的运行时代码。run() 可以重复调用，而 start() 只能调用一次。</p>
-<h4 id="为什么我们调用-start-方法时会执行-run-方法为什么我们不能直接调用-run-方法">为什么我们调用 start() 方法时会执行 run() 方法，为什么我们不能直接调用 run() 方法？</h4>
-<p>new 一个 Thread，线程进入了新建状态。调用 start() 方法，会启动一个线程并使线程进入了就绪状态，当分配到时间片后就可以开始运行了。 start() 会执行线程的相应准备工作，然后自动执行 run() 方法的内容，这是真正的多线程工作。</p>
-<p>而直接执行 run() 方法，会把 run 方法当成一个 main 线程下的普通方法去执行，并不会在某个线程中执行它，所以这并不是多线程工作。</p>
-<p>总结： 调用 start 方法方可启动线程并使线程进入就绪状态，而 run 方法只是 thread 的一个普通方法调用，还是在主线程里执行。</p>
-<h4 id="什么是-callable-和-future">什么是 Callable 和 Future?</h4>
-<p>Callable 接口类似于 Runnable，从名字就可以看出来了，但是 Runnable 不会返回结果，并且无法抛出返回结果的异常，而 Callable 功能更强大一些，被线程执行后，可以返回值，这个返回值可以被 Future 拿到，也就是说，Future 可以拿到异步执行任务的返回值。</p>
-<p>Future 接口表示异步任务，是一个可能还没有完成的异步任务的结果。所以说 Callable用于产生结果，Future 用于获取结果。</p>
-<h4 id="什么是-futuretask">什么是 FutureTask</h4>
-<p>FutureTask 表示一个异步运算的任务。FutureTask 里面可以传入一个 Callable 的具体实现类，可以对这个异步运算的任务的结果进行等待获取、判断是否已经完成、取消任务等操作。只有当运算完成的时候结果才能取回，如果运算尚未完成 get 方法将会阻塞。一个 FutureTask 对象可以对调用了 Callable 和 Runnable 的对象进行包装，由于 FutureTask 也是Runnable 接口的实现类，所以 FutureTask 也可以放入线程池中。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[java基础之一文件操作]]></title>
-        <id>https://tinaxiawuhao.github.io/post/FNm9kw7nn/</id>
-        <link href="https://tinaxiawuhao.github.io/post/FNm9kw7nn/">
-        </link>
-        <updated>2021-05-08T06:57:30.000Z</updated>
-        <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620370686314.png" alt="" loading="lazy"></figure>
-<h3 id="一-抽象类">一、抽象类：</h3>
-<p>字节流： <code>InputStream</code>（读入流） <code>OutputStream</code>(写出流）<br>
-字符流：<code>Reader</code>（字符 读入流） <code>Writer</code> （字符写出流）</p>
-<h3 id="字节流读取字符数据的问题">字节流读取字符数据的问题 :</h3>
-<p>汉字等字符,往往有多个字节组成,那么到底哪几个字节应该组成一个汉字呢? 字节流不知道.如果我们自己用字节流读取字节数据,然后手动自己转字符,就有可能对规则不了解.从而造成错误. Java中的字符流恰好就可以帮助我们解决这个问题.</p>
-<p>Java提供的字符流的底层，它自己会根据读取到的字节数据的特点，然后自动的帮助我们把字节转成字符，最后我们就会自然的得到想要的字符数据。</p>
-<p><strong>字符流怎么解决这个问题呢?</strong></p>
-<p>​    <strong>字符流 =</strong> <strong>字节流 +</strong> <strong>编码表</strong></p>
-<p>编码表其实里面定义了字节与字符的转换规则.</p>
-<p>字符流在读取数据的时候,底层还是字节流在读取数据,字符流会自动根据编码规则把字节数据转为字符数据,就不会造成错误!</p>
-<h3 id="编码表的介绍">编码表的介绍 :</h3>
-<p><strong>说明 :</strong>  计算机中保存的数据都是二进制（1010100101001），我们要把生活中的数据保存到计算机中，需要把生活中的数据转成二进制数据，然后才能让计算机来识别生活中的数据，进而对这些数据进行处理。 &quot;补充 :&quot; 要把生活中的数据转成计算机能够识别的数据，就需要定义一个固定的转换关系： 老美他们为了把自己的生活中的数据保存到计算机中，他们发明了一张表，然后在这张表中规定了生活中所有的字符和二进制之间的对应关系：老美的文字和计算机中的二进制的对应关系表：ASCII。</p>
-<p><strong>ASCII码表：</strong> 它采用的是一个字节表示所有的文字（标点符号，英文字母，其他的特殊符号，数字等）。</p>
-<table>
-<thead>
-<tr>
-<th>生活中的字符</th>
-<th>十进制</th>
-<th>二进制</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>A</td>
-<td>65</td>
-<td>01000001</td>
-</tr>
-<tr>
-<td>B</td>
-<td>66</td>
-<td>01000010</td>
-</tr>
-</tbody>
-</table>
-<p>欧洲也定义一张拉丁码表：ISO-8859-1 这个表码表兼容ASCII码表。也采用的一个字节表示字符数据。</p>
-<p><strong>ASCII：</strong>  一个字节表示一个字符： <code>0xxx xxxx</code>  规定二进制的最高位是0，其他的7位表示某个字符的编码值。</p>
-<p><strong>ISO-8859-1：</strong>  一个字节表示一个字符：把整个字节表示字符，<code>xxxx xxxx</code> 全部用来表示字符数据</p>
-<p><strong>中国的编码表：</strong> GBK编码表采用2个字节表示一个汉字。<br>
-<strong>GB2312 ：</strong> 它识别六七千的文字。兼容ASCII编码表。</p>
-<p><strong>GBK：</strong> 识别两万多字符。目前主流的编码表.</p>
-<p><strong>GB18030：</strong> 识别更多。</p>
-<p>世界计算机协会也制定了一个张国际通用的编码表：</p>
-<p>​       <strong>Unicode编码表：</strong> 它也采用2个字节表示一个字符。</p>
-<p>Unicode编码表升级：<strong>UTF-8</strong>。</p>
-<p>​	 <strong>UTF-8：</strong>  它对字符的编码规律可以使用一个字节表示的字符就使用一个字节。 可以使用两个字节表示的字符就使用两个字节。 可以使用三个字节表示的字符就使用三个字节（基本汉字都使用三个字节）。</p>
-<p>可以识别汉字的编码表：      <code>GB2312</code>、<code>GBK</code>、<code>Unicode</code>、<code>UTF-8</code></p>
-<h3 id="二-文件操作流">二、文件操作流</h3>
-<p>字节流： <code>FileInputStream</code> ，<code>FileOutputStream</code><br>
-字符流： <code>FileReader</code>, <code>FileWriter</code></p>
-<pre><code class="language-java">File file = new File(&quot;D:/test/testIO.java&quot;);
-InputStream in = new FileInputStream(file);
-InputStream in = new FileInputStream(&quot;D:/test/testIO.java&quot;);
-OutputStream out = new FileOutputStream(file);
-OutputStream out = new FileOutputStream(&quot;D:/test/testIO.java&quot;);
-</code></pre>
-<pre><code class="language-java">Reader reader = new FileReader(&quot;demo01.txt&quot;);
-FileWriter writer = new FileWriter(&quot;demo02.txt&quot;);
-Writer writer = new OutputStreamWriter(new FileOutputStream(&quot;demo03_utf8.txt&quot;), &quot;UTF-8&quot;);
-Reader reader = new InputStreamReader(new FileInputStream(&quot;demo03_utf8.txt&quot;), &quot;UTF-8&quot;);
-
-</code></pre>
-<pre><code class="language-java">//1.指定要读 的文件目录及名称
-File file =new File(&quot;文件路径&quot;);
-//2.创建文件读入流对象
-FileInputStream fis =new FileInputStream(file);
-//3.定义结束标志,可用字节数组读取
-int i =0 ;
-while((i = fis.read())!=-1){ 
-    //i 就是从文件中读取的字节，读完后返回-1
-}
-//4.关闭流
-fis.close();
-//5.处理异常
-</code></pre>
-<pre><code class="language-java">//1.指定要写到的文件目录及名称
-File file =new File(&quot;文件路径&quot;);
-//2.创建文件读入流对象
-FileOutputStream fos =new FileOutputStream(file);
-//3.定义结束标志
-fos.write(要写出的字节或者字节数组);
-//4.刷新和关闭流
-fos.flush();
-fos.close();
-//5.处理异常
-</code></pre>
-<h3 id="三-缓冲流">三、缓冲流：</h3>
-<p>​    字节缓冲流：<code>BufferedInputStream</code>,<code>BufferedOutputStream</code><br>
-​    字符缓冲流：<code>BufferedReader</code> ,<code>BufferedWriter</code><br>
-​    缓冲流是对流的操作的功能的加强，提高了数据的读写效率。既然缓冲流是对流的功能和读写效率的加强和提高，所以在创建缓冲流的对象时应该要传入要加强的流对象。</p>
-<pre><code class="language-java">//保存其参数，即输入流 in，以便将来使用。创建一个内部缓冲区数组并将
-//其存储在 buf 中,该buf的大小默认为8192。
-public BufferedInputStream(InputStream in);
-
- 
-//创建具有指定缓冲区大小的 BufferedInputStream 并保存其参数，
-//即输入流 in，以便将来使用。创建一个长度为 size 的内部缓冲区数组并
-//将其存储在 buf 中。
-public BufferedInputStream(InputStream in,int size);
-
-
-//创建一个新的缓冲输出流，以将数据写入指定的底层输出流。
-public BufferedOutputStream(OutputStream out);
-
- 
-//创建一个新的缓冲输出流，以将具有指定缓冲区大小的数据写入指定的底层输出流。
-public BufferedOutputStream(OutputStream out,int size);
-</code></pre>
-<pre><code class="language-java">BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(&quot;demo08_utf8.txt&quot;), &quot;UTF-8&quot;));
-
-BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(&quot;demo08_utf8.txt&quot;), &quot;UTF-8&quot;));
-</code></pre>
-<pre><code class="language-java">//1.指定要读 的文件目录及名称
-File file =new File(&quot;文件路径&quot;);
-//2.创建文件读入流对象
-FileInputStream fis =new FileInputStream(file);
-//3.创建缓冲流对象加强fis功能
-BufferedInputStream bis =new BufferedInputStream(fis); 
-//4.定义结束标志,可用字节数组读取
-int i =0 ;
-while((i = bis.read())!=-1){ 
-    //i 就是从文件中读取的字节，读完后返回-1
-}
-//5.关闭流
-bis.close();
-//6.处理异常
-</code></pre>
-<pre><code class="language-java">//1.指定要写到的文件目录及名称
-File file =new File(&quot;文件路径&quot;);
-//2.创建文件读入流对象
-FileOutputStream fos =new FileOutputStream(file);
-//3.创建缓冲流对象加强fos功能
-BufferedOutputStream bos=new BufferedOutputStream(fos);
-//4.向流中写入数据
-bos.write(要写出的字节或者字节数组);
-//5.刷新和关闭流
-bos.flush();
-bos.close();
-//6.处理异常
-</code></pre>
-<p>由以上看出流的操作基本相同，此流与文件流操作是几乎一样的只是将文件流作为参数传入缓冲流的构造方法中堆文件流读写文件的功能进行加强<br>
-注1：在字符读入缓冲流<code>BufferedReade</code>r 中还提供了读一行的方法 <code>readLine()</code>可以读取一行文本<br>
-在字符写出缓冲流<code>BufferedWriter</code> 中还提供了写入一个行分隔符的方法<code>writeLine()</code>,用于写出时换行<br>
-注2：此处用到的是设计模式中的装饰模式</p>
-<pre><code class="language-java">//装饰的对象只要是抽象类的子类即可
-BufferedInputStream bis =new BufferedInputStream(new FileInputStream(new File(&quot;文件路径&quot;)));   
-</code></pre>
-<h3 id="四-转换流">四、转换流：</h3>
-<p>这类流是用于将字符转换为字节输入输出，用于操作字符文件，属于字符流的子类，所以后缀为<code>reader</code>，<code>writer</code>；前缀<code>inputstream</code>，<code>outputstream</code>；</p>
-<p>注 ：要传入字节流作为参赛<br>
-<code>InputStreamReade</code>r: 字符转换输出流<br>
-<code>OutputStreamWriter</code>：字符转换输入流</p>
-<pre><code class="language-java">需求：读取键盘输入的一行文本,再将输入的写到本地磁盘上
-//1.获取键盘输入的字节流对象in
-InputStream in =Stream.in; 
-/*2.用转换流将字节流对象转换为字符流对象，方便调用字符缓冲流的readeLine()方法*/
-InputStreamReader isr =new InputStreamReader(in);
-/*5.创建字符转换输出流对象osw，方便把输入的字符流转换为字节输出到本地文件。*/
-OutputStreamWriter osw =new OutputStreamWriter(new FileOutputStream(new File(&quot;文件名&quot;))); 
-/*3.现在isr是字符流，可以作为参数传入字符缓冲流中*/
-BufferedReader br =new BufferedReader(isr);
-/*4.可以调用字符缓冲流br的readLine()方法度一行输入文本*/
-String line =null;
-while((line =br.readLine()){
-    osw.write(line);//osw是字符流对象，可以直接操作字符串
-}
-//刷新此缓冲的输出流，保证数据全部都能写出
-osw.flush();
-br.close();
-osw.close();
-</code></pre>
-<h3 id="读取数据">读取数据</h3>
-<pre><code class="language-java">//读取方式一 : 效率低!
-int content = -1;
-while ((content = reader.read()) != -1) {
-    System.out.print((char)content);
-}
-
-
-//读取方式二 : 数组之后的无用数据都会被读取!
-int len = -1;
-char[] cbuf = new char[1024];
-while ((len = reader.read(cbuf)) != -1) {
-    System.out.println(cbuf);
-}
-
-
-// 读取方式三 : 将读取的数据内容转换为 `字符串`
-int len = -1;
-char[] cbuf = new char[1024];
-while ((len = reader.read(cbuf)) != -1) {
-    String str = new String(cbuf, 0, len);
-    System.out.println(str);
-}
-</code></pre>
-<pre><code class="language-java">&quot;转换流 和 操作流 之间的关系 :&quot;
-&quot;转换流 :&quot;
-1. OutputStreamWriter = OutputStream + 任意编码表
-2. InputStreamReader = InputStream + 任意编码表
-&quot;操作流 :&quot;
-1. FileWriter = OutputStreamWriter + 默认编码表 (GBK)
-2. FileReader = InputStreamReader + 默认编码表(GBK)
-
-&quot;总结 : 一般我们都使用操作流,当需要指定编码表的时候,才会使用转换流&quot;
-</code></pre>
-<h3 id="拆分文件及还原">拆分文件及还原</h3>
-<pre><code class="language-java">public class Test {
-     public static void main(String[] args) throws IOException {
-           int count = judge();
-           System.out.println(count);
-           BufferedInputStream bis = new BufferedInputStream(new FileInputStream(
-                     &quot;somethings\\test.flv&quot;));
-           incision(count, bis, 6);
-           BufferedOutputStream bos = new BufferedOutputStream(
-                     new FileOutputStream(&quot;somethings\\jzc.flv&quot;));
-           joint(bos,6);
-           bos.close();
-           bis.close();
-     }
-     public static void joint( BufferedOutputStream bos,int n)
-                throws FileNotFoundException, IOException {
-           for (int i = 1; i &lt;= n; i++) {
-                BufferedInputStream bis = new BufferedInputStream(
-                           new FileInputStream(&quot;somethings\\jzc&quot; + i + &quot;.flv&quot;));
-                byte[] bys = new byte[1024];
-                int len = -1;
-                while ((len = bis.read(bys)) != -1) {
-                     bos.write(bys, 0, len);
-                }
-                bis.close();
-           }
-           bos.close();
-           System.out.println(&quot;拼接完了&quot;);
-     }
-     public static void incision(int count, BufferedInputStream bis, int n)
-                throws FileNotFoundException, IOException {
-           byte[] bys = new byte[1024];
-           int len = -1;
-           
-           for (int i = 1; i &lt;= n; i++) {
-                int count2 = 0;
-                BufferedOutputStream bos = new BufferedOutputStream(
-                           new FileOutputStream(&quot;somethings\\jzc&quot; + i + &quot;.flv&quot;));
-                while ((len = bis.read(bys)) != -1) {
-                     count2 += 1024;
-                     System.out.println(count2);
-                     if (count2 &lt; (count / n)+1024&amp;&amp;count2 &gt; (count / n)-1024) {
-                           break;
-                     } else {
-                           bos.write(bys, 0, len);
-                     }
-                }
-                bos.close();
-           }
-           System.out.println(&quot;切割完了&quot;);
-     }
-     public static int judge() throws FileNotFoundException, IOException {
-           BufferedInputStream bis = new BufferedInputStream(new FileInputStream(
-                     &quot;somethings\\test.flv&quot;));
-           byte[] bys = new byte[1024];
-           int len = -1;
-           int count = 0;
-           while ((len = bis.read(bys)) != -1) {
-                count += 1024;
-           }
-           bis.close();
-           return count;
-     }
-}
-</code></pre>
 ]]></content>
     </entry>
 </feed>

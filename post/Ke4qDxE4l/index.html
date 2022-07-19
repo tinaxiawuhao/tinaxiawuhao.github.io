@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Gradle基础 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Gradle基础 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Gradle基础" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/Ke4qDxE4l/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/_whMOC5wx/" class="tag">gradle</a>
+                
+              </span>
+              <h1>Gradle基础</h1>
+              <span class="meta">
+                Posted on
+                2021-07-02，13 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/Ke4qDxE4l.png" alt="封面图">
+          </img>
+          
+          <h1 id="gradle概述">Gradle概述</h1>
+<p>Gradle是专注于灵活性和性能的开源构建自动化工具，一般使用Groovy或KotlinDSL编写构建脚本。 本文只使用Groovy</p>
+<h2 id="gradle的特点">Gradle的特点：</h2>
+<ul>
+<li>高性能</li>
+</ul>
+<p>Gradle通过仅运行需要运行的任务来避免不必要的工作。 可以使用构建缓存来重用以前运行的任务输出，甚至可以使用其他计算机（具有共享的构建缓存）重用任务输出。</p>
+<ul>
+<li>JVM基础</li>
+</ul>
+<p>Gradle在JVM上运行。熟悉Java的用户来可以在构建逻辑中使用标准Java API，例如自定义任务类型和插件。 这使得Gradle跨平台更加简单。（Gradle不仅限于构建JVM项目，它甚至附带对构建本机项目的支持。）</p>
+<ul>
+<li>约束</li>
+</ul>
+<p>和Maven一样，Gradle通过实现约束使常见类型的项目（例如Java项目）易于构建。 应用适当的插件，您可以轻松地为许多项目使用精简的构建脚本。 但是这些约定并没有限制您：Gradle允许您覆盖它们，添加自己的任务以及对基于约定的构建进行许多其他自定义操作。</p>
+<ul>
+<li>可扩展性</li>
+</ul>
+<p>您可以轻松扩展Gradle以提供您自己的任务类型甚至构建模型。</p>
+<ul>
+<li>IDE支持</li>
+</ul>
+<p>支持IDE：Android Studio，IntelliJ IDEA，Eclipse和NetBeans。 Gradle还支持生成将项目加载到Visual Studio所需的解决方案文件。</p>
+<ul>
+<li>可洞察性</li>
+</ul>
+<p>构建扫描提供了有关构建运行的广泛信息，可用于识别构建问题。他们特别擅长帮助您确定构建性能的问题。 您还可以与其他人共享构建扫描，如果您需要咨询以解决构建问题，这将特别有用。</p>
+<h2 id="您需要了解有关gradle的五件事">您需要了解有关Gradle的五件事</h2>
+<p>本节在官方文档里面反复提及，具体可见<a href="https://docs.gradle.org/current/userguide/what_is_gradle.html#five_things">Gradle文档</a></p>
+<h3 id="1-gradle是通用的构建工具">1. Gradle是通用的构建工具</h3>
+<p>Gradle允许您构建任何软件，因为它不关心你具体的工作。</p>
+<h3 id="2-核心模型基于任务">2. 核心模型基于任务</h3>
+<p>Gradle将其构建模型建模为任务（工作单元）的有向无环图（DAG）。这意味着构建实质上配置了一组任务，并根据它们的依赖关系将它们连接在一起以创建该DAG。创建任务图后，Gradle将确定需要按顺序运行的任务，然后继续执行它们。</p>
+<p>任务本身包括以下部分，它们通过依赖链接在一起：</p>
+<ul>
+<li>动作-做某事的工作，例如复制文件或编译源代码</li>
+<li>输入-操作使用或对其进行操作的值，文件和目录</li>
+<li>输出-操作修改或生成的文件和目录</li>
+</ul>
+<h3 id="3-gradle有几个固定的构建阶段">3. Gradle有几个固定的构建阶段</h3>
+<p>重要的是要了解Gradle分三个阶段评估和执行构建脚本：</p>
+<ul>
+<li>初始化</li>
+</ul>
+<p>设置构建环境，并确定哪些项目将参与其中。</p>
+<ul>
+<li>配置</li>
+</ul>
+<p>构造和配置构建的任务图，然后根据用户要运行的任务确定需要运行的任务和运行顺序。</p>
+<ul>
+<li>执行</li>
+</ul>
+<p>运行在配置阶段结束时选择的任务。</p>
+<p>这些阶段构成了Gradle的构建生命周期。</p>
+<h3 id="4-gradle的扩展方式不止一种">4. Gradle的扩展方式不止一种</h3>
+<p>Gradle捆绑的构建逻辑不可能满足所有构建情况，大多数构建都有一些特殊要求，你需要添加自定义构建逻辑。Gradle提供了多种机制来扩展它，例如：</p>
+<ul>
+<li>自定义任务类型。</li>
+<li>自定义任务动作。</li>
+<li>项目和任务的额外属性。</li>
+<li>自定义约束。</li>
+<li>自定义module。</li>
+</ul>
+<h3 id="5-构建脚本针对api运行">5. 构建脚本针对API运行</h3>
+<p>可以将Gradle的构建脚本视为可执行代码，但设计良好的构建脚本描述了构建软件需要哪些步骤，而不关心这些步骤应该如何完成工作。</p>
+<p>由于Gradle在JVM上运行，因此构建脚本也可以使用标准Java API。Groovy构建脚本可以另外使用Groovy API，而Kotlin构建脚本可以使用Kotlin。</p>
+<h2 id="功能的生命周期">功能的生命周期</h2>
+<p>功能可以处于以下四种状态之一：</p>
+<ul>
+<li>Internal：内部功能，不提供接口</li>
+<li>Incubating： 孵化功能。在成为公共功能之前会继续更改</li>
+<li>Public：公共功能，可放心使用</li>
+<li>Deprecated：废弃功能，将在未来删除</li>
+</ul>
+<h1 id="gradle安装">Gradle安装</h1>
+<h2 id="安装jdk">安装JDK</h2>
+<p>安装JDK过程已有太多资料，本文不做详细介绍。可使用命令检测自己电脑是否成功安装</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658230657737.png" alt="" loading="lazy"></figure>
+<h2 id="安装gradle">安装Gradle</h2>
+<h3 id="用软件包安装gradle">用软件包安装Gradle</h3>
+<p>SDKMAN</p>
+<pre><code class="language-shell">sdk install gradle
+</code></pre>
+<p>Homebrew</p>
+<pre><code class="language-shell">brew install gradle
+</code></pre>
+<h3 id="手动安装推荐方式">手动安装（推荐方式）</h3>
+<h4 id="下载">下载</h4>
+<p><a href="https://services.gradle.org/distributions/">services.gradle.org/distributions</a> （全部版本目录地址，可以查看最新版本）<br>
+<a href="https://services.gradle.org/distributions/gradle-7.5-all.zip">services.gradle.org/distributions/gradle-7.5-all.zip</a> （截止至2022.07.18最新）</p>
+<p>建议下载：<a href="https://services.gradle.org/distributions/gradle-7.0.3-all.zip">services.gradle.org/distributions/gradle-7.0.2-all.zip</a> (支持jdk8)</p>
+<h4 id="文件介绍">文件介绍</h4>
+<pre><code class="language-java">gradle-7.0.2-docs.zip  //文档
+gradle-7.0.2-src.zip  //源码
+gradle-7.0.2-bin.zip  //软件包
+gradle-7.0.2-all.zip   //全部文件
+   bin ：运行文件
+   lib：依赖库
+   docs：文档
+   src：源文件
+   init.d :初始化脚本目录，可自己添加
+</code></pre>
+<h4 id="配置环境变量">配置环境变量</h4>
+<pre><code class="language-shell">export GRADLE_HOME=/Users/temp/gradle-7.0.2
+export PATH=$PATH:$GRADLE_HOME/bin
+</code></pre>
+<h4 id="运行">运行</h4>
+<p>输入gradle -v 检测是否配置成功</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658230676105.png" alt="" loading="lazy"></figure>
+<h3 id="helloword">HelloWord</h3>
+<p>编写一个build.gradle文件，输入以下内容</p>
+<pre><code class="language-groovy">task hello{
+    doLast {
+        println 'Hello World'
+    }
+}
+</code></pre>
+<p>命令行输入<code>gradle -q hello</code>即可运行</p>
+<h1 id="gradle-wrapper">Gradle Wrapper</h1>
+<h2 id="定义">定义</h2>
+<p>Gradle Wrapper是一个脚本，可调用Gradle的声明版本，并在必要时预先下载。因此，开发人员可以快速启动并运行Gradle项目，而无需遵循手动安装过程<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1658230693887.png" alt="" loading="lazy"></p>
+<h2 id="添加wrapper">添加wrapper</h2>
+<p>在build.gradle同级目录下使用命令<code>gradle wrapper</code>可以生成gradle wrapper目录</p>
+<pre><code class="language-java">gradle wrapper
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658230710999.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<p>gradle-wrapper.jar</p>
+<p>WrapJAR文件，其中包含用于下载Gradle发行版的代码。</p>
+</li>
+<li>
+<p>gradle-wrapper.properties</p>
+<p>一个属性文件，负责配置Wrapper运行时行为，例如与该版本兼容的Gradle版本。请注意，更多常规设置（例如，将 Wrap配置为使用代理）需要进入其他文件。</p>
+</li>
+<li>
+<p>gradlew， gradlew.bat</p>
+<p>一个shell脚本和一个Windows批处理脚本，用于使用 Wrap程序执行构建。</p>
+</li>
+</ul>
+<p>可以通过命令控制生成选项</p>
+<pre><code class="language-shell">#用于下载和执行 Wrap程序的Gradle版本。
+--gradle-version
+
+#Wrap使用的Gradle分布类型。可用的选项是bin和all。默认值为bin。
+--distribution-type
+
+#指向Gradle分发ZIP文件的完整URL。使用此选项，--gradle-version并且--distribution-     type过时的网址已经包含此信息。如果您想在公司网络内部托管Gradle发行版，则此选项非常有价值。
+--gradle-distribution-url
+
+#SHA256哈希和用于验证下载的Gradle分布。
+--gradle-distribution-sha256-sum
+</code></pre>
+<p>例：</p>
+<pre><code class="language-shell">gradle wrapper --gradle-version 7.0.2 --distribution-type all
+</code></pre>
+<h2 id="wrapper属性文件">Wrapper属性文件</h2>
+<p>一般生成Wrapper会得到如下属性文件 gradle-wrapper.properties</p>
+<pre><code class="language-java">distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-7.4.1-bin.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+</code></pre>
+<p>GRADLE_USER_HOME是你的环境变量，如果没配置，则默认是用户目录下的.gradle文件夹</p>
+<ul>
+<li>distributionBase 下载的 Gradle压缩包解压后存储的主目录</li>
+<li>distributionPath 相对于 distributionBase的解压后的 Gradle压缩包的路径</li>
+<li>zipStoreBase 同 distributionBase，只不过是存放 zip压缩包的</li>
+<li>zipStorePath 同 distributionPath，只不过是存放 zip压缩包的</li>
+<li>distributionUrl Gradle发行版压缩包的下载地址</li>
+</ul>
+<h2 id="使用wrapper构建">使用wrapper构建</h2>
+<p>在 gradlew目录下执行命令：<br>
+windows：</p>
+<pre><code class="language-shell">gradlew.bat build
+</code></pre>
+<p>shell：</p>
+<pre><code class="language-shell">./gradlew build
+</code></pre>
+<h2 id="升级">升级</h2>
+<ul>
+<li>更改gradle-wrapper.properties文件中的distributionUrl属性</li>
+<li>使用gradlew wrap --gradle-version 命令</li>
+</ul>
+<pre><code class="language-shell">./gradlew wrap --gradle-version 7.4.2
+</code></pre>
+<h2 id="自定义gradle_wrap">自定义Gradle_Wrap</h2>
+<p>可以通过自定义wrapper少去一些重复操作或定制功能，如</p>
+<p>build.gradle</p>
+<pre><code class="language-groovy">tasks.named('wrapper') {
+    distributionType = Wrapper.DistributionType.ALL
+}
+task wrapper(type: Wrapper) {
+    gradleVersion = '7.4.2'
+}
+</code></pre>
+<h1 id="gradle-环境">Gradle 环境</h1>
+<h2 id="环境变量">环境变量</h2>
+<p><code>GRADLE_OPTS</code></p>
+<p>指定启动Gradle客户端VM时要使用的JVM参数。客户端VM仅处理命令行输入/输出，因此很少需要更改其VM选项。实际的构建由Gradle守护程序运行，不受此环境变量的影响。</p>
+<p><code>GRADLE_USER_HOME</code></p>
+<p>指定Gradle用户的主目录（如果未设置，则默认为$USER_HOME/.gradle）。</p>
+<p><code>JAVA_HOME</code></p>
+<p>指定要用于客户端VM的JDK安装目录。除非Gradle属性文件使用org.gradle.java.home指定了另一个虚拟机，否则此虚拟机也用于守护程序。</p>
+<p>注意：命令行选项和系统属性优先于环境变量。</p>
+<h2 id="gradle属性">Gradle属性</h2>
+<p>你可以通过以下方式自己配置你的项目属性，如果存在多个，则从上到下优先读取 ：</p>
+<ul>
+<li>系统属性，例如在命令行上设置 <code>-Dgradle.user.home</code></li>
+<li>GRADLE_USER_HOME目录中的<code>gradle.properties</code></li>
+<li>项目根目录中的<code>gradle.properties</code></li>
+<li>Gradle安装目录中的<code>gradle.properties</code></li>
+</ul>
+<p>gradle.properties</p>
+<pre><code class="language-shell"># 当设置为true时，Gradle将在可能的情况下重用任何先前构建的任务输出，从而使构建速度更快
+org.gradle.caching=true
+ 
+# 设置为true时，单个输入属性哈希值和每个任务的构建缓存键都记录在控制台上。
+org.gradle.caching.debug=true
+ 
+# 启用按需孵化配置，Gradle将尝试仅配置必要的项目。
+org.gradle.configureondemand=true
+ 
+# 自定义控制台输出的颜色或详细程度。默认值取决于Gradle的调用方式。可选(auto,plain,rich,verbose)
+org.gradle.console=auto
+ 
+# 当设置true的Gradle守护进程来运行构建。默认值为true。
+org.gradle.daemon=true
+ 
+# 在指定的空闲毫秒数后，Gradle守护程序将自行终止。默认值为10800000（3小时）。
+org.gradle.daemon.idletimeout=10800000
+ 
+# 设置true为时，Gradle将在启用远程调试的情况下运行构建，侦听端口5005。
+# 请注意，这等同于添加-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005到JVM命令行，并且将挂起虚拟机，直到连接了调试器。
+# 默认值为false。
+org.gradle.debug=true
+ 
+# 指定用于Gradle构建过程的Java主页。可以将值设置为jdk或jre位置，但是，根据您的构建方式，使用JDK更安全。
+# 如果未指定设置，则从您的环境（JAVA_HOME或的路径java）派生合理的默认值。这不会影响用于启动Gradle客户端VM的Java版本（请参阅环境变量）。
+org.gradle.java.home=/usr/bin/java
+        
+# 指定用于Gradle守护程序的JVM参数。该设置对于配置JVM内存设置以提高构建性能特别有用。这不会影响Gradle客户端VM的JVM设置。
+org.gradle.jvmargs=-Xmx2048m
+ 
+# 当设置为quiet,warn,lifecycle,info,debug时，Gradle将使用此日志级别。这些值不区分大小写。该lifecycle级别是默认级别。
+# 可选(quiet,warn,lifecycle,info,debug)
+org.gradle.logging.level=debug
+ 
+# 配置后，Gradle将分叉到org.gradle.workers.maxJVM以并行执行项目
+org.gradle.parallel=true
+        
+# 指定Gradle守护程序及其启动的所有进程的调度优先级。默认值为normal。(low,normal)
+org.gradle.priority=normal
+        
+# 在监视文件系统时配置详细日志记录。 默认为关闭 。
+org.gradle.vfs.verbose=true
+ 
+# 切换观看文件系统。允许Gradle在下一个版本中重用有关文件系统的信息。 默认为关闭 。
+org.gradle.vfs.watch=true
+ 
+# 当设置为all，summary或者none，Gradle会使用不同的预警类型的显示器。(all,fail,summary,none)
+org.gradle.warning.mode=all
+ 
+# 配置后，Gradle将最多使用给定数量的工人。默认值为CPU处理器数。
+org.gradle.workers.max=5
+</code></pre>
+<h3 id="系统属性">系统属性</h3>
+<pre><code class="language-shell"># 指定用户名以使用HTTP基本认证从服务器下载Gradle发行版
+systemProp.gradle.wrapperUser = myuser
+# 指定使用Gradle Wrapper下载Gradle发行版的密码
+systemProp.gradle.wrapperPassword = mypassword
+# 指定Gradle用户的主目录
+systemProp.gradle.user.home=(path to directory)
+</code></pre>
+<h3 id="项目属性">项目属性</h3>
+<pre><code class="language-shell">org.gradle.project.foo = bar
+</code></pre>
+<h2 id="守护程序">守护程序</h2>
+<p>Gradle在Java虚拟机（JVM）上运行，并使用一些支持库，这些库需要很短的初始化时间。但有时启动会比较慢。<br>
+解决此问题的方法是Gradle Daemon ：这是一个长期存在的后台进程，与以前相比，它可以更快地执行构建。</p>
+<p>可通过命令获取运行守护程序状态</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658230731202.png" alt="" loading="lazy"></figure>
+<p>IDLE为空闲，BUSY为繁忙，STOPPED则已关闭</p>
+<p>守护程序默认打开，可通过以下属性关闭<br>
+<code>.gradle/gradle.properties</code></p>
+<pre><code class="language-shell">org.gradle.daemon=false
+</code></pre>
+<p>也可用命令gradle --stop手动关闭守护程序</p>
+<h1 id="gradle命令行">Gradle命令行</h1>
+<p>命令行格式</p>
+<pre><code class="language-shell">gradle [taskName ...] [--option-name ...]
+</code></pre>
+<p>如果指定了多个任务，则应以空格分隔。</p>
+<p>选项和参数之间建议使用<code>=</code>来指定。</p>
+<pre><code class="language-shell">--console=plain
+</code></pre>
+<p>启用行为的选项具有长形式的选项，并带有由指定的反函数<code>--no-</code>。以下是相反的情况。</p>
+<pre><code class="language-shell">--build-cache
+--no-build-cache
+</code></pre>
+<p>许多命令具有缩写。例如以下命令是等效的：</p>
+<pre><code class="language-shell">--help
+-h
+</code></pre>
+<p>使用Wrapper时候应该用<code>./gradlew</code>或<code>gradlew.bat</code>取代<code>gradle</code></p>
+<pre><code class="language-shell">#获取帮助
+gradle -?
+gradle -h
+gradle -help
+ 
+# 显示所选项目的子项目列表，以层次结构显示。
+gradle projects
+#查看可执行task
+gradle task
+#查看可执行task帮助
+gradle help -task
+ 
+# 在Gradle构建中，通常的`build`任务是指定组装所有输出并运行所有检查。
+gradle build
+# 执行所有验证任务（包括test和linting）。
+gradle check
+# 清理项目
+gradle clean
+#强制刷新依赖
+gradle --refresh-dependencies assemble
+ 
+#缩写调用
+gradle startCmd
+== 
+gradle sc
+ 
+ 
+# 执行任务
+gradle myTask
+# 执行多个任务
+gradle myTask test
+# 执行 dist任务但排除test任务
+gradle dist --exclude-task test
+# 强制执行任务
+gradle test --rerun-tasks
+ 
+# 持续构建
+# gradle test --continue
+ 
+# 生成扫描会提供完整的可视化报告，说明哪些依赖项存在于哪些配置，可传递依赖项和依赖项版本选择中。
+$ gradle myTask --scan
+ 
+# 所选项目的依赖项列表
+$ gradle dependencies
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li><a href="#gradle%E6%A6%82%E8%BF%B0">Gradle概述</a>
+<ul>
+<li><a href="#gradle%E7%9A%84%E7%89%B9%E7%82%B9">Gradle的特点：</a></li>
+<li><a href="#%E6%82%A8%E9%9C%80%E8%A6%81%E4%BA%86%E8%A7%A3%E6%9C%89%E5%85%B3gradle%E7%9A%84%E4%BA%94%E4%BB%B6%E4%BA%8B">您需要了解有关Gradle的五件事</a>
+<ul>
+<li><a href="#1-gradle%E6%98%AF%E9%80%9A%E7%94%A8%E7%9A%84%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7">1. Gradle是通用的构建工具</a></li>
+<li><a href="#2-%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9E%8B%E5%9F%BA%E4%BA%8E%E4%BB%BB%E5%8A%A1">2. 核心模型基于任务</a></li>
+<li><a href="#3-gradle%E6%9C%89%E5%87%A0%E4%B8%AA%E5%9B%BA%E5%AE%9A%E7%9A%84%E6%9E%84%E5%BB%BA%E9%98%B6%E6%AE%B5">3. Gradle有几个固定的构建阶段</a></li>
+<li><a href="#4-gradle%E7%9A%84%E6%89%A9%E5%B1%95%E6%96%B9%E5%BC%8F%E4%B8%8D%E6%AD%A2%E4%B8%80%E7%A7%8D">4. Gradle的扩展方式不止一种</a></li>
+<li><a href="#5-%E6%9E%84%E5%BB%BA%E8%84%9A%E6%9C%AC%E9%92%88%E5%AF%B9api%E8%BF%90%E8%A1%8C">5. 构建脚本针对API运行</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8A%9F%E8%83%BD%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">功能的生命周期</a></li>
+</ul>
+</li>
+<li><a href="#gradle%E5%AE%89%E8%A3%85">Gradle安装</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85jdk">安装JDK</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85gradle">安装Gradle</a>
+<ul>
+<li><a href="#%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%8C%85%E5%AE%89%E8%A3%85gradle">用软件包安装Gradle</a></li>
+<li><a href="#%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85%E6%8E%A8%E8%8D%90%E6%96%B9%E5%BC%8F">手动安装（推荐方式）</a>
+<ul>
+<li><a href="#%E4%B8%8B%E8%BD%BD">下载</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E4%BB%8B%E7%BB%8D">文件介绍</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">配置环境变量</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C">运行</a></li>
+</ul>
+</li>
+<li><a href="#helloword">HelloWord</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#gradle-wrapper">Gradle Wrapper</a>
+<ul>
+<li><a href="#%E5%AE%9A%E4%B9%89">定义</a></li>
+<li><a href="#%E6%B7%BB%E5%8A%A0wrapper">添加wrapper</a></li>
+<li><a href="#wrapper%E5%B1%9E%E6%80%A7%E6%96%87%E4%BB%B6">Wrapper属性文件</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8wrapper%E6%9E%84%E5%BB%BA">使用wrapper构建</a></li>
+<li><a href="#%E5%8D%87%E7%BA%A7">升级</a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89gradle_wrap">自定义Gradle_Wrap</a></li>
+</ul>
+</li>
+<li><a href="#gradle-%E7%8E%AF%E5%A2%83">Gradle 环境</a>
+<ul>
+<li><a href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">环境变量</a></li>
+<li><a href="#gradle%E5%B1%9E%E6%80%A7">Gradle属性</a>
+<ul>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E5%B1%9E%E6%80%A7">系统属性</a></li>
+<li><a href="#%E9%A1%B9%E7%9B%AE%E5%B1%9E%E6%80%A7">项目属性</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%88%E6%8A%A4%E7%A8%8B%E5%BA%8F">守护程序</a></li>
+</ul>
+</li>
+<li><a href="#gradle%E5%91%BD%E4%BB%A4%E8%A1%8C">Gradle命令行</a></li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/29jyrX-eN/">
+                  <span class="post-title">
+                    gradle详情&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/lhyr_DiZc/">
+                   <span class="post-title">
+                     gradle项目与任务&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
