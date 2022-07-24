@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -180,7 +180,7 @@
 <li>代码块可以作为参数传递</li>
 </ul>
 <h3 id="定义">定义</h3>
-<pre><code class="language-groovy">def param = 'hello world'
+<pre><code class="language-java">def param = 'hello world'
 def param1 = &quot;hello world&quot;
 println &quot;${param1} ,li&quot; 
 </code></pre>
@@ -189,7 +189,7 @@ println &quot;${param1} ,li&quot;
 <p>可以在构建脚本中声明两种变量：局部变量和额外属性。</p>
 <h4 id="局部变量">局部变量</h4>
 <p>局部变量用def关键字声明。它们仅在声明它们的范围内可见。局部变量是基础Groovy语言的功能。</p>
-<pre><code class="language-groovy">def dest = &quot;dest&quot;
+<pre><code class="language-java">def dest = &quot;dest&quot;
 task copy(type: Copy) {
     from &quot;source&quot;
     into dest
@@ -198,7 +198,7 @@ task copy(type: Copy) {
 <h4 id="ext属性">ext属性</h4>
 <p>Gradle的域模型中的所有增强对象都可以容纳额外的用户定义属性。</p>
 <p>可以通过拥有对象的ext属性添加，读取和设置其他属性。可以使用一个ext块一次添加多个属性。</p>
-<pre><code class="language-groovy">plugins {
+<pre><code class="language-java">plugins {
     id 'java'
 }
  
@@ -238,7 +238,7 @@ plugin
 </code></pre>
 <h4 id="变量范围本地和脚本范围">变量范围：本地和脚本范围</h4>
 <p>用类型修饰符声明的变量在闭包中可见，但在方法中不可见。</p>
-<pre><code class="language-groovy">String localScope1 = 'localScope1'
+<pre><code class="language-java">String localScope1 = 'localScope1'
 def localScope2 = 'localScope2'
 scriptScope = 'scriptScope'
  
@@ -285,7 +285,7 @@ scriptScope
 <h4 id="使用对象">使用对象</h4>
 <p>您可以按照以下易读的方式配置任意对象。</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">import java.text.FieldPosition
+<pre><code class="language-java">import java.text.FieldPosition
  
 task configure {
     doLast {
@@ -304,7 +304,7 @@ task configure {
 <h4 id="使用外部脚本配置任意对象">使用外部脚本配置任意对象</h4>
 <p>您也可以使用外部脚本配置任意对象。</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">task configure {
+<pre><code class="language-java">task configure {
     doLast {
         def pos = new java.text.FieldPosition(10)
         // Apply the script
@@ -315,7 +315,7 @@ task configure {
 }
 </code></pre>
 <p>other.gradle</p>
-<pre><code class="language-groovy">// Set properties.
+<pre><code class="language-java">// Set properties.
 beginIndex = 1
 endIndex = 5
 </code></pre>
@@ -327,7 +327,7 @@ endIndex = 5
 <h3 id="属性访问器">属性访问器</h3>
 <p>Groovy自动将属性引用转换为对适当的getter或setter方法的调用。</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">// Using a getter method
+<pre><code class="language-java">// Using a getter method
 println project.buildDir
 println getProject().getBuildDir()
  
@@ -337,7 +337,7 @@ getProject().setBuildDir('target')
 </code></pre>
 <h3 id="闭包">闭包</h3>
 <p>闭包（闭合代码块，可以引用传入的变量）</p>
-<pre><code class="language-groovy">task testClosure {
+<pre><code class="language-java">task testClosure {
     doLast {
         func {
             println it
@@ -359,7 +359,7 @@ def func(closure) {
 <h4 id="闭包委托">闭包委托</h4>
 <p>每个闭包都有一个<code>delegate</code>对象，Groovy使用该对象来查找不是闭包的局部变量或参数的变量和方法引用。</p>
 <p>例.闭包委托</p>
-<pre><code class="language-groovy">class Info {
+<pre><code class="language-java">class Info {
     int id;
     String code;
  
@@ -393,7 +393,7 @@ code:cix;id:1
 BUILD SUCCESSFUL in 276ms
 </code></pre>
 <p>例：使用必包委托设置依赖</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     assert delegate == project.dependencies
     testImplementation('junit:junit:4.13')
     delegate.testImplementation('junit:junit:4.13')
@@ -403,13 +403,13 @@ BUILD SUCCESSFUL in 276ms
 <h4 id="方法调用上的可选括号">方法调用上的可选括号</h4>
 <p>括号对于方法调用是可选的。</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">test.systemProperty 'some.prop', 'value'
+<pre><code class="language-java">test.systemProperty 'some.prop', 'value'
 test.systemProperty('some.prop', 'value')
 </code></pre>
 <h4 id="闭包作为方法中的最后一个参数">闭包作为方法中的最后一个参数</h4>
 <p>当方法的最后一个参数是闭包时，可以将闭包放在方法调用之后：</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">repositories {
+<pre><code class="language-java">repositories {
     println &quot;in a closure&quot;
 }
 repositories() { println &quot;in a closure&quot; }
@@ -417,7 +417,7 @@ repositories({ println &quot;in a closure&quot; })
 </code></pre>
 <h3 id="集合">集合</h3>
 <h4 id="list">List</h4>
-<pre><code class="language-groovy">def list = [1,2,3,4]
+<pre><code class="language-java">def list = [1,2,3,4]
 println list[0] // 1
 println list[-1] // 4 最后一个
 println list[-2] // 3 倒数第二个
@@ -428,7 +428,7 @@ list.each { //迭代
 }
 </code></pre>
 <h4 id="map">Map</h4>
-<pre><code class="language-groovy">def map= ['name':'li', 'age':18]
+<pre><code class="language-java">def map= ['name':'li', 'age':18]
 println map[name] // li
 println map.age // 18
  
@@ -438,7 +438,7 @@ list.each { //迭代
  
 </code></pre>
 <h3 id="javabean">JavaBean</h3>
-<pre><code class="language-groovy">class A{
+<pre><code class="language-java">class A{
     private int a; //可通过A().a 获取修改
     public int getB(){//可通过A().b获取，但不能修改
         1
@@ -446,7 +446,7 @@ list.each { //迭代
 }
 </code></pre>
 <p>build.gradle</p>
-<pre><code class="language-groovy">// List literal
+<pre><code class="language-java">// List literal
 test.includes = ['org/gradle/api/**', 'org/gradle/internal/**']
  
 List&lt;String&gt; list = new ArrayList&lt;String&gt;()
@@ -463,7 +463,7 @@ apply plugin: 'java'
 </code></pre>
 <h3 id="默认导入">默认导入</h3>
 <p>为了使构建脚本更简洁，Gradle自动向Gradle脚本添加了一些类。</p>
-<pre><code class="language-groovy">import org.gradle.*
+<pre><code class="language-java">import org.gradle.*
 import org.gradle.api.*
 import org.gradle.api.artifacts.*
 import org.gradle.api.artifacts.component.*
@@ -680,7 +680,7 @@ import org.gradle.work.*
 import org.gradle.workers.*
 </code></pre>
 <h3 id="导入依赖">导入依赖</h3>
-<pre><code class="language-groovy">buildscript {
+<pre><code class="language-java">buildscript {
     repositories {
         mavenCentral()
     }

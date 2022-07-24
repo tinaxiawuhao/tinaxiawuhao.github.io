@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Nacos核心源码剖析（AP架构）——注册中心 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Nacos核心源码剖析（AP架构）——注册中心 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Nacos核心源码剖析（AP架构）——注册中心" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/zMtbXOeeT/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
+                
+              </span>
+              <h1>Nacos核心源码剖析（AP架构）——注册中心</h1>
+              <span class="meta">
+                Posted on
+                2022-07-02，24 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/zMtbXOeeT.png" alt="封面图">
+          </img>
+          
+          <p>Nacos官方文档：https://nacos.io/zh-cn/docs/quick-start.html</p>
+<p>服务端对外暴露的API：https://nacos.io/zh-cn/docs/open-api.html</p>
+<p>Nacos的Server端其实就是一个Web服务，对外提供了Http服务接口，所有的客户端与服务端的通讯都通过Http调用完成（短链接）。</p>
+<blockquote>
+<p><strong>Nacos注册服务核心类：NacosNamingService</strong></p>
+<p><strong>Nacos配置中心核心类：NacosConfigService</strong></p>
+</blockquote>
+<hr>
+<h3 id="一-微服务中常用的注册中心对比">一 微服务中常用的注册中心对比</h3>
+<ul>
+<li>Zookeeper（Apache）：典型的CP架构，有Leader节点，在选举Leader的过程中，整个集群对外不可用，为了强一致性，牺牲高可用性！（Client与Server之间为心跳维持的TCP长连接）</li>
+<li>Eureka（Netflix）：AP架构，为了高可用性，牺牲强一致性；服务提供者新节点注册后，消费者需要一定的时间后才能拿到最新服务列表，最长可达60s；</li>
+<li>Nacos（阿里）：参考了Zookeeper+Eureka，同时支持AP/CP架构，集群默认为AP架构，也可以通过配置切换为CP架构（Raft）；服务列表变动后，消费者获取最新列表最然会有一点延迟，但是比Eureka好很多，而且还可以通过udp实时通知，虽然UDP可靠性无法保证！（Client与Server之间为短链接Http调用）</li>
+</ul>
+<hr>
+<h3 id="二-nacos的服务架构图">二 NACOS的服务架构图</h3>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658665780310.png" alt="" loading="lazy"></figure>
+<ul>
+<li>**服务注册+服务心跳：**首先无论是“服务提供者”还是“服务消费者”都会将自己注册到nacos，并维持心跳。（每5秒发送一次心跳包）</li>
+<li>**服务健康检查：**服务端再启动后，会以Service为单位，开启ClientBeatCheckTask心跳检查任务。（每5秒检查一次，如果某个客户端最后一次心跳超过15秒，标记为不健康，超过30秒踢除）</li>
+<li><strong>服务发现：</strong>“服务消费者”会根据需要自己的自己所需的目标服务的namespace/group/serviceName/cluster只根据需要查询对应的服务注册表，保存在本地。（定时每10s去服务端更新一次）！</li>
+<li>**服务同步：**服务端集群之间会同步服务注册表，用来保证服务信息的一致性！（注意AP架构的集群中，即使配置了mysql，也不是用来存放注册表）</li>
+</ul>
+<hr>
+<h3 id="三-nacos的核心注册表结构双层concurrenthashmap">三 Nacos的核心注册表结构（双层ConcurrentHashMap）</h3>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658665797704.png" alt="" loading="lazy"></figure>
+<h4 id="1-nacos和eureka的注册表底层都是双层concurrenthashmap">1 Nacos和Eureka的注册表底层都是双层ConcurrentHashMap</h4>
+<pre><code class="language-java">// 本篇只介绍Nacos
+public class ServiceManager implements RecordListener&lt;Service&gt; {
+    // Nacos服务注册表的实际存储结构（双层Map）
+    Map&lt;String, Map&lt;String, Service&gt;&gt; serviceMap = new ConcurrentHashMap&lt;&gt;()
+    //Map&lt;nameSpaceId, Map&lt;group::serverName, Service&gt;&gt; ————&gt; 通过nameSpaceId + group::serviceName定位到具体的服务(Service)
+         
+    //其中的Service服务实例的结构：
+    public class Service {
+        private Map&lt;String, Cluster&gt; clusterMap = new HashMap&lt;&gt;();
+        //Map&lt;clusterName, Cluster&gt; ————&gt; 在具体的serviceInstance内通过clusterName定位到具体的Cluster集群
+         
+        //而Cluster集群，又是这样的结构
+        public class Cluster {
+            private Set&lt;Instance&gt; ephemeralInstances = new HashSet&lt;&gt;(); //这就是实际可以对外提供的单个服务（serviceInstanceItem）
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>总结：Nacos底层数据结构，显示一个双层Map，<br>
+—— 1、服务发现阶段，通过nameSpaceId, group::serviceName找到对应的服务 Service服务<br>
+—— 2、在服务Service内通过clusterName定位到具体的集群Cluster<br>
+—— 3、在Cluster集群里面以HashSet的形式，存放着所有能够提供服务的每个实例Instance（这个Instance中有访问它的详细信息），最后把整个Set列表返回给客户端即可!</p>
+</blockquote>
+<h4 id="2-nacos这么多层的配置该如何使用">2 Nacos这么多层的配置，该如何使用？</h4>
+<ul>
+<li>最佳实践一（中小型公司）：</li>
+</ul>
+<pre><code class="language-yaml">// namespace：用来区分不通的项目，如haier-iot / haier-code / cold-chain 
+// group：用来区分不通项目的 prod / test / dev 等环境
+// ————spring.application.name————
+// cluster：可以以低于来划分集群：BJ / NJ / SH
+ 
+// 示例：
+spring:
+  application:
+    name: haier-iot-device-manager
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.206.73.156:8848
+        namespace: haier-iot
+        group: dev
+        cluster-name: BJ  //可以不区分
+      config:
+        server-addr: 10.206.73.156:8848
+        file-extension: yaml
+        namespace: haier-iot
+        group: dev
+        cluster-name: BJ  //可以不区分
+</code></pre>
+<ul>
+<li>最佳实践二（大型公司）：</li>
+</ul>
+<pre><code class="language-yaml">//与最佳实践一的区别在于，直接使用nacos项目专用，直接使用 namespace 区分环境
+// namespace：直接用来区分 prod / test / dev 等环境
+// group：使用 DEFAULT_GROUP，因为微服务有可能太多，管理容易混乱；同时这一层可以做扩展，比如多个小服务可能属于另一个大服务下；
+// ————spring.application.name————
+// cluster：可以以低于来划分集群：BJ / NJ / SH
+ 
+// 示例：
+spring:
+  application:
+    name: haier-iot-device-manager
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.206.73.156:8848
+        namespace: dev 
+        group: DEFAULT_GROUP  //默认GROUP可以不指定 
+        cluster-name: BJ  //可以不区分
+      config:
+        server-addr: 10.206.73.156:8848
+        namespace: dev
+        group: DEFAULT_GROUP  //默认GROUP可以不指定
+        file-extension: yaml
+</code></pre>
+<h4 id="3-为什么nacos要设计这么复杂的数据结构">3 为什么Nacos要设计这么复杂的数据结构</h4>
+<p>因为Nacos是一个开放的产品，为了适应绝大多数使用者的使用场景，所以扩展性一定要好，这么多层的设计，几乎可以满足任意复杂的业务场景！</p>
+<hr>
+<h3 id="三-nacos的注册表写入性能保证">三 Nacos的注册表写入性能保证</h3>
+<h4 id="1-nacos怎么负责的注册表结构如何支撑高并发场景阻塞队列-异步注册">1 Nacos怎么负责的注册表结构，如何支撑高并发场景？（阻塞队列、异步注册）</h4>
+<pre><code class="language-java">// 使用内存阻塞队列实现异步注册 —— 当接收到provider的注册时，Nacos服务端会将任务封装成Task
+public class DistroConsistencyServiceImpl{
+    @PostConstruct
+    public void init() {
+        GlobalExecutor.submitDistroNotifyTask(notifier);
+    }
+     
+    // 而notifier是一个线程，单线程处理服务注册任务，也避免了“并发覆盖”问题！
+    public class Notifier implements Runnable {
+        private BlockingQueue&lt;Pair&lt;String, DataOperation&gt;&gt; tasks = new ArrayBlockingQueue&lt;&gt;(1024 * 1024);
+         
+        // run()方法就是在处理放入到tasks队列中的Task任务
+        @Override
+        public void run() {            
+            for (; ; ) {  // 死循环，即使出现异常也不会退出
+                try {
+                    Pair&lt;String, DataOperation&gt; pair = tasks.take(); //阻塞队列不消耗CPU
+                    handle(pair);
+                } catch (Throwable e) {
+                    Loggers.DISTRO.error(&quot;[NACOS-DISTRO] Error while handling notifying task&quot;, e);
+                }
+            }
+        }
+         
+    }
+     
+     
+    // 新的Instance任务被封装成Task任务，放入到Notifier中
+    public void put(String key, Record value) throws NacosException {
+        onPut(key, value);  // 任务被封装成
+        distroProtocol.sync(new DistroKey(key, KeyBuilder.INSTANCE_LIST_KEY_PREFIX), DataOperation.CHANGE,
+                globalConfig.getTaskDispatchPeriod() / 2);
+    }
+     
+    public void onPut(String key, Record value) {
+        ...边缘逻辑...
+        notifier.addTask(key, DataOperation.CHANGE);
+    }
+ 
+}
+</code></pre>
+<h4 id="2-使用阻塞队列实现异步注册会不会存在不一致问题还没注册成功就给客户端返回结果">2 使用阻塞队列实现异步注册，会不会存在不一致问题，还没注册成功就给客户端返回结果？</h4>
+<blockquote>
+<p>是的，肯定会存在这个问题，但是这是一个取舍，高性能的中间件内部都使用了大量的异步操作；<br>
+想一想，我们的应用程序可能依赖很多第三方服务，如果第三方中间件都用同步的方式去执行自己的内部逻辑，那么应用程序的启动将变得非常地缓慢，最后的效果肯定是难以接受的；<br>
+—— 支持高并发！<br>
+—— 要说不及时，之前的Eureka更严重！<br>
+其实正常情况下，几乎不会太过阻塞，因为几乎没有多少公司，是一次性增加n多台服务的，都是慢慢添加的，而且即使个别慢了，也是可以接受的，先用其它服务节点即可，站在服务消费者的角度，也就是provider服务起得有点慢而已。</p>
+</blockquote>
+<h4 id="3-为了解决高并发下的读写冲突问题nacos使用了copyonwrite方案">3 为了解决高并发下的读写冲突问题，Nacos使用了CopyOnWrite方案</h4>
+<pre><code class="language-java">// 在Notifier.run()方法中：
+listener.onChange(datumKey, dataStore.get(datumKey).value);
+|
+com.alibaba.nacos.naming.core.Service#onChange(){
+    updateIPs(value.getInstanceList(), KeyBuilder.matchEphemeralInstanceListKey(key));
+}
+|
+com.alibaba.nacos.naming.core.Service#updateIPs(){
+    clusterMap.get(entry.getKey()).updateIps(entryIPs, ephemeral);
+}
+|
+com.alibaba.nacos.naming.core.Cluster#updateIps{
+    Set&lt;Instance&gt; toUpdateInstances = ephemeral ? ephemeralInstances : persistentInstances;
+ 
+    // 将旧的临时实例ephemeralInstances列表，复制转化为一个Map进行更新操作
+    HashMap&lt;String, Instance&gt; oldIpMap = new HashMap&lt;&gt;(toUpdateInstances.size());
+    for (Instance ip : toUpdateInstances) {
+        oldIpMap.put(ip.getDatumKey(), ip);
+    }
+     
+    //...对旧Set拷贝后转化为HashMap进行更新操作...
+     
+    toUpdateInstances = new HashSet&lt;&gt;(ips);
+    if (ephemeral) {
+        ephemeralInstances = toUpdateInstances;
+    } else {
+        persistentInstances = toUpdateInstances;
+    }
+}
+</code></pre>
+<h4 id="4-同时n多个实例注册或更新都进行copyonwrite岂不是会存在更新覆盖">4 同时n多个实例注册或更新，都进行CopyOnWrite，岂不是会存在“更新覆盖”？</h4>
+<pre><code class="language-java">// 1、首先，根据上面的第1条，Notifier的执行是一个单线程执行任务：
+/// Notifier所在类DistroConsistencyServiceImpl是一个单例Service，@PostConstruct决定了init方法只会被调用一次：
+//// 而GlobalExecutor 是一个单线程的线程池，所以处理实例注册的最终线程只会有一个
+@PostConstruct
+public void init() {
+    GlobalExecutor.submitDistroNotifyTask(notifier);
+}
+ 
+// 2、CopyOnWrite后的集合中的元素不能直接修改，因为集合中的元素是引用！
+// —— 当新增时，直接在新集合中新增Instance，然后替换原注册表中的集合即可！
+// —— 当删除时，直接将新集合中的对应Instance删除，然后替换原注册表中的集合即可！
+// —— 当更新时，新增一个Instance，然后删除原集合中的Instance元素，增加新的Instance元素即可！
+// ————原则就是：永远是替换，不直接修改原Instance对象！
+</code></pre>
+<h4 id="5-随着注册表的不断增大进行copyonwrite时候的成本是不是变得非常大">5 随着注册表的不断增大，进行CopyOnWrite时候的成本是不是变得非常大？</h4>
+<pre><code class="language-java">// 当然不是每次直接Copy整张注册表，那样开销肯定很大
+// 每次Copy的粒度是缩小到Service下对应的Cluster中的Set&lt;Instance&gt;集合，这个粒度是很小的！
+public class Cluster extends com.alibaba.nacos.api.naming.pojo.Cluster implements Cloneable {
+    private Set&lt;Instance&gt; persistentInstances = new HashSet&lt;&gt;();  // AP模式实例列表（服务发现得到的列表就是它）
+    private Set&lt;Instance&gt; ephemeralInstances = new HashSet&lt;&gt;();  // CP模式实例列表（服务发现得到的列表就是它）
+     
+    // 更新节点的操作（Cluster级别）
+    public void updateIps(List&lt;Instance&gt; ips, boolean ephemeral) {
+        Set&lt;Instance&gt; toUpdateInstances = ephemeral ? ephemeralInstances : persistentInstances;
+        HashMap&lt;String, Instance&gt; oldIpMap = new HashMap&lt;&gt;(toUpdateInstances.size());
+         
+        //...对旧Set拷贝后转化为HashMap进行更新操作...
+         
+        toUpdateInstances = new HashSet&lt;&gt;(ips);
+        if (ephemeral) {
+            ephemeralInstances = toUpdateInstances;
+        } else {
+            persistentInstances = toUpdateInstances;
+        }
+    }
+}
+// 为了性能，CopyOnWrite的粒度一定要越小越好！
+</code></pre>
+<hr>
+<h3 id="四-nacos的心跳机制定时去调nacos服务端http接口">四 Nacos的心跳机制（定时去调Nacos服务端Http接口）</h3>
+<p>核心类：NacosNamingService</p>
+<h4 id="1-client在向服务端注册服务的同时开启定时任务向服务端发送心跳请求">1 Client在向服务端注册服务的同时，开启定时任务向服务端发送心跳请求</h4>
+<pre><code class="language-java">// com.alibaba.nacos.client.naming.NacosNamingService#registerInstance()
+// 既是注册服务的核心代码，也是发送心跳的核心代码
+public void registerInstance(String serviceName, String groupName, Instance instance) throws NacosException {
+    String groupedServiceName = NamingUtils.getGroupedName(serviceName, groupName);
+    if (instance.isEphemeral()) {
+        BeatInfo beatInfo = beatReactor.buildBeatInfo(groupedServiceName, instance);
+        beatReactor.addBeatInfo(groupedServiceName, beatInfo);  // 发送心跳
+    }
+    serverProxy.registerService(groupedServiceName, groupName, instance); // 注册实例
+}
+|
+public void addBeatInfo(String serviceName, BeatInfo beatInfo) {
+    ...
+    // 第一次调用 = 触发心跳任务
+    executorService.schedule(new BeatTask(beatInfo), beatInfo.getPeriod(), TimeUnit.MILLISECONDS);
+    ...
+}
+|
+//BeatTask.run()任务核心代码：
+public void run() {
+    if (!this.beatInfo.isStopped()) {
+        // 计算下一次发送的时间
+        long nextTime = this.beatInfo.getPeriod();
+ 
+        try {
+            //此处就是去调用“发送心跳API”
+            JsonNode result = BeatReactor.this.serverProxy.sendBeat(this.beatInfo, BeatReactor.this.lightBeatEnabled);
+            ...对心跳发送结果进行处理...
+        } catch (NacosException var11) {
+            ...log...
+        }
+ 
+        //第二次发送心跳，循环进行，就形成定时发送心跳的效果
+        BeatReactor.this.executorService.schedule(BeatReactor.this.new BeatTask(this.beatInfo), nextTime, TimeUnit.MILLISECONDS);
+    }
+}
+</code></pre>
+<p>我们再看看执行“心跳任务”的线程长啥样：</p>
+<pre><code class="language-java">// 定时任务线程
+this.executorService = new ScheduledThreadPoolExecutor(threadCount, new ThreadFactory() {
+    @Override
+    public Thread newThread(Runnable r) {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true); // 守护线程（所有用户线程结束后，守护线程会自动结束）
+        thread.setName(&quot;com.alibaba.nacos.naming.beat.sender&quot;);
+        return thread;
+    }
+});
+</code></pre>
+<blockquote>
+<p>所以“心跳包”的核心就是：<strong>通过一个定时任务守护线程，定时去调用Nacos服务端的发送心跳包的API接口！</strong></p>
+</blockquote>
+<h4 id="2-心跳包的默认间隔时间是多少5-15-30">2 “心跳包”的默认间隔时间是多少？（5-15-30）</h4>
+<pre><code class="language-java">// 构建心跳包的信息
+BeatInfo beatInfo = this.beatReactor.buildBeatInfo(groupedServiceName, instance);
+ 
+beatInfo.setPeriod(instance.getInstanceHeartBeatInterval());
+ 
+public long getInstanceHeartBeatInterval() {
+    return this.getMetaDataByKeyWithDefault(&quot;preserved.heart.beat.interval&quot;, Constants.DEFAULT_HEART_BEAT_INTERVAL);
+}
+ 
+//而Constants.DEFAULT_HEART_BEAT_INTERVAL是个常量
+static {
+    DEFAULT_HEART_BEAT_TIMEOUT = TimeUnit.SECONDS.toMillis(15L);  //15秒 收不到心跳，则会被标记为“不健康”
+    DEFAULT_IP_DELETE_TIMEOUT = TimeUnit.SECONDS.toMillis(30L);   //30秒 收不到心跳，则“剔除”该实例IP
+    DEFAULT_HEART_BEAT_INTERVAL = TimeUnit.SECONDS.toMillis(5L);  //默认心跳时间 5秒
+</code></pre>
+<h4 id="3-nacos服务端对心跳包的处理逻辑服务健康检查定时任务每5秒健康检查">3 Nacos服务端对心跳包的处理逻辑(服务健康检查)？(定时任务，每5秒健康检查)</h4>
+<pre><code class="language-java">// 以Service为单位，每个Service在被初始化时，都会创建一个健康检查器HealthCheckReactor
+public class Service {
+    public void init() {
+    // HealthCheckReactor 健康检查器，也是通过schduled线程池去做检查的
+    HealthCheckReactor.scheduleCheck(clientBeatCheckTask);
+    for (Map.Entry&lt;String, Cluster&gt; entry : clusterMap.entrySet()) {
+       entry.getValue().setService(this);
+       entry.getValue().init();
+    }
+   }
+}
+|
+// HealthCheckReactor.scheduleCheck()方法就是开启定时任务线程
+|线程池大小为1~核数/2
+public static void scheduleCheck(BeatCheckTask task) {
+    futureMap.putIfAbsent(task.taskKey(), GlobalExecutor.scheduleNamingHealth(task, 5000, 5000, TimeUnit.MILLISECONDS));
+    //延迟5秒后，每5秒执行一次
+}
+</code></pre>
+<p>健康检查任务的核心 run() 方法逻辑：</p>
+<pre><code class="language-java">public class ClientBeatCheckTask implements BeatCheckTask {
+    @Override
+    public void run() {
+        //拿出Service中所有的实例（后面遍历检查）
+        List&lt;Instance&gt; instances = service.allIPs(true);
+ 
+        // 系统当前时间 - 最后一次心跳时间 &gt; 不健康阈值（15秒），标记为不健康
+        for (Instance instance : instances) {
+            if (System.currentTimeMillis() - instance.getLastBeat() &gt; instance.getInstanceHeartBeatTimeOut()) {
+                if (!instance.isMarked()) {
+                    if (instance.isHealthy()) {
+                        instance.setHealthy(false);
+                        Loggers.EVT_LOG
+                            .info(&quot;{POS} {IP-DISABLED} valid: {}:{}@{}@{}, region: {}, msg: client timeout after {}, last beat: {}&quot;,
+                                  instance.getIp(), instance.getPort(), instance.getClusterName(),
+                                  service.getName(), UtilsAndCommons.LOCALHOST_SITE,
+                                  instance.getInstanceHeartBeatTimeOut(), instance.getLastBeat());
+                        getPushService().serviceChanged(service);
+                    }
+                }
+            }
+        }
+ 
+        if (!getGlobalConfig().isExpireInstance()) {
+            return;
+        }
+ 
+        // 系统当前时间 - 最后一次心跳时间 &gt; 可剔除阈值（30秒），直接剔除
+        for (Instance instance : instances) {
+            if (System.currentTimeMillis() - instance.getLastBeat() &gt; instance.getIpDeleteTimeout()) {
+                // delete instance
+                Loggers.SRV_LOG.info(&quot;[AUTO-DELETE-IP] service: {}, ip: {}&quot;, service.getName(),
+                                     JacksonUtils.toJson(instance));
+                deleteIp(instance);
+            }
+        }
+         
+    }
+}
+</code></pre>
+<blockquote>
+<p>所以“服务健康检查”的逻辑就是：<strong>服务端</strong>以Service为单位，<strong>使用</strong>定时任务线程池，每5秒检查一次<strong>Service中所有实例的状态</strong>：</p>
+<p><strong>最后心跳时间距当前</strong>超过15秒，标记为不健康；</p>
+<p><strong>最后心跳时间距当前</strong>超过30秒，将此实例踢除！</p>
+</blockquote>
+<hr>
+<h3 id="五-服务发现">五 服务发现</h3>
+<blockquote>
+<ul>
+<li>当服务消费者需要查询自己需要的服务列表时，会<strong>优先从本地缓存注册表获取数据，第一次获取为空时，才会从远程Server端获取</strong>；</li>
+<li>从远程Server获取服务列表的<strong>粒度为Cluster粒度</strong>，同时还会<strong>将自己的udp端口告诉Server端，便于Server变化时的主动通知</strong>；</li>
+<li>从远程Server获取列表的同时，还会<strong>启动定时任务，每隔10秒从Server端同步一次自己的注册表</strong>（只同步自己需要的）；</li>
+<li><strong>udp通知的可靠性不能保证</strong>，但是影响不大，因为<strong>有定时任务同步托底</strong>！</li>
+</ul>
+</blockquote>
+<h4 id="1-获取服务实例列表核心方法nacosnamingservicegetallinstances">1 获取服务实例列表核心方法：NacosNamingService#getAllInstances()</h4>
+<pre><code class="language-java">public List&lt;Instance&gt; getAllInstances(String serviceName, String groupName, List&lt;String&gt; clusters, boolean subscribe) {
+     
+    ServiceInfo serviceInfo;
+    if (subscribe) {  // 默认是开启订阅（udp通知），所以走这一分支
+        serviceInfo = hostReactor.getServiceInfo(NamingUtils.getGroupedName(serviceName, groupName),
+                StringUtils.join(clusters, &quot;,&quot;));
+    } else {
+        serviceInfo = hostReactor
+                .getServiceInfoDirectlyFromServer(NamingUtils.getGroupedName(serviceName, groupName),
+                        StringUtils.join(clusters, &quot;,&quot;));
+    }
+    List&lt;Instance&gt; list;
+    if (serviceInfo == null || CollectionUtils.isEmpty(list = serviceInfo.getHosts())) {
+        return new ArrayList&lt;Instance&gt;();
+    }
+    return list;
+}
+|
+public ServiceInfo getServiceInfo(final String serviceName, final String clusters) {
+    String key = ServiceInfo.getKey(serviceName, clusters);
+    if (failoverReactor.isFailoverSwitch()) {
+        return failoverReactor.getService(key); // 故障转移功能，从故障转移文件获取服务列表
+    }
+     
+    // 从本地缓存的注册表获取服务列表
+    ServiceInfo serviceObj = getServiceInfo0(serviceName, clusters);
+     
+    if (null == serviceObj) { // 第一次启动时候，缓存肯定为空，所以会走这一分支
+        serviceObj = new ServiceInfo(serviceName, clusters);
+         
+        serviceInfoMap.put(serviceObj.getKey(), serviceObj);
+         
+        updatingMap.put(serviceName, new Object());
+        updateServiceNow(serviceName, clusters);  // 核心去远程获取服务列表的方法
+        updatingMap.remove(serviceName);
+         
+    } else if (updatingMap.containsKey(serviceName)) {
+         
+        if (UPDATE_HOLD_INTERVAL &gt; 0) {
+            // hold a moment waiting for update finish
+            synchronized (serviceObj) {
+                try {
+                    serviceObj.wait(UPDATE_HOLD_INTERVAL);
+                } catch (InterruptedException e) {
+                    NAMING_LOGGER
+                            .error(&quot;[getServiceInfo] serviceName:&quot; + serviceName + &quot;, clusters:&quot; + clusters, e);
+                }
+            }
+        }
+    }
+     
+    scheduleUpdateIfAbsent(serviceName, clusters);  // 开启定时任务，定时更新本地注册表
+     
+    return serviceInfoMap.get(serviceObj.getKey());
+}
+</code></pre>
+<p>从远程获取服务列表没啥看的，我们重点看看定时任务更新本地缓存注册表的逻辑：</p>
+<pre><code class="language-java">public void scheduleUpdateIfAbsent(String serviceName, String clusters) {
+    synchronized (futureMap) {
+        if (futureMap.get(ServiceInfo.getKey(serviceName, clusters)) != null) {
+            return;
+        }
+         
+        // UpdateTask见名知意
+        ScheduledFuture&lt;?&gt; future = addTask(new UpdateTask(serviceName, clusters));
+        futureMap.put(ServiceInfo.getKey(serviceName, clusters), future);
+    }
+}
+|
+// 看看UpdateTask.run()核心方法：
+public void run() {
+    long delayTime = -1;
+     
+    try {
+         
+        ...一系列逻辑，但是最终都会走finally中的逻辑...
+        delayTime = serviceObj.getCacheMillis();
+         
+    } catch (Throwable e) {
+        NAMING_LOGGER.warn(&quot;[NA] failed to update serviceName: &quot; + serviceName, e);
+    } finally {
+        if (delayTime &gt; 0) {
+            // delayTime默认为10秒
+            executor.schedule(this, delayTime, TimeUnit.MILLISECONDS);
+        }
+    }
+     
+}
+</code></pre>
+<blockquote>
+<p>所以“服务发现”的逻辑就是：在<strong>客户端启动时，会根据需要从Nacos服务端获取自己需要的服务列表（Cluster级别）</strong>，</p>
+<ul>
+<li>并保存到本地缓存中的注册表中，并开启一个定时任务，<strong>每隔10秒去服务端同步</strong>一下对应的注册表；</li>
+<li>之后每次需要时，都是<strong>从本地缓存中的注册表获取服务列表即可</strong>！</li>
+</ul>
+</blockquote>
+<h4 id="2-如何尽可能地保证本地注册表的实时性开启订阅开放udp端口">2 如何尽可能地保证本地注册表的实时性？(开启订阅，开放udp端口)</h4>
+<p>从第一条中我们看到一个开启订阅的逻辑，在对应的分支中，从服务端获取服务列表时：</p>
+<pre><code class="language-java">updateServiceNow(serviceName, clusters);
+String result = serverProxy.queryList(serviceName, clusters, pushReceiver.getUdpPort(), false);
+// pushReceiver.getUdpPort()
+// 可以知道，从服务端获取服务列表时，顺便把自己的udp端口也传给了服务端
+// 那么当服务端发现对应的服务列表有变动时，就可以通过此Udp端口通知到本Client
+</code></pre>
+<hr>
+<h3 id="六-服务同步">六 服务同步</h3>
+<blockquote>
+<p>​    Nacos集群即使配置了外部mysql数据库，注册表信息也是存储在每个节点的内存中的，而不是存储在mysql中，而当Client向Nacos服务端注册时，只会选择一个Nacos Server节点注册，那么就必须有一套机制能够实现Nacos集群的各个节点都能同步到数据，Nacos自己实现了一套Distro协议，以实现分布式集群各节点之间的数据最终一致性！</p>
+</blockquote>
+<h4 id="1-什么时distro协议">1 什么时Distro协议？</h4>
+<p>Distro协议时Nacos社区自研的一套AP分布式协议，为了集群的高可用，牺牲强一致性，只追求最终一致性！</p>
+<ul>
+<li>Nacos集群的每个节点时平等的，都可以处理读写请求，同时把数据同步到其他节点；</li>
+<li>每个节点只负责部分数据（服务健康检查等），定时发送自己负责的数据的校验值到其他节点，以保证数据的一致性；</li>
+<li>每个节点独立处理请求，不需要经过其他节点同意，及时从本地发起对Client端的相应！</li>
+</ul>
+<h4 id="2-nacos集群中的节点如何知道其它节点的存在">2 Nacos集群中的节点，如何知道其它节点的存在？</h4>
+<p>得熟悉Nacos AP集群得部署方式，Nacos集群在部署时，需要在配置 cluster.conf 文件中配置集群得各个节点，这样每台机器就都知道集群中得其它节点得ip:port了;</p>
+<pre><code class="language-java">@Component(&quot;serverListManager&quot;)
+public class ServerListManager extends MemberChangeListener {
+ 
+    @PostConstruct
+    public void init() {
+        // 集群节点状态同步任务，它会每2秒调用集群其它节点的状态接口，以判断节点是否还在线！
+        GlobalExecutor.registerServerStatusReporter(new ServerStatusReporter(), 2000);
+        GlobalExecutor.registerServerInfoUpdater(new ServerInfoUpdater());
+    }
+     
+    // 集群节点状态同步任务，每2秒执行一次，
+    ServerStatusReporter.run(){
+        // 很简单，就是调用其它节点的状态接口，告诉其它机器自己还活着（集群中每两台机器直接都会互相调用）；
+        // 如果某个节点在一定时间内，没有收到其它某个节点的状态报告，那就认为这个节点挂了，就会更新自己本地认为的集群存活节点数；
+        // 集群存活节点数会直接影响到“服务健康检查”的目标机器核心变量，从而决定每个Service，将会在哪个Server节点被执行健康检查！
+        synchronizer.send(server.getAddress(), msg);
+    }
+}
+</code></pre>
+<h4 id="3-服务注册任务由哪个节点负责如何同步数据到其他节点">3 “服务注册”任务由哪个节点负责？如何同步数据到其他节点？</h4>
+<p>“服务注册”任务，有Client端发起，根据负载均衡算法挑选一台Server机器进行注册；</p>
+<p>被挑选到的Server节点，处理自己的注册任务的同时，通过Distro协议，同步到集群中的其它节点；</p>
+<pre><code class="language-java">// com.alibaba.nacos.naming.consistency.ephemeral.distro.DistroConsistencyServiceImpl#put
+public void put(String key, Record value) throws NacosException {
+    // 在本机处理服务注册请求
+    onPut(key, value);  
+    // 同步给其它机器进行注册
+    distroProtocol.sync(new DistroKey(key, KeyBuilder.INSTANCE_LIST_KEY_PREFIX), DataOperation.CHANGE,
+            globalConfig.getTaskDispatchPeriod() / 2);
+}
+</code></pre>
+<h4 id="4-如何判断各个service的健康检查任务由集群中的哪个节点负责检查">4 如何判断各个Service的健康检查任务，由集群中的哪个节点负责检查？</h4>
+<pre><code class="language-java">// 我们找到心跳检查任务的run()方法：
+ClientBeatCheckTask.run(){
+    // 判断是否该由本节点负责该Service的心跳检查任务
+    if (!getDistroMapper().responsible(service.getName())) {
+        return;
+    }
+    ...如果是自己负责该Service的心跳检查，才会继续执行心跳检查任务...
+}
+ 
+// 判断逻辑
+public boolean responsible(String serviceName) {
+    final List&lt;String&gt; servers = healthyList;
+     
+    if (!switchDomain.isDistroEnabled() || EnvUtil.getStandaloneMode()) {
+        return true;
+    }
+     
+    if (CollectionUtils.isEmpty(servers)) {
+        // means distro config is not ready yet
+        return false;
+    }
+     
+    int index = servers.indexOf(EnvUtil.getLocalAddress());
+    int lastIndex = servers.lastIndexOf(EnvUtil.getLocalAddress());
+    if (lastIndex &lt; 0 || index &lt; 0) {
+        return true;  // 自己不在集群列表中，那可能当前就不是集群部署，所以自己得检查
+    }
+     
+    // 对serviceName进行hash后，对当前集群节点数量取余，看看是不是自己
+    // 如果不是自己，不用担心，其它机器在被注册时，也会走到这条逻辑，总有一台机器是负责该Service的“健康检查”的
+    int target = distroHash(serviceName) % servers.size();
+    return target &gt;= index &amp;&amp; target &lt;= lastIndex;
+}
+</code></pre>
+<h4 id="5-集群间两个重要的同步任务">5 集群间两个重要的同步任务</h4>
+<pre><code class="language-java">1. ServerListManager下的ServerStatusReporter任务：
+—— 上面已经讲过，在集群之间通过定时调用状态接口的方式，同步集群各节点的在线状态！
+ 
+2. ServiceManager下的ServiceReporter任务：
+—— 当某个节点执行完健康检查后，如果发现某个Service实例状态改变了，它必须要同步给集群中其它节点，修改各自注册表中的状态（通过调用InstanceController中的API接口实现）
+</code></pre>
+<h4 id="6-如果有新节点加入集群如果从其它节点同步数据">6 如果有新节点加入集群，如果从其它节点同步数据？</h4>
+<pre><code class="language-java">// 每个节点启动时，会注入一个DistroProtocol的Bean
+@Component
+public class DistroProtocol {
+    // 在DistroProtocol的构造函数中，会启动DistroTask数据同步任务
+    public DistroProtocol(ServerMemberManager memberManager, DistroComponentHolder distroComponentHolder,
+        DistroTaskEngineHolder distroTaskEngineHolder, DistroConfig distroConfig) {
+        this.memberManager = memberManager;
+        this.distroComponentHolder = distroComponentHolder;
+        this.distroTaskEngineHolder = distroTaskEngineHolder;
+        this.distroConfig = distroConfig;
+        startDistroTask();
+    }
+     
+    private void startDistroTask() {
+        // 如果时单节点运行，就不用同步啦
+        if (EnvUtil.getStandaloneMode()) {
+            isInitialized = true;
+            return;
+        }
+        startVerifyTask();
+        startLoadTask(); // 开启数据加载任务
+    }
+     
+    private void startLoadTask() {
+            DistroCallback loadCallback = new DistroCallback() {
+                @Override
+                public void onSuccess() {
+                    isInitialized = true;
+                }
+                 
+                @Override
+                public void onFailed(Throwable throwable) {
+                    isInitialized = false;
+                }
+            };
+            GlobalExecutor.submitLoadDataTask(
+                    new DistroLoadDataTask(memberManager, distroComponentHolder, distroConfig, loadCallback));
+        }
+}
+ 
+//DistroLoadDataTask任务的核心run()方法：
+DistroLoadDataTask.run(){
+    try {
+        load(); // 从其它节点加载数据
+        if (!checkCompleted()) {
+            // 如果不成功，就开个延时任务，过会儿继续尝试去加载
+            GlobalExecutor.submitLoadDataTask(this, distroConfig.getLoadDataRetryDelayMillis());
+        } else {
+            loadCallback.onSuccess();
+            Loggers.DISTRO.info(&quot;[DISTRO-INIT] load snapshot data success&quot;);
+        }
+    } catch (Exception e) {
+        loadCallback.onFailed(e);
+        Loggers.DISTRO.error(&quot;[DISTRO-INIT] load snapshot data failed. &quot;, e);
+    }
+}
+</code></pre>
+<p>真正的load()从远程加载逻辑：</p>
+<pre><code class="language-java">private void load() throws Exception {
+    while (memberManager.allMembersWithoutSelf().isEmpty()) {
+        Loggers.DISTRO.info(&quot;[DISTRO-INIT] waiting server list init...&quot;);
+        TimeUnit.SECONDS.sleep(1);
+    }
+    while (distroComponentHolder.getDataStorageTypes().isEmpty()) {
+        Loggers.DISTRO.info(&quot;[DISTRO-INIT] waiting distro data storage register...&quot;);
+        TimeUnit.SECONDS.sleep(1);
+    }
+    for (String each : distroComponentHolder.getDataStorageTypes()) {
+        if (!loadCompletedMap.containsKey(each) || !loadCompletedMap.get(each)) {
+            loadCompletedMap.put(each, loadAllDataSnapshotFromRemote(each));
+        }
+    }
+}
+ 
+// for循环尝试从所有远程节点获取注册表全量文件，只要有一个成功，则跳出for循环
+private boolean loadAllDataSnapshotFromRemote(String resourceType) {
+    DistroTransportAgent transportAgent = distroComponentHolder.findTransportAgent(resourceType);
+    DistroDataProcessor dataProcessor = distroComponentHolder.findDataProcessor(resourceType);
+    if (null == transportAgent || null == dataProcessor) {
+        Loggers.DISTRO.warn(&quot;[DISTRO-INIT] Can't find component for type {}, transportAgent: {}, dataProcessor: {}&quot;,
+                resourceType, transportAgent, dataProcessor);
+        return false;
+    }
+    for (Member each : memberManager.allMembersWithoutSelf()) {
+        try {
+            // 调取远程节点的获取DatumSnapshot快照数据接口
+            DistroData distroData = transportAgent.getDatumSnapshot(each.getAddress());
+            // 处理数据，加载到本节点内存的注册表中，完成新节点数据初始化
+            boolean result = dataProcessor.processSnapshot(distroData);
+ 
+            if (result) {
+                return true;  // 有一个节点成功，则跳出全部for循环，直接返回成功结果
+            }
+        } catch (Exception e) {
+            ......
+        }
+    }
+    return false;
+}
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%AF%B9%E6%AF%94">一 微服务中常用的注册中心对比</a></li>
+<li><a href="#%E4%BA%8C-nacos%E7%9A%84%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E5%9B%BE">二 NACOS的服务架构图</a></li>
+<li><a href="#%E4%B8%89-nacos%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%BB%93%E6%9E%84%E5%8F%8C%E5%B1%82concurrenthashmap">三 Nacos的核心注册表结构（双层ConcurrentHashMap）</a>
+<ul>
+<li><a href="#1-nacos%E5%92%8Ceureka%E7%9A%84%E6%B3%A8%E5%86%8C%E8%A1%A8%E5%BA%95%E5%B1%82%E9%83%BD%E6%98%AF%E5%8F%8C%E5%B1%82concurrenthashmap">1 Nacos和Eureka的注册表底层都是双层ConcurrentHashMap</a></li>
+<li><a href="#2-nacos%E8%BF%99%E4%B9%88%E5%A4%9A%E5%B1%82%E7%9A%84%E9%85%8D%E7%BD%AE%E8%AF%A5%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">2 Nacos这么多层的配置，该如何使用？</a></li>
+<li><a href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88nacos%E8%A6%81%E8%AE%BE%E8%AE%A1%E8%BF%99%E4%B9%88%E5%A4%8D%E6%9D%82%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">3 为什么Nacos要设计这么复杂的数据结构</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-nacos%E7%9A%84%E6%B3%A8%E5%86%8C%E8%A1%A8%E5%86%99%E5%85%A5%E6%80%A7%E8%83%BD%E4%BF%9D%E8%AF%81">三 Nacos的注册表写入性能保证</a>
+<ul>
+<li><a href="#1-nacos%E6%80%8E%E4%B9%88%E8%B4%9F%E8%B4%A3%E7%9A%84%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%BB%93%E6%9E%84%E5%A6%82%E4%BD%95%E6%94%AF%E6%92%91%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97-%E5%BC%82%E6%AD%A5%E6%B3%A8%E5%86%8C">1 Nacos怎么负责的注册表结构，如何支撑高并发场景？（阻塞队列、异步注册）</a></li>
+<li><a href="#2-%E4%BD%BF%E7%94%A8%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E6%B3%A8%E5%86%8C%E4%BC%9A%E4%B8%8D%E4%BC%9A%E5%AD%98%E5%9C%A8%E4%B8%8D%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98%E8%BF%98%E6%B2%A1%E6%B3%A8%E5%86%8C%E6%88%90%E5%8A%9F%E5%B0%B1%E7%BB%99%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C">2 使用阻塞队列实现异步注册，会不会存在不一致问题，还没注册成功就给客户端返回结果？</a></li>
+<li><a href="#3-%E4%B8%BA%E4%BA%86%E8%A7%A3%E5%86%B3%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%8B%E7%9A%84%E8%AF%BB%E5%86%99%E5%86%B2%E7%AA%81%E9%97%AE%E9%A2%98nacos%E4%BD%BF%E7%94%A8%E4%BA%86copyonwrite%E6%96%B9%E6%A1%88">3 为了解决高并发下的读写冲突问题，Nacos使用了CopyOnWrite方案</a></li>
+<li><a href="#4-%E5%90%8C%E6%97%B6n%E5%A4%9A%E4%B8%AA%E5%AE%9E%E4%BE%8B%E6%B3%A8%E5%86%8C%E6%88%96%E6%9B%B4%E6%96%B0%E9%83%BD%E8%BF%9B%E8%A1%8Ccopyonwrite%E5%B2%82%E4%B8%8D%E6%98%AF%E4%BC%9A%E5%AD%98%E5%9C%A8%E6%9B%B4%E6%96%B0%E8%A6%86%E7%9B%96">4 同时n多个实例注册或更新，都进行CopyOnWrite，岂不是会存在“更新覆盖”？</a></li>
+<li><a href="#5-%E9%9A%8F%E7%9D%80%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9A%84%E4%B8%8D%E6%96%AD%E5%A2%9E%E5%A4%A7%E8%BF%9B%E8%A1%8Ccopyonwrite%E6%97%B6%E5%80%99%E7%9A%84%E6%88%90%E6%9C%AC%E6%98%AF%E4%B8%8D%E6%98%AF%E5%8F%98%E5%BE%97%E9%9D%9E%E5%B8%B8%E5%A4%A7">5 随着注册表的不断增大，进行CopyOnWrite时候的成本是不是变得非常大？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-nacos%E7%9A%84%E5%BF%83%E8%B7%B3%E6%9C%BA%E5%88%B6%E5%AE%9A%E6%97%B6%E5%8E%BB%E8%B0%83nacos%E6%9C%8D%E5%8A%A1%E7%AB%AFhttp%E6%8E%A5%E5%8F%A3">四 Nacos的心跳机制（定时去调Nacos服务端Http接口）</a>
+<ul>
+<li><a href="#1-client%E5%9C%A8%E5%90%91%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%90%8C%E6%97%B6%E5%BC%80%E5%90%AF%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%90%91%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%91%E9%80%81%E5%BF%83%E8%B7%B3%E8%AF%B7%E6%B1%82">1 Client在向服务端注册服务的同时，开启定时任务向服务端发送心跳请求</a></li>
+<li><a href="#2-%E5%BF%83%E8%B7%B3%E5%8C%85%E7%9A%84%E9%BB%98%E8%AE%A4%E9%97%B4%E9%9A%94%E6%97%B6%E9%97%B4%E6%98%AF%E5%A4%9A%E5%B0%915-15-30">2 “心跳包”的默认间隔时间是多少？（5-15-30）</a></li>
+<li><a href="#3-nacos%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AF%B9%E5%BF%83%E8%B7%B3%E5%8C%85%E7%9A%84%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91%E6%9C%8D%E5%8A%A1%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E6%AF%8F5%E7%A7%92%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5">3 Nacos服务端对心跳包的处理逻辑(服务健康检查)？(定时任务，每5秒健康检查)</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0">五 服务发现</a>
+<ul>
+<li><a href="#1-%E8%8E%B7%E5%8F%96%E6%9C%8D%E5%8A%A1%E5%AE%9E%E4%BE%8B%E5%88%97%E8%A1%A8%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95nacosnamingservicegetallinstances">1 获取服务实例列表核心方法：NacosNamingService#getAllInstances()</a></li>
+<li><a href="#2-%E5%A6%82%E4%BD%95%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%9C%B0%E4%BF%9D%E8%AF%81%E6%9C%AC%E5%9C%B0%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9A%84%E5%AE%9E%E6%97%B6%E6%80%A7%E5%BC%80%E5%90%AF%E8%AE%A2%E9%98%85%E5%BC%80%E6%94%BEudp%E7%AB%AF%E5%8F%A3">2 如何尽可能地保证本地注册表的实时性？(开启订阅，开放udp端口)</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-%E6%9C%8D%E5%8A%A1%E5%90%8C%E6%AD%A5">六 服务同步</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%97%B6distro%E5%8D%8F%E8%AE%AE">1 什么时Distro协议？</a></li>
+<li><a href="#2-nacos%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B9%E5%A6%82%E4%BD%95%E7%9F%A5%E9%81%93%E5%85%B6%E5%AE%83%E8%8A%82%E7%82%B9%E7%9A%84%E5%AD%98%E5%9C%A8">2 Nacos集群中的节点，如何知道其它节点的存在？</a></li>
+<li><a href="#3-%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%BB%BB%E5%8A%A1%E7%94%B1%E5%93%AA%E4%B8%AA%E8%8A%82%E7%82%B9%E8%B4%9F%E8%B4%A3%E5%A6%82%E4%BD%95%E5%90%8C%E6%AD%A5%E6%95%B0%E6%8D%AE%E5%88%B0%E5%85%B6%E4%BB%96%E8%8A%82%E7%82%B9">3 “服务注册”任务由哪个节点负责？如何同步数据到其他节点？</a></li>
+<li><a href="#4-%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%90%84%E4%B8%AAservice%E7%9A%84%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5%E4%BB%BB%E5%8A%A1%E7%94%B1%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E5%93%AA%E4%B8%AA%E8%8A%82%E7%82%B9%E8%B4%9F%E8%B4%A3%E6%A3%80%E6%9F%A5">4 如何判断各个Service的健康检查任务，由集群中的哪个节点负责检查？</a></li>
+<li><a href="#5-%E9%9B%86%E7%BE%A4%E9%97%B4%E4%B8%A4%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E5%90%8C%E6%AD%A5%E4%BB%BB%E5%8A%A1">5 集群间两个重要的同步任务</a></li>
+<li><a href="#6-%E5%A6%82%E6%9E%9C%E6%9C%89%E6%96%B0%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5%E9%9B%86%E7%BE%A4%E5%A6%82%E6%9E%9C%E4%BB%8E%E5%85%B6%E5%AE%83%E8%8A%82%E7%82%B9%E5%90%8C%E6%AD%A5%E6%95%B0%E6%8D%AE">6 如果有新节点加入集群，如果从其它节点同步数据？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/PTmSAlH_U/">
+                  <span class="post-title">
+                    上传文件到亚马逊云S3对象存储&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/zolXTKRvU/">
+                   <span class="post-title">
+                     Nacos核心源码剖析（CP架构）——注册中心&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

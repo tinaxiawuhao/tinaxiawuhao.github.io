@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Sentinel核心源码——插槽机制（责任链模式） | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Sentinel核心源码——插槽机制（责任链模式） | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Sentinel核心源码——插槽机制（责任链模式）" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/xdN8U8BuX/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
+                
+              </span>
+              <h1>Sentinel核心源码——插槽机制（责任链模式）</h1>
+              <span class="meta">
+                Posted on
+                2022-07-07，18 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/xdN8U8BuX.png" alt="封面图">
+          </img>
+          
+          <p>Sentinel核心源码——插槽机制（责任链模式）</p>
+<p>Sentinel的工作原理：https://github.com/alibaba/Sentinel/wiki</p>
+<ul>
+<li>
+<p><strong>Sentinel会为所有的资源，以资源名为区分，创建各自的DefaultProcessorSlotChain，放在缓存中；</strong></p>
+</li>
+<li>
+<p><strong>DefaultProcessorSlotChain的9个ProcessorSlot插槽都是通过SPI机制从 META/services/ 目录下加载的；</strong></p>
+</li>
+<li>
+<p><strong>每一个ProcessorSlot 其实是一个 AbstractLinkedProcessorSlot 抽象链表处理器插槽，</strong></p>
+<p><strong>有一个next属性，指向下一个Slot，当某一个Slot执行完后，会调用fireEntry()方法，</strong></p>
+<p><strong>将请求转到下一个Slot继续执行。</strong></p>
+</li>
+<li>
+<p><strong>最终完成责任链上所有ProcessorSlot的逻辑！</strong></p>
+</li>
+<li>
+<p><strong>——————————————————————————————————————————————</strong></p>
+</li>
+<li>
+<p><strong>Context链路上下文为request请求级别的，放在ThreadLocal中，请求结束即释放；</strong></p>
+</li>
+<li>
+<p><strong>entranceNode是应用级别的，创建完成后，会缓存起来（key为contextName），下一个请求可以继续使用；</strong></p>
+</li>
+<li>
+<p><strong>processorSlotChain也是应用级别的，创建完成后，会缓存起来（key为resourceName），下一个请求可以继续使用；</strong></p>
+</li>
+</ul>
+<h3 id="一-processorslotchain处理器插槽链和node节点的引入">一 ProcessorSlotChain处理器插槽链和Node节点的引入</h3>
+<p>首先，根据官方Wiki中的图，我们可以很形象地看到，整个请求处理过程就像一个链条一样，一步步地向后执行，这是一种典型地“责任链模式”；</p>
+<p>责任链模式 —— 为请求创建一个接收者对象的链，链上的每一个节点服务处理各自的业务逻辑，实现解耦，每一个处理者节点记录着下一个节点的引用，请求将沿着这条链被传递下去，以此处理对应的逻辑。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658667201037.png" alt="" loading="lazy"></figure>
+<h4 id="1-processorslotchain处理器插槽链的引入">1 ProcessorSlotChain处理器插槽链的引入</h4>
+<p>ProcessorSlotChain是上图整个链的骨架，基于“责任链模式”设计，将“统计、授权、限流、降级等”处理逻辑封装成一个个的Slot插槽，串联起来。</p>
+<p>处理链中的Slot插槽可粗分为上下两大类：数据统计部分 + 规则判断部分</p>
+<ul>
+<li>
+<p>数据统计：</p>
+</li>
+<li>
+<ul>
+<li>**NodeSelectorSlot：**负责构建簇点链路中的各个节点（DefaultNode），形成NodeTree</li>
+<li>**ClusterBuilderSlot：**负责构建某个资源的ClusterNode（具体的DefaultNode和ClusterNode的区别见下文）</li>
+<li>**StatisticSlot：**负责实时统计请求的各种调用信息，如来源信息、请求次数、运行信息等；</li>
+</ul>
+</li>
+<li>
+<p>规则判断：</p>
+</li>
+<li>
+<ul>
+<li><strong>AuthoritySlot</strong>：授权规则判断（来源控制）</li>
+<li><strong>SystemSlot</strong>：系统保护规则判断，当系统资源使用量达到一定程度后，拒绝新的请求进入等；</li>
+<li><strong>ParamFlowSlot</strong>：热点参数限流规则判断</li>
+<li><strong>FlowSolt</strong>：普通限流规则判断</li>
+<li><strong>DegradeSlot</strong>：降级规则判断</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-为什么要存在nodeselectorslot和clusterbuilderslot两个插槽defaultnode和clusternode有什么区别">2 为什么要存在NodeSelectorSlot和ClusterBuilderSlot两个插槽？DefaultNode和ClusterNode有什么区别？</h4>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658667225838.png" alt="" loading="lazy"></figure>
+<ul>
+<li>**DefaultNode： 同一份资源，经过不同的链路调用，会创建不同的DefaultNode，记录不同链路访问当前资源的统计元数据 **，因为整个Sentinel是支持“根据链路限流”的，所以肯定要分开统计；</li>
+<li><strong>ClusterNode： 同一份资源，在整个系统中只会创建一个ClusterNode，记录所有入口访问当前资源的统计元数据</strong>，因为很多时候，我们只需要统计该资源的整体使用情况。</li>
+</ul>
+<p>注意这里的用词，DefaultNode和ClusterNode都只是负责记录统计元数据，真正的统计工作由之后的StatisticSlot进行，另外ParmFlowSlot会负责热点参数限流这种特殊场景下的数据统计。（热点参数限流的统计为什么要单独出来，后面做限流算法实现的讲解时就清楚了）。</p>
+<h4 id="3-如何自定义一个sentinel资源sentinelresource注解">3 如何自定义一个Sentinel资源？@SentinelResource注解？</h4>
+<p>我们知道，在实际使用过程中，当我们要自定义sentinel资源时，只需要使用@SentinelResource注解定义即可，很方便。</p>
+<p>而且Sentinel默认就已经将 springmvc 的 controller 中的方法注册为sentinel资源了，但是这些方法并没有添加 @SentinelResource 注解呀！</p>
+<p>其实@SentinelResource底层也就是通过AOP + Entry 的方式来手动注册 Sentinel资源的：</p>
+<pre><code class="language-java">// 资源名可使用任意有业务语义的字符串，比如方法名、接口名或其它可唯一标识的字符串。
+try (Entry entry = SphU.entry(&quot;resourceName&quot;)) {
+  // 被保护的业务逻辑
+  // do something here...
+} catch (BlockException ex) {
+  // 资源访问阻止，被限流或被降级
+  // 在此处进行相应的处理操作
+}
+</code></pre>
+<p>SentinelResourceAspect切面类：</p>
+<pre><code class="language-java">@Aspect
+public class SentinelResourceAspect extends AbstractSentinelAspectSupport {
+ 
+    @Pointcut(&quot;@annotation(com.alibaba.csp.sentinel.annotation.SentinelResource)&quot;)
+    public void sentinelResourceAnnotationPointcut() {
+     
+    }
+ 
+    // 经典AOP实现
+    @Around(&quot;sentinelResourceAnnotationPointcut()&quot;)
+    public Object invokeResourceWithSentinel(ProceedingJoinPoint pjp) throws Throwable {
+        Method originMethod = this.resolveMethod(pjp);
+        SentinelResource annotation = (SentinelResource)originMethod.getAnnotation(SentinelResource.class);
+        if (annotation == null) {
+            throw new IllegalStateException(&quot;Wrong state for SentinelResource annotation&quot;);
+        } else {
+            String resourceName = this.getResourceName(annotation.value(), originMethod);
+            EntryType entryType = annotation.entryType();
+            int resourceType = annotation.resourceType();
+            Entry entry = null;
+ 
+            try {
+                Object var18;
+                try {
+                    // 注册对应的资源
+                    entry = SphU.entry(resourceName, resourceType, entryType, pjp.getArgs());
+                    // 执行具体的业务逻辑
+                    return pjp.proceed();
+                } catch (Exception e) {
+                    ......
+                }
+            } finally {
+                ......
+            }
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>所以，通过Entry手动注册资源 和 通过@SentinelResource 注解自动注入资源，原理上时一样的，都是通过 SphU.entry(…) 方法实现。</strong></p>
+</blockquote>
+<h4 id="4-链路上下文context">4 链路上下文Context</h4>
+<pre><code class="language-java">public class Context {
+    private final String name;
+    private DefaultNode entranceNode;
+    private Entry curEntry;
+    private String origin = &quot;&quot;;
+    private final boolean async;
+}
+</code></pre>
+<ul>
+<li>Context代表调用链路的上下文，贯穿一次链路调用中的所有资源（Entry），基于ThreadLocal实现；</li>
+<li>Context维护者入口节点（entranceNode）、当前资源节点（curEntry —&gt;curNode）、调用来源origin等信息；</li>
+<li>后续所有的Slot插槽都可以通过context拿到DefaultNode 和 ClusterNode，从而完成统计或判断逻辑；</li>
+<li>Context创建过程中，会创建EntranceNode，contextName 就是entranceNode的名称；</li>
+</ul>
+<pre><code class="language-java">// 创建context，包含两个参数：context名称、 来源名称
+ContextUtil.enter(&quot;contextName&quot;, &quot;originName&quot;);
+</code></pre>
+<ul>
+<li>默认情况下，Sentinel的entranceNode是sentinel_default_context，如果我们要想做链路限流，就必须关闭“统一入口配置”，从而让每一个Controller方法为Context的入口。</li>
+</ul>
+<pre><code class="language-java">public final static String CONTEXT_DEFAULT_NAME = &quot;sentinel_default_context&quot;;
+
+spring:
+  cloud:
+    sentinel:
+      web-context-unify: false  # 关闭context统一入口配置
+</code></pre>
+<hr>
+<h3 id="二-sentinel源码剖析context的初始化">二 Sentinel源码剖析——Context的初始化</h3>
+<h4 id="1-spring-cloud-starter-alibaba-sentinel-的-springfactory-中有两个相关的自动装配类">1 spring-cloud-starter-alibaba-sentinel 的 spring.factory 中有两个相关的自动装配类</h4>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658667252485.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>由于，Context的初始化，涉及到了将Controller中的方法定义为entranceNode的过程，所以肯定是看 SentinelWebAutoConfiguration 这个自动装配类！</p>
+</blockquote>
+<h4 id="2-向-springmvc-处理链中添加一个sentinel的拦截器">2 向 springmvc 处理链中添加一个Sentinel的拦截器</h4>
+<pre><code class="language-java">@Configuration(
+    proxyBeanMethods = false  // Lite模式，关闭Full模式
+)
+@ConditionalOnWebApplication(
+    type = Type.SERVLET
+)
+@ConditionalOnProperty(
+    name = {&quot;spring.cloud.sentinel.enabled&quot;},
+    matchIfMissing = true
+)
+@ConditionalOnClass({SentinelWebInterceptor.class})
+@EnableConfigurationProperties({SentinelProperties.class})
+public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
+ 
+    // 通过实现 WebMvcConfigurer 接口，允许了手动向springmvc中添加拦截器 Interceptor
+ 
+    ......
+     
+    // 注入本类下文定义的SentinelWebInterceptor 
+    @Autowired
+    private Optional&lt;SentinelWebInterceptor&gt; sentinelWebInterceptorOptional;
+     
+    public SentinelWebAutoConfiguration() {
+    }
+     
+    // 添加
+    public void addInterceptors(InterceptorRegistry registry) {
+        if (this.sentinelWebInterceptorOptional.isPresent()) {
+            Filter filterConfig = this.properties.getFilter();
+            registry.addInterceptor((HandlerInterceptor)this.sentinelWebInterceptorOptional.get())
+                .order(filterConfig.getOrder()).addPathPatterns(filterConfig.getUrlPatterns());
+        }
+    }
+     
+    // 向 IOC 容器中注入一个 SentinelWebInterceptor 拦截器
+    @Bean
+    @ConditionalOnProperty(
+        name = {&quot;spring.cloud.sentinel.filter.enabled&quot;},
+        matchIfMissing = true
+    )
+    public SentinelWebInterceptor sentinelWebInterceptor(SentinelWebMvcConfig sentinelWebMvcConfig) {
+        return new SentinelWebInterceptor(sentinelWebMvcConfig);
+    }
+     
+}
+</code></pre>
+<h4 id="3-sentinelwebinterceptor拦截器的核心方法">3 SentinelWebInterceptor拦截器的核心方法</h4>
+<p>SentinelWebInterceptor 中会对父类 AbstractSentinelInterceptor 中的抽象方法做实现（模板方法模式）：</p>
+<pre><code class="language-java">public class SentinelWebInterceptor extends AbstractSentinelInterceptor {
+ 
+    // 获取resourceName：
+    // controller中请求方法的路径（资源）：/order/{orderId}
+    protected String getResourceName(HttpServletRequest request) {
+        Object resourceNameObject = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        if (resourceNameObject != null &amp;&amp; resourceNameObject instanceof String) {
+            String resourceName = (String)resourceNameObject;
+            UrlCleaner urlCleaner = this.config.getUrlCleaner();
+            if (urlCleaner != null) {
+                resourceName = urlCleaner.clean(resourceName);
+            }
+     
+            if (StringUtil.isNotEmpty(resourceName) &amp;&amp; this.config.isHttpMethodSpecify()) {
+                resourceName = request.getMethod().toUpperCase() + &quot;:&quot; + resourceName;
+            }
+     
+            return resourceName;
+        } else {
+            return null;
+        }
+    }
+     
+    // 获取contextName：
+    // 如果开启了统一入口配置，则contextName就是默认的统一入口：sentinel_spring_web_context
+    // 如果关闭了统一入口配置，则contextName就是当前资源的名称；
+    protected String getContextName(HttpServletRequest request) {
+        return this.config.isWebContextUnify() ? super.getContextName(request) : this.getResourceName(request);
+    }
+}
+</code></pre>
+<p>而作为一个拦截器，最重要的逻辑，肯定是在 prehandler() 中：</p>
+<pre><code class="language-java">public abstract class AbstractSentinelInterceptor implements HandlerInterceptor {
+ 
+    public static final String SENTINEL_SPRING_WEB_CONTEXT_NAME = &quot;sentinel_spring_web_context&quot;;
+    private static final String EMPTY_ORIGIN = &quot;&quot;;
+    private final BaseWebMvcConfig baseWebMvcConfig;
+ 
+    // 前置拦截的核心逻辑
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        try {
+            // 获取资源名称，一般是controller方法的@RequestMapping路径，例如/order/{orderId}
+            String resourceName = this.getResourceName(request);
+            if (StringUtil.isEmpty(resourceName)) {
+                return true;
+            } else if (this.increaseReferece(request, this.baseWebMvcConfig.getRequestRefName(), 1) != 1) {
+                return true;
+            } else {
+                // 从request中获取请求来源，将来做 授权规则（来源控制） 判断时会用
+                String origin = this.parseOrigin(request);
+                 
+                // 获取 contextName，默认是sentinel_spring_web_context；
+                // 如果关闭统一入口，那就是当前resourceName
+                String contextName = this.getContextName(request);
+                // 创建Context核心方法
+                ContextUtil.enter(contextName, origin);
+                 
+                // 构建ProcessorSlotChain处理器插槽链的核心逻辑
+                Entry entry = SphU.entry(resourceName, 1, EntryType.IN);
+                request.setAttribute(this.baseWebMvcConfig.getRequestAttributeName(), entry);
+                return true;
+            }
+        } catch (BlockException var12) {
+            BlockException e = var12;
+     
+            try {
+                this.handleBlockException(request, response, e);
+            } finally {
+                ContextUtil.exit();
+            }
+     
+            return false;
+        }
+    }
+ 
+    // 当请求体业务处理完成后，关闭所有的资源
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        if (this.increaseReferece(request, this.baseWebMvcConfig.getRequestRefName(), -1) == 0) {
+            Entry entry = this.getEntryInRequest(request, this.baseWebMvcConfig.getRequestAttributeName());
+            if (entry == null) {
+                ...Log...
+            } else {
+                this.traceExceptionAndExit(entry, ex);  // entry.exit()退出
+                this.removeEntryInRequest(request); 
+                ContextUtil.exit();  // contextHolder.set(null);
+            }
+        }
+    }
+}
+ 
+// private static ThreadLocal&lt;Context&gt; contextHolder = new ThreadLocal&lt;&gt;(); // 保存context的threadLocal
+</code></pre>
+<p><strong>4、ContextUtil.enter(contextName, origin) 创建Context核心方法：</strong></p>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.context.ContextUtil#enter
+public static Context enter(String name, String origin) {
+    // &quot;sentinel_default_context&quot;是不允许被创建的
+    if (Constants.CONTEXT_DEFAULT_NAME.equals(name)) {
+        throw new ContextNameDefineException(
+            &quot;The &quot; + Constants.CONTEXT_DEFAULT_NAME + &quot; can't be permit to defined!&quot;);
+    }
+    return trueEnter(name, origin);
+}
+|
+|
+// com.alibaba.csp.sentinel.context.ContextUtil#trueEnter
+protected static Context trueEnter(String name, String origin) {
+    // 尝试获取context，一般一个新的请求到达后，获取context肯定为null
+    Context context = contextHolder.get();
+    // 判空
+    if (context == null) {
+        // 如果为空，开始初始化
+        Map&lt;String, DefaultNode&gt; localCacheNameMap = contextNameNodeMap;
+        // 尝试获取入口节点
+        DefaultNode node = localCacheNameMap.get(name);
+        if (node == null) {
+            LOCK.lock();
+            try {
+                node = contextNameNodeMap.get(name);
+                if (node == null) { // 双重检测锁
+                    // 入口节点为空，初始化入口节点 EntranceNode
+                    node = new EntranceNode(new StringResourceWrapper(name, EntryType.IN), null);
+                    // 添加入口节点到 ROOT，所有的节点共用一个ROOT根节点
+                    Constants.ROOT.addChild(node);
+                    // 将入口节点放入缓存（下次请求时候，根据contextName获取，可直接使用）
+                    Map&lt;String, DefaultNode&gt; newMap = new HashMap&lt;&gt;(contextNameNodeMap.size() + 1);
+                    newMap.putAll(contextNameNodeMap);
+                    newMap.put(name, node);
+                    contextNameNodeMap = newMap; // CopyOnWrite
+                }
+            } finally {
+                LOCK.unlock();
+            }
+        }
+        // 创建Context，参数为：入口节点 和 contextName
+        context = new Context(node, name);
+        // 设置请求来源 origin
+        context.setOrigin(origin);
+        // 将context放入ThreadLocal
+        contextHolder.set(context);
+    }
+    // 返回
+    return context;
+}
+</code></pre>
+<p>由此我们可以得出重要结论：</p>
+<ul>
+<li>在每一个请求到达时，Sentinel的拦截器都会为本次请求封装一个“链路上下文context”，然后放入到ThreadLocal中，便于请求在后面的处理过程中取用；</li>
+<li>默认情况下，“统一入口配置开启”，“链路上下文context”以sentinel-spring-web-context 命名；</li>
+<li>如果关闭了“统一入口配置”，“链路上下文context”将以本次请求对应的controller方法的 @RequestMapping() 的值命名，如“/order/{orderId}”；</li>
+<li>由于context是放在Thread中的，所以当本次请求结束后，context就会被释放，下次请求需要重新创建；<strong>（context生命周期为request）</strong></li>
+<li>但是入口 entranceNode 却是放在缓存HashMap中的，所以下一次新的请求到达时，就没有必要再重新创建了；<strong>(entranceNode生命周期为应用级)</strong></li>
+<li><strong>创建入口方法 entranceNode 时，使用了 双重检测锁 + CopyOnWrite ，因为存在多个请求线程并发情况；</strong></li>
+<li><strong>创建 context 过程不需要考虑多线程安全 ，原因也是因为 context时线程内的，单线程 。</strong></li>
+</ul>
+<hr>
+<h3 id="三-sentinel核心源码之processorslotchain的构建">三 Sentinel核心源码之ProcessorSlotChain的构建</h3>
+<h4 id="1-入口方法正式上文拦截器中创建context之后的方法">1 入口方法，正式上文拦截器中创建Context之后的方法</h4>
+<pre><code class="language-java">Entry entry = SphU.entry(resourceName, 1, EntryType.IN);
+</code></pre>
+<p>该方法，将“一脉单传”调用到以下方法 entryWithPriority() ：</p>
+<pre><code class="language-java">private Entry entryWithPriority(ResourceWrapper resourceWrapper, int count, boolean prioritized, Object... args)
+    throws BlockException {
+    // 获取 Context
+    Context context = ContextUtil.getContext();
+ 
+    if (context == null) {
+        // Using default context.
+        context = InternalContextUtil.internalEnter(Constants.CONTEXT_DEFAULT_NAME);
+    }
+    // 获取 Slot执行链，同一个资源（如：/order/{orderId}），会创建一个执行链，放入缓存
+    ProcessorSlot&lt;Object&gt; chain = lookProcessChain(resourceWrapper);
+ 
+    // 创建 Entry，并将 resource、chain、context 记录在 Entry中
+    Entry e = new CtEntry(resourceWrapper, chain, context);
+    try {
+        // 执行 slotChain
+        chain.entry(context, resourceWrapper, null, count, prioritized, args);
+    } catch (BlockException e1) {
+        // 如果执行 slotChain 过程中发生异常，也直接将对应的资源释放
+        e.exit(count, args);
+        ......
+    }
+    return e;
+}
+</code></pre>
+<h4 id="2-lookprocesschain-创建或获取资源对应的processorslotchain的方法">2 lookProcessChain() 创建或获取资源对应的ProcessorSlotChain的方法</h4>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.CtSph#lookProcessChain
+ProcessorSlot&lt;Object&gt; lookProcessChain(ResourceWrapper resourceWrapper) {
+    // 从缓存chainMap中获取
+    ProcessorSlotChain chain = chainMap.get(resourceWrapper);
+    if (chain == null) {
+        synchronized (LOCK) {
+            chain = chainMap.get(resourceWrapper);
+            if (chain == null) {  // 又是双重检测锁
+                // Entry size limit.
+                if (chainMap.size() &gt;= Constants.MAX_SLOT_CHAIN_SIZE) {
+                    return null;
+                }
+ 
+                // 入口本资源对应的chain不存在，则创建一个新的
+                chain = SlotChainProvider.newSlotChain();
+                Map&lt;ResourceWrapper, ProcessorSlotChain&gt; newMap = new HashMap&lt;ResourceWrapper, ProcessorSlotChain&gt;(
+                    chainMap.size() + 1);
+                newMap.putAll(chainMap);
+                newMap.put(resourceWrapper, chain);
+                chainMap = newMap; // 又是CopyOnWrite
+            }
+        }
+    }
+    return chain;
+}
+</code></pre>
+<p>虽然每一次请求的ResourceWrapper都是新new的，但是由于它的hashCode() 和 equals() 方法，只会对比 name;</p>
+<pre><code class="language-java">public abstract class ResourceWrapper {
+ 
+    protected final String name;
+ 
+    protected final EntryType entryType;
+    protected final int resourceType;
+ 
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+ 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ResourceWrapper) {
+            ResourceWrapper rw = (ResourceWrapper)obj;
+            return rw.getName().equals(getName());
+        }
+        return false;
+    }
+}
+</code></pre>
+<p>所以，得出结论：</p>
+<ul>
+<li><strong>Sentinel会为所有的资源，以资源名为区分，创建对应的ProcessorSlotChain ，并缓存到chainMap中；</strong></li>
+<li>ProcessorSlotChain应用级有效，创建后，下次相同名称的Resource请求进入时，将不需要再次创建chain；</li>
+</ul>
+<h4 id="3-slotchainprovidernewslotchain-处理器插槽链的构建过程">3 SlotChainProvider.newSlotChain() 处理器插槽链的构建过程</h4>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.slotchain.SlotChainProvider#newSlotChain
+public static ProcessorSlotChain newSlotChain() {
+    if (slotChainBuilder != null) {
+        return slotChainBuilder.build();
+    }
+ 
+    // 默认肯定是得到一个 DefaultSlotChainBuilder
+    slotChainBuilder = SpiLoader.loadFirstInstanceOrDefault(SlotChainBuilder.class, DefaultSlotChainBuilder.class);
+ 
+    if (slotChainBuilder == null) {
+        slotChainBuilder = new DefaultSlotChainBuilder();
+    } else {
+        ......
+    }
+    return slotChainBuilder.build();
+}
+
+public class DefaultSlotChainBuilder implements SlotChainBuilder {
+ 
+    @Override
+    public ProcessorSlotChain build() {
+        // 创建一个 DefaultProcessorSlotChain
+        ProcessorSlotChain chain = new DefaultProcessorSlotChain();
+ 
+        // 该方法会通过spi机制从 \META-INF\services\目录下，加载所有的ProcessorSlot类
+        List&lt;ProcessorSlot&gt; sortedSlotList = SpiLoader.loadPrototypeInstanceListSorted(ProcessorSlot.class);
+        for (ProcessorSlot slot : sortedSlotList) {
+            if (!(slot instanceof AbstractLinkedProcessorSlot)) {
+                continue;
+            }
+             
+            // 最终创建的
+            chain.addLast((AbstractLinkedProcessorSlot&lt;?&gt;) slot);
+        }
+ 
+        return chain;
+    }
+}
+</code></pre>
+<h4 id="4-spiloaderloadprototypeinstancelistsortedprocessorslotclass通过spi机制加载所有的processorslot插槽类">4 SpiLoader.loadPrototypeInstanceListSorted(ProcessorSlot.class)通过SPI机制加载所有的ProcessorSlot插槽类</h4>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.util.SpiLoader#loadPrototypeInstanceListSorted
+public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T&gt; clazz) {
+    try {
+        // Not use SERVICE_LOADER_MAP, to make sure the instances loaded are different.
+        ServiceLoader&lt;T&gt; serviceLoader = ServiceLoaderUtil.getServiceLoader(clazz);
+ 
+        List&lt;SpiOrderWrapper&lt;T&gt;&gt; orderWrappers = new ArrayList&lt;&gt;();
+         
+        // SPI机制会从本地的 META-INF/services/ 目录下加载 ProcessorSlot 列表；
+        for (T spi : serviceLoader) {
+            int order = SpiOrderResolver.resolveOrder(spi);
+            // Since SPI is lazy initialized in ServiceLoader, we use online sort algorithm here.
+            SpiOrderResolver.insertSorted(orderWrappers, spi, order);
+        }
+        List&lt;T&gt; list = new ArrayList&lt;&gt;(orderWrappers.size());
+        for (int i = 0; i &lt; orderWrappers.size(); i++) {
+            list.add(orderWrappers.get(i).spi);
+        }
+        return list;
+    } catch (Throwable t) {
+        t.printStackTrace();
+        return new ArrayList&lt;&gt;();
+    }
+}
+</code></pre>
+<p>本地 META/services/ 目录下的 ProcessorSlot文件定义了9个插槽！</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658667294348.png" alt="" loading="lazy"></figure>
+<h4 id="5-最终构建成的processorslotchain的结构">5 最终构建成的ProcessorSlotChain的结构</h4>
+<p>首先，所有的9大ProcessorSlot都继承于一个AbstractLinkedProcessorSlot类：</p>
+<pre><code class="language-java">public abstract class AbstractLinkedProcessorSlot&lt;T&gt; implements ProcessorSlot&lt;T&gt; {
+ 
+    private AbstractLinkedProcessorSlot&lt;?&gt; next = null;
+ 
+    // fireEntry的作用主要就是让请求流转到下一个ProcessorSlot(如果存在的话)
+    @Override
+    public void fireEntry(Context context, ResourceWrapper resourceWrapper, Object obj, int count, boolean prioritized, Object... args)
+        throws Throwable {
+        if (next != null) {
+            next.transformEntry(context, resourceWrapper, obj, count, prioritized, args);
+        }
+    }
+     
+    // 所有ProcessorSlot的入口方法，其中会通过模板方法模式，调用各自的entry处理逻辑
+    // 而再所有的处理逻辑的最后，都会再调一次 fireEntry() 方法
+    void transformEntry(Context context, ResourceWrapper resourceWrapper, Object o, int count, boolean prioritized, Object... args)
+    throws Throwable {
+        T t = (T)o;
+        entry(context, resourceWrapper, t, count, prioritized, args);
+    }
+}
+</code></pre>
+<p>经过 next 指向，最终构建出来的 DefaultProcessorSlotChain 如下：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658667303745.png" alt="" loading="lazy"></figure>
+<p>综上总结：</p>
+<ul>
+<li><strong>Sentinel会 为所有的资源，以资源名为区分，创建各自的DefaultProcessorSlotChain，放在缓存 中；</strong></li>
+<li><strong>DefaultProcessorSlotChain的 每一个ProcessorSlot插槽都是通过SPI机制从 META/services/ 目录下加载的 ；</strong></li>
+<li><strong>每一个ProcessorSlot 其实是一个 AbstractLinkedProcessorSlot 抽象链表处理器插槽，有一个next属性，指向下一个Slot ，当某一个Slot执行完后，会调用 fireEntry() 方法，将请求转到下一个Slot继续执行。</strong></li>
+<li><strong>最终完成责任链上所有ProcessorSlot的逻辑！</strong></li>
+</ul>
+<hr>
+<h3 id="四-九大processorslot处理器插槽的工作原理">四 九大ProcessorSlot处理器插槽的工作原理</h3>
+<blockquote>
+<p>LogSlot插槽是一个边缘插槽，做一些日志记录，所以不算重要，排除在外后，就剩8大插槽，也就是&lt;第一章节&gt;列出的八大插槽：</p>
+</blockquote>
+<p>数据统计部分 + 规则判断部分</p>
+<ul>
+<li>
+<p>数据统计：</p>
+</li>
+<li>
+<ul>
+<li><strong>NodeSelectorSlot</strong>：负责构建簇点链路中的各个节点（DefaultNode），形成NodeTree</li>
+<li><strong>ClusterBuilderSlot</strong>：负责构建某个资源的ClusterNode（具体的DefaultNode和ClusterNode的区别见下文）</li>
+<li><strong>StatisticSlot</strong>：负责实时统计请求的各种调用信息，如来源信息、请求次数、运行信息等；</li>
+</ul>
+</li>
+<li>
+<p>规则判断：</p>
+</li>
+<li>
+<ul>
+<li><strong>AuthoritySlot</strong>：授权规则判断（来源控制）</li>
+<li><strong>SystemSlot</strong>：系统保护规则判断，当系统资源使用量达到一定程度后，拒绝新的请求进入等；</li>
+<li><strong>ParamFlowSlot</strong>：热点参数限流规则判断</li>
+<li><strong>FlowSolt</strong>：普通限流规则判断</li>
+<li><strong>DegradeSlot</strong>：降级规则判断</li>
+</ul>
+</li>
+</ul>
+<p>其实，当Sentinel的整体架构，和调用逻辑梳理清楚后，每一个责任链节点的处理逻辑就很简单了</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-processorslotchain%E5%A4%84%E7%90%86%E5%99%A8%E6%8F%92%E6%A7%BD%E9%93%BE%E5%92%8Cnode%E8%8A%82%E7%82%B9%E7%9A%84%E5%BC%95%E5%85%A5">一 ProcessorSlotChain处理器插槽链和Node节点的引入</a>
+<ul>
+<li><a href="#1-processorslotchain%E5%A4%84%E7%90%86%E5%99%A8%E6%8F%92%E6%A7%BD%E9%93%BE%E7%9A%84%E5%BC%95%E5%85%A5">1 ProcessorSlotChain处理器插槽链的引入</a></li>
+<li><a href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%98%E5%9C%A8nodeselectorslot%E5%92%8Cclusterbuilderslot%E4%B8%A4%E4%B8%AA%E6%8F%92%E6%A7%BDdefaultnode%E5%92%8Cclusternode%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">2 为什么要存在NodeSelectorSlot和ClusterBuilderSlot两个插槽？DefaultNode和ClusterNode有什么区别？</a></li>
+<li><a href="#3-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AAsentinel%E8%B5%84%E6%BA%90sentinelresource%E6%B3%A8%E8%A7%A3">3 如何自定义一个Sentinel资源？@SentinelResource注解？</a></li>
+<li><a href="#4-%E9%93%BE%E8%B7%AF%E4%B8%8A%E4%B8%8B%E6%96%87context">4 链路上下文Context</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-sentinel%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90context%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96">二 Sentinel源码剖析——Context的初始化</a>
+<ul>
+<li><a href="#1-spring-cloud-starter-alibaba-sentinel-%E7%9A%84-springfactory-%E4%B8%AD%E6%9C%89%E4%B8%A4%E4%B8%AA%E7%9B%B8%E5%85%B3%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E7%B1%BB">1 spring-cloud-starter-alibaba-sentinel 的 spring.factory 中有两个相关的自动装配类</a></li>
+<li><a href="#2-%E5%90%91-springmvc-%E5%A4%84%E7%90%86%E9%93%BE%E4%B8%AD%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AAsentinel%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8">2 向 springmvc 处理链中添加一个Sentinel的拦截器</a></li>
+<li><a href="#3-sentinelwebinterceptor%E6%8B%A6%E6%88%AA%E5%99%A8%E7%9A%84%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95">3 SentinelWebInterceptor拦截器的核心方法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-sentinel%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%E4%B9%8Bprocessorslotchain%E7%9A%84%E6%9E%84%E5%BB%BA">三 Sentinel核心源码之ProcessorSlotChain的构建</a>
+<ul>
+<li><a href="#1-%E5%85%A5%E5%8F%A3%E6%96%B9%E6%B3%95%E6%AD%A3%E5%BC%8F%E4%B8%8A%E6%96%87%E6%8B%A6%E6%88%AA%E5%99%A8%E4%B8%AD%E5%88%9B%E5%BB%BAcontext%E4%B9%8B%E5%90%8E%E7%9A%84%E6%96%B9%E6%B3%95">1 入口方法，正式上文拦截器中创建Context之后的方法</a></li>
+<li><a href="#2-lookprocesschain-%E5%88%9B%E5%BB%BA%E6%88%96%E8%8E%B7%E5%8F%96%E8%B5%84%E6%BA%90%E5%AF%B9%E5%BA%94%E7%9A%84processorslotchain%E7%9A%84%E6%96%B9%E6%B3%95">2 lookProcessChain() 创建或获取资源对应的ProcessorSlotChain的方法</a></li>
+<li><a href="#3-slotchainprovidernewslotchain-%E5%A4%84%E7%90%86%E5%99%A8%E6%8F%92%E6%A7%BD%E9%93%BE%E7%9A%84%E6%9E%84%E5%BB%BA%E8%BF%87%E7%A8%8B">3 SlotChainProvider.newSlotChain() 处理器插槽链的构建过程</a></li>
+<li><a href="#4-spiloaderloadprototypeinstancelistsortedprocessorslotclass%E9%80%9A%E8%BF%87spi%E6%9C%BA%E5%88%B6%E5%8A%A0%E8%BD%BD%E6%89%80%E6%9C%89%E7%9A%84processorslot%E6%8F%92%E6%A7%BD%E7%B1%BB">4 SpiLoader.loadPrototypeInstanceListSorted(ProcessorSlot.class)通过SPI机制加载所有的ProcessorSlot插槽类</a></li>
+<li><a href="#5-%E6%9C%80%E7%BB%88%E6%9E%84%E5%BB%BA%E6%88%90%E7%9A%84processorslotchain%E7%9A%84%E7%BB%93%E6%9E%84">5 最终构建成的ProcessorSlotChain的结构</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E4%B9%9D%E5%A4%A7processorslot%E5%A4%84%E7%90%86%E5%99%A8%E6%8F%92%E6%A7%BD%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86">四 九大ProcessorSlot处理器插槽的工作原理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/XPUt_T_-A/">
+                  <span class="post-title">
+                    Sentinel限流熔断降级——知识点总结&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/xUda2KT1A/">
+                   <span class="post-title">
+                     Sentinel源码拓展之——限流的各种实现方式&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

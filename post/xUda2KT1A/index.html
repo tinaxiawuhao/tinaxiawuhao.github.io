@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Sentinel源码拓展之——限流的各种实现方式 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Sentinel源码拓展之——限流的各种实现方式 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Sentinel源码拓展之——限流的各种实现方式" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/xUda2KT1A/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
+                
+              </span>
+              <h1>Sentinel源码拓展之——限流的各种实现方式</h1>
+              <span class="meta">
+                Posted on
+                2022-07-08，23 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/xUda2KT1A.png" alt="封面图">
+          </img>
+          
+          <p>Sentinel源码拓展之——限流的各种实现方式</p>
+<h3 id="一-常见的限流功能实现有以下三种方式">一 常见的限流功能实现有以下三种方式</h3>
+<p>滑动时间窗口、令牌桶、漏桶，这三种实现方式，有各自擅长的应用场景，而在 Sentinel 中这三种限流实现都有被用到，只不过使用在不同的限流场景下：</p>
+<ul>
+<li>**滑动时间窗口：**普通QPS限流下的快速失败、Warmup预热，使用场景最多；—— Sentinel的实现，是使用“环形时间窗口”来表示无边无际的时间；</li>
+<li>**令牌桶：**热点参数限流，需要为每一个请求参数，创建一个令牌桶；—— Sentinel的实现，实际不是真的创建很多个桶；</li>
+<li>**漏桶（流量整形）：**普通QPS限流下的排队等待，将请求暂存在一个队列中，按时间间隔拉取并处理；—— Sentinel的实现，实际不是真的放入一个队列中；</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658667500749.png" alt="" loading="lazy"></figure>
+<h4 id="1-时间窗口滑动时间窗口">1 时间窗口（滑动时间窗口）</h4>
+<p>固定时间窗口，由于时间窗口粒度太粗，而时间本身其实是没有边界的，所以无法保证任意单位时间窗口中的QPS都不超限（如下图粉红色区域）；</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658667533086.png" alt="" loading="lazy"></figure>
+<p>为了解决这种问题，可以将我们设置的时间窗口做N等分，划分为更小粒度的窗口，这就是滑动时间窗口：</p>
+<ul>
+<li>假设滑动时间跨度Internel为1秒，我们可以做N=2等分，那么最小时间窗口其实就是500ms；</li>
+<li>在限流统计QPS时，窗口范围就是从( currentTime – interval) 之后的第一个时区开始，到 currentTime 所在时间窗口。</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658667562075.png" alt="" loading="lazy"></figure>
+<p>随着N的值越大，限流的精度就会越高。</p>
+<h4 id="2-令牌桶">2 令牌桶</h4>
+<ul>
+<li>以固定的速率生成令牌，存在令牌桶中，如果令牌桶满了以后，多余的令牌将会被丢弃；</li>
+<li>请求进入后，必须先尝试从令牌桶中获取令牌，获取到令牌的请求才会被处理，没有获取到令牌的请求将会被拒绝，或者等待。</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658667591134.png" alt="" loading="lazy"></figure>
+<h4 id="3-漏桶">3 漏桶</h4>
+<ul>
+<li>将每一个“请求”视作“水滴”，放入“漏桶”中存储；</li>
+<li>“漏桶”以固定速率向外“漏出”请求进行处理，如果“漏桶”空了则代表没有待处理的请求；</li>
+<li>如果“漏桶”满了，则多余的“请求”将被快速拒绝；</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658667624330.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>以上都是三种实现方案的理论知识，而Sentinel在实际实现时，是做了一定的优化的！</p>
+</blockquote>
+<hr>
+<h3 id="二-sentinel中三种限流方案的实现源码剖析之滑动时间窗口算法">二 Sentinel中三种限流方案的实现源码剖析之——滑动时间窗口算法</h3>
+<p><strong>滑动时间窗口 —— QPS快速失败 + WarmUp预热：</strong></p>
+<p>Sentinel中的时间窗口，其实使用的是如下图所示的环形时间窗口：</p>
+<ul>
+<li>因为时间是没有边界的，</li>
+<li>而且我们一般也只会关注一个Internel之内的时间，如果一个Internel被分成了N个小窗口，那么我们也只会关注N个小的时间窗口；</li>
+</ul>
+<p>所以使用环形时间窗口，既能满足使用需求，又能解决内存空间。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1658667653355.png" alt="" loading="lazy"></figure>
+<p>通过上一篇关于 ProcessorSlotChain 插槽链的介绍，我们已经清楚了：</p>
+<ul>
+<li>QPS 的统计工作将会由 StatisticSlot 插槽完成；</li>
+<li>限流判断的逻辑将会由 FlowSlot 插槽来完成；</li>
+</ul>
+<p>而所有的 PrcessorSlot 的处理逻辑，都在他们的 entry() 方法中；</p>
+<h4 id="1-时间窗口请求量统计statisticslot">1 时间窗口请求量统计：StatisticSlot</h4>
+<pre><code class="language-java">public class StatisticSlot extends AbstractLinkedProcessorSlot&lt;DefaultNode&gt; {
+ 
+    @Override
+    public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count,
+                      boolean prioritized, Object... args) throws Throwable {
+        try {
+            // 先去执行后面插槽和请求体的任务
+            fireEntry(context, resourceWrapper, node, count, prioritized, args);
+ 
+            // 处理完之后才会回来做统计（如果后面失败了，肯定就不用统计了）
+            node.increaseThreadNum();  // 线程数统计（服务隔离）
+            node.addPassRequest(count); // QPS请求量统计（服务限流）
+             
+            ......
+        } catch (Exception e){
+            ......
+        }
+    }
+}
+
+// com.alibaba.csp.sentinel.node.DefaultNode#addPassRequest
+public void addPassRequest(int count) {
+    super.addPassRequest(count);  // 为DefaultNode做统计
+    this.clusterNode.addPassRequest(count); // 为ClusterNode做统计
+}
+</code></pre>
+<ul>
+<li>我们知道DefaultNode 和 ClusterNode 都是 StatisticNode 的子类，所以这里都会调用到StatisticNode的addPassRequest()方法：</li>
+</ul>
+<pre><code class="language-java">public class StatisticNode implements Node {
+ 
+    // 秒级统计（看变量名就知道是一个环形计数器）
+    private transient volatile Metric rollingCounterInSecond = new ArrayMetric(SampleCountProperty.SAMPLE_COUNT,
+        IntervalProperty.INTERVAL);
+ 
+    // 分钟级统计（看变量名就知道是一个环形计数器）
+    private transient Metric rollingCounterInMinute = new ArrayMetric(60, 60 * 1000, false);
+ 
+    // 统计QPS方法
+    public void addPassRequest(int count) {
+        rollingCounterInSecond.addPass(count); // 秒级统计
+        rollingCounterInMinute.addPass(count); // 分钟级统计
+    }    
+}
+
+// intervalInMs：滑动窗口的时间间隔，Sentinel默认为 1000ms
+// sampleCount：时间窗口的分割数量，Sentinel默认为 2
+// 所以最小的时间窗口就为 500ms
+public class ArrayMetric implements Metric {
+ 
+    private final LeapArray&lt;MetricBucket&gt; data;
+ 
+    public ArrayMetric(int sampleCount, int intervalInMs) {
+        this.data = new OccupiableBucketLeapArray(sampleCount, intervalInMs);
+    }
+}
+</code></pre>
+<p>时间线铺平的效果如下图：</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1658667679910.png" alt="" loading="lazy"></figure>
+<ul>
+<li>获取当前请求所在时间窗口，并增加计数</li>
+</ul>
+<pre><code class="language-java">public class ArrayMetric implements Metric {
+ 
+    private final LeapArray&lt;MetricBucket&gt; data;
+     
+    public ArrayMetric(int sampleCount, int intervalInMs) {
+        this.data = new OccupiableBucketLeapArray(sampleCount, intervalInMs);
+    }
+ 
+    @Override
+    public void addPass(int count) {
+        // 获取当前请求所在时间窗口
+        WindowWrap&lt;MetricBucket&gt; wrap = data.currentWindow();
+         
+        // 计数器 + count
+        wrap.value().addPass(count);
+    }
+}
+</code></pre>
+<ul>
+<li>ArrayMetric 又是如何获取当前所在时间窗口的呢？</li>
+</ul>
+<p>首先我们得要弄清楚LeapArray保存了哪些数据？</p>
+<pre><code class="language-java">public abstract class LeapArray&lt;T&gt; {
+ 
+    // 小时间窗口的时间长度，默认为 500ms
+    protected int windowLengthInMs;
+     
+    // 一个Interval时间被划分的数量，秒级统计默认为2，分钟级默认为60
+    protected int sampleCount;
+     
+    // 滑动时间窗口时间间隔，默认为 1000ms
+    protected int intervalInMs;
+     
+    // 每一个Interval时间窗口内的小窗口数组，这里就是2
+    protected final AtomicReferenceArray&lt;WindowWrap&lt;T&gt;&gt; array;
+}
+</code></pre>
+<p>再次上图，LeapArray是一个环形数组：</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1658667708685.png" alt="" loading="lazy"></figure>
+<ul>
+<li>我们直接看data.currentWindow() 方法：</li>
+</ul>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.slots.statistic.base.LeapArray#currentWindow(当前时间戳)
+public WindowWrap&lt;T&gt; currentWindow(long timeMillis) {
+    if (timeMillis &lt; 0) {
+        return null;
+    }
+    // 计算当前时间对应的数组角标 = (当前时间/500ms)%16
+    int idx = calculateTimeIdx(timeMillis);
+    // 计算当前时间所在窗口的开始时间 = 当前时间 - 当前时间 % 500ms
+    long windowStart = calculateWindowStart(timeMillis);
+ 
+    /*
+    * 先根据角标获取数组中保存的 oldWindow 对象，可能是旧数据，需要判断.
+    *
+    * (1) oldWindow 不存在, 说明是第一次，创建新 window并存入，然后返回即可
+    * (2) oldWindow的 starTime = 本次请求的 windowStar, 说明正是要找的窗口，直接返回.
+    * (3) oldWindow的 starTime &lt; 本次请求的 windowStar, 说明是旧数据，需要被覆盖，创建 
+    *     新窗口，覆盖旧窗口
+    */
+    while (true) {
+        WindowWrap&lt;T&gt; old = array.get(idx);
+        if (old == null) {
+            // 创建新 window
+            WindowWrap&lt;T&gt; window = new WindowWrap&lt;T&gt;(windowLengthInMs, windowStart, newEmptyBucket(timeMillis));
+            // 基于CAS写入数组，避免线程安全问题
+            if (array.compareAndSet(idx, null, window)) {
+                // 写入成功，返回新的 window
+                return window;
+            } else {
+                // 写入失败，说明有并发更新，等待其它人更新完成即可
+                Thread.yield();
+            }
+        } else if (windowStart == old.windowStart()) {
+            return old;
+        } else if (windowStart &gt; old.windowStart()) {
+            if (updateLock.tryLock()) {
+                try {
+                    // 获取并发锁，覆盖旧窗口并返回
+                    return resetWindowTo(old, windowStart);
+                } finally {
+                    updateLock.unlock();
+                }
+            } else {
+                // 获取锁失败，等待其它线程处理就可以了
+                Thread.yield();
+            }
+        } else if (windowStart &lt; old.windowStart()) {
+            // 这种情况不应该存在，写这里只是以防万一。
+            return new WindowWrap&lt;T&gt;(windowLengthInMs, windowStart, newEmptyBucket(timeMillis));
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>获取到时间窗口后，增加计数就比较简单了，使用“自旋 + CAS”的方式完成计数器安全增加即可。</li>
+</ul>
+<h4 id="2-滑动窗口qps计算并判断限流逻辑flowslot">2 滑动窗口QPS计算，并判断限流逻辑：FlowSlot</h4>
+<pre><code class="language-java">public class FlowSlot extends AbstractLinkedProcessorSlot&lt;DefaultNode&gt; {
+ 
+    @Override
+    public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count,
+                      boolean prioritized, Object... args) throws Throwable {
+        // 先做限流判断
+        checkFlow(resourceWrapper, context, node, count, prioritized);
+ 
+        // 判断通过后，才会放行到下一个插槽
+        fireEntry(context, resourceWrapper, node, count, prioritized, args);
+    }
+}
+</code></pre>
+<p>FlowSlot的限流判断最终都由<code>TrafficShapingController</code>接口中的<code>canPass</code>方法来实现。该接口有三个实现类：</p>
+<ul>
+<li>DefaultController：快速失败，默认的方式，基于滑动时间窗口算法；</li>
+<li>WarmUpController：预热模式，基于滑动时间窗口算法，只不过阈值是动态的；</li>
+<li>RateLimiterController：排队等待模式，基于漏桶算法；</li>
+</ul>
+<p>这里我们就以DefaultController.canPass() 方法为例：</p>
+<pre><code class="language-java">com.alibaba.csp.sentinel.slots.block.flow.controller.DefaultController#canPass()
+public boolean canPass(Node node, int acquireCount, boolean prioritized) {
+    // 重点：计算目前为止滑动窗口内已经存在的请求量
+    int curCount = avgUsedTokens(node);
+    // 判断：已使用请求量 + 需要的请求量（1） 是否大于 窗口的请求阈值
+    if (curCount + acquireCount &gt; count) {
+        // 大于，说明超出阈值，返回false
+        if (prioritized &amp;&amp; grade == RuleConstant.FLOW_GRADE_QPS) {
+            long currentTime;
+            long waitInMs;
+            currentTime = TimeUtil.currentTimeMillis();
+            waitInMs = node.tryOccupyNext(currentTime, acquireCount, count);
+            if (waitInMs &lt; OccupyTimeoutProperty.getOccupyTimeout()) {
+                node.addWaitingRequest(currentTime + waitInMs, acquireCount);
+                node.addOccupiedPass(acquireCount);
+                sleep(waitInMs);
+ 
+                // PriorityWaitException indicates that the request will pass after waiting for {@link @waitInMs}.
+                throw new PriorityWaitException(waitInMs);
+            }
+        }
+        return false;
+    }
+    // 小于等于，说明在阈值范围内，返回true
+    return true;
+}
+
+</code></pre>
+<ul>
+<li>很显然，关键点就在于，如何计算滑动窗口内已经用掉的请求量</li>
+</ul>
+<pre><code class="language-java">private int avgUsedTokens(Node node) {
+    if (node == null) {
+        return DEFAULT_AVG_USED_TOKENS;
+    }
+    return grade == RuleConstant.FLOW_GRADE_THREAD ? node.curThreadNum() : (int)(node.passQps());
+}
+
+// 我们这里肯定是QPS限流
+// com.alibaba.csp.sentinel.node.StatisticNode#passQps
+public double passQps() {
+    // 请求量 ÷ 滑动窗口时间间隔(默认1秒) ，得到的就是QPS
+    return rollingCounterInSecond.pass() / rollingCounterInSecond.getWindowIntervalInSec();
+}
+</code></pre>
+<ul>
+<li>那么rollingCounterInSecond.pass() 又是如何计算当前时间窗口内的请求量的呢？</li>
+</ul>
+<blockquote>
+<p>以秒级统计为例，其实环形数组的长度只为2，只需要记录当前小时间窗口和前一个小时间窗口即可，一个都不多记录，节约内存！</p>
+</blockquote>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1658667751679.png" alt="" loading="lazy"></figure>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.slots.statistic.metric.ArrayMetric#pass
+public long pass() {
+    // 获取当前窗口
+    data.currentWindow();
+    long pass = 0;
+    // 获取 当前时间的 滑动窗口范围内 的所有小窗口
+    List&lt;MetricBucket&gt; list = data.values();
+    // 遍历
+    for (MetricBucket window : list) {
+        // 累加求和
+        pass += window.pass();
+    }
+    // 返回
+    return pass;
+}
+|
+|
+// data.values()如何获取 滑动窗口范围内 的所有小窗口的
+// com.alibaba.csp.sentinel.slots.statistic.base.LeapArray#values(long)
+public List&lt;T&gt; values(long timeMillis) {
+    if (timeMillis &lt; 0) {
+        return new ArrayList&lt;T&gt;();
+    }
+    // 创建空集合，大小等于 LeapArray长度（2）
+    int size = array.length();
+    List&lt;T&gt; result = new ArrayList&lt;T&gt;(size);
+    // 遍历 LeapArray
+    for (int i = 0; i &lt; size; i++) {
+        // 获取每一个小窗口
+        WindowWrap&lt;T&gt; windowWrap = array.get(i);
+        // 判断这个小窗口是否在 滑动窗口时间范围内（1秒内）
+        if (windowWrap == null || isWindowDeprecated(timeMillis, windowWrap)) {
+            // 不在范围内，则跳过
+            continue;
+        }
+        // 在范围内，则添加到集合中
+        result.add(windowWrap.value());
+    }
+    // 返回集合
+    return result;
+}
+|
+|
+// isWindowDeprecated(timeMillis, windowWrap)又是如何判断窗口是否符合要求呢？
+public boolean isWindowDeprecated(long time, WindowWrap&lt;T&gt; windowWrap) {
+    // 当前时间 - 窗口开始时间  是否大于 滑动窗口的最大间隔（1秒）
+    // 也就是说，我们要统计的是 距离当前时间1秒内的 小窗口的 count之和
+    return time - windowWrap.windowStart() &gt; intervalInMs;
+}
+</code></pre>
+<p>到这里，我们就可以理清了：</p>
+<ul>
+<li>
+<p>StatisticSlot会帮助我们记录每一次的request请求，统计每个小时间窗口内的请求数；</p>
+</li>
+<li>
+<ul>
+<li>秒级统计的时间窗口环只有 2 格；</li>
+<li>分钟级统计的时间窗口环有 60格；</li>
+</ul>
+</li>
+<li>
+<p>FlowSlot在需要的时候，会去除当前时间窗口内包含的所有小窗口，然后累加他们的请求量；</p>
+</li>
+<li>
+<p>最后判断是否溢出限流阈值，允许通过，或直接拒绝！</p>
+</li>
+</ul>
+<hr>
+<h3 id="三-sentinel中三种限流方案的实现源码剖析之令牌桶算法">三 Sentinel中三种限流方案的实现源码剖析之——令牌桶算法</h3>
+<blockquote>
+<p>“热点参数”限流策略，不适合使用 StatisticSlot 中常规的 “滑动时间窗口算法”，因为StatisticSlot中统计的维度是Node级别；</p>
+<p>很显然，“热点参数”并不适合使用上面的“环形时间窗口算法”来实现；</p>
+<p>相比下来，“令牌桶算法”最适合用在“热点参数限流”场景下，只需要为每个不同的参数值创建一个令牌桶即可。</p>
+</blockquote>
+<ul>
+<li><strong>Controller中的方法资源是不可以进行热点参数限流的：通过Sentinel添加的springmvc拦截器实现，创建Entry时候没有传入params参数；</strong></li>
+<li><strong>其它的我们通过@SentinelResource添加的资源才艺进行热点参数限流：通过AOP切面编程实现，创建Entry的时候，也将Params一并传入了；</strong></li>
+</ul>
+<pre><code class="language-java">public class ParamFlowSlot extends AbstractLinkedProcessorSlot&lt;DefaultNode&gt; {
+ 
+    public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count, boolean prioritized, Object... args) throws Throwable {
+        if (!ParamFlowRuleManager.hasRules(resourceWrapper.getName())) {
+            this.fireEntry(context, resourceWrapper, node, count, prioritized, args);
+        } else {
+            // 校验参数限流
+            this.checkFlow(resourceWrapper, count, args);
+            // 放行到下一个插槽
+            this.fireEntry(context, resourceWrapper, node, count, prioritized, args);
+        }
+    }
+ 
+    void checkFlow(ResourceWrapper resourceWrapper, int count, Object... args) throws BlockException {
+        // args == null 情况有二：1、确实没有参数； 2、Controller方法无法进行参数限流
+        if (args != null) {
+            if (ParamFlowRuleManager.hasRules(resourceWrapper.getName())) {
+                List&lt;ParamFlowRule&gt; rules = ParamFlowRuleManager.getRulesOfResource(resourceWrapper.getName());
+                Iterator var5 = rules.iterator();
+     
+                ParamFlowRule rule;
+                 
+                // do-while循环，对每一条rule规则做判断
+                do {
+                    if (!var5.hasNext()) {
+                        return;
+                    }
+     
+                    rule = (ParamFlowRule)var5.next();
+                    this.applyRealParamIdx(rule, args.length);
+                     
+                    // 初始化“令牌桶”—— 加“”号，并非真的令牌桶
+                    ParameterMetricStorage.initParamMetricsFor(resourceWrapper, rule);
+                } while(ParamFlowChecker.passCheck(resourceWrapper, rule, count, args));
+     
+                String triggeredParam = &quot;&quot;;
+                if (args.length &gt; rule.getParamIdx()) {
+                    Object value = args[rule.getParamIdx()];
+                    triggeredParam = String.valueOf(value);
+                }
+     
+                throw new ParamFlowException(resourceWrapper.getName(), triggeredParam, rule);
+            }
+        }
+    }
+}
+</code></pre>
+<h4 id="1parametermetricstorageinitparammetricsfor-令牌桶初始化方法">1ParameterMetricStorage.initParamMetricsFor() 令牌桶初始化方法</h4>
+<pre><code class="language-java">public final class ParameterMetricStorage {
+ 
+    // 以资源名区分不同资源下的令牌桶容器（因为这还不是真正的令牌桶）
+    private static final Map&lt;String, ParameterMetric&gt; metricsMap = new ConcurrentHashMap();
+    private static final Object LOCK = new Object();
+ 
+    public static void initParamMetricsFor(ResourceWrapper resourceWrapper, ParamFlowRule rule) {
+        if (resourceWrapper != null &amp;&amp; resourceWrapper.getName() != null) {
+            String resourceName = resourceWrapper.getName();
+            ParameterMetric metric;
+            if ((metric = (ParameterMetric)metricsMap.get(resourceName)) == null) {
+                synchronized(LOCK) {
+                    // 如果当前资源还没创建过自己的令牌桶容器，那就创建一个
+                    if ((metric = (ParameterMetric)metricsMap.get(resourceName)) == null) {
+                        metric = new ParameterMetric();
+                        metricsMap.put(resourceWrapper.getName(), metric);
+                        RecordLog.info(&quot;[ParameterMetricStorage] Creating parameter metric for: &quot; + resourceWrapper.getName(), new Object[0]);
+                    }
+                }
+            }
+             
+            // 对令牌桶容器进行初始化
+            metric.initialize(rule);
+        }
+    }
+}
+</code></pre>
+<h4 id="2-初始化令牌桶容器真正的令牌桶即将出现">2 初始化令牌桶容器，真正的令牌桶即将出现</h4>
+<p>Sentinel中的令牌桶，其实是维护2个双层Map：</p>
+<ul>
+<li>容器中剩余令牌数的Map：&lt;ParamFlowRule, &lt;参数值, 属于这个参数值得桶中的剩余可用令牌数&gt;&gt;：此时第二层Map还是空Map；</li>
+<li>记录最近一次通过的请求时间戳的Map：&lt;ParamFlowRule, &lt;参数值, 最近一次请求的时间戳&gt;&gt;：此时第二层Map还是空Map；</li>
+</ul>
+<pre><code class="language-java">public class ParameterMetric {
+    private static final int THREAD_COUNT_MAX_CAPACITY = 4000;
+    private static final int BASE_PARAM_MAX_CAPACITY = 4000;
+    private static final int TOTAL_MAX_CAPACITY = 200000;
+    private final Object lock = new Object();
+     
+    // 令牌桶实现之一：双层Map：&lt;ParamFlowRule, &lt;参数值, 上次请求的时间戳&gt;&gt;
+    private final Map&lt;ParamFlowRule, CacheMap&lt;Object, AtomicLong&gt;&gt; ruleTimeCounters = new HashMap();
+    // 令牌桶之二：桶中剩余的令牌数
+    private final Map&lt;ParamFlowRule, CacheMap&lt;Object, AtomicLong&gt;&gt; ruleTokenCounter = new HashMap();
+    private final Map&lt;Integer, CacheMap&lt;Object, AtomicInteger&gt;&gt; threadCountMap = new HashMap();
+     
+    // 初始化令牌桶容器
+    public void initialize(ParamFlowRule rule) {
+        long size;
+        if (!this.ruleTimeCounters.containsKey(rule)) {
+            synchronized(this.lock) {
+                // 初始化ParamRule对应的“最近请求时间戳Map”
+                if (this.ruleTimeCounters.get(rule) == null) {
+                    size = Math.min(4000L * rule.getDurationInSec(), 200000L);
+                    this.ruleTimeCounters.put(rule, new ConcurrentLinkedHashMapWrapper(size));
+                }
+            }
+        }
+     
+        if (!this.ruleTokenCounter.containsKey(rule)) {
+            synchronized(this.lock) {
+                // 初始化ParamRule对应的“桶中可用令牌Map”
+                if (this.ruleTokenCounter.get(rule) == null) {
+                    size = Math.min(4000L * rule.getDurationInSec(), 200000L);
+                    this.ruleTokenCounter.put(rule, new ConcurrentLinkedHashMapWrapper(size));
+                }
+            }
+        }
+     
+        if (!this.threadCountMap.containsKey(rule.getParamIdx())) {
+            synchronized(this.lock) {
+                if (this.threadCountMap.get(rule.getParamIdx()) == null) {
+                    this.threadCountMap.put(rule.getParamIdx(), new ConcurrentLinkedHashMapWrapper(4000L));
+                }
+            }
+        }
+     
+    }
+}
+</code></pre>
+<blockquote>
+<p>以上，<strong>只算是将令牌桶容器初始化好了，但是还没开始正式使用！</strong></p>
+</blockquote>
+<h4 id="3-正式使用上面创建的令牌桶容器一步步调用至热点参数限流判断逻辑核心方法">3 正式使用上面创建的令牌桶容器，一步步调用至“热点参数限流”判断逻辑核心方法</h4>
+<pre><code class="language-java">ParamFlowChecker.passCheck(resourceWrapper, rule, count, args)
+
+com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowChecker#passLocalCheck
+
+com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowChecker#passSingleValueCheck
+
+com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowChecker#passDefaultLocalCheck
+</code></pre>
+<h4 id="4paramflowcheckerpassdefaultlocalcheck-即为热点限流逻辑的核心方法">4ParamFlowChecker.passDefaultLocalCheck() 即为“热点限流逻辑”的核心方法</h4>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1658667803098.jpg" alt="" loading="lazy"></figure>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowChecker#passDefaultLocalCheck  
+static boolean passDefaultLocalCheck(ResourceWrapper resourceWrapper, ParamFlowRule rule, int acquireCount, Object value) {
+    ParameterMetric metric = getParameterMetric(resourceWrapper);
+     
+    // 根据rule从上面初始化好的令牌桶容器中去除第二层Map
+    // &lt;参数值, 上次请求的时间戳&gt;
+    // &lt;参数值, 属于这个参数值得桶中的剩余可用令牌数&gt;
+    CacheMap&lt;Object, AtomicLong&gt; tokenCounters = metric == null ? null : metric.getRuleTokenCounter(rule);
+    CacheMap&lt;Object, AtomicLong&gt; timeCounters = metric == null ? null : metric.getRuleTimeCounter(rule);
+     
+    if (tokenCounters != null &amp;&amp; timeCounters != null) {
+        Set&lt;Object&gt; exclusionItems = rule.getParsedHotItems().keySet();
+        long tokenCount = (long)rule.getCount();
+        if (exclusionItems.contains(value)) {
+            tokenCount = (long)(Integer)rule.getParsedHotItems().get(value);
+        }
+ 
+        if (tokenCount == 0L) {
+            return false;
+        } else {
+         
+            // 允许的最大请求数，也是桶的最大值，也是我们rule中设置的单机阈值
+            // 后者是突发阈值，一般不配置，为0
+            long maxCount = tokenCount + (long)rule.getBurstCount(); 
+            if ((long)acquireCount &gt; maxCount) {
+                return false;
+            } else {
+                while(true) {
+                    long currentTime = TimeUtil.currentTimeMillis();
+                     
+                    // 从timeMap中获取最近一次请求通过的时间戳
+                    AtomicLong lastAddTokenTime = (AtomicLong)timeCounters.putIfAbsent(value, new AtomicLong(currentTime));
+                    if (lastAddTokenTime == null) { 
+                        // 相同参数第一次，直接放行，并更新tokenMap = maxCount - 1
+                        tokenCounters.putIfAbsent(value, new AtomicLong(maxCount - (long)acquireCount));
+                        return true;
+                    }
+ 
+                    // 距离上一次请求通过的时间的差值
+                    long passTime = currentTime - lastAddTokenTime.get();
+                    AtomicLong oldQps;
+                    long restQps;
+                     
+                    // 距最近一次时间差 &gt; 一次统计窗口
+                    if (passTime &gt; rule.getDurationInSec() * 1000L) {
+                        oldQps = (AtomicLong)tokenCounters.putIfAbsent(value, new AtomicLong(maxCount - (long)acquireCount));
+                        if (oldQps == null) {
+                            lastAddTokenTime.set(currentTime);
+                            return true;
+                        }
+ 
+                        // tokenMap中剩余的令牌数
+                        restQps = oldQps.get();
+                         
+                        // 在距离上次请求的这段时间内，应该补充生成多少新的令牌
+                        long toAddCount = passTime * tokenCount / (rule.getDurationInSec() * 1000L);
+                         
+                        // 上面2者相加，与maxCount允许的最大令牌数对比，取min值，并减去本次需要的令牌数
+                        long newQps = toAddCount + restQps &gt; maxCount ? maxCount - (long)acquireCount : restQps + toAddCount - (long)acquireCount;
+                        if (newQps &lt; 0L) {
+                            return false;
+                        }
+ 
+                        // 通过CAS替换原来的tokenMap，并修改最新通过的请求时间戳
+                        if (oldQps.compareAndSet(restQps, newQps)) {
+                            lastAddTokenTime.set(currentTime);
+                            return true;
+                        }
+ 
+                        Thread.yield();
+                    } else {  // 距最近一次时间差 &lt; 一次统计窗口
+                        oldQps = (AtomicLong)tokenCounters.get(value);
+                        if (oldQps != null) {
+                            restQps = oldQps.get();
+                            // tokenMap中剩余令牌不足，直接拒绝
+                            if (restQps - (long)acquireCount &lt; 0L) {
+                                return false;
+                            }
+ 
+                            // 剩余令牌充足，CAS从tokenMap中减去当前需要的令牌数
+                            if (oldQps.compareAndSet(restQps, restQps - (long)acquireCount)) {
+                                return true;
+                            }
+                        }
+ 
+                        Thread.yield();
+                    }
+                }
+            }
+        }
+    } else {
+        return true;
+    }
+}
+</code></pre>
+<p>总结：对于热点参数限流：</p>
+<ul>
+<li>
+<p>Sentinel 会为每个资源，维护两个双层数组：</p>
+</li>
+<li>
+<ul>
+<li>容器中剩余令牌数的tokenMap：&lt;ParamFlowRule, &lt;参数值, 属于这个参数值得桶中的剩余可用令牌数&gt;&gt;</li>
+<li>记录最近一次通过的请求时间戳的timeMap：&lt;ParamFlowRule, &lt;参数值, 最近一次请求的时间戳&gt;&gt;</li>
+</ul>
+</li>
+<li>
+<p>以参数 x=100，限流为5为例：</p>
+</li>
+<li>
+<ul>
+<li>第一次到达时，肯定不会超限，放行，同时往tokenMap中put入&lt;100, 4&gt;</li>
+</ul>
+</li>
+<li>
+<p>过一会儿，x = 100 的请求再次到达，则判断，本次请求，距离上一次请求时间，是否超过一个时间统计窗口：</p>
+</li>
+<li>
+<ul>
+<li>在同一个时间窗口，则在前一次的基础上继续减少token值，tokenMap中值变为 &lt;100, 3&gt;</li>
+<li>如果不在一个时间窗口，那么计算距离上次请求的这段时间内，应该新生成的token数 + 现在桶中剩余的token数，与maxToken数做对比，取小值就相当于是此时桶中应该有的令牌数，然后减去自己本次需要的令牌数，之后再更新tokenMap；</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="四-sentinel中三种限流方案的实现源码剖析之漏桶算法">四、Sentinel中三种限流方案的实现源码剖析之——漏桶算法</h3>
+<p>漏桶算法的核心思想是：将请求放在漏桶中，漏桶会按照固定时间间隔，向外“漏出”请求，进行处理，这样很明显的好处就是“流量整形”，当瞬间流量过大时，也可以先放在漏桶中，慢慢处理！</p>
+<p>漏桶算法的入口也是在FlowSlot中，上面有讲过：</p>
+<p>FlowSlot的限流判断最终都由<code>TrafficShapingController</code>接口中的<code>canPass</code>方法来实现。该接口有三个实现类：</p>
+<ul>
+<li>DefaultController：快速失败，默认的方式，基于滑动时间窗口算法；</li>
+<li>WarmUpController：预热模式，基于滑动时间窗口算法，只不过阈值是动态的；</li>
+<li>RateLimiterController：排队等待模式，基于漏桶算法；</li>
+</ul>
+<p><strong>直接进入RateLimiterController.canPass()方法逻辑：</strong></p>
+<pre><code class="language-java">// com.alibaba.csp.sentinel.slots.block.flow.controller.RateLimiterController#canPass()
+ 
+// 最新一次的请求执行时间（不一定是已经通过的，而是队列中排在最尾端的请求的预期执行时间）
+private final AtomicLong latestPassedTime = new AtomicLong(-1);
+ 
+@Override
+public boolean canPass(Node node, int acquireCount, boolean prioritized) {
+    // Pass when acquire count is less or equal than 0.
+    if (acquireCount &lt;= 0) {
+        return true;
+    }
+    // 阈值小于等于 0 ，阻止请求，不太可能
+    if (count &lt;= 0) {
+        return false;
+    }
+     
+    // 获取当前时间
+    long currentTime = TimeUtil.currentTimeMillis();
+    // 计算两次请求之间允许的最小时间间隔
+    // 正常时候acquireCount=1，那么costTime = 200ms
+    long costTime = Math.round(1.0 * (acquireCount) / count * 1000);
+ 
+    // 计算本次请求 允许执行的时间点 = 上一次请求的可能执行时间 + 两次请求的最小间隔
+    long expectedTime = costTime + latestPassedTime.get();
+    // 如果允许执行的时间点小于当前时间，说明可以立即执行
+    if (expectedTime &lt;= currentTime) {
+        // 更新上一次的请求的执行时间
+        latestPassedTime.set(currentTime);
+        // 这种情况说明该执行了，立即执行
+        return true;
+    } else {
+        // 不能立即执行，需要计算 预期等待时长
+        // 预期等待时长 = 两次请求的最小间隔 + 最近一次请求的可执行时间 - 当前时间
+        long waitTime = costTime + latestPassedTime.get() - TimeUtil.currentTimeMillis();
+        // 如果预期等待时间超出阈值，则拒绝请求
+        if (waitTime &gt; maxQueueingTimeMs) {
+            return false;
+        } else {
+            // 预期等待时间小于阈值，更新最近一次请求的可执行时间，加上costTime
+            long oldTime = latestPassedTime.addAndGet(costTime);
+            try {
+                // 保险起见，再判断一次预期等待时间，是否超过阈值
+                waitTime = oldTime - TimeUtil.currentTimeMillis();
+                if (waitTime &gt; maxQueueingTimeMs) {
+                    // 如果超过，则把刚才 加 的时间再 减回来
+                    latestPassedTime.addAndGet(-costTime);
+                    // 拒绝
+                    return false;
+                }
+                // in race condition waitTime may &lt;= 0
+                if (waitTime &gt; 0) {
+                    // 预期等待时间在阈值范围内，休眠要等待的时间，醒来后继续执行
+                    Thread.sleep(waitTime);
+                }
+                return true;
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+    return false;
+}
+</code></pre>
+<p>总结：</p>
+<p>Sentinel的漏桶算法，不是真的维护了一个队列，而是通过计算各个请求的预计执行时间；</p>
+<ul>
+<li>如果预计执行时间 &gt; 最大等待时间，那么久不用等了，直接拒绝；</li>
+<li>如果预计执行时间 &lt; 最大等待时间，那么就等待吧，自己通过 Thread.sleep(waitTime) 实现等待！</li>
+</ul>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1658667818074.png" alt="" loading="lazy"></figure>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%99%90%E6%B5%81%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0%E6%9C%89%E4%BB%A5%E4%B8%8B%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F">一 常见的限流功能实现有以下三种方式</a>
+<ul>
+<li><a href="#1-%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3%E6%BB%91%E5%8A%A8%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3">1 时间窗口（滑动时间窗口）</a></li>
+<li><a href="#2-%E4%BB%A4%E7%89%8C%E6%A1%B6">2 令牌桶</a></li>
+<li><a href="#3-%E6%BC%8F%E6%A1%B6">3 漏桶</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-sentinel%E4%B8%AD%E4%B8%89%E7%A7%8D%E9%99%90%E6%B5%81%E6%96%B9%E6%A1%88%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E4%B9%8B%E6%BB%91%E5%8A%A8%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95">二 Sentinel中三种限流方案的实现源码剖析之——滑动时间窗口算法</a>
+<ul>
+<li><a href="#1-%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3%E8%AF%B7%E6%B1%82%E9%87%8F%E7%BB%9F%E8%AE%A1statisticslot">1 时间窗口请求量统计：StatisticSlot</a></li>
+<li><a href="#2-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3qps%E8%AE%A1%E7%AE%97%E5%B9%B6%E5%88%A4%E6%96%AD%E9%99%90%E6%B5%81%E9%80%BB%E8%BE%91flowslot">2 滑动窗口QPS计算，并判断限流逻辑：FlowSlot</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-sentinel%E4%B8%AD%E4%B8%89%E7%A7%8D%E9%99%90%E6%B5%81%E6%96%B9%E6%A1%88%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E4%B9%8B%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95">三 Sentinel中三种限流方案的实现源码剖析之——令牌桶算法</a>
+<ul>
+<li><a href="#1parametermetricstorageinitparammetricsfor-%E4%BB%A4%E7%89%8C%E6%A1%B6%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95">1ParameterMetricStorage.initParamMetricsFor() 令牌桶初始化方法</a></li>
+<li><a href="#2-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%A4%E7%89%8C%E6%A1%B6%E5%AE%B9%E5%99%A8%E7%9C%9F%E6%AD%A3%E7%9A%84%E4%BB%A4%E7%89%8C%E6%A1%B6%E5%8D%B3%E5%B0%86%E5%87%BA%E7%8E%B0">2 初始化令牌桶容器，真正的令牌桶即将出现</a></li>
+<li><a href="#3-%E6%AD%A3%E5%BC%8F%E4%BD%BF%E7%94%A8%E4%B8%8A%E9%9D%A2%E5%88%9B%E5%BB%BA%E7%9A%84%E4%BB%A4%E7%89%8C%E6%A1%B6%E5%AE%B9%E5%99%A8%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%B0%83%E7%94%A8%E8%87%B3%E7%83%AD%E7%82%B9%E5%8F%82%E6%95%B0%E9%99%90%E6%B5%81%E5%88%A4%E6%96%AD%E9%80%BB%E8%BE%91%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95">3 正式使用上面创建的令牌桶容器，一步步调用至“热点参数限流”判断逻辑核心方法</a></li>
+<li><a href="#4paramflowcheckerpassdefaultlocalcheck-%E5%8D%B3%E4%B8%BA%E7%83%AD%E7%82%B9%E9%99%90%E6%B5%81%E9%80%BB%E8%BE%91%E7%9A%84%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95">4ParamFlowChecker.passDefaultLocalCheck() 即为“热点限流逻辑”的核心方法</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-sentinel%E4%B8%AD%E4%B8%89%E7%A7%8D%E9%99%90%E6%B5%81%E6%96%B9%E6%A1%88%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E4%B9%8B%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95">四、Sentinel中三种限流方案的实现源码剖析之——漏桶算法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/xdN8U8BuX/">
+                  <span class="post-title">
+                    Sentinel核心源码——插槽机制（责任链模式）&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/8Wk_K0cjl/">
+                   <span class="post-title">
+                     gateway网关概述&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

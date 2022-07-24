@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -175,7 +175,7 @@
 <h2 id="configurations">configurations</h2>
 <p>设置configurations 配置依赖信息</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations {
+<pre><code class="language-java">configurations {
     // 针对需要组件API的消费者的配置
     exposedApi {
         // canBeResolved 为true 则为可解析配置，为消费者
@@ -193,7 +193,7 @@
 <h2 id="依赖方式">依赖方式</h2>
 <h3 id="模块依赖">模块依赖</h3>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     runtimeOnly group: 'org.springframework', name: 'spring-core', version: '2.5'
     runtimeOnly 'org.springframework:spring-core:2.5',
             'org.springframework:spring-aop:2.5'
@@ -212,14 +212,14 @@
 </code></pre>
 <h3 id="文件依赖">文件依赖</h3>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     runtimeOnly files('libs/a.jar', 'libs/b.jar')
     runtimeOnly fileTree('libs') { include '*.jar' }
 }
 </code></pre>
 <h3 id="项目依赖">项目依赖</h3>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     implementation project(':shared')
 }
 </code></pre>
@@ -235,7 +235,7 @@
 <h2 id="repositories">repositories</h2>
 <p>流行的公共存储库包括Maven Central， Bintray JCenter和Google Android存储库。<br>
 <img src="https://tinaxiawuhao.github.io/post-images/1658230851306.png" alt="" loading="lazy"></p>
-<pre><code class="language-groovy">repositories {
+<pre><code class="language-java">repositories {
     
     mavenCentral() // Maven Central存储库  
     jcenter() // JCenter Maven存储库
@@ -267,7 +267,7 @@
 <h3 id="声明存储库过滤器">声明存储库过滤器</h3>
 <p>声明存储库内容</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">repositories {
+<pre><code class="language-java">repositories {
     maven {
         url &quot;https://repo.mycompany.com/maven2&quot;
         content {
@@ -291,7 +291,7 @@
 </ul>
 <h3 id="分割快照和发行版">分割快照和发行版</h3>
 <p>build.gradle</p>
-<pre><code class="language-groovy">repositories {
+<pre><code class="language-java">repositories {
     maven {
         url &quot;https://repo.mycompany.com/releases&quot;
         mavenContent {
@@ -353,7 +353,7 @@
 <p>从Gradle5.6开始，您可以通过添加ignoreGradleMetadataRedirection()到metadataSources声明来禁用此行为。</p>
 <p>例.不使用gradle元数据重定向的Maven存储库</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">repositories {
+<pre><code class="language-java">repositories {
     maven {
         url &quot;http://repo.mycompany.com/repo&quot;
         metadataSources {
@@ -372,10 +372,10 @@
 <h3 id="声明功能变体">声明功能变体</h3>
 <p>可以通过应用<code>java</code>或<code>java-library</code>插件来声明功能变体。以下代码说明了如何声明名为<code>mongodbSupport</code>的功能：</p>
 <p>示例1.声明一个功能变量</p>
-<pre><code class="language-groovy">Groovy``Kotlin
+<pre><code class="language-java">Groovy``Kotlin
 </code></pre>
 <p>build.gradle</p>
-<pre><code class="language-groovy">group = 'org.gradle.demo'
+<pre><code class="language-java">group = 'org.gradle.demo'
 version = '1.0'
  
 java {
@@ -388,7 +388,7 @@ java {
 <p>从存储库中提取的每个模块都有与之关联的元数据，例如其组，名称，版本以及它提供的带有工件和依赖项的不同变体</p>
 <p>可配置组件元数据规则的示例</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">class TargetJvmVersionRule implements ComponentMetadataRule {
+<pre><code class="language-java">class TargetJvmVersionRule implements ComponentMetadataRule {
     final Integer jvmVersion
     @Inject TargetJvmVersionRule(Integer jvmVersion) {
         this.jvmVersion = jvmVersion
@@ -436,7 +436,7 @@ dependencies {
 <h3 id="使用平台">使用平台</h3>
 <p>获取平台中声明的版本</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     // get recommended versions from the platform project
     api platform(project(':platform'))
     // no version required
@@ -451,7 +451,7 @@ dependencies {
 <p>这意味着默认情况下，对平台的依赖项会触发该平台中定义的所有严格版本的继承， 这对于平台作者确保所有使用者在依赖项的版本方面都遵循自己的决定很有用。 可以通过显式调用doNotEndorseStrictVersions方法来将其关闭。</p>
 <p>例.依靠一个BOM导入其依赖约束</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     // import a BOM
     implementation platform('org.springframework.boot:spring-boot-dependencies:1.5.8.RELEASE')
  
@@ -462,7 +462,7 @@ dependencies {
 </code></pre>
 <p>导入BOM，确保其定义的版本覆盖找到的任何其他版本</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     // import a BOM. The versions used in this file will override any other version found in the graph
     implementation enforcedPlatform('org.springframework.boot:spring-boot-dependencies:1.5.8.RELEASE')
  
@@ -477,7 +477,7 @@ dependencies {
 <h2 id="capability">Capability</h2>
 <h3 id="声明组件的capability">声明组件的capability</h3>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations {
+<pre><code class="language-java">configurations {
     apiElements {
         outgoing {
             capability(&quot;com.acme:my-library:1.0&quot;)
@@ -495,7 +495,7 @@ dependencies {
 <h3 id="解决冲突">解决冲突</h3>
 <p>按Capability（能力）解决冲突，（若存在相同能力的依赖性会失败）</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">@CompileStatic
+<pre><code class="language-java">@CompileStatic
 class AsmCapability implements ComponentMetadataRule {
     void execute(ComponentMetadataContext context) {
         context.details.with {
@@ -514,7 +514,7 @@ class AsmCapability implements ComponentMetadataRule {
 </code></pre>
 <p>一个带有日志框架隐式冲突的构建文件</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     // Activate the &quot;LoggingCapability&quot; rule
     components.all(LoggingCapability)
 }
@@ -546,11 +546,11 @@ class LoggingCapability implements ComponentMetadataRule {
 </li>
 <li>
 <p>一个Maven风格的版本范围：例如</p>
-<pre><code class="language-groovy">[1.0,)
+<pre><code class="language-java">[1.0,)
 </code></pre>
-<pre><code class="language-groovy">[1.1, 2.0)
+<pre><code class="language-java">[1.1, 2.0)
 </code></pre>
-<pre><code class="language-groovy">(1.2, 1.5]
+<pre><code class="language-java">(1.2, 1.5]
 </code></pre>
 <ul>
 <li><code>[</code>和<code>]</code>的符号表示包含性约束; <code>(</code>和<code>)</code>表示排他性约束。</li>
@@ -560,9 +560,9 @@ class LoggingCapability implements ComponentMetadataRule {
 </li>
 <li>
 <p>前缀版本范围：例如</p>
-<pre><code class="language-groovy">1.+
+<pre><code class="language-java">1.+
 </code></pre>
-<pre><code class="language-groovy">1.3.+
+<pre><code class="language-java">1.3.+
 </code></pre>
 <ul>
 <li>仅包含与<code>+</code>之前部分完全匹配的版本。</li>
@@ -607,7 +607,7 @@ class LoggingCapability implements ComponentMetadataRule {
 <h3 id="声明没有版本的依赖">声明没有版本的依赖</h3>
 <p>对于较大的项目，建议的做法是声明没有版本的依赖项， 并将依赖项约束 用于版本声明。 优势在于，依赖关系约束使您可以在一处管理所有依赖关系的版本，包括可传递的依赖关系。</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     implementation 'org.springframework:spring-web'
 }
  
@@ -646,7 +646,7 @@ dependencies {
 </blockquote>
 <h3 id="动态版本">动态版本</h3>
 <p>build.gradle</p>
-<pre><code class="language-groovy">plugins {
+<pre><code class="language-java">plugins {
     id 'java-library'
 }
  
@@ -661,7 +661,7 @@ dependencies {
 <h3 id="版本快照">版本快照</h3>
 <p>声明一个版本变化的依赖</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy"> 
+<pre><code class="language-java"> 
 plugins {
     id 'java-library'
 }
@@ -683,7 +683,7 @@ dependencies {
 <p>默认情况下，Gradle将动态版本缓存24小时。 要更改Gradle将解析后的版本缓存为动态版本的时间，请使用：</p>
 <p>例.动态版本缓存控制</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations.all {
+<pre><code class="language-java">configurations.all {
     resolutionStrategy.cacheDynamicVersionsFor 10, 'minutes'
 }
  
@@ -691,14 +691,14 @@ dependencies {
 <p>默认情况下，Gradle会将更改的模块缓存24小时。 要更改Gradle将为更改的模块缓存元数据和工件的时间，请使用：</p>
 <p>例.改变模块缓存控制</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations.all {
+<pre><code class="language-java">configurations.all {
     resolutionStrategy.cacheChangingModulesFor 4, 'hours'
 }
 </code></pre>
 <h3 id="锁定配置">锁定配置</h3>
 <p>锁定特定配置</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations {
+<pre><code class="language-java">configurations {
     compileClasspath {
         resolutionStrategy.activateDependencyLocking()
     }
@@ -706,13 +706,13 @@ dependencies {
 </code></pre>
 <p>锁定所有配置</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencyLocking {
+<pre><code class="language-java">dependencyLocking {
     lockAllConfigurations()
 }
 </code></pre>
 <p>解锁特定配置</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations {
+<pre><code class="language-java">configurations {
     compileClasspath {
         resolutionStrategy.deactivateDependencyLocking()
     }
@@ -721,7 +721,7 @@ dependencies {
 <h4 id="锁定buildscript类路径配置">锁定buildscript类路径配置</h4>
 <p>如果将插件应用于构建，则可能还需要利用依赖锁定。为了锁定用于脚本插件的classpath配置，请执行以下操作：</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">buildscript {
+<pre><code class="language-java">buildscript {
     configurations.classpath {
         resolutionStrategy.activateDependencyLocking()
     }
@@ -736,14 +736,14 @@ dependencies {
 </ul>
 <p>锁定模式可以从dependencyLocking块中进行控制，如下所示：</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencyLocking {
+<pre><code class="language-java">dependencyLocking {
     lockMode = LockMode.STRICT
 }
 </code></pre>
 <h3 id="版本冲突">版本冲突</h3>
 <p>用force强制执行一个依赖版本</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.4'
     implementation('commons-codec:commons-codec:1.9') {
         force = true
@@ -752,7 +752,7 @@ dependencies {
 </code></pre>
 <p>排除特定依赖声明的传递依赖</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     implementation('commons-beanutils:commons-beanutils:1.9.4') {
         exclude group: 'commons-collections', module: 'commons-collections'
     }
@@ -760,7 +760,7 @@ dependencies {
 </code></pre>
 <p>版本冲突时失败</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations.all {
+<pre><code class="language-java">configurations.all {
     resolutionStrategy {
         failOnVersionConflict()
     }
@@ -769,7 +769,7 @@ dependencies {
 </code></pre>
 <p>使用动态版本时失败</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations.all {
+<pre><code class="language-java">configurations.all {
     resolutionStrategy {
         failOnDynamicVersions()
     }
@@ -777,7 +777,7 @@ dependencies {
 </code></pre>
 <p>改变版本时失败</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations.all {
+<pre><code class="language-java">configurations.all {
     resolutionStrategy {
         failOnChangingVersions()
     }
@@ -785,7 +785,7 @@ dependencies {
 </code></pre>
 <p>解析无法再现时失败</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">configurations.all {
+<pre><code class="language-java">configurations.all {
     resolutionStrategy {
         failOnNonReproducibleResolution()
     }
@@ -809,17 +809,17 @@ dependencies {
 <h2 id="应用插件">应用插件</h2>
 <h3 id="二进制插件">二进制插件</h3>
 <p>实现了org.gradle.api.Plugin接口</p>
-<pre><code class="language-groovy">apply plugin: 'com.android.application'
+<pre><code class="language-java">apply plugin: 'com.android.application'
 </code></pre>
 <h4 id="apply-plugin">apply plugin</h4>
-<pre><code class="language-groovy">apply plugin: 'java'  //id
+<pre><code class="language-java">apply plugin: 'java'  //id
 ==
 apply plugin: org.gradle.api.plugins.JavaPlugin //类型
 ==
 apply plugin: JavaPlugin          //org.gradle.api.plugins默认导入
 </code></pre>
 <h4 id="plugins-dsl">plugins DSL</h4>
-<pre><code class="language-groovy">plugins {
+<pre><code class="language-java">plugins {
     id 'java' //应用核心插件
     id 'com.jfrog.bintray' version '0.4.1' //应用社区插件
     id 'com.example.hello' version '1.0.0' apply false //使用`apply false`语法告诉Gradle不要将插件应用于当前项目
@@ -827,17 +827,17 @@ apply plugin: JavaPlugin          //org.gradle.api.plugins默认导入
 </code></pre>
 <h3 id="脚本插件">脚本插件</h3>
 <p>脚本插件会自动解析，可以从本地文件系统或远程位置的脚本中应用。可以将多个脚本插件（任意一种形式）应用于给定目标。</p>
-<pre><code class="language-groovy">apply from:'version.gradle'
+<pre><code class="language-java">apply from:'version.gradle'
 </code></pre>
 <p>apply可传入内容</p>
-<pre><code class="language-groovy">void apply(Map&lt;String,? options);
+<pre><code class="language-java">void apply(Map&lt;String,? options);
 void apply(Closure closure);
 void apply(Action&lt;? super ObjectConfigurationAction&gt; action);
 </code></pre>
 <h2 id="定义插件">定义插件</h2>
 <p>定义一个带有ID的buildSrc插件<br>
 buildSrc / build.gradle</p>
-<pre><code class="language-groovy">plugins {
+<pre><code class="language-java">plugins {
     id 'java-gradle-plugin'
 }
 gradlePlugin {
@@ -851,7 +851,7 @@ gradlePlugin {
 </code></pre>
 <h2 id="第三方插件">第三方插件</h2>
 <p>通过将插件添加到构建脚本classpath中，然后应用该插件，可以将已发布为外部jar文件的二进制插件添加到项目中。可以使用buildscript {}块将外部jar添加到构建脚本classpath中。</p>
-<pre><code class="language-groovy">buildscript {
+<pre><code class="language-java">buildscript {
     repositories {
         google()
         jcenter()
@@ -864,7 +864,7 @@ gradlePlugin {
 <h2 id="插件管理">插件管理</h2>
 <p>pluginManagement {}块只能出现在settings.gradle文件中，必须是文件中的第一个块，也可以以settings形式出现在初始化脚本中。</p>
 <p>settings.gradle</p>
-<pre><code class="language-groovy">pluginManagement {
+<pre><code class="language-java">pluginManagement {
     plugins {
     }
     resolutionStrategy {
@@ -875,7 +875,7 @@ gradlePlugin {
 rootProject.name = 'plugin-management'
 </code></pre>
 <p>init.gradle</p>
-<pre><code class="language-groovy">settingsEvaluated { settings -&gt;
+<pre><code class="language-java">settingsEvaluated { settings -&gt;
     settings.pluginManagement {
         plugins {
         }
@@ -888,7 +888,7 @@ rootProject.name = 'plugin-management'
 </code></pre>
 <p>例：通过pluginManagement管理插件版本。</p>
 <p>settings.gradle</p>
-<pre><code class="language-groovy">pluginManagement {
+<pre><code class="language-java">pluginManagement {
   plugins {
         id 'com.example.hello' version &quot;${helloPluginVersion}&quot;
   }
@@ -896,12 +896,12 @@ rootProject.name = 'plugin-management'
  
 </code></pre>
 <p>gradle.properties</p>
-<pre><code class="language-groovy">helloPluginVersion=1.0.0
+<pre><code class="language-java">helloPluginVersion=1.0.0
 </code></pre>
 <h2 id="自定义插件存储库">自定义插件存储库</h2>
 <p>要指定自定义插件存储库，请使用repositories {}块其中的pluginManagement {}：</p>
 <p>settings.gradle</p>
-<pre><code class="language-groovy">pluginManagement {
+<pre><code class="language-java">pluginManagement {
     repositories {
         maven {
             url '../maven-repo'
@@ -915,10 +915,10 @@ rootProject.name = 'plugin-management'
 </code></pre>
 <h1 id="java库">java库</h1>
 <p>导入java</p>
-<pre><code class="language-groovy">apply plugin:'java'
+<pre><code class="language-java">apply plugin:'java'
 </code></pre>
 <p>自定义路径</p>
-<pre><code class="language-groovy">sourceSets {
+<pre><code class="language-java">sourceSets {
     main {
          java {
             srcDirs = ['src']
@@ -940,7 +940,7 @@ sourceSets {
 }
 </code></pre>
 <p>导入依赖</p>
-<pre><code class="language-groovy"> repositories {
+<pre><code class="language-java"> repositories {
         jcenter()
  }
 dependencies {
@@ -953,12 +953,12 @@ dependencies {
 }
 </code></pre>
 <p>多项目 设置 settings.gradle</p>
-<pre><code class="language-groovy">include ':app'
+<pre><code class="language-java">include ':app'
 rootProject.name = &quot;GradleTest&quot;
 </code></pre>
 <h1 id="安卓实用">安卓实用</h1>
 <h2 id="设置签名">设置签名</h2>
-<pre><code class="language-groovy">android  {
+<pre><code class="language-java">android  {
     signingConfig = {
         release {
             storeFile file(&quot;MYKEY.keystore&quot;)
@@ -970,7 +970,7 @@ rootProject.name = &quot;GradleTest&quot;
 }
 </code></pre>
 <h2 id="自定义输出apk文件名称">自定义输出apk文件名称</h2>
-<pre><code class="language-groovy">applicationVariants.all { variant -&gt;
+<pre><code class="language-java">applicationVariants.all { variant -&gt;
        variant.outputs.all { output -&gt;
            def fileName = &quot;自定义名称_${variant.versionName}_release.apk&quot;
            def outFile = output.outputFile
@@ -981,7 +981,7 @@ rootProject.name = &quot;GradleTest&quot;
    }
 </code></pre>
 <h2 id="动态androidmanifest">动态AndroidManifest</h2>
-<pre><code class="language-groovy">&lt;meta-data android:name=&quot;paramName&quot; android:value=&quot;${PARAM_NAME}&quot;&gt;
+<pre><code class="language-java">&lt;meta-data android:name=&quot;paramName&quot; android:value=&quot;${PARAM_NAME}&quot;&gt;
 android {
     productFlavors{
         google{
@@ -991,7 +991,7 @@ android {
 }
 </code></pre>
 <h2 id="多渠道">多渠道</h2>
-<pre><code class="language-groovy">android {
+<pre><code class="language-java">android {
     productFlavors{
         google{
             
@@ -1007,7 +1007,7 @@ android {
 </code></pre>
 <h2 id="adb设置">adb设置</h2>
 <p>adb工具</p>
-<pre><code class="language-groovy">android {
+<pre><code class="language-java">android {
     adbOptions{
         timeOutInMs = 5000 //5s超时
         installOptions '-r','-s' //安装指令
@@ -1016,7 +1016,7 @@ android {
 </code></pre>
 <h2 id="dexoptions">dexOptions</h2>
 <p>dex工具</p>
-<pre><code class="language-groovy">android {
+<pre><code class="language-java">android {
     dexOptions{
         incremental true //增量
         javaMaxHeapSize '4G'//dx最大队内存
@@ -1029,7 +1029,7 @@ android {
 <h2 id="ant">Ant</h2>
 <p>例.将嵌套元素传递给Ant任</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">task zip {
+<pre><code class="language-java">task zip {
     doLast {
         ant.zip(destfile: 'archive.zip') {
             fileset(dir: 'src') {
@@ -1042,7 +1042,7 @@ android {
 </code></pre>
 <p>例.使用Ant类型</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">task list {
+<pre><code class="language-java">task list {
     doLast {
         def path = ant.path {
             fileset(dir: 'libs', includes: '*.jar')
@@ -1055,7 +1055,7 @@ android {
 </code></pre>
 <p>例.使用定制的Ant任务</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">task check {
+<pre><code class="language-java">task check {
     doLast {
         ant.taskdef(resource: 'checkstyletask.properties') {
             classpath {
@@ -1070,7 +1070,7 @@ android {
 </code></pre>
 <h2 id="lint">Lint</h2>
 <p>Lint：android tool目录下的工具，一个代码扫描工具，能够帮助我们识别资源、代码结构存在的问题</p>
-<pre><code class="language-groovy">lintOptions
+<pre><code class="language-java">lintOptions
 android {
     lintOptions{
         abortOnError true //发生错误时推出Gradle

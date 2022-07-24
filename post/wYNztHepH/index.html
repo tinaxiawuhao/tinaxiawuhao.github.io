@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -249,7 +249,7 @@
 <pre><code class="language-shell">println 'A message which is logged at QUIET level'
 </code></pre>
 <h4 id="编写自己的日志消息">编写自己的日志消息</h4>
-<pre><code class="language-groovy">logger.quiet('An info log message which is always logged.')
+<pre><code class="language-java">logger.quiet('An info log message which is always logged.')
 logger.error('An error log message.')
 logger.warn('A warning log message.')
 logger.lifecycle('A lifecycle info log message.')
@@ -262,7 +262,7 @@ logger.info('A {} log message', 'info')
 </code></pre>
 <p>logger构建脚本提供了一个属性，该脚本是Logger的实例。该接口扩展了SLF4JLogger接口，并向其中添加了一些Gradle特定的方法</p>
 <h3 id="使用slf4j写入日志消息">使用SLF4J写入日志消息</h3>
-<pre><code class="language-groovy">import org.slf4j.LoggerFactory
+<pre><code class="language-java">import org.slf4j.LoggerFactory
  
 def slf4jLogger = LoggerFactory.getLogger('some-logger')
 slf4jLogger.info('An info log message logged using SLF4j')
@@ -294,7 +294,7 @@ slf4jLogger.info('An info log message logged using SLF4j')
 <p>没有settings.gradle或settings.gradle没有多项目配置则为单项目</p>
 <p>例：将test任务添加到每个具有特定属性集的项目</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy"> allprojects {
+<pre><code class="language-java"> allprojects {
     afterEvaluate { project -&gt;
         if (project.hasTests) {
             println &quot;Adding test task to $project&quot;
@@ -329,7 +329,7 @@ Running tests for project ':project-a'
 <p>如果发现一个以上的初始化脚本，它们将按照上面指定的顺序依次执行。</p>
 <p>示例</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">repositories {
+<pre><code class="language-java">repositories {
     mavenCentral()
 }
  
@@ -342,7 +342,7 @@ task showRepos {
  
 </code></pre>
 <p>init.gradle</p>
-<pre><code class="language-groovy">allprojects {
+<pre><code class="language-java">allprojects {
     repositories {
         mavenLocal()
     }
@@ -353,7 +353,7 @@ task showRepos {
 </code></pre>
 <h4 id="初始化脚本里面依赖添加依赖">初始化脚本里面依赖添加依赖</h4>
 <p>init.gradle</p>
-<pre><code class="language-groovy">initscript {
+<pre><code class="language-java">initscript {
     repositories {
         mavenCentral()
     }
@@ -371,12 +371,12 @@ task showRepos {
 └── settings.gradle
 </code></pre>
 <p>settings.gradle</p>
-<pre><code class="language-groovy">rootProject.name = 'basic-multiproject' //根项目名
+<pre><code class="language-java">rootProject.name = 'basic-multiproject' //根项目名
 include 'app' //子项目
  
 </code></pre>
 <p>子项目间依赖</p>
-<pre><code class="language-groovy">dependencies {
+<pre><code class="language-java">dependencies {
     implementation(project(&quot;:shared&quot;))
 }
 </code></pre>

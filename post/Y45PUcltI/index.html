@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>openfeign-ribbon核心源码剖析 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="openfeign-ribbon核心源码剖析 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="openfeign-ribbon核心源码剖析" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/Y45PUcltI/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
+                
+              </span>
+              <h1>openfeign-ribbon核心源码剖析</h1>
+              <span class="meta">
+                Posted on
+                2022-07-05，20 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/Y45PUcltI.png" alt="封面图">
+          </img>
+          
+          <h3 id="一-总结前置">一、总结前置：</h3>
+<h4 id="1-ribbonfeignopenfeign三者的对比">1 ribbon,feign,openfeign三者的对比</h4>
+<p>我们现在工作中现在几乎都是直接使用openfeign，而我们很有必要了解一下，ribbon、feign、openfeign三者之间的关系！</p>
+<ul>
+<li><strong>ribbon：<strong>ribbon是netflix开源的客户端负载均衡组件，可以</strong>调用注册中心获取服务列表，并通过负载均衡算法挑选一台Server</strong>；</li>
+<li>**feign：**feign也是netflix开源的，<strong>是对ribbon的一层封装，通过接口的方式使用，更加优雅</strong>，不需要每次都去写restTemplate，只需要定义一个接口来使用；<strong>但是Feign不支持springmvc的注解；</strong></li>
+<li><strong>openfeign：<strong>是</strong>对feign的进一步封装，使其能够支持springmvc注解，如@GetMapping等</strong>，使用起来更加方便和优雅！</li>
+</ul>
+<h4 id="2-工作中都是如何使用openfeign">2 工作中都是如何使用openfeign</h4>
+<pre><code class="language-java">// 想要使用openfeign，必须要在启动类增加@EnableFeignClient注解，否则启动报错
+@FeignClient(&quot;feign-provider&quot;)
+public interface OrderService {
+ 
+    @GetMapping(&quot;/order/get/{id}&quot;)
+    public String getById(@PathVariable(&quot;id&quot;) String id);
+}
+</code></pre>
+<h4 id="3-openfeign与ribbon如何分工">3 openfeign与ribbon如何分工</h4>
+<ul>
+<li><strong>openfeign通过动态代理</strong>的方式，对feignclient注解修饰的类进行动态代理，<strong>拼接成临时URL：http://feign-provider/order/get/100</strong>，交给ribbon</li>
+<li><strong>ribbon通过自己的拦截器</strong>，截取出serviceName<strong>在服务注册表中找到对应的serverList，并通过负载均衡策略挑选一台Server</strong>，<strong>拼接成最终的URL：http://10.206.73.156:1111/order/get/100</strong>，交还给feign；</li>
+<li>最后，<strong>feign通过自己封装的Client对目标地址发起调用</strong>，并获得返回结果；（Client是对原生 java.net 中的URL类的封装，实现远程调用）</li>
+</ul>
+<hr>
+<h3 id="二-核心代码openfeign生成的动态代理类是啥">二 核心代码——Openfeign生成的动态代理类是啥</h3>
+<h4 id="1-启动类必须增加enablefeignclient那我们就从这里入口">1 启动类必须增加@EnableFeignClient，那我们就从这里入口</h4>
+<pre><code class="language-java">@EnableFeignClients
+@Import(FeignClientsRegistrar.class)
+// 遇到import(Registrar)，我们就去看它的registerBeanDefinitions()方法：
+public void registerBeanDefinitions(AnnotationMetadata metadata,
+      BeanDefinitionRegistry registry) {
+   registerDefaultConfiguration(metadata, registry);
+    
+   // 注册FeignClient，其实FeignClient就是我们需要的动态代理类
+   registerFeignClients(metadata, registry);  
+}
+
+public void registerFeignClients(AnnotationMetadata metadata,BeanDefinitionRegistry registry) {
+   ......
+   // 定义过滤器，把加了@FeignClient注解的接口都过滤出来
+   AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(FeignClient.class);
+   ...过滤逻辑...
+ 
+   for (String basePackage : basePackages) {
+      Set&lt;BeanDefinition&gt; candidateComponents = scanner
+            .findCandidateComponents(basePackage);
+      for (BeanDefinition candidateComponent : candidateComponents) {
+         if (candidateComponent instanceof AnnotatedBeanDefinition) {
+            // verify annotated class is an interface
+            AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
+            AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
+            Assert.isTrue(annotationMetadata.isInterface(),
+                  &quot;@FeignClient can only be specified on an interface&quot;);
+ 
+            Map&lt;String, Object&gt; attributes = annotationMetadata
+                  .getAnnotationAttributes(
+                        FeignClient.class.getCanonicalName());
+ 
+            String name = getClientName(attributes);
+            registerClientConfiguration(registry, name,
+                  attributes.get(&quot;configuration&quot;));
+ 
+            // 将为每一个过滤出来的接口，注册FeignClient
+            registerFeignClient(registry, annotationMetadata, attributes);
+         }
+      }
+   }
+}
+
+private void registerFeignClient(BeanDefinitionRegistry registry,
+      AnnotationMetadata annotationMetadata, Map&lt;String, Object&gt; attributes) {
+   String className = annotationMetadata.getClassName();
+   BeanDefinitionBuilder definition = BeanDefinitionBuilder
+         .genericBeanDefinition(FeignClientFactoryBean.class);
+    
+   ...目标FactoryBean为FeignClientFactoryBean...
+   ...FactoryBean一般用于定制化一些特殊的Bean，spring会调用它的getObject接口...
+ 
+   BeanDefinitionHolder holder = new BeanDefinitionHolder(beanDefinition, className,
+         new String[] { alias });
+   BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+}
+</code></pre>
+<h4 id="2-见名知意feignclient的工厂beanfeignclientfactorybeangetobject方法">2 见名知意FeignClient的工厂bean：FeignClientFactoryBean.getObject()方法</h4>
+<pre><code class="language-java">class FeignClientFactoryBean{
+    @Override
+    public Object getObject() throws Exception {
+       return getTarget();
+    }
+     
+    &lt;T&gt; T getTarget() {
+       FeignContext context = this.applicationContext.getBean(FeignContext.class);
+       Feign.Builder builder = feign(context);
+ 
+       // 当我们不为@FeignClient()注解配置url属性时
+       // 这里同时会根据注解，拼接出url前缀，如：http://feign-provider
+       if (!StringUtils.hasText(this.url)) {
+          if (!this.name.startsWith(&quot;http&quot;)) {
+             this.url = &quot;http://&quot; + this.name;
+          }
+          else {
+             this.url = this.name;
+          }
+          this.url += cleanPath();
+          return (T) loadBalance(builder, context,
+                new HardCodedTarget&lt;&gt;(this.type, this.name, this.url));
+       }
+        
+       ...如果我们为@FeignClient()注解配置url属性之后的逻辑...
+    }
+}
+
+protected &lt;T&gt; T loadBalance(Feign.Builder builder, FeignContext context,
+      HardCodedTarget&lt;T&gt; target) {
+   // 从容器中获取一个类型为Client的bean，那么IOC容器中肯定有一个这样的Bean
+   Client client = getOptional(context, Client.class);
+   if (client != null) {
+      builder.client(client);
+      Targeter targeter = get(context, Targeter.class);
+      return targeter.target(this, builder, context, target);
+   }
+ 
+   // 如果找不到类型为Client的Bean就是有问题的啦！
+   throw new IllegalStateException(
+         &quot;No Feign Client for loadBalancing defined. Did you forget to include spring-cloud-starter-netflix-ribbon?&quot;);
+}
+</code></pre>
+<h4 id="3-容器中类型为client的bean是谁">3 容器中类型为Client的Bean是谁</h4>
+<p>此时还是启动阶段，我们去看看有哪些bean会被注入，在 spring.factories 中，我们会找到两个自动配置类：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658666477690.png" alt="" loading="lazy"></figure>
+<p>这两个类，很关键，都会往容器中注入负载均衡的Client Bean，但是只会有一个成功，</p>
+<p>FeignRibbonClientAutoCOnfiguration类：</p>
+<pre><code class="language-java">@ConditionalOnClass({ ILoadBalancer.class, Feign.class })
+@ConditionalOnProperty(value = &quot;spring.cloud.loadbalancer.ribbon.enabled&quot;,matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+// 重点1：在FeignAutoConfiguration之前装载配置
+@AutoConfigureBefore(FeignAutoConfiguration.class) 
+@EnableConfigurationProperties({ FeignHttpClientProperties.class })
+ 
+@Import({ HttpClientFeignLoadBalancedConfiguration.class,
+      OkHttpFeignLoadBalancedConfiguration.class,
+      DefaultFeignLoadBalancedConfiguration.class }) // 重点2：
+public class FeignRibbonClientAutoConfiguration {
+    ...非重点...
+}
+
+@Configuration(proxyBeanMethods = false)
+class DefaultFeignLoadBalancedConfiguration {
+ 
+   @Bean
+   @ConditionalOnMissingBean  // 如果Client类型的bean已经存在，则不执行
+   public Client feignClient(CachingSpringLoadBalancerFactory cachingFactory,
+         SpringClientFactory clientFactory) {
+      return new LoadBalancerFeignClient(new Client.Default(null, null), cachingFactory,
+            clientFactory);
+   }
+ 
+}
+</code></pre>
+<p>FeignLoadBalancerAutoConfiguration类：</p>
+<pre><code class="language-java">@ConditionalOnClass(Feign.class)
+@ConditionalOnBean(BlockingLoadBalancerClient.class)
+@AutoConfigureBefore(FeignAutoConfiguration.class)
+// 重点1：在FeignRibbonClientAutoConfiguration之后装载配置
+@AutoConfigureAfter(FeignRibbonClientAutoConfiguration.class) 
+@EnableConfigurationProperties(FeignHttpClientProperties.class)
+@Configuration(proxyBeanMethods = false)
+ 
+@Import({ HttpClientFeignLoadBalancerConfiguration.class,
+      OkHttpFeignLoadBalancerConfiguration.class,
+      DefaultFeignLoadBalancerConfiguration.class })  // 重点2：
+public class FeignLoadBalancerAutoConfiguration {
+       ...非重点...
+}
+
+@Configuration(proxyBeanMethods = false)
+class DefaultFeignLoadBalancerConfiguration {
+ 
+   @Bean
+   @ConditionalOnMissingBean  // 如果Client类型的bean已经存在，则不执行
+   public Client feignClient(BlockingLoadBalancerClient loadBalancerClient) {
+      return new FeignBlockingLoadBalancerClient(new Client.Default(null, null),
+            loadBalancerClient);
+   }
+ 
+}
+</code></pre>
+<p>到这里就非常清晰了：</p>
+<ul>
+<li>通过spring.factories注入了两个配置类，并通过 @AutoConfigureBefore 和 @AutoConfigureAfter强制了两个配置类的装载顺序！</li>
+<li>这两个配置类各import 了 另一个配置类：DefaultFeignLoadBalancedConfiguration（注入：LoadBalancerFeignClient） 和 DefaultFeignLoadBalancerConfiguration（注入：FeignBlockingLoadBalancerClient），但是由于@ConditionalOnMissingBean注解，只有一个前面那个会注入成功！</li>
+<li>所以，结论就是：IOC容器中的“Client”类型的 Bean 为 “LoadBalancerFeignClient”</li>
+</ul>
+<p>所以，<strong>最终的结论就是：Openfeign通过的动态代理，为每个“@FeignClient”注解修饰的接口生成一个类型为 “LoadBalancerFeignClient”的代理类。</strong></p>
+<hr>
+<h3 id="三-feignclient代理类执行时是如何使用ribbon的">三 FeignClient代理类执行时，是如何使用Ribbon的</h3>
+<h4 id="1-当执行loadbalancerfeignclientexecute方法时">1 当执行LoadBalancerFeignClient.execute()方法时：</h4>
+<pre><code class="language-java">// org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient#execute
+public Response execute(Request request, Request.Options options) throws IOException {
+   try {
+      URI asUri = URI.create(request.url());
+      String clientName = asUri.getHost();
+      URI uriWithoutHost = cleanUrl(request.url(), clientName);
+      FeignLoadBalancer.RibbonRequest ribbonRequest = new FeignLoadBalancer.RibbonRequest(
+            this.delegate, request, uriWithoutHost);
+ 
+      // 可以获取到nacos的一些信息
+      IClientConfig requestConfig = getClientConfig(options, clientName);
+       
+      // lbClient(clientName)：可以获得具体的代理类，每个@FeignClient修饰的接口代理类时独立的
+      return lbClient(clientName)
+            .executeWithLoadBalancer(ribbonRequest, requestConfig).toResponse();
+   }
+   catch (ClientException e) {
+      ......
+   }
+}
+</code></pre>
+<p>我们可以很清楚的看到，这里肯定会要用到Ribbon；</p>
+<h4 id="2-通过负载均衡器执行调用并返回结果">2 通过负载均衡器，执行调用，并返回结果</h4>
+<pre><code class="language-java">// com.netflix.client.AbstractLoadBalancerAwareClient#executeWithLoadBalancer(...)
+public T executeWithLoadBalancer(final S request, final IClientConfig requestConfig) throws ClientException {
+    LoadBalancerCommand&lt;T&gt; command = buildLoadBalancerCommand(request, requestConfig);
+ 
+    try {
+        return command.submit(  // 这步会返回具体的，负载均衡选定好的Server
+            new ServerOperation&lt;T&gt;() {
+                @Override
+                public Observable&lt;T&gt; call(Server server) {  // submit选好的Server作为入参
+                    URI finalUri = reconstructURIWithServer(server, request.getUri());
+                    S requestForServer = (S) request.replaceUri(finalUri);
+                    try {
+                        return Observable.just(AbstractLoadBalancerAwareClient.this.execute(requestForServer, requestConfig));
+                    } 
+                    catch (Exception e) {
+                        return Observable.error(e);
+                    }
+                }
+            })
+            .toBlocking()
+            .single();
+    } catch (Exception e) {
+        ......
+    }
+}
+
+// com.netflix.loadbalancer.reactive.LoadBalancerCommand#submit
+public Observable&lt;T&gt; submit(final ServerOperation&lt;T&gt; operation) {
+    final ExecutionInfoContext context = new ExecutionInfoContext();
+    ......
+    final int maxRetrysSame = retryHandler.getMaxRetriesOnSameServer();
+    final int maxRetrysNext = retryHandler.getMaxRetriesOnNextServer();
+ 
+    // selectServer()方法会通过负载均衡选择一台Server
+    Observable&lt;T&gt; o = (server == null ? selectServer() : Observable.just(server))
+            .concatMap(new Func1&lt;Server, Observable&lt;T&gt;&gt;() {
+                ......
+            });
+}
+</code></pre>
+<h4 id="3-selectserver具体方法">3 selectServer()具体方法</h4>
+<pre><code class="language-java">// com.netflix.loadbalancer.reactive.LoadBalancerCommand#selectServer
+private Observable&lt;Server&gt; selectServer() {
+    return Observable.create(new OnSubscribe&lt;Server&gt;() {
+        @Override
+        public void call(Subscriber&lt;? super Server&gt; next) {
+            try {
+                Server server = loadBalancerContext.getServerFromLoadBalancer(loadBalancerURI, loadBalancerKey);   
+                next.onNext(server);
+                next.onCompleted();
+            } catch (Exception e) {
+                next.onError(e);
+            }
+        }
+    });
+}
+</code></pre>
+<h4 id="4-这里将使用到非常重要的一个zoneawareloadbalancer">4 这里将使用到非常重要的一个ZoneAwareLoadBalancer</h4>
+<pre><code class="language-java">// com.netflix.loadbalancer.LoadBalancerContext#getServerFromLoadBalancer
+public Server getServerFromLoadBalancer(@Nullable URI original, @Nullable Object loadBalancerKey) throws ClientException {
+    String host = null;
+    int port = -1;
+    if (original != null) {
+        host = original.getHost();
+    }
+    if (original != null) {
+        Pair&lt;String, Integer&gt; schemeAndPort = deriveSchemeAndPortFromPartialUri(original);        
+        port = schemeAndPort.second();
+    }
+ 
+    // 关键一步，获得了一个ILoadBalancer
+    ILoadBalancer lb = getLoadBalancer();
+    if (host == null) {
+        // 重要：这里其实获得的是ZoneAwareLoadBalancer类的Bean
+        if (lb != null){  
+            Server svc = lb.chooseServer(loadBalancerKey);
+            if (svc == null){
+                throw new ClientException(ClientException.ErrorType.GENERAL,
+                        &quot;Load balancer does not have available server for client: &quot;
+                                + clientName);
+            }
+            host = svc.getHost();
+            return svc;
+        } else {
+            ......
+        }
+    } else {
+        ......
+    }
+    return new Server(host, port);
+}
+
+// com.netflix.loadbalancer.BaseLoadBalancer#chooseServer
+public Server chooseServer(Object key) {
+    if (!ENABLED.get() || getLoadBalancerStats().getAvailableZones().size() &lt;= 1) {
+        logger.debug(&quot;Zone aware logic disabled or there is only one zone&quot;);
+        return super.chooseServer(key);
+    }
+    ...其它分支在国内一般不会走，没有zone的概念...
+}
+
+// com.netflix.loadbalancer.BaseLoadBalancer#chooseServer
+public Server chooseServer(Object key) {
+    if (counter == null) {
+        counter = createCounter();
+    }
+    counter.increment();
+    if (rule == null) {
+        return null;
+    } else {
+        try {
+            return rule.choose(key); // PredicateBasedRule
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
+
+// com.netflix.loadbalancer.PredicateBasedRule#choose
+public Server choose(Object key) {
+    ILoadBalancer lb = getLoadBalancer();
+    Optional&lt;Server&gt; server = getPredicate().chooseRoundRobinAfterFiltering(lb.getAllServers(), key);
+    if (server.isPresent()) {
+        return server.get();
+    } else {
+        return null;
+    }       
+}
+</code></pre>
+<h4 id="5-可以看到-lbgetallserver正是zoneawareloadbalancergetallservers方法">5 可以看到 lb.getAllServer()，正是ZoneAwareLoadBalancer.getAllServers()方法</h4>
+<pre><code class="language-java">// com.netflix.loadbalancer.BaseLoadBalancer#getAllServers
+public class BaseLoadBalancer extends AbstractLoadBalancer {
+    protected volatile List&lt;Server&gt; allServerList = Collections.synchronizedList(new ArrayList&lt;Server&gt;());
+ 
+    public List&lt;Server&gt; getAllServers() {
+        return Collections.unmodifiableList(allServerList);
+    }
+}
+</code></pre>
+<p>所以，我们现在用弄清楚的有两点：</p>
+<ul>
+<li><strong>为什么重要的ILoadBalancer的实现就是ZoneAwareLoadBalancer；</strong></li>
+<li><strong>ZoneAwareLoadBalancer中的allServerList属性是何时被赋值的；</strong></li>
+</ul>
+<hr>
+<h3 id="四-zoneawareloadbalancer是何时注入的">四 ZoneAwareLoadBalancer是何时注入的</h3>
+<h4 id="1-在spring-cloud-netfliex-ribbon包的springfactories中有ribbonautoconfiguration类">1 在spring-cloud-netfliex-ribbon包的spring.factories中有RibbonAutoConfiguration类</h4>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658666526979.png" alt="" loading="lazy"></figure>
+<p>我们看到这个类的构造方法，创建了一个SpringClientFactory工厂类：</p>
+<pre><code class="language-java">@Configuration
+@Conditional(RibbonAutoConfiguration.RibbonClassesConditions.class)
+@RibbonClients
+@AutoConfigureAfter(name = &quot;org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration&quot;)
+@AutoConfigureBefore({ LoadBalancerAutoConfiguration.class,
+      AsyncLoadBalancerAutoConfiguration.class })
+@EnableConfigurationProperties({ RibbonEagerLoadProperties.class,
+      ServerIntrospectorProperties.class })
+public class RibbonAutoConfiguration {
+ 
+   @Autowired(required = false)
+   private List&lt;RibbonClientSpecification&gt; configurations = new ArrayList&lt;&gt;();
+ 
+   @Autowired
+   private RibbonEagerLoadProperties ribbonEagerLoadProperties;
+ 
+   @Bean
+   public HasFeatures ribbonFeature() {
+      return HasFeatures.namedFeature(&quot;Ribbon&quot;, Ribbon.class);
+   }
+ 
+   @Bean
+   public SpringClientFactory springClientFactory() {
+       // SpringClientFactory这个Client工厂类很关键
+      SpringClientFactory factory = new SpringClientFactory();
+      factory.setConfigurations(this.configurations);
+      return factory;
+   }
+}
+</code></pre>
+<p>我们再看看这个工厂类的构造方法做了什么事：</p>
+<pre><code class="language-java">public class SpringClientFactory extends NamedContextFactory&lt;RibbonClientSpecification&gt; {
+ 
+   static final String NAMESPACE = &quot;ribbon&quot;;
+ 
+   public SpringClientFactory() {
+      super(RibbonClientConfiguration.class, NAMESPACE, &quot;ribbon.client.name&quot;);
+   }
+}
+
+public abstract class NamedContextFactory&lt;C extends NamedContextFactory.Specification&gt; implements DisposableBean, ApplicationContextAware {
+    private final String propertySourceName;
+    private final String propertyName;
+    private Map&lt;String, AnnotationConfigApplicationContext&gt; contexts = new ConcurrentHashMap();
+    private Map&lt;String, C&gt; configurations = new ConcurrentHashMap();
+    private ApplicationContext parent;
+    private Class&lt;?&gt; defaultConfigType;
+ 
+    public NamedContextFactory(Class&lt;?&gt; defaultConfigType, String propertySourceName, String propertyName) {
+        this.defaultConfigType = defaultConfigType;
+        this.propertySourceName = propertySourceName;
+        this.propertyName = propertyName;
+    }
+}
+</code></pre>
+<p>显然，<strong>构造了一个上下工厂“NamedContextFactory”类，这个工厂类的默认配置类是“RibbonClientConfiguraion”</strong>，这个在之后Feign的调用过程中非常关键；</p>
+<h4 id="2-loadbalancerfeignclient这个代理类的execute方法中">2 LoadBalancerFeignClient这个代理类的execute()方法中</h4>
+<pre><code class="language-java">// org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient#execute
+public Response execute(Request request, Request.Options options) throws IOException {
+   try {
+      URI asUri = URI.create(request.url());
+      String clientName = asUri.getHost();
+      URI uriWithoutHost = cleanUrl(request.url(), clientName);
+      FeignLoadBalancer.RibbonRequest ribbonRequest = new FeignLoadBalancer.RibbonRequest(
+            this.delegate, request, uriWithoutHost);
+ 
+      // 这个方法不用讲，得到的IclientConfig肯定是RibbonClientConfiguraion
+      IClientConfig requestConfig = getClientConfig(options, clientName);
+      return lbClient(clientName)
+            .executeWithLoadBalancer(ribbonRequest, requestConfig).toResponse();
+   }
+   catch (ClientException e) {
+      ......
+   }
+}
+
+// org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient#getClientConfig
+IClientConfig getClientConfig(Request.Options options, String clientName) {
+    ......
+    requestConfig = this.clientFactory.getClientConfig(clientName);
+    ......
+}
+
+// org.springframework.cloud.netflix.ribbon.SpringClientFactory#getClientConfig
+public IClientConfig getClientConfig(String name) {
+   return getInstance(name, IClientConfig.class);
+}
+
+// org.springframework.cloud.netflix.ribbon.SpringClientFactory#getInstance
+public &lt;C&gt; C getInstance(String name, Class&lt;C&gt; type) {
+    // SpringClientFactory的super父类就是NamedContextFactory
+   C instance = super.getInstance(name, type);
+   if (instance != null) {
+      return instance;
+   }
+   IClientConfig config = getInstance(name, IClientConfig.class);
+   return instantiateWithConfig(getContext(name), type, config);
+}
+
+// org.springframework.cloud.context.named.NamedContextFactory#getInstance
+public &lt;T&gt; T getInstance(String name, Class&lt;T&gt; type) {
+    AnnotationConfigApplicationContext context = this.getContext(name);
+    return BeanFactoryUtils.beanNamesForTypeIncludingAncestors(context, type).length &gt; 0 ? context.getBean(type) : null;
+}
+</code></pre>
+<p>找到了**NamedContextFactory  ，就和第一点串起来了，它的 默认 配置类正是RibbonClientConfiguration **；</p>
+<h4 id="3-ribbonclientconfiguration又是如何注入我们需要的zoneawareloadbalancer的">3 RibbonClientConfiguration又是如何注入我们需要的ZoneAwareLoadBalancer的</h4>
+<pre><code class="language-java">@Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties
+// Order is important here, last should be the default, first should be optional
+// see
+// https://github.com/spring-cloud/spring-cloud-netflix/issues/2086#issuecomment-316281653
+@Import({ HttpClientConfiguration.class, OkHttpRibbonConfiguration.class,
+      RestClientRibbonConfiguration.class, HttpClientRibbonConfiguration.class })
+public class RibbonClientConfiguration {
+ 
+    @Bean
+    @ConditionalOnMissingBean
+    public ILoadBalancer ribbonLoadBalancer(IClientConfig config,
+          ServerList&lt;Server&gt; serverList, ServerListFilter&lt;Server&gt; serverListFilter,
+          IRule rule, IPing ping, ServerListUpdater serverListUpdater) {
+       if (this.propertiesFactory.isSet(ILoadBalancer.class, name)) {
+          return this.propertiesFactory.get(ILoadBalancer.class, config, name);
+       }
+        
+       // 默认注入的类正是ZoneAwareLoadBalancer
+       return new ZoneAwareLoadBalancer&lt;&gt;(config, rule, ping, serverList,
+             serverListFilter, serverListUpdater);
+    }
+ 
+}
+</code></pre>
+<p><strong>所以，这就解释了，为什么在后面的 ILoadBalancer lb = getLoadBalancer(); 获得到的就是ZoneAwareLoadBalancer！</strong></p>
+<p><strong>同时，这个类是在动态代理被执行execute()的时候被调起的，所以Ribbon也是在被使用时才从Nacos获取注册表的，并不是在容器启动时！</strong></p>
+<hr>
+<h3 id="五-ribbon又是何时从nacos服务端获取allserverlist的">五 Ribbon又是何时从Nacos服务端获取allServerList的</h3>
+<h4 id="1-我们需要跟踪zoneawareloadbalancer对应的bean的构造过程">1 我们需要跟踪ZoneAwareLoadBalancer对应的Bean的构造过程</h4>
+<pre><code class="language-java">// com.netflix.loadbalancer.ZoneAwareLoadBalancer#ZoneAwareLoadBalancer
+public ZoneAwareLoadBalancer(IClientConfig clientConfig, IRule rule,
+                             IPing ping, ServerList&lt;T&gt; serverList, ServerListFilter&lt;T&gt; filter,
+                             ServerListUpdater serverListUpdater) {
+    super(clientConfig, rule, ping, serverList, filter, serverListUpdater);
+}
+
+// com.netflix.loadbalancer.DynamicServerListLoadBalancer#DynamicServerListLoadBalancer
+public DynamicServerListLoadBalancer(IClientConfig clientConfig, IRule rule, IPing ping,
+                                     ServerList&lt;T&gt; serverList, ServerListFilter&lt;T&gt; filter,
+                                     ServerListUpdater serverListUpdater) {
+    super(clientConfig, rule, ping);
+    this.serverListImpl = serverList;
+    this.filter = filter;
+    this.serverListUpdater = serverListUpdater;
+    if (filter instanceof AbstractServerListFilter) {
+        ((AbstractServerListFilter) filter).setLoadBalancerStats(getLoadBalancerStats());
+    }
+     
+    //执行远程调用，并初始化BaseLoadBalancer中的allServerList
+    restOfInit(clientConfig);
+}
+</code></pre>
+<h4 id="2-远程调用nacos并初始化restofinit方法的逻辑">2 远程调用Nacos并初始化restOfInit()方法的逻辑</h4>
+<pre><code class="language-java">void restOfInit(IClientConfig clientConfig) {
+    boolean primeConnection = this.isEnablePrimingConnections();
+    // turn this off to avoid duplicated asynchronous priming done in BaseLoadBalancer.setServerList()
+    this.setEnablePrimingConnections(false);
+     
+    // 获取服务列表功能
+    enableAndInitLearnNewServersFeature();
+ 
+    updateListOfServers();
+    if (primeConnection &amp;&amp; this.getPrimeConnections() != null) {
+        this.getPrimeConnections()
+                .primeConnections(getReachableServers());
+    }
+    this.setEnablePrimingConnections(primeConnection);
+}
+
+public void enableAndInitLearnNewServersFeature() {
+    serverListUpdater.start(updateAction);
+}
+</code></pre>
+<p>这个updateAction变量是可执行的：</p>
+<pre><code class="language-java">protected final ServerListUpdater.UpdateAction updateAction = new ServerListUpdater.UpdateAction() {
+    @Override
+    public void doUpdate() {
+        updateListOfServers(); // 更新Servers列表
+    }
+};
+</code></pre>
+<p>3、updateListOfServer()方法如何从Nacos服务端获取服务列表：</p>
+<pre><code class="language-java">// com.netflix.loadbalancer.DynamicServerListLoadBalancer#updateListOfServers
+public void updateListOfServers() {
+    List&lt;T&gt; servers = new ArrayList&lt;T&gt;();
+    if (serverListImpl != null) {
+        // 其中的serverListImpl有三个实现，其中之一就是Nacos
+        servers = serverListImpl.getUpdatedListOfServers();
+        LOGGER.debug(&quot;List of Servers for {} obtained from Discovery client: {}&quot;,
+                getIdentifier(), servers);
+ 
+        if (filter != null) {
+            servers = filter.getFilteredListOfServers(servers);
+            LOGGER.debug(&quot;Filtered List of Servers for {} obtained from Discovery client: {}&quot;,
+                    getIdentifier(), servers);
+        }
+    }
+     
+    // 用获得到的服务列表更新BaseLoadBalancer中的allServerList
+    updateAllServerList(servers);
+}
+</code></pre>
+<p>不用想了，肯定是NacosServerList，这个简单追踪就不赘述了！</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658666558990.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p><strong>NacosServerList.getUpdatedListOfServers()最终会调用nacos客户端的核心类 NacosNamingServer.selectInstances() 方法，该方法只会返回健康实例列表；</strong></p>
+</blockquote>
+<h4 id="4-根据从nacos获得到的servers更新本地的allserverlist属性">4 根据从nacos获得到的Servers，更新本地的allServerList属性</h4>
+<pre><code class="language-java">// com.netflix.loadbalancer.DynamicServerListLoadBalancer#updateAllServerList
+protected void updateAllServerList(List&lt;T&gt; ls) {
+    // other threads might be doing this - in which case, we pass
+    if (serverListUpdateInProgress.compareAndSet(false, true)) {
+        try {
+            for (T s : ls) {
+                s.setAlive(true); // set so that clients can start using these
+                                  // servers right away instead
+                                  // of having to wait out the ping cycle.
+            }
+            setServersList(ls);
+            super.forceQuickPing();
+        } finally {
+            serverListUpdateInProgress.set(false);
+        }
+    }
+}
+
+public void setServersList(List lsrv) {
+    super.setServersList(lsrv);  // 核心
+    List&lt;T&gt; serverList = (List&lt;T&gt;) lsrv;
+    Map&lt;String, List&lt;Server&gt;&gt; serversInZones = new HashMap&lt;String, List&lt;Server&gt;&gt;();
+    for (Server server : serverList) {
+        // make sure ServerStats is created to avoid creating them on hot
+        // path
+        getLoadBalancerStats().getSingleServerStat(server);
+        String zone = server.getZone();
+        if (zone != null) {
+            zone = zone.toLowerCase();
+            List&lt;Server&gt; servers = serversInZones.get(zone);
+            if (servers == null) {
+                servers = new ArrayList&lt;Server&gt;();
+                serversInZones.put(zone, servers);
+            }
+            servers.add(server);
+        }
+    }
+    setServerListForZones(serversInZones);
+}
+
+// com.netflix.loadbalancer.BaseLoadBalancer#setServersList
+public void setServersList(List lsrv) {
+    Lock writeLock = allServerLock.writeLock();
+    logger.debug(&quot;LoadBalancer [{}]: clearing server list (SET op)&quot;, name);
+     
+    ArrayList&lt;Server&gt; newServers = new ArrayList&lt;Server&gt;();
+    writeLock.lock();
+    try {
+        ArrayList&lt;Server&gt; allServers = new ArrayList&lt;Server&gt;();
+         
+        ...对每一个Server进行下包装...
+         
+        allServerList = allServers; //本地的allServerList赋值
+        if (canSkipPing()) {
+            for (Server s : allServerList) {
+                s.setAlive(true);
+            }
+            upServerList = allServerList;
+        } else if (listChanged) {
+            forceQuickPing();
+        }
+    } finally {
+        writeLock.unlock();
+    }
+}
+</code></pre>
+<p>到这里，总算和 二.5 章节中的allServerList进行呼应了！</p>
+<blockquote>
+<p>至此，整个从FeignClient注解生成动态代理类LoadBalancerFeignClient；</p>
+<p>——&gt; Client执行时会生成ribbon下的ZoneAwareLoadBalancer类，调用nacos服务端获取服务列表；</p>
+<p>——&gt; 在通过ZoneAwareLoadBalancer的父类的BaseLoadBalancer.chooseServer()方法根据负载均衡算法挑选一台服务器；</p>
+<p>——&gt; 最后交给Feign的的Client通过URL类完成调用。</p>
+</blockquote>
+<hr>
+<h3 id="六-feign和ribbon的重试机制">六 Feign和Ribbon的重试机制</h3>
+<h4 id="1-首先我们做两个事情">1 首先我们做两个事情</h4>
+<p>服务提供者feign-provider：</p>
+<pre><code class="language-java">@GetMapping(&quot;/get/{id}&quot;)
+public String getById(@PathVariable(&quot;id&quot;) String id){
+    System.out.println(&quot;被调用，时间：&quot; + System.currentTimeMillis());
+    try {
+        TimeUnit.SECONDS.sleep(100);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    return &quot;feign-provider:com.jiguiquan.springcloud.controller.OrderController#getById=&quot; + id;
+}
+</code></pre>
+<p>服务消费者feign-consumer：</p>
+<pre><code class="language-java">@GetMapping(&quot;test&quot;)
+public String test(){
+    return orderService.getById(&quot;100&quot;);
+}
+</code></pre>
+<h4 id="2-不配置任何重试机制使用默认值">2 不配置任何重试机制，使用默认值</h4>
+<p>调用接口后，看服务提供者的日志（重试了2次，时间间隔为1秒）：</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658666579245.png" alt="" loading="lazy"></figure>
+<h4 id="3-我们为系统注入feign的默认retryer重试机制">3 我们为系统注入Feign的默认Retryer重试机制</h4>
+<pre><code class="language-java">@Bean
+public Retryer retryer(){
+   return new Retryer.Default();
+}
+</code></pre>
+<p>再次调用，再看日志（重试了10次，）：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658666591041.png" alt="" loading="lazy"></figure>
+<h4 id="4-feign的默认重试器的核心代码默认是不开启的">4 Feign的默认重试器的核心代码（默认是不开启的）</h4>
+<pre><code class="language-java">public static class Default implements Retryer {
+    private final int maxAttempts;
+    private final long period;
+    private final long maxPeriod;
+    int attempt;
+    long sleptForMillis;
+ 
+    public Default() {
+        // 默认的重试间隔时间100ms，最大间隔时间为1s，最大重试次数为5次
+        this(100L, TimeUnit.SECONDS.toMillis(1L), 5);
+    }
+     
+    // 默认下次重试间隔时间 100 * 1.5^(尝试轮次-1) 次方
+    // 第一次尝试：100 * 1.5(2 -1) = 150ms; 以此类推
+    long nextMaxInterval() {
+        long interval = (long)((double)this.period * Math.pow(1.5D, (double)(this.attempt - 1)));
+        return interval &gt; this.maxPeriod ? this.maxPeriod : interval;
+    }
+}
+</code></pre>
+<h4 id="5-ribbon和feign的重试器的源码就不过度追溯了直接上结论">5 Ribbon和Feign的重试器的源码就不过度追溯了，直接上结论</h4>
+<ul>
+<li><strong>Ribbon的重试机制默认是开启的，重试1次，共调用两次；</strong></li>
+<li><strong>Feign的Retryer重试器默认是关闭的 NEVER_RETRY;</strong></li>
+<li><strong>Feign如果想开启默认重试器，直接在Spring容器中注入 Retryer.Default 即可，默认重试5次；</strong></li>
+</ul>
+<h4 id="6-修改ribbon的默认重试机制">6 修改Ribbon的默认重试机制</h4>
+<pre><code class="language-yaml"># Ribbon 配置
+ribbon:
+  # 单节点最大重试次数(不包含默认调用的1次)，达到最大值时，切换到下一个示例
+  MaxAutoRetries: 0  # 0 相当于关闭ribbon重试
+   
+  # 更换下一个重试节点的最大次数，可以设置为服务提供者副本数（副本数 = 总机器数 - 1），也是就每个副本都查询一次
+  MaxAutoRetriesNextServer: 0
+   
+  # 是否对所有请求进行重试，默认fasle，则只会对GET请求进行重试，建议配置为false，不然添加数据接口，会造成多条重复，也就是幂等性问题。
+  OkToRetryOnAllOperations: false
+</code></pre>
+<h4 id="7-自定义feign重试机制直接给-retryerdefault-构造方法传参即可">7 自定义Feign重试机制（直接给 Retryer.Default 构造方法传参即可）</h4>
+<pre><code class="language-java">@Bean
+public Retryer retryer(){
+   return new Retryer.Default(100, 1000, 3); // 调用3次（包含原本的一次调用）
+}
+</code></pre>
+<p>当然，如果对 Retryer.Dafault 的默认的方法逻辑不认可，可以直接实现一个自己的CustomRetryer注入到spring容器中即可：</p>
+<pre><code class="language-java">@Bean
+public Retryer customerRetryer(){
+    return new Retryer() {
+        @Override
+        public void continueOrPropagate(RetryableException e) {
+             
+        }
+ 
+        @Override
+        public Retryer clone() {
+            return null;
+        }
+    };
+}
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%80%BB%E7%BB%93%E5%89%8D%E7%BD%AE">一、总结前置：</a>
+<ul>
+<li><a href="#1-ribbonfeignopenfeign%E4%B8%89%E8%80%85%E7%9A%84%E5%AF%B9%E6%AF%94">1 ribbon,feign,openfeign三者的对比</a></li>
+<li><a href="#2-%E5%B7%A5%E4%BD%9C%E4%B8%AD%E9%83%BD%E6%98%AF%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8openfeign">2 工作中都是如何使用openfeign</a></li>
+<li><a href="#3-openfeign%E4%B8%8Eribbon%E5%A6%82%E4%BD%95%E5%88%86%E5%B7%A5">3 openfeign与ribbon如何分工</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81openfeign%E7%94%9F%E6%88%90%E7%9A%84%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E7%B1%BB%E6%98%AF%E5%95%A5">二 核心代码——Openfeign生成的动态代理类是啥</a>
+<ul>
+<li><a href="#1-%E5%90%AF%E5%8A%A8%E7%B1%BB%E5%BF%85%E9%A1%BB%E5%A2%9E%E5%8A%A0enablefeignclient%E9%82%A3%E6%88%91%E4%BB%AC%E5%B0%B1%E4%BB%8E%E8%BF%99%E9%87%8C%E5%85%A5%E5%8F%A3">1 启动类必须增加@EnableFeignClient，那我们就从这里入口</a></li>
+<li><a href="#2-%E8%A7%81%E5%90%8D%E7%9F%A5%E6%84%8Ffeignclient%E7%9A%84%E5%B7%A5%E5%8E%82beanfeignclientfactorybeangetobject%E6%96%B9%E6%B3%95">2 见名知意FeignClient的工厂bean：FeignClientFactoryBean.getObject()方法</a></li>
+<li><a href="#3-%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%B1%BB%E5%9E%8B%E4%B8%BAclient%E7%9A%84bean%E6%98%AF%E8%B0%81">3 容器中类型为Client的Bean是谁</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-feignclient%E4%BB%A3%E7%90%86%E7%B1%BB%E6%89%A7%E8%A1%8C%E6%97%B6%E6%98%AF%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ribbon%E7%9A%84">三 FeignClient代理类执行时，是如何使用Ribbon的</a>
+<ul>
+<li><a href="#1-%E5%BD%93%E6%89%A7%E8%A1%8Cloadbalancerfeignclientexecute%E6%96%B9%E6%B3%95%E6%97%B6">1 当执行LoadBalancerFeignClient.execute()方法时：</a></li>
+<li><a href="#2-%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8%E6%89%A7%E8%A1%8C%E8%B0%83%E7%94%A8%E5%B9%B6%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C">2 通过负载均衡器，执行调用，并返回结果</a></li>
+<li><a href="#3-selectserver%E5%85%B7%E4%BD%93%E6%96%B9%E6%B3%95">3 selectServer()具体方法</a></li>
+<li><a href="#4-%E8%BF%99%E9%87%8C%E5%B0%86%E4%BD%BF%E7%94%A8%E5%88%B0%E9%9D%9E%E5%B8%B8%E9%87%8D%E8%A6%81%E7%9A%84%E4%B8%80%E4%B8%AAzoneawareloadbalancer">4 这里将使用到非常重要的一个ZoneAwareLoadBalancer</a></li>
+<li><a href="#5-%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0-lbgetallserver%E6%AD%A3%E6%98%AFzoneawareloadbalancergetallservers%E6%96%B9%E6%B3%95">5 可以看到 lb.getAllServer()，正是ZoneAwareLoadBalancer.getAllServers()方法</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-zoneawareloadbalancer%E6%98%AF%E4%BD%95%E6%97%B6%E6%B3%A8%E5%85%A5%E7%9A%84">四 ZoneAwareLoadBalancer是何时注入的</a>
+<ul>
+<li><a href="#1-%E5%9C%A8spring-cloud-netfliex-ribbon%E5%8C%85%E7%9A%84springfactories%E4%B8%AD%E6%9C%89ribbonautoconfiguration%E7%B1%BB">1 在spring-cloud-netfliex-ribbon包的spring.factories中有RibbonAutoConfiguration类</a></li>
+<li><a href="#2-loadbalancerfeignclient%E8%BF%99%E4%B8%AA%E4%BB%A3%E7%90%86%E7%B1%BB%E7%9A%84execute%E6%96%B9%E6%B3%95%E4%B8%AD">2 LoadBalancerFeignClient这个代理类的execute()方法中</a></li>
+<li><a href="#3-ribbonclientconfiguration%E5%8F%88%E6%98%AF%E5%A6%82%E4%BD%95%E6%B3%A8%E5%85%A5%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E7%9A%84zoneawareloadbalancer%E7%9A%84">3 RibbonClientConfiguration又是如何注入我们需要的ZoneAwareLoadBalancer的</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-ribbon%E5%8F%88%E6%98%AF%E4%BD%95%E6%97%B6%E4%BB%8Enacos%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%8E%B7%E5%8F%96allserverlist%E7%9A%84">五 Ribbon又是何时从Nacos服务端获取allServerList的</a>
+<ul>
+<li><a href="#1-%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E8%B7%9F%E8%B8%AAzoneawareloadbalancer%E5%AF%B9%E5%BA%94%E7%9A%84bean%E7%9A%84%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B">1 我们需要跟踪ZoneAwareLoadBalancer对应的Bean的构造过程</a></li>
+<li><a href="#2-%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8nacos%E5%B9%B6%E5%88%9D%E5%A7%8B%E5%8C%96restofinit%E6%96%B9%E6%B3%95%E7%9A%84%E9%80%BB%E8%BE%91">2 远程调用Nacos并初始化restOfInit()方法的逻辑</a></li>
+<li><a href="#4-%E6%A0%B9%E6%8D%AE%E4%BB%8Enacos%E8%8E%B7%E5%BE%97%E5%88%B0%E7%9A%84servers%E6%9B%B4%E6%96%B0%E6%9C%AC%E5%9C%B0%E7%9A%84allserverlist%E5%B1%9E%E6%80%A7">4 根据从nacos获得到的Servers，更新本地的allServerList属性</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-feign%E5%92%8Cribbon%E7%9A%84%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6">六 Feign和Ribbon的重试机制</a>
+<ul>
+<li><a href="#1-%E9%A6%96%E5%85%88%E6%88%91%E4%BB%AC%E5%81%9A%E4%B8%A4%E4%B8%AA%E4%BA%8B%E6%83%85">1 首先我们做两个事情</a></li>
+<li><a href="#2-%E4%B8%8D%E9%85%8D%E7%BD%AE%E4%BB%BB%E4%BD%95%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4%E5%80%BC">2 不配置任何重试机制，使用默认值</a></li>
+<li><a href="#3-%E6%88%91%E4%BB%AC%E4%B8%BA%E7%B3%BB%E7%BB%9F%E6%B3%A8%E5%85%A5feign%E7%9A%84%E9%BB%98%E8%AE%A4retryer%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6">3 我们为系统注入Feign的默认Retryer重试机制</a></li>
+<li><a href="#4-feign%E7%9A%84%E9%BB%98%E8%AE%A4%E9%87%8D%E8%AF%95%E5%99%A8%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81%E9%BB%98%E8%AE%A4%E6%98%AF%E4%B8%8D%E5%BC%80%E5%90%AF%E7%9A%84">4 Feign的默认重试器的核心代码（默认是不开启的）</a></li>
+<li><a href="#5-ribbon%E5%92%8Cfeign%E7%9A%84%E9%87%8D%E8%AF%95%E5%99%A8%E7%9A%84%E6%BA%90%E7%A0%81%E5%B0%B1%E4%B8%8D%E8%BF%87%E5%BA%A6%E8%BF%BD%E6%BA%AF%E4%BA%86%E7%9B%B4%E6%8E%A5%E4%B8%8A%E7%BB%93%E8%AE%BA">5 Ribbon和Feign的重试器的源码就不过度追溯了，直接上结论</a></li>
+<li><a href="#6-%E4%BF%AE%E6%94%B9ribbon%E7%9A%84%E9%BB%98%E8%AE%A4%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6">6 修改Ribbon的默认重试机制</a></li>
+<li><a href="#7-%E8%87%AA%E5%AE%9A%E4%B9%89feign%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6%E7%9B%B4%E6%8E%A5%E7%BB%99-retryerdefault-%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E4%BC%A0%E5%8F%82%E5%8D%B3%E5%8F%AF">7 自定义Feign重试机制（直接给 Retryer.Default 构造方法传参即可）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/bp8DT_bHg/">
+                  <span class="post-title">
+                    Nacos核心源码剖析——配置中心&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/XPUt_T_-A/">
+                   <span class="post-title">
+                     Sentinel限流熔断降级——知识点总结&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

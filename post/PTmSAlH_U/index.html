@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>上传文件到亚马逊云S3对象存储 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="上传文件到亚马逊云S3对象存储 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="上传文件到亚马逊云S3对象存储" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/PTmSAlH_U/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/kmb1w6CHq/" class="tag">对象存储</a>
+                
+              </span>
+              <h1>上传文件到亚马逊云S3对象存储</h1>
+              <span class="meta">
+                Posted on
+                2022-07-01，3 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/PTmSAlH_U.png" alt="封面图">
+          </img>
+          
+          <h3 id="一-在亚马逊云s3创建一个存储桶并设置权限">一 在亚马逊云S3创建一个存储桶，并设置权限</h3>
+<h4 id="1-创建一个存储桶并将权限设置为公开因为我正常时候是用来存放网站图片">1 创建一个存储桶，并将权限设置为公开，因为我正常时候是用来存放网站图片</h4>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658665353168.png" alt="" loading="lazy"></figure>
+<h4 id="2-配置存储卷策略">2 配置存储卷策略</h4>
+<pre><code class="language-json">{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Sid&quot;: &quot;PublicReadGetObject&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: &quot;*&quot;,
+            &quot;Action&quot;: &quot;s3:GetObject&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::test.jiguiquan.com/*&quot;
+        }
+    ]
+}
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658665363503.png" alt="" loading="lazy"></figure>
+<h4 id="3-配置跨域策略">3 配置跨域策略</h4>
+<pre><code class="language-json">[
+    {
+        &quot;AllowedHeaders&quot;: [
+            &quot;*&quot;
+        ],
+        &quot;AllowedMethods&quot;: [
+            &quot;PUT&quot;,
+            &quot;POST&quot;,
+            &quot;GET&quot;
+        ],
+        &quot;AllowedOrigins&quot;: [
+            &quot;*&quot;
+        ],
+        &quot;ExposeHeaders&quot;: [
+            &quot;x-amz-server-side-encryption&quot;,
+            &quot;x-amz-request-id&quot;,
+            &quot;x-amz-id-2&quot;
+        ],
+        &quot;MaxAgeSeconds&quot;: 3000
+    }
+]
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658665372479.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p><strong>到这里，存储卷的配置就算是OK啦，满足正常网站图片的使用了！</strong></p>
+</blockquote>
+<hr>
+<h3 id="二-编写java类完成文件的上传">二 编写Java类，完成文件的上传</h3>
+<h4 id="1-在项目中引入-aws-sdk-的依赖">1 在项目中引入 aws-sdk 的依赖</h4>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.amazonaws&lt;/groupId&gt;
+    &lt;artifactId&gt;aws-java-sdk-s3&lt;/artifactId&gt;
+    &lt;version&gt;1.11.347&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h4 id="2-编写上传文件的接口">2 编写上传文件的接口</h4>
+<pre><code class="language-java">@Api(tags = &quot;Auth——第三方服务模块&quot;)
+@RestController
+@RequiredArgsConstructor
+public class ThirdpartyController {
+ 
+    @Value(&quot;${s3.accessKeyId}&quot;)
+    private String s3AccessKeyId;
+    @Value(&quot;${s3.accessKeySecret}&quot;)
+    private String s3AccessKeySecret;
+    @Value(&quot;${s3.bucketName}&quot;)
+    private String s3BucketName;
+    @Value(&quot;${s3.region}&quot;)
+    private String s3Region;
+ 
+    private static BasicAWSCredentials awsCreds;
+    private static AmazonS3 s3;
+ 
+    @PostConstruct
+    private void init(){
+        awsCreds = new BasicAWSCredentials(s3AccessKeyId, s3AccessKeySecret);
+        s3 = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                //设置服务器所属地区
+                .withRegion(s3Region)
+                .build();
+    }
+ 
+    @ApiResponses({@ApiResponse(code = 200, message = &quot;文件url&quot;)})
+    @ApiOperation(&quot;后端直接上传文件到亚马逊云S3&quot;)
+    @PostMapping(&quot;/auth/s3/upload&quot;)
+    public BaseResponse&lt;String&gt; uploadFileToS3(@RequestParam(&quot;file&quot;) MultipartFile file) {
+        if (file.getSize() == 0){
+            throw ZidanApiException.create(BmoonResponseCode.FILE_SIZE_ZERO);
+        }
+        if (StringUtils.isBlank(file.getOriginalFilename())){
+            throw ZidanApiException.create(BmoonResponseCode.FILE_NAME_EMPTY);
+        }
+        // String host = &quot;https://s3.&quot; + s3Region + &quot;.amazonaws.com/&quot; + s3BucketName;
+        String host = &quot;https://s3.ap-northeast-2.amazonaws.com/test.jiguiquan.com&quot;;
+        String format = new SimpleDateFormat(&quot;yyyyMMdd&quot;).format(new Date());
+        String uploadName = format + &quot;/&quot; + UUID.randomUUID().toString() + file.getOriginalFilename();
+ 
+        ObjectMetadata metadata  = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+ 
+        InputStream inputStream = null;
+        try {
+            inputStream = file.getInputStream();
+            com.amazonaws.services.s3.model.PutObjectResult result = s3.putObject(new PutObjectRequest(s3BucketName, uploadName, inputStream, metadata));
+            System.out.println(uploadName + &quot;:文件的Md5为：&quot; + result.getContentMd5());
+            return BaseResponse.success(host + &quot;/&quot; + uploadName);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw ZidanApiException.create(BmoonResponseCode.FILE_UPLOAD_FAILED);
+        } finally {
+            if (inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<hr>
+<h3 id="三-测试文件的上传与访问">三 测试文件的上传与访问</h3>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658665387619.png" alt="" loading="lazy"></figure>
+<p>浏览器访问：</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658665394203.png" alt="" loading="lazy"></figure>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%9C%A8%E4%BA%9A%E9%A9%AC%E9%80%8A%E4%BA%91s3%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AD%98%E5%82%A8%E6%A1%B6%E5%B9%B6%E8%AE%BE%E7%BD%AE%E6%9D%83%E9%99%90">一 在亚马逊云S3创建一个存储桶，并设置权限</a>
+<ul>
+<li><a href="#1-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AD%98%E5%82%A8%E6%A1%B6%E5%B9%B6%E5%B0%86%E6%9D%83%E9%99%90%E8%AE%BE%E7%BD%AE%E4%B8%BA%E5%85%AC%E5%BC%80%E5%9B%A0%E4%B8%BA%E6%88%91%E6%AD%A3%E5%B8%B8%E6%97%B6%E5%80%99%E6%98%AF%E7%94%A8%E6%9D%A5%E5%AD%98%E6%94%BE%E7%BD%91%E7%AB%99%E5%9B%BE%E7%89%87">1 创建一个存储桶，并将权限设置为公开，因为我正常时候是用来存放网站图片</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE%E5%AD%98%E5%82%A8%E5%8D%B7%E7%AD%96%E7%95%A5">2 配置存储卷策略</a></li>
+<li><a href="#3-%E9%85%8D%E7%BD%AE%E8%B7%A8%E5%9F%9F%E7%AD%96%E7%95%A5">3 配置跨域策略</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E7%BC%96%E5%86%99java%E7%B1%BB%E5%AE%8C%E6%88%90%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%8A%E4%BC%A0">二 编写Java类，完成文件的上传</a>
+<ul>
+<li><a href="#1-%E5%9C%A8%E9%A1%B9%E7%9B%AE%E4%B8%AD%E5%BC%95%E5%85%A5-aws-sdk-%E7%9A%84%E4%BE%9D%E8%B5%96">1 在项目中引入 aws-sdk 的依赖</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E7%9A%84%E6%8E%A5%E5%8F%A3">2 编写上传文件的接口</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%8A%E4%BC%A0%E4%B8%8E%E8%AE%BF%E9%97%AE">三 测试文件的上传与访问</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/Hbra5M-xo/">
+                  <span class="post-title">
+                    netty&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/zMtbXOeeT/">
+                   <span class="post-title">
+                     Nacos核心源码剖析（AP架构）——注册中心&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

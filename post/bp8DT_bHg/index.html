@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Nacos核心源码剖析——配置中心 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Nacos核心源码剖析——配置中心 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Nacos核心源码剖析——配置中心" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/bp8DT_bHg/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
+                
+              </span>
+              <h1>Nacos核心源码剖析——配置中心</h1>
+              <span class="meta">
+                Posted on
+                2022-07-04，19 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/bp8DT_bHg.png" alt="封面图">
+          </img>
+          
+          <p>Nacos官方文档：https://nacos.io/zh-cn/docs/quick-start.html</p>
+<p>服务端对外暴露的API：https://nacos.io/zh-cn/docs/open-api.html</p>
+<p>Nacos的Server端其实就是一个Web服务，对外提供了Http服务接口，所有的客户端与服务端的通讯都通过Http调用完成（短链接）。</p>
+<blockquote>
+<p><strong>Nacos注册服务核心类：NacosNamingService</strong></p>
+<p><strong>Nacos配置中心核心类：NacosConfigService</strong></p>
+</blockquote>
+<p>Nacos配置中心的nameSpace/Group和注册中心类似，但是没有集群Cluster的概念！</p>
+<p>配置文件的核心主键是DataId（与注册中心不一样，注册中心为ServiceName）</p>
+<pre><code class="language-yaml">spring:
+  application:
+    name: nacos-config-client
+  cloud:
+    nacos:
+      config:
+        server-addr: 10.206.73.156:8848
+        namespace: haier-iot
+        group: dev
+        file-extension: yaml
+# 上面的配置，拼装成的最高优先级配置文件为 haier-iot/dev/ nacos-config-client-dev.yaml
+</code></pre>
+<p><strong>Nacos还支持扩展配置：extension-configs，和共享配置：shared-configs</strong>，以支持各种复杂的应用场景！</p>
+<p>官方github wiki地址：https://github.com/alibaba/spring-cloud-alibaba/wiki/Nacos-config</p>
+<p><strong>Client客户端核心知识点：</strong></p>
+<ul>
+<li><strong>当需要获取配置时，先尝试从本地配置文件获取，获取不到时，再去远端Server获取；从远端获取成功后，保存到本地配置文件，后面通过ClientWorker中的长轮询完成配置的实时更新!</strong></li>
+</ul>
+<p>ClientWorker中有两个线程executor和executorService：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658666099885.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<p><strong>单线程executor定时任务</strong>：每10ms执行checkConfigInfo()方法，看看本地配置信息是否有变化，以3000个为一组，判断是否要增加新的LongPollingRunnable长轮询任务；</p>
+</li>
+<li>
+<p><strong>多线程executorService执行LongPollingRunnable长轮询任务核心逻辑</strong>：根据本地配置项的dataId，group，Md5值，tenant拼接字符串，调用服务端“监听配置——长轮询接口”看看这批次的配置是否有变化，有变化的话，就遍历调用“获取配置详情接口”获取最新配置值，没变化的不用动，任务最后，再次执行this，循环往复执行此长轮询任务！</p>
+<p>当本地的配置文件发生改变时，会回调注册在这些配置上的监听器的回调方法，从而完成应用程序的配置更新！（refresh(context)后完成Nacos监听器的注册）</p>
+</li>
+</ul>
+<p><strong>服务端核心知识点：</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658666125421.png" alt="" loading="lazy"></figure>
+<ul>
+<li><strong>服务端即使配置了mysql，每次请求也不是直接去查询mysql的，而是借助 本地内存缓存中的元数据 + 本地磁盘中的配置文件；</strong></li>
+<li><strong>Mysql主要用于集群节点启动时的数据加载（全量加载、增量加载） 和 数据变动时的刷新同步；</strong></li>
+<li><strong>某节点处理配置发布请求时，不是着急更新自己的状态，而是会先写入mysql数据库，之后通过ConfigDataChangeEvent事件实现异步处理，通知所有节点更新自己的内存缓存和本地磁盘文件；（包括自己）</strong></li>
+<li>AP集群，存在数据的短时间不一致，但是可以保证最终一致性，对客户端的影响也就是可能配置更新慢那么一点。</li>
+</ul>
+<hr>
+<h3 id="一-nacos客户端加载配置的核心逻辑">一 nacos客户端加载配置的核心逻辑</h3>
+<h4 id="1-nacos核心配置nacospropertysourcelocator类的定位"><strong>1 nacos核心配置NacosPropertySourceLocator类的定位：</strong></h4>
+<p>如果要弄清楚Nacos配置文件加载到Spring容器中的流程，还需要熟悉Springcloud的源码流程，了解Springcloud中的配置，还有重要的Bean是如果装载到Spring容器中的；</p>
+<p>这里只能大概聊一下：</p>
+<ul>
+<li>Springboot项目启动时，在prepareEnvironment()阶段，会通过spring.factories文件中的BootstrapConfiguration类找到NacosConfigBootstrapConfiguration配置类，并完成注入：</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658666155462.png" alt="" loading="lazy"></figure>
+<ul>
+<li>NacosConfigBootstrapConfiguration配置类，会向Spring容器中注入几个Nacos配置读取重要的类</li>
+</ul>
+<pre><code class="language-java">public class NacosConfigBootstrapConfiguration {
+    public NacosConfigBootstrapConfiguration() {
+    }
+ 
+    @Bean
+    @ConditionalOnMissingBean
+    public NacosConfigProperties nacosConfigProperties() {
+        return new NacosConfigProperties();
+    }
+ 
+    @Bean
+    @ConditionalOnMissingBean
+    public NacosConfigManager nacosConfigManager(NacosConfigProperties nacosConfigProperties) {
+        return new NacosConfigManager(nacosConfigProperties);
+    }
+ 
+    // NacosPropertySourceLocator能够一步步地把把Nacos的配置文件都找到
+    @Bean
+    public NacosPropertySourceLocator nacosPropertySourceLocator(NacosConfigManager nacosConfigManager) {
+        return new NacosPropertySourceLocator(nacosConfigManager);  
+    }
+}
+</code></pre>
+<ul>
+<li>然后在prepareContext()上下文的时候，会通过之前从spring.factories中读取到的ApplicationInitializer初始化器，这里遍历执行时，就会执行到springcloud的PropertySpurceBootstrapConfiguration类的initialize()方法：</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658666184206.png" alt="" loading="lazy"></figure>
+<p>可以看到PropertySpurceBootstrapConfiguration.initialize()方法中需要用到PropertySourceLocator接口的实现类，而我们配置的Nacos正好为这个接口提供了实现类NacosPropertySourceLocator</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658666209114.png" alt="" loading="lazy"></figure>
+<h4 id="2-通过nacospropertysourcelocator类理清nacos各中配置文件的优先级"><strong>2 通过NacosPropertySourceLocator类，理清Nacos各中配置文件的优先级：</strong></h4>
+<pre><code class="language-java">// com.alibaba.cloud.nacos.client.NacosPropertySourceLocator#locate
+public PropertySource&lt;?&gt; locate(Environment env) {
+    this.nacosConfigProperties.setEnvironment(env);
+    ConfigService configService = this.nacosConfigManager.getConfigService();
+    if (null == configService) {
+        log.warn(&quot;no instance of config service found, can't load config from nacos&quot;);
+        return null;
+    } else {
+        long timeout = (long)this.nacosConfigProperties.getTimeout();
+        this.nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService, timeout);
+        String name = this.nacosConfigProperties.getName();
+        String dataIdPrefix = this.nacosConfigProperties.getPrefix();
+        if (StringUtils.isEmpty(dataIdPrefix)) {
+            dataIdPrefix = name;
+        }
+ 
+        if (StringUtils.isEmpty(dataIdPrefix)) {
+            dataIdPrefix = env.getProperty(&quot;spring.application.name&quot;);
+        }
+ 
+        CompositePropertySource composite = new CompositePropertySource(&quot;NACOS&quot;);
+        // 1. 先加载共享配置文件
+        this.loadSharedConfiguration(composite); 
+        // 2. 再加载扩展配置文件 
+        this.loadExtConfiguration(composite);  
+        // 3. 最后才加载本应用自己的配置文件
+        this.loadApplicationConfiguration(composite, dataIdPrefix, this.nacosConfigProperties, env); 
+        return composite;
+    }
+}
+</code></pre>
+<p>本应用自己的配置文件也是可以存在多个的，也是有优先级的：</p>
+<pre><code class="language-java">// 入参中的dataIdPrefix，理解为就是spring.application.name
+private void loadApplicationConfiguration(CompositePropertySource compositePropertySource, String dataIdPrefix, NacosConfigProperties properties, Environment environment) {
+    String fileExtension = properties.getFileExtension();
+    String nacosGroup = properties.getGroup();
+    // 1. 先尝试加载：纯微服务名称对应的配置文件，如：order-config
+    this.loadNacosDataIfPresent(compositePropertySource, dataIdPrefix, nacosGroup, fileExtension, true);
+    // 2. 再尝试加载：微服务名称 + &quot;.&quot; + 文件扩展名的文件，如：order-config.yaml
+    this.loadNacosDataIfPresent(compositePropertySource, dataIdPrefix + &quot;.&quot; + fileExtension, nacosGroup, fileExtension, true);
+    String[] var7 = environment.getActiveProfiles();
+    int var8 = var7.length;
+ 
+    // 3. 最后再尝试加载：微服务名称 + &quot;-&quot; + profile + &quot;.&quot; + 文件扩展名的文件，如：order-config-dev.yaml
+    for(int var9 = 0; var9 &lt; var8; ++var9) {
+        String profile = var7[var9];
+        String dataId = dataIdPrefix + &quot;-&quot; + profile + &quot;.&quot; + fileExtension;
+        this.loadNacosDataIfPresent(compositePropertySource, dataId, nacosGroup, fileExtension, true);
+    }
+ 
+}
+</code></pre>
+<blockquote>
+<p>根据后加载的覆盖先加载的原则，最后我们很容易就可以知道整个服务的配置文件的优先级为：</p>
+<p><strong>order-config-dev.yaml &gt; order-config.yaml &gt; order-config &gt; extension-configs &gt; shared-configs</strong></p>
+</blockquote>
+<hr>
+<h3 id="二-nacos配置中心的核心类nacosconfigservice的引入">二 Nacos配置中心的核心类NacosConfigService的引入</h3>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1658666249886.png" alt="" loading="lazy"></figure>
+<h4 id="1-客户端是何时从远程配置nacos服务端拉取配置的"><strong>1 客户端是何时从远程配置Nacos服务端拉取配置的</strong></h4>
+<pre><code class="language-java">// 还记得刚开始时候，通过spring.factories注入了一个配置类NacosConfigBootstrapConfiguration 
+// 该配置类，会向Spring容器中注入一个Bean：NacosConfigManager
+@Bean
+@ConditionalOnMissingBean
+public NacosConfigManager nacosConfigManager(NacosConfigProperties nacosConfigProperties) {
+    return new NacosConfigManager(nacosConfigProperties);
+}
+ 
+//而NacosConfigManager的构造方法中，就会“写死”为我们create一个ConfigService，赋值给静态变量service
+private static ConfigService service = createConfigService(nacosConfigProperties);
+|
+public static ConfigService createConfigService(Properties properties) throws NacosException {
+    try {
+        Class&lt;?&gt; driverImplClass = Class.forName(&quot;com.alibaba.nacos.client.config.NacosConfigService&quot;);
+        Constructor constructor = driverImplClass.getConstructor(Properties.class);
+        ConfigService vendorImpl = (ConfigService)constructor.newInstance(properties);
+        return vendorImpl;
+    } catch (Throwable var4) {
+        throw new NacosException(-400, var4);
+    }
+}
+</code></pre>
+<p>此时，NacosConfigService闪亮登场！</p>
+<h4 id="2-nacosconfigservice类的构造方法中会创建重要的两个属性agent和worker"><strong>2 NacosConfigService类的构造方法中会创建重要的两个属性agent和worker：</strong></h4>
+<pre><code class="language-java">public NacosConfigService(Properties properties) throws NacosException {
+    ValidatorUtils.checkInitParam(properties);
+    String encodeTmp = properties.getProperty(PropertyKeyConst.ENCODE);
+    if (StringUtils.isBlank(encodeTmp)) {
+        this.encode = Constants.ENCODE;
+    } else {
+        this.encode = encodeTmp.trim();
+    }
+    initNamespace(properties);
+     
+    // agent是一个http代理，如果需要登录验证等操作，ServerHttpAgent构造时会完成验证
+    this.agent = new MetricsHttpAgent(new ServerHttpAgent(properties));
+    this.agent.start();
+     
+    // 客户端的实际工作者ClientWorker，其中的agent也就是上面创建的agent
+    this.worker = new ClientWorker(this.agent, this.configFilterChainManager, properties);
+}
+</code></pre>
+<p>####<strong>3 NacosConfigService中的核心获取配置方法getConfig() ——&gt; getConfigInner()：</strong></p>
+<ul>
+<li>客户端需要使用配置文件时，<strong>不是直接去调用远端Server获取，而是先尝试从本地Failover文件获取</strong>；</li>
+<li>如果<strong>本地文件不存在，则才会从远端Server获取</strong>；</li>
+<li>从<strong>远端Server成功获取配置后，会向本地文件保存快照</strong>，以备后用；（本地文件的更新由后面的长轮询完成）</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1658666274991.png" alt="" loading="lazy"></figure>
+<pre><code class="language-java">private String getConfigInner(String tenant, String dataId, String group, long timeoutMs) throws NacosException {
+    group = null2defaultGroup(group);
+    ParamUtils.checkKeyParam(dataId, group);
+    ConfigResponse cr = new ConfigResponse();
+     
+    cr.setDataId(dataId);
+    cr.setTenant(tenant);
+    cr.setGroup(group);
+     
+    // 优先使用本地配置
+    String content = LocalConfigInfoProcessor.getFailover(agent.getName(), dataId, group, tenant);
+    if (content != null) {
+        cr.setContent(content);
+        configFilterChainManager.doFilter(null, cr);
+        content = cr.getContent();
+        return content;
+    }
+     
+    try {
+        // 本地没有后，就尝试从远端获取配置
+        String[] ct = worker.getServerConfig(dataId, group, tenant, timeoutMs);
+        cr.setContent(ct[0]);
+         
+        configFilterChainManager.doFilter(null, cr);
+        content = cr.getContent();
+         
+        return content;
+    } catch (NacosException ioe) {
+        ......
+    }
+     
+    ......
+    return content;
+}
+</code></pre>
+<blockquote>
+<p>所以Nacos配置中心与注册中心类似，都是先尝试从本地获取配置，只不过注册中心比配置中心多了一份内存注册表！</p>
+<ul>
+<li>注册中心：本地Failover故障转移文件 ——&gt; 本地内存注册表 ——&gt; 远端请求服务列表</li>
+<li>配置中心：本地Failover故障转移文件（也就是本地配置快照文件）——&gt; 远端请求配置文件</li>
+</ul>
+</blockquote>
+<p>worker.getServerConfig()远端配置请求成功后，还会往本地配置文件存一份Snapshot：</p>
+<pre><code class="language-java">// worker.getServerConfig()
+public String[] getServerConfig(String dataId, String group, String tenant, long readTimeout){
+    // 从远端Server获取配置，这里的agent就是NacosConfigService构造方法中创建的agent代理
+    result = agent.httpGet(Constants.CONFIG_CONTROLLER_PATH, null, params, agent.getEncode(), readTimeout);
+     
+    switch (result.getCode()) {
+        case HttpURLConnection.HTTP_OK:
+            // 往本地配置快照文件存一份
+            LocalConfigInfoProcessor.saveSnapshot(agent.getName(), dataId, group, tenant, result.getData());
+            ct[0] = result.getData();
+            if (result.getHeader().getValue(CONFIG_TYPE) != null) {
+                ct[1] = result.getHeader().getValue(CONFIG_TYPE);
+            } else {
+                ct[1] = ConfigType.TEXT.getType();
+            }
+            return ct;
+        case HttpURLConnection.HTTP_NOT_FOUND:
+            LocalConfigInfoProcessor.saveSnapshot(agent.getName(), dataId, group, tenant, null);
+            return ct;
+        case HttpURLConnection.HTTP_CONFLICT: {
+            ...
+        }
+        case HttpURLConnection.HTTP_FORBIDDEN: {
+            ...
+        }
+        default: {
+            ...
+        }
+    }
+}
+</code></pre>
+<h4 id="4-client第一次获取到server端配置后之后如何进行定时更新"><strong>4 Client第一次获取到Server端配置后，之后如何进行定时更新？</strong></h4>
+<pre><code class="language-java">// ClientWorker构造时，会创建2个线程池
+// 1. executor(单线程) ：定时每10毫秒执行checkConfigInfo()方法
+// 2. executorService(1~核数/2): 具体的执行长轮询的线程
+public ClientWorker(final HttpAgent agent, final ConfigFilterChainManager configFilterChainManager,final Properties properties) {
+    this.agent = agent;
+    this.configFilterChainManager = configFilterChainManager;
+     
+    // Initialize the timeout parameter
+     
+    init(properties);
+     
+    this.executor = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r);
+            t.setName(&quot;com.alibaba.nacos.client.Worker.&quot; + agent.getName());
+            t.setDaemon(true);
+            return t;
+        }
+    });
+     
+    this.executorService = Executors
+            .newScheduledThreadPool(Runtime.getRuntime().availableProcessors(), new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r);
+                    t.setName(&quot;com.alibaba.nacos.client.Worker.longPolling.&quot; + agent.getName());
+                    t.setDaemon(true);
+                    return t;
+                }
+            });
+     
+    this.executor.scheduleWithFixedDelay(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                checkConfigInfo();
+            } catch (Throwable e) {
+                LOGGER.error(&quot;[&quot; + agent.getName() + &quot;] [sub-check] rotate check error&quot;, e);
+            }
+        }
+    }, 1L, 10L, TimeUnit.MILLISECONDS);
+}
+ 
+public void checkConfigInfo() {
+    // 将总的需要监听的配置数，以3000个为一组，创建长轮询LongPollingRunnable任务，监听配置更新！
+    int listenerSize = cacheMap.get().size();
+    int longingTaskCount = (int) Math.ceil(listenerSize / ParamUtil.getPerTaskConfigSize()); 
+    if (longingTaskCount &gt; currentLongingTaskCount) {
+        for (int i = (int) currentLongingTaskCount; i &lt; longingTaskCount; i++) {
+            // 实际的干活线程，从远端拉取最新的config，与本地的config对比MD5值，看是否发生变化
+            executorService.execute(new LongPollingRunnable(i));
+        }
+        currentLongingTaskCount = longingTaskCount;
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>总结：ClientWorker实例化时，会创建两个线程：executor和executorService</strong></p>
+<ul>
+<li><strong>executor（单线程）：每隔10ms检查本地的配置数是否发生改变，以3000为一批次创建长轮询任务，不足的话，不另外创建长轮询任务；</strong></li>
+<li><strong>executorService（多线程1~核数/2）:具体执行长轮询LongPolling任务的工作线程；</strong></li>
+</ul>
+</blockquote>
+<h4 id="5-nacos客户端长轮询longpolling任务的核心逻辑md5比对"><strong>5 Nacos客户端长轮询LongPolling任务的核心逻辑（md5比对）：</strong></h4>
+<p>监听配置的长轮询接口API：https://nacos.io/zh-cn/docs/open-api.html</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1658666302821.png" alt="" loading="lazy"></figure>
+<pre><code class="language-java">// LongPollingRunnable.run()
+public void run() {
+     
+    List&lt;CacheData&gt; cacheDatas = new ArrayList&lt;CacheData&gt;();
+    List&lt;String&gt; inInitializingCacheList = new ArrayList&lt;String&gt;();
+    try {
+        // 检查本地的配置文件
+        for (CacheData cacheData : cacheMap.get().values()) {
+            if (cacheData.getTaskId() == taskId) {
+                cacheDatas.add(cacheData);
+                try {
+                    checkLocalConfig(cacheData);
+                    if (cacheData.isUseLocalConfigInfo()) {
+                        cacheData.checkListenerMd5();
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(&quot;get local config info error&quot;, e);
+                }
+            }
+        }
+         
+        // 会根据上面得到的cacheDatas，组装参数，调用服务端的监听配置的长轮询接口/nacos/v1/cs/configs/listener
+        // 长轮询的返回值是dataId^2group^2tenant^1，空串代表无变化
+        List&lt;String&gt; changedGroupKeys = checkUpdateDataIds(cacheDatas, inInitializingCacheList);
+        if (!CollectionUtils.isEmpty(changedGroupKeys)) {
+            LOGGER.info(&quot;get changedGroupKeys:&quot; + changedGroupKeys);
+        }
+         
+        for (String groupKey : changedGroupKeys) {
+            String[] key = GroupKey.parseKey(groupKey);
+            String dataId = key[0];
+            String group = key[1];
+            String tenant = null;
+            if (key.length == 3) {
+                tenant = key[2];
+            }
+            try {
+                // 会根据返回值中有变化的dataId配置项，单独去获取最新的配置值回本地
+                String[] ct = getServerConfig(dataId, group, tenant, 3000L);
+                CacheData cache = cacheMap.get().get(GroupKey.getKeyTenant(dataId, group, tenant));
+                cache.setContent(ct[0]);
+                if (null != ct[1]) {
+                    cache.setType(ct[1]);
+                }
+                LOGGER.info(&quot;[{}] [data-received] dataId={}, group={}, tenant={}, md5={}, content={}, type={}&quot;,
+                        agent.getName(), dataId, group, tenant, cache.getMd5(),
+                        ContentUtils.truncateContent(ct[0]), ct[1]);
+            } catch (NacosException ioe) {
+                String message = String
+                        .format(&quot;[%s] [get-update] get changed config exception. dataId=%s, group=%s, tenant=%s&quot;,
+                                agent.getName(), dataId, group, tenant);
+                LOGGER.error(message, ioe);
+            }
+        }
+        for (CacheData cacheData : cacheDatas) {
+            if (!cacheData.isInitializing() || inInitializingCacheList
+                    .contains(GroupKey.getKeyTenant(cacheData.dataId, cacheData.group, cacheData.tenant))) {
+                cacheData.checkListenerMd5();
+                cacheData.setInitializing(false);
+            }
+        }
+        inInitializingCacheList.clear();
+         
+        // 再次执行该方法，不断循环，不停监听配置文件的更新
+        executorService.execute(this);
+         
+    } catch (Throwable e) {
+         
+        // If the rotation training task is abnormal, the next execution time of the task will be punished
+        LOGGER.error(&quot;longPolling error : &quot;, e);
+        executorService.schedule(this, taskPenaltyTime, TimeUnit.MILLISECONDS);
+    }
+}
+</code></pre>
+<p>checkUpdateDataIds(cacheDatas, inInitializingCacheList)核心逻辑：</p>
+<pre><code class="language-java">// 拼接本地所有的dataId为一个长字符串
+List&lt;String&gt; checkUpdateDataIds(List&lt;CacheData&gt; cacheDatas, List&lt;String&gt; inInitializingCacheList) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    for (CacheData cacheData : cacheDatas) {
+        if (!cacheData.isUseLocalConfigInfo()) {
+            sb.append(cacheData.dataId).append(WORD_SEPARATOR);
+            sb.append(cacheData.group).append(WORD_SEPARATOR);
+            if (StringUtils.isBlank(cacheData.tenant)) {
+                sb.append(cacheData.getMd5()).append(LINE_SEPARATOR);
+            } else {
+                sb.append(cacheData.getMd5()).append(WORD_SEPARATOR);
+                sb.append(cacheData.getTenant()).append(LINE_SEPARATOR);
+            }
+            if (cacheData.isInitializing()) {
+                // It updates when cacheData occours in cacheMap by first time.
+                inInitializingCacheList
+                        .add(GroupKey.getKeyTenant(cacheData.dataId, cacheData.group, cacheData.tenant));
+            }
+        }
+    }
+    boolean isInitializingCacheList = !inInitializingCacheList.isEmpty();
+    return checkUpdateConfigStr(sb.toString(), isInitializingCacheList);
+}
+
+// 向服务端发起长轮询的查询逻辑，超时为30秒，不要挂起我
+List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInitializingCacheList) {
+     
+    Map&lt;String, String&gt; params = new HashMap&lt;String, String&gt;(2);
+    params.put(Constants.PROBE_MODIFY_REQUEST, probeUpdateString);
+    Map&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;(2);
+    headers.put(&quot;Long-Pulling-Timeout&quot;, &quot;&quot; + timeout);
+     
+    if (isInitializingCacheList) {
+        headers.put(&quot;Long-Pulling-Timeout-No-Hangup&quot;, &quot;true&quot;); 
+    }
+     
+    if (StringUtils.isBlank(probeUpdateString)) {
+        return Collections.emptyList();
+    }
+     
+    try {
+        // In order to prevent the server from handling the delay of the client's long task,
+        // increase the client's read timeout to avoid this problem.
+         
+        long readTimeoutMs = timeout + (long) Math.round(timeout &gt;&gt; 1);
+        HttpRestResult&lt;String&gt; result = agent
+                .httpPost(Constants.CONFIG_CONTROLLER_PATH + &quot;/listener&quot;, headers, params, agent.getEncode(),
+                        readTimeoutMs);
+         
+        if (result.ok()) {
+            setHealthServer(true);
+            return parseUpdateDataIdResponse(result.getData());
+        } else {
+            setHealthServer(false);
+            LOGGER.error(&quot;[{}] [check-update] get changed dataId error, code: {}&quot;, agent.getName(),
+                    result.getCode());
+        }
+    } catch (Exception e) {
+        setHealthServer(false);
+        LOGGER.error(&quot;[&quot; + agent.getName() + &quot;] [check-update] get changed dataId exception&quot;, e);
+        throw e;
+    }
+    return Collections.emptyList();
+}
+</code></pre>
+<blockquote>
+<p>总结：长轮询LongPollingRunnable长轮询任务的核心逻辑就是：</p>
+<ul>
+<li><strong>先查询本地配置文件Failover文件</strong>（本地配置快照Snapshot文件）；</li>
+<li>根据本地配置文件，得到<strong>所有配置项，拼接请求参数（dataId/group/Md5/tenant），向服务端提供的长轮询接口（监听配置）：POST：/nacos/v1/cs/configs/listener 发起长轮询调用</strong>；</li>
+<li>如果<strong>本批次的配置项有变动，服务端就会返回有变动的配置项字符串数组</strong>，如果没有变动，就返回空串；</li>
+<li>如果返回不为空，说明有变动，就<strong>遍历这些变动项，然后通过具体的获取配置接口：GET：/nacos/v1/cs/configs 获取该配置项的最新配置</strong>；</li>
+<li>最后，<strong>再次执行本次的 LongPollingRunnable 任务，循环往复，完成配置的实时监听更新</strong>！</li>
+</ul>
+</blockquote>
+<h4 id="6-经过长轮询后如果本地配置文件更新后该如何通知到我们的应用程序注册监听器"><strong>6 经过长轮询后，如果本地配置文件更新后，该如何通知到我们的应用程序（注册监听器）？</strong></h4>
+<p>在Springboot项目完成refresh(context)后，会调用 listeners.running(context) 方法，这个方法会向系统发出ApplicationReadyEvent事件，其它的监听了这个事件的Listener就可以做对应的工作了，而<strong>NacosContextRefresher</strong>就是其中之一！</p>
+<pre><code class="language-java">public class NacosContextRefresher implements ApplicationListener&lt;ApplicationReadyEvent&gt;, ApplicationContextAware {
+ 
+    // 监听到ApplicationReadyEvent事件后，开始注册Nacos的监听器
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        if (this.ready.compareAndSet(false, true)) {
+            this.registerNacosListenersForApplications();
+        }
+    }
+     
+     
+  private void registerNacosListenersForApplications() {
+        if (this.isRefreshEnabled()) {
+            Iterator var1 = NacosPropertySourceRepository.getAll().iterator();
+     
+            while(var1.hasNext()) {
+                NacosPropertySource propertySource = (NacosPropertySource)var1.next();
+                if (propertySource.isRefreshable()) {  // 默认使开启的
+                    String dataId = propertySource.getDataId();
+                    this.registerNacosListener(propertySource.getGroup(), dataId);
+                }
+            }
+        }
+     
+    }
+}
+
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1658666327231.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p><strong>有了这一系列的监听器，当客户端知道配置发生改变时，就会回调对应的监听器的回调方法，通知应用程序更新对应的Bean（从IOC容器中删除旧Bean，放入新的Bean）。</strong></p>
+</blockquote>
+<hr>
+<h3 id="三-ap模式nacos集群服务端如何工作">三 AP模式nacos集群，服务端如何工作</h3>
+<p>首先一定要清楚，即使集群情况下，配置了mysql，当客户端查询配置时，也不是直接从mysql获取的，而是从每个节点的本地文件读取；</p>
+<ul>
+<li><strong>各节点本地文件：具体的配置；</strong></li>
+<li><strong>各节点内存缓存：存储配置的元信息，如Md5值等；</strong></li>
+<li><strong>Mysql：具体的配置的最新值和历史记录，方便新节点启动时加载，以及节点之间的数据同步；</strong></li>
+</ul>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1658666346288.png" alt="" loading="lazy"></figure>
+<h4 id="1-配置文件的dump加载dumpservice"><strong>1 配置文件的Dump加载：DumpService</strong></h4>
+<p>DumpService由两个实现类：EmbeddedDumpService（derby） 和 ExternalDumpService（mysql）；</p>
+<p>当新节点启动时，需要从mysql中加载配置数据，如果最后心跳时间&gt;6h，则从mysql加载全量数据；如果最后心跳时间&lt;6h，则从mysql加载增量数据；</p>
+<ul>
+<li>全量加载：删除本地的配置文件，全部从mysql加载配置数据；（每次捞取1000条）</li>
+<li>增量加载：捞取最近6小时的新增配置，更新本地和内存元数据后，与mysql数据库中的配置进行比对，如果不一致，则再同步一次！</li>
+</ul>
+<h4 id="2-新的配置被发布后如何在集群间进行同步"><strong>2 新的配置被发布后，如何在集群间进行同步？</strong></h4>
+<ul>
+<li>AP集群，每个节点地位平等，发布配置后，根据轮询机制，会<strong>由某一台Server节点处理本地请求，该节点首先会将配置写入到Mysql数据库中</strong>；</li>
+<li>该节点会<strong>发布一个ConfigDataChangeEvent事件</strong>，该事件会<strong>被自己的监听器处理</strong>，处理时，会<strong>通过HTTP调用集群的所有节点，告知配置发生改变（包括自己</strong>，因为上面只是写mysql，自己的本地文件和内存文件也都没有被修改）</li>
+<li><strong>所有节点接收到本地配置修改的通知后，会到Mysql中同步最新的配置</strong>，刷新内存缓存 和 本地磁盘文件；</li>
+</ul>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-nacos%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91">一 nacos客户端加载配置的核心逻辑</a>
+<ul>
+<li><a href="#1-nacos%E6%A0%B8%E5%BF%83%E9%85%8D%E7%BD%AEnacospropertysourcelocator%E7%B1%BB%E7%9A%84%E5%AE%9A%E4%BD%8D"><strong>1 nacos核心配置NacosPropertySourceLocator类的定位：</strong></a></li>
+<li><a href="#2-%E9%80%9A%E8%BF%87nacospropertysourcelocator%E7%B1%BB%E7%90%86%E6%B8%85nacos%E5%90%84%E4%B8%AD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><strong>2 通过NacosPropertySourceLocator类，理清Nacos各中配置文件的优先级：</strong></a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-nacos%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E7%9A%84%E6%A0%B8%E5%BF%83%E7%B1%BBnacosconfigservice%E7%9A%84%E5%BC%95%E5%85%A5">二 Nacos配置中心的核心类NacosConfigService的引入</a>
+<ul>
+<li><a href="#1-%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%AF%E4%BD%95%E6%97%B6%E4%BB%8E%E8%BF%9C%E7%A8%8B%E9%85%8D%E7%BD%AEnacos%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%8B%89%E5%8F%96%E9%85%8D%E7%BD%AE%E7%9A%84"><strong>1 客户端是何时从远程配置Nacos服务端拉取配置的</strong></a></li>
+<li><a href="#2-nacosconfigservice%E7%B1%BB%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E4%B8%AD%E4%BC%9A%E5%88%9B%E5%BB%BA%E9%87%8D%E8%A6%81%E7%9A%84%E4%B8%A4%E4%B8%AA%E5%B1%9E%E6%80%A7agent%E5%92%8Cworker"><strong>2 NacosConfigService类的构造方法中会创建重要的两个属性agent和worker：</strong></a></li>
+<li><a href="#4-client%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%8E%B7%E5%8F%96%E5%88%B0server%E7%AB%AF%E9%85%8D%E7%BD%AE%E5%90%8E%E4%B9%8B%E5%90%8E%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E5%AE%9A%E6%97%B6%E6%9B%B4%E6%96%B0"><strong>4 Client第一次获取到Server端配置后，之后如何进行定时更新？</strong></a></li>
+<li><a href="#5-nacos%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%95%BF%E8%BD%AE%E8%AF%A2longpolling%E4%BB%BB%E5%8A%A1%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91md5%E6%AF%94%E5%AF%B9"><strong>5 Nacos客户端长轮询LongPolling任务的核心逻辑（md5比对）：</strong></a></li>
+<li><a href="#6-%E7%BB%8F%E8%BF%87%E9%95%BF%E8%BD%AE%E8%AF%A2%E5%90%8E%E5%A6%82%E6%9E%9C%E6%9C%AC%E5%9C%B0%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%9B%B4%E6%96%B0%E5%90%8E%E8%AF%A5%E5%A6%82%E4%BD%95%E9%80%9A%E7%9F%A5%E5%88%B0%E6%88%91%E4%BB%AC%E7%9A%84%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%B3%A8%E5%86%8C%E7%9B%91%E5%90%AC%E5%99%A8"><strong>6 经过长轮询后，如果本地配置文件更新后，该如何通知到我们的应用程序（注册监听器）？</strong></a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-ap%E6%A8%A1%E5%BC%8Fnacos%E9%9B%86%E7%BE%A4%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C">三 AP模式nacos集群，服务端如何工作</a>
+<ul>
+<li><a href="#1-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84dump%E5%8A%A0%E8%BD%BDdumpservice"><strong>1 配置文件的Dump加载：DumpService</strong></a></li>
+<li><a href="#2-%E6%96%B0%E7%9A%84%E9%85%8D%E7%BD%AE%E8%A2%AB%E5%8F%91%E5%B8%83%E5%90%8E%E5%A6%82%E4%BD%95%E5%9C%A8%E9%9B%86%E7%BE%A4%E9%97%B4%E8%BF%9B%E8%A1%8C%E5%90%8C%E6%AD%A5"><strong>2 新的配置被发布后，如何在集群间进行同步？</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/zolXTKRvU/">
+                  <span class="post-title">
+                    Nacos核心源码剖析（CP架构）——注册中心&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/Y45PUcltI/">
+                   <span class="post-title">
+                     openfeign-ribbon核心源码剖析&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658230910810"
+            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -282,7 +282,7 @@ export PATH=$PATH:$GRADLE_HOME/bin
 <figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658230676105.png" alt="" loading="lazy"></figure>
 <h3 id="helloword">HelloWord</h3>
 <p>编写一个build.gradle文件，输入以下内容</p>
-<pre><code class="language-groovy">task hello{
+<pre><code class="language-java">task hello{
     doLast {
         println 'Hello World'
     }
@@ -362,7 +362,7 @@ windows：</p>
 <h2 id="自定义gradle_wrap">自定义Gradle_Wrap</h2>
 <p>可以通过自定义wrapper少去一些重复操作或定制功能，如</p>
 <p>build.gradle</p>
-<pre><code class="language-groovy">tasks.named('wrapper') {
+<pre><code class="language-java">tasks.named('wrapper') {
     distributionType = Wrapper.DistributionType.ALL
 }
 task wrapper(type: Wrapper) {
