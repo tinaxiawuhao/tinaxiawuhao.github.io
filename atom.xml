@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-07-24T13:36:33.381Z</updated>
+    <updated>2022-07-28T12:51:06.775Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -10,6 +10,1300 @@
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, tianxia</rights>
+    <entry>
+        <title type="html"><![CDATA[MQ 消息丢失、重复、积压问题，如何解决]]></title>
+        <id>https://tinaxiawuhao.github.io/post/-GeRQ4Ed-/</id>
+        <link href="https://tinaxiawuhao.github.io/post/-GeRQ4Ed-/">
+        </link>
+        <updated>2022-07-21T12:47:04.000Z</updated>
+        <content type="html"><![CDATA[<p>面试官在面试候选人时，如果发现候选人的简历中写了在项目中使用了 MQ 技术（如 Kafka、RabbitMQ、RocketMQ），基本都会抛出一个问题：在使用 MQ 的时候，怎么确保消息 100% 不丢失？</p>
+<p>这个问题在实际工作中很常见，既能考察候选者对于 MQ 中间件技术的掌握程度，又能很好地区分候选人的能力水平。接下来，我们就从这个问题出发，探讨你应该掌握的基础知识和答题思路，以及延伸的面试考点。</p>
+<h3 id="案例背景">案例背景</h3>
+<p>以京东系统为例，用户在购买商品时，通常会选择用京豆抵扣一部分的金额，在这个过程中，交易服务和京豆服务通过 MQ 消息队列进行通信。在下单时，交易服务发送“扣减账户 X 100 个京豆”的消息给 MQ 消息队列，而京豆服务则在消费端消费这条命令，实现真正的扣减操作。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1659012472140.png" alt="" loading="lazy"></figure>
+<p>那在这个过程中你会遇到什么问题呢？</p>
+<h3 id="案例分析">案例分析</h3>
+<p>要知道，在互联网面试中，引入 MQ 消息中间件最直接的目的是：做系统解耦合流量控制，追其根源还是为了解决互联网系统的高可用和高性能问题。</p>
+<ul>
+<li><strong>系统解耦</strong>：用 MQ 消息队列，可以隔离系统上下游环境变化带来的不稳定因素，比如京豆服务的系统需求无论如何变化，交易服务不用做任何改变，即使当京豆服务出现故障，主交易流程也可以将京豆服务降级，实现交易服务和京豆服务的解耦，做到了系统的高可用。</li>
+<li>流量控制：遇到秒杀等流量突增的场景，通过 MQ 还可以实现流量的“削峰填谷”的作用，可以根据下游的处理能力自动调节流量。</li>
+</ul>
+<p>不过引入 MQ 虽然实现了系统解耦合流量控制，也会带来其他问题。</p>
+<p><strong>引入 MQ 消息中间件实现系统解耦，会影响系统之间数据传输的一致性。</strong> 在分布式系统中，如果两个节点之间存在数据同步，就会带来数据一致性的问题。同理，在这一讲你要解决的就是：消息生产端和消息消费端的消息数据一致性问题（也就是如何确保消息不丢失）。</p>
+<p><strong>而引入 MQ 消息中间件解决流量控制</strong>， 会使消费端处理能力不足从而导致消息积压，这也是你要解决的问题。</p>
+<p>所以你能发现，问题与问题之间往往是环环相扣的，面试官会借机考察你解决问题思路的连贯性和知识体系的掌握程度。</p>
+<p>那面对“在使用 MQ 消息队列时，如何确保消息不丢失”这个问题时，你要怎么回答呢？首先，你要分析其中有几个考点，比如：</p>
+<ul>
+<li>如何知道有消息丢失？</li>
+<li>哪些环节可能丢消息？</li>
+<li>如何确保消息不丢失？</li>
+</ul>
+<p><strong>候选人在回答时，要先让面试官知道你的分析思路，然后再提供解决方案</strong>：网络中的数据传输不可靠，想要解决如何不丢消息的问题，首先要知道哪些环节可能丢消息，以及我们如何知道消息是否丢失了，最后才是解决方案（而不是上来就直接说自己的解决方案）。</p>
+<p>就好比“架构设计”“架构”体现了架构师的思考过程，而“设计”才是最后的解决方案，两者缺一不可。</p>
+<h3 id="案例解答">案例解答</h3>
+<p>我们首先来看消息丢失的环节，一条消息从生产到消费完成这个过程，可以划分三个阶段，分别为消息生产阶段，消息存储阶段和消息消费阶段。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1659012481546.png" alt="" loading="lazy"></figure>
+<ul>
+<li><strong>消息生产阶段：</strong> 从消息被生产出来，然后提交给 MQ 的过程中，只要能正常收到 MQ Broker 的 ack 确认响应，就表示发送成功，所以只要处理好返回值和异常，这个阶段是不会出现消息丢失的。</li>
+<li><strong>消息存储阶段：</strong> 这个阶段一般会直接交给 MQ 消息中间件来保证，但是你要了解它的原理，比如 Broker 会做副本，保证一条消息至少同步两个节点再返回 ack。</li>
+<li><strong>消息消费阶段：</strong> 消费端从 Broker 上拉取消息，只要消费端在收到消息后，不立即发送消费确认给 Broker，而是等到执行完业务逻辑后，再发送消费确认，也能保证消息的不丢失。</li>
+</ul>
+<p>方案看似万无一失，每个阶段都能保证消息的不丢失，但在分布式系统中，故障不可避免，作为消息生产端，你并不能保证 MQ 是不是弄丢了你的消息，消费者是否消费了你的消息，所以，本着 <code>Design for Failure</code> 的设计原则，你还是需要一种机制，来 Check 消息是否丢失了。</p>
+<p><strong>紧接着，你还可以向面试官阐述怎么进行消息检测？</strong> 总体方案解决思路为：在消息生产端，给每个发出的消息都指定一个全局唯一 ID，或者附加一个连续递增的版本号，然后在消费端做对应的版本校验。</p>
+<p><strong>具体怎么落地实现呢？你可以利用拦截器机制。</strong> 在生产端发送消息之前，通过拦截器将消息版本号注入消息中（版本号可以采用连续递增的 ID 生成，也可以通过分布式全局唯一 ID生成）。然后在消费端收到消息后，再通过拦截器检测版本号的连续性或消费状态，这样实现的好处是消息检测的代码不会侵入到业务代码中，可以通过单独的任务来定位丢失的消息，做进一步的排查。</p>
+<p>这里需要你注意：如果同时存在多个消息生产端和消息消费端，通过版本号递增的方式就很难实现了，因为不能保证版本号的唯一性，此时只能通过全局唯一 ID 的方案来进行消息检测，具体的实现原理和版本号递增的方式一致。</p>
+<p>现在，你已经知道了哪些环节（消息存储阶段、消息消费阶段）可能会出问题，并有了如何检测消息丢失的方案，然后就要给出解决防止消息丢失的设计方案。</p>
+<p><strong>回答完“如何确保消息不会丢失？” 之后，面试官通常会追问“怎么解决消息被重复消费的问题？</strong> ”</p>
+<p>比如：在消息消费的过程中，如果出现失败的情况，通过补偿的机制发送方会执行重试，重试的过程就有可能产生重复的消息，那么如何解决这个问题？</p>
+<p>这个问题其实可以换一种说法，就是如何解决消费端幂等性问题（幂等性，就是一条命令，任意多次执行所产生的影响均与一次执行的影响相同），只要消费端具备了幂等性，那么重复消费消息的问题也就解决了。</p>
+<p>我们还是来看扣减京豆的例子，将账户 X 的金豆个数扣减 100 个，在这个例子中，我们可以通过改造业务逻辑，让它具备幂等性。</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1659012496249.png" alt="" loading="lazy"></figure>
+<p><strong>最简单的实现方案，就是在数据库中建一张消息日志表</strong>， 这个表有两个字段：消息 ID 和消息执行状态。这样，我们消费消息的逻辑可以变为：在消息日志表中增加一条消息记录，然后再根据消息记录，异步操作更新用户京豆余额。</p>
+<p>因为我们每次都会在插入之前检查是否消息已存在，所以就不会出现一条消息被执行多次的情况，这样就实现了一个幂等的操作。当然，基于这个思路，不仅可以使用关系型数据库，也可以通过 Redis 来代替数据库实现唯一约束的方案。</p>
+<p>在这里我多说一句，想要解决“消息丢失”和“消息重复消费”的问题，有一个前提条件就是要实现一个全局唯一 ID 生成的技术方案。这也是面试官喜欢考察的问题，你也要掌握。</p>
+<p>在分布式系统中，全局唯一 ID 生成的实现方法有数据库自增主键、UUID、Redis，Twitter-Snowflake 算法，我总结了几种方案的特点，你可以参考下。</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1659012508266.png" alt="" loading="lazy"></figure>
+<p>我提醒你注意，无论哪种方法，如果你想同时满足简单、高可用和高性能，就要有取舍，所以你要站在实际的业务中，说明你的选型所考虑的平衡点是什么。</p>
+<p>我个人在业务中比较倾向于选择 Snowflake 算法，在项目中也进行了一定的改造，主要是让算法中的 ID 生成规则更加符合业务特点，以及优化诸如时钟回拨等问题。</p>
+<p><strong>当然，除了“怎么解决消息被重复消费的问题？”之外，面试官还会问到你“消息积压”。</strong> 原因在于消息积压反映的是性能问题，解决消息积压问题，可以说明候选者有能力处理高并发场景下的消费能力问题。</p>
+<p><strong>你在解答这个问题时，依旧要传递给面试官一个这样的思考过程：</strong> 如果出现积压，那一定是性能问题，想要解决消息从生产到消费上的性能问题，就首先要知道哪些环节可能出现消息积压，然后在考虑如何解决。</p>
+<p>因为消息发送之后才会出现积压的问题，所以和消息生产端没有关系，又因为绝大部分的消息队列单节点都能达到每秒钟几万的处理能力，相对于业务逻辑来说，性能不会出现在中间件的消息存储上面。毫无疑问，出问题的肯定是消息消费阶段，<strong>那么从消费端入手，如何回答呢？</strong></p>
+<p>如果是线上突发问题，要临时扩容，增加消费端的数量，与此同时，降级一些非核心的业务。通过扩容和降级承担流量，这是为了表明你对应急问题的处理能力。</p>
+<p>其次，才是排查解决异常问题，如通过监控，日志等手段分析是否消费端的业务逻辑代码出现了问题，优化消费端的业务处理逻辑。</p>
+<p>最后，如果是消费端的处理能力不足，可以通过水平扩容来提供消费端的并发处理能力，<strong>但这里有一个考点需要特别注意</strong>， 那就是在扩容消费者的实例数的同时，必须同步扩容主题 Topic 的分区数量，确保消费者的实例数和分区数相等。如果消费者的实例数超过了分区数，由于分区是单线程消费，所以这样的扩容就没有效果。</p>
+<p>比如在 Kafka 中，一个 Topic 可以配置多个 Partition（分区），数据会被写入到多个分区中，但在消费的时候，Kafka 约定一个分区只能被一个消费者消费，Topic 的分区数量决定了消费的能力，所以，可以通过增加分区来提高消费者的处理能力。</p>
+<h3 id="总结">总结</h3>
+<p>至此，我们讲解了 MQ 消息队列的热门问题的解决方案，无论是初中级还是高级研发工程师，本篇文章的内容都是你需要掌握的，你都可以从这几点出发，与面试官进行友好的交流。我来总结一下今天的重点内容。</p>
+<ul>
+<li><strong>如何确保消息不会丢失？</strong> 你要知道一条消息从发送到消费的每个阶段，是否存在丢消息，以及如何监控消息是否丢失，最后才是如何解决问题，方案可以基于“ MQ 的可靠消息投递 ”的方式。</li>
+<li><strong>如何保证消息不被重复消费？</strong> 在进行消息补偿的时候，一定会存在重复消息的情况，那么如何实现消费端的幂等性就这道题的考点。</li>
+<li><strong>如何处理消息积压问题？</strong> 这道题的考点就是如何通过 MQ 实现真正的高性能，回答的思路是，本着解决线上异常为最高优先级，然后通过监控和日志进行排查并优化业务逻辑，最后是扩容消费端和分片的数量。</li>
+</ul>
+<p>在回答问题的时候，你需要特别注意的是，<strong>让面试官了解到你的思维过程，这种解决问题的能力是面试官更为看中的，比你直接回答一道面试题更有价值。</strong></p>
+<p>另外，如果你应聘的部门是基础架构部，那么除了要掌握本讲中的常见问题的主线知识以外，还要掌握消息中间件的其他知识体系，如：</p>
+<ul>
+<li>如何选型消息中间件？</li>
+<li>消息中间件中的队列模型与发布订阅模型的区别？</li>
+<li>为什么消息队列能实现高吞吐？</li>
+<li>序列化、传输协议，以及内存管理等问题</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[消息服务：MQ使用场景与选型对比]]></title>
+        <id>https://tinaxiawuhao.github.io/post/8FPjAXq14/</id>
+        <link href="https://tinaxiawuhao.github.io/post/8FPjAXq14/">
+        </link>
+        <updated>2022-07-20T12:45:01.000Z</updated>
+        <content type="html"><![CDATA[<p>MQ的使用场景，引入MQ后的注意事项以及MQ的选型对比。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1659012365390.png" alt="" loading="lazy"></figure>
+<h3 id="mq的使用场景">MQ的使用场景</h3>
+<p>MQ的英文全称是Message Queue，翻译成中文就是消息队列，队列实现了先进先出（FIFO）的消息模型。通过消息队列，我们可以实现多个进程之间的通信，例如，可以实现多个微服务之间的消息通信。MQ的最简模型就是生产者生产消息，将消息发送到MQ，消息消费者订阅MQ，消费消息。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1659012373243.png" alt="" loading="lazy"></figure>
+<p>MQ的使用场景通常包含：<strong>异步解耦、流量削峰</strong>。</p>
+<h4 id="异步解耦">异步解耦</h4>
+<p>关于异步的场景，我们这里举一个用户下单成功后，向用户发送通知消息，为用户增加积分和优惠券的场景。</p>
+<h5 id="同步耦合场景分析">同步耦合场景分析</h5>
+<p>如果是同步调用的场景，则具体业务为：当用户提交订单成功后，订单系统会调用通知系统为用户发送消息通知，告知用户下单成功，订单系统调用积分系统为用户增加积分，订单系统调用优惠券系统为用户增加优惠券。整个调用流程如下所示。</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1659012384187.png" alt="" loading="lazy"></figure>
+<p>通过上图的分析，可以看到，用户调用订单系统下单时，总共会经过8个步骤。并且每个步骤都是紧密耦合在一起串行执行，如下所示。</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1659012392280.png" alt="" loading="lazy"></figure>
+<p>此时，订单系统、通知系统、积分系统和优惠券系统是紧密耦合在一起的，订单系统下单、通知系统发通知、积分系统发积分和优惠券系统发优惠券，四个任务全部完成后，才会给用户返回提交订单的结果信息。</p>
+<p>用户提交订单花费的总时间为调用订单系统下单的时间+订单系统调用通知系统发送通知的时间+订单系统调用积分系统发放积分的时间+订单系统调用优惠券系统发放优惠券的时间。</p>
+<p><strong>注意：这里为了更好的说明系统之间串行执行的问题，忽略了网络的延迟时间。</strong></p>
+<p>这种串行化的系统执行方式，在高并发、大流量场景下是不可取的。另外，如果其中一个系统异常或者宕机，势必会影响到订单系统的可用性。在系统维护上，只要任意一个系统的接口发生变动，订单系统的逻辑也要跟着发生变动。</p>
+<h5 id="异步解耦场景分析">异步解耦场景分析</h5>
+<p>既然在高并发、大流量场景下使用订单系统直接串行调用通知系统、积分系统和优惠券系统的方式不可取。那我们是否能够使用异步解耦的方式呢。</p>
+<p>其实，在用户提交订单的场景中，用户最关心的是自己的订单是否提交成功，由于下单时，订单系统会直接返回是否下单成功的提示。</p>
+<p>对于通知、积分和优惠券可以以异步的方式延后一小段时间执行。并且通知系统、积分系统和优惠券系统之间不存在必然的业务关联逻辑，它们之间可以以并行的方式执行。</p>
+<p>所以，可以使用MQ将订单系统与通知系统、积分系统和优惠券系统进行解耦，用户调用订单系统的接口下单时，订单系统向数据库写入订单数据后，向MQ写入消息，就可以直接返回给用户下单成功的提示，此时通知系统、积分系统和优惠券系统都订阅MQ中的消息，收到消息后各自执行自身的业务逻辑即可。</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1659012401565.png" alt="" loading="lazy"></figure>
+<p>当引入MQ进行异步解耦之后，用户调用订单系统的接口下单，订单系统执行完业务逻辑将订单数据入口，会向MQ发送一条消息，随后便直接返回用户下单成功的提示。通知系统、积分系统和优惠券系统会同时订阅MQ中的消息，当收到消息时，它们各自会执行自身的业务逻辑，并且它们是以并行的方式执行各自的业务逻辑。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1659012408903.png" alt="" loading="lazy"></figure>
+<p>从执行的时间线上可以看出，当引入MQ进行异步解耦之后，通知系统、积分系统、优惠券系统和订单系统回复响应都是并行执行的，大大提高系统的执行性能。</p>
+<p>并且解耦后，任意一个系统异常或者宕机，都不会影响到订单系统的可用性。只要订单系统与其他系统提前约定好发送的消息格式和消息内容，后续任意一个系统的业务逻辑变动，几乎都不会影响到订单系统的逻辑。</p>
+<h4 id="流量削峰">流量削峰</h4>
+<p>MQ在高并发、大流量的场景下可以用作削峰填谷的利器，例如，12306的春运抢票场景、高并发秒杀场景、双十一和618的大促场景等。</p>
+<p>在高并发、大流量业务场景下，瞬间会有大量用户的请求涌入系统，如果不对这些流量做处理的话，直接让这些流量进入下游系统，则很可能由于下游系统无法支撑如此高的并发而导致系统崩溃或宕机。为了解决这些问题，可以引入MQ进行流量的削峰填谷。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1659012417620.png" alt="" loading="lazy"></figure>
+<p>将流量发送到MQ中后，下游系统根据自身的处理能力进行消费即可。保证了下游系统的高可用性。</p>
+<h3 id="引入mq后的注意事项">引入MQ后的注意事项</h3>
+<p>引入MQ最大的优点就是异步解耦和流量削峰，但是引入MQ后也有很多需要注意的事项和问题，主要包括：系统的整体可用性降低、系统的复杂度变高、引入了消息一致性的问题。</p>
+<h4 id="系统的整体可用性降低">系统的整体可用性降低</h4>
+<p>在对一个系统进行架构设计时，引入的外部依赖越多，系统的稳定性和可用性就会降低。系统中引入了MQ，部分业务就会出现强依赖MQ的现象，此时，如果MQ宕机，则部分业务就会变得不可用。所以，引入MQ时，我们就要考虑如何实现MQ的高可用。</p>
+<h4 id="系统的复杂度变高">系统的复杂度变高</h4>
+<p>引入MQ后，会使之前的同步接口调用变成通过MQ的异步调用，在实际的开发过程中，异步调用会比同步调用复杂的多。并且异步调用出现问题后，重现问题，定位问题和解决问题都会比同步调用复杂的多。</p>
+<p>并且引入MQ后，还要考虑如何保证消息的顺序等问题。</p>
+<h4 id="消息一致性问题">消息一致性问题</h4>
+<p>引入MQ后，不得不考虑的一个问题就是消息的一致性问题。这期间就要考虑如何保证消息不丢失，消息幂等和消息数据处理的幂等性问题。</p>
+<h3 id="mq选型对比">MQ选型对比</h3>
+<p>目前，在行业内使用的比较多的MQ包含RabbitMQ、Kafka和RocketMQ。这里，我将三者的对比简单整理了个表格，如下所示。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">消息中间件(MQ)</th>
+<th style="text-align:left">优点</th>
+<th style="text-align:left">缺点</th>
+<th style="text-align:left">使用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">RabbitMQ</td>
+<td style="text-align:left">功能全面、消息的可靠性比较高</td>
+<td style="text-align:left">吞吐量低，消息大量积累会影响性能，使用的开发语言是erlang，不好定制功能。</td>
+<td style="text-align:left">规模不大的场景</td>
+</tr>
+<tr>
+<td style="text-align:left">Kafka</td>
+<td style="text-align:left">吞吐量最高，性能最好，集群模式下高可用</td>
+<td style="text-align:left">功能上比较单一，会丢失部分数据</td>
+<td style="text-align:left">日志分析，大数据场景</td>
+</tr>
+<tr>
+<td style="text-align:left">RocketMQ</td>
+<td style="text-align:left">吞吐量高，性能高，可用性高，功能全面。使用Java语言开发，容易定制功能。</td>
+<td style="text-align:left">开源版不如阿里云上版，文档比较简单。</td>
+<td style="text-align:left">几乎支持所有场景，包含大数据场景和业务场景。</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[搭建并整合Seata]]></title>
+        <id>https://tinaxiawuhao.github.io/post/IMU3BaL0b/</id>
+        <link href="https://tinaxiawuhao.github.io/post/IMU3BaL0b/">
+        </link>
+        <updated>2022-07-19T12:40:30.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="搭建并整合seata">搭建并整合Seata</h3>
+<p>接下来，我们就正式在项目中整合Seata来实现分布式事务。这里，我们主要整合Seata的AT模式。</p>
+<h4 id="搭建seata基础环境">搭建Seata基础环境</h4>
+<p>（1）到https://github.com/seata/seata/releases/tag/v1.4.2链接下载Seata的安装包和源码，这里，下载的是1.4.2版本，如下所示。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1659012100579.png" alt="" loading="lazy"></figure>
+<p>这里我下载的都是zip压缩文件。</p>
+<p>（2）进入Nacos，选择的命名空间，如下所示。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1659012119037.png" alt="" loading="lazy"></figure>
+<p>点击新建命名空间，并填写Seata相关的信息，如下所示。</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1659012136201.png" alt="" loading="lazy"></figure>
+<p>可以看到，这里我填写的信息如下所示。</p>
+<ul>
+<li>命名空间ID：seata_namespace_001，如果不填的话Nacos会自动生成命名空间的ID。</li>
+<li>命名空间名：seata。</li>
+<li>描述：seata的命名空间。</li>
+</ul>
+<p><strong>「这里，需要记录下命名空间的ID：seata_namespace_001，在后面的配置中会使用到。」</strong></p>
+<p>点击确定后如下所示。</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1659012154952.png" alt="" loading="lazy"></figure>
+<p>可以看到，这里为Seata在Nacos中创建了命名空间。</p>
+<p>（3）解压Seata安装文件，进入解压后的<code>seata/seata-server-1.4.2/conf</code>目录，修改<code>registry.conf</code>注册文件，修改后的部分文件内容如下所示。</p>
+<pre><code class="language-java">registry {
+  # file 、nacos 、eureka、redis、zk、consul、etcd3、sofa
+  type = &quot;nacos&quot;
+
+  nacos {
+    application = &quot;seata-server&quot;
+    serverAddr = &quot;127.0.0.1:8848&quot;
+    group = &quot;SEATA_GROUP&quot;
+    namespace = &quot;seata_namespace_001&quot;
+    cluster = &quot;default&quot;
+    username = &quot;nacos&quot;
+    password = &quot;nacos&quot;
+  }
+}
+
+config {
+  # file、nacos 、apollo、zk、consul、etcd3
+  type = &quot;nacos&quot;
+
+  nacos {
+    serverAddr = &quot;127.0.0.1:8848&quot;
+    namespace = &quot;seata_namespace_001&quot;
+    group = &quot;SEATA_GROUP&quot;
+    username = &quot;nacos&quot;
+    password = &quot;nacos&quot;
+    dataId = &quot;seataServer.properties&quot;
+  }
+}
+</code></pre>
+<p>其中，namespace的值就是在Nacos中配置的Seata的命名空间ID：seata_namespace_001。</p>
+<p><strong>「注意：这里只列出了修改的部分内容，完整的registry.conf文件可以到项目的<code>doc/nacos/config/chapter25</code>目录下获取。」</strong></p>
+<p>（4）修改Seata安装文件的<code>seata/seata-server-1.4.2/conf</code>目录下的file.conf文件，修改后的部分配置如下所示。</p>
+<pre><code class="language-java">store {
+  mode = &quot;db&quot;
+  publicKey = &quot;&quot;
+  db {
+    datasource = &quot;druid&quot;
+    dbType = &quot;mysql&quot;
+    driverClassName = &quot;com.mysql.jdbc.Driver&quot;
+    url = &quot;jdbc:mysql://127.0.0.1:3306/seata?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true&amp;serverTimezone=Asia/Shanghai&quot;
+    user = &quot;root&quot;
+    password = &quot;root&quot;
+    minConn = 5
+    maxConn = 100
+    globalTable = &quot;global_table&quot;
+    branchTable = &quot;branch_table&quot;
+    lockTable = &quot;lock_table&quot;
+    queryLimit = 100
+    maxWait = 5000
+  }
+}
+</code></pre>
+<p><strong>「注意：这里只列出了修改的部分内容，完整的file.conf文件可以到项目的<code>doc/nacos/config/chapter25</code>目录下获取。」</strong></p>
+<p>（5）在下载的Seata源码的<code>seata-1.4.2/script/config-center</code>目录下找到config.txt文件，如下所示。</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1659012175639.png" alt="" loading="lazy"></figure>
+<p>将其复制到Seata安装包解压的根目录下，如下所示。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1659012194228.png" alt="" loading="lazy"></figure>
+<p>接下来，修改Seata安装包解压的根目录下的config.txt文件，这里还是只列出修改的部分，如下所示。</p>
+<pre><code class="language-java">service.vgroupMapping.server-order-tx_group=default
+service.vgroupMapping.server-product-tx_group=default
+store.mode=db
+store.publicKey=&quot;&quot;
+store.db.datasource=druid
+store.db.dbType=mysql
+store.db.driverClassName=com.mysql.jdbc.Driver
+store.db.url=jdbc:mysql://127.0.0.1:3306/seata?useSSL=false&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true&amp;serverTimezone=Asia/Shanghai
+store.db.user=root
+store.db.password=root
+store.redis.sentinel.masterName=&quot;&quot;
+store.redis.sentinel.sentinelHosts=&quot;&quot;
+store.redis.password=&quot;&quot;
+</code></pre>
+<p><strong>「注意：在config.txt中，部分配置的等号“=”后面为空，需要在等号“=“后面添加空字符串&quot;&quot;。同样的，小伙伴们可以到项目的<code>doc/nacos/config/chapter25</code>目录下获取完整的config.txt文件。」</strong></p>
+<p>（6）在下载的Seata源码的<code>seata-1.4.2/script/config-center/nacos</code>目录下找到nacos-config.sh文件，如下所示。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1659012213383.png" alt="" loading="lazy"></figure>
+<p>将nacos-config.sh文件复制到Seata安装文件解压目录的<code>seata/seata-server-1.4.2/scripts</code>目录下，其中scripts目录需要手动创建，如下所示。</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1659012230067.png" alt="" loading="lazy"></figure>
+<p>（7）.sh文件是Linux操作系统上的脚本文件，如果想在Windows操作系统上运行.sh文件，可以在Windows操作系统上安装Git后在运行.sh文件。</p>
+<p>接下来，在Git的Bash命令行进入Seata安装文件中nacos-config.sh文件所在的目录，执行如下命令。</p>
+<pre><code class="language-shell">sh nacos-config.sh -h 127.0.0.1 -p 8848 -g SEATA_GROUP -t seata_namespace_001 -u nacos -w nacos
+</code></pre>
+<p>其中，命令中的每个参数含义如下所示。</p>
+<ul>
+<li>-h：Nacos所在的IP地址。</li>
+<li>-p：Nacos的端口号。</li>
+<li>-g：分组。</li>
+<li>-t：命名空间的ID，这里我们填写在Nacos中创建的命名空间的ID：seata_namespace_001。如果不填，默认是public命名空间。</li>
+<li>-u：Nacos的用户名。</li>
+<li>-w：Nacos的密码。</li>
+</ul>
+<p>执行命令后的结果信息如下所示。</p>
+<pre><code class="language-java">=========================================================================
+ Complete initialization parameters,  total-count:89 ,  failure-count:0
+=========================================================================
+ Init nacos config finished, please start seata-server.
+</code></pre>
+<p>可以看到，整个配置执行成功。</p>
+<p>（8）打开Nacos的配置管理-配置列表界面，切换到seata命名空间，可以看到有关Seata的配置都注册到Nacos中了，如下所示。</p>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1659012247957.png" alt="" loading="lazy"></figure>
+<p>（9）在MySQL数据库中创建seata数据库，如下所示。</p>
+<pre><code class="language-sql">create database if not exists seata;
+</code></pre>
+<p>接下来，在seata数据库中执行Seata源码包<code>seata-1.4.2/script/server/db</code>目录下的mysql.sql脚本文件，mysql.sql脚本的内容如下所示。</p>
+<pre><code class="language-sql">-- -------------------------------- The script used when storeMode is 'db' --------------------------------
+-- the table to store GlobalSession data
+CREATE TABLE IF NOT EXISTS `global_table`
+(
+    `xid`                       VARCHAR(128) NOT NULL,
+    `transaction_id`            BIGINT,
+    `status`                    TINYINT      NOT NULL,
+    `application_id`            VARCHAR(32),
+    `transaction_service_group` VARCHAR(32),
+    `transaction_name`          VARCHAR(128),
+    `timeout`                   INT,
+    `begin_time`                BIGINT,
+    `application_data`          VARCHAR(2000),
+    `gmt_create`                DATETIME,
+    `gmt_modified`              DATETIME,
+    PRIMARY KEY (`xid`),
+    KEY `idx_gmt_modified_status` (`gmt_modified`, `status`),
+    KEY `idx_transaction_id` (`transaction_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+-- the table to store BranchSession data
+CREATE TABLE IF NOT EXISTS `branch_table`
+(
+    `branch_id`         BIGINT       NOT NULL,
+    `xid`               VARCHAR(128) NOT NULL,
+    `transaction_id`    BIGINT,
+    `resource_group_id` VARCHAR(32),
+    `resource_id`       VARCHAR(256),
+    `branch_type`       VARCHAR(8),
+    `status`            TINYINT,
+    `client_id`         VARCHAR(64),
+    `application_data`  VARCHAR(2000),
+    `gmt_create`        DATETIME(6),
+    `gmt_modified`      DATETIME(6),
+    PRIMARY KEY (`branch_id`),
+    KEY `idx_xid` (`xid`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+-- the table to store lock data
+CREATE TABLE IF NOT EXISTS `lock_table`
+(
+    `row_key`        VARCHAR(128) NOT NULL,
+    `xid`            VARCHAR(128),
+    `transaction_id` BIGINT,
+    `branch_id`      BIGINT       NOT NULL,
+    `resource_id`    VARCHAR(256),
+    `table_name`     VARCHAR(32),
+    `pk`             VARCHAR(36),
+    `gmt_create`     DATETIME,
+    `gmt_modified`   DATETIME,
+    PRIMARY KEY (`row_key`),
+    KEY `idx_branch_id` (`branch_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+</code></pre>
+<p>这里，也将mysql.sql文件放在了项目的<code>doc/nacos/config/chapter25</code>目录下。</p>
+<p>（10）启动Seata服务，进入在命令行进入Seata安装文件的<code>seata/seata-server-1.4.2/bin</code>目录，执行如下命令。</p>
+<pre><code class="language-shell">seata-server.bat -p 8091 -h 127.0.0.1 -m db
+</code></pre>
+<p>可以看到，在启动Seata的命令行输出了如下信息。</p>
+<pre><code class="language-java">i.s.core.rpc.netty.NettyServerBootstrap  : Server started, listen port: 8091
+</code></pre>
+<p>说明Seata已经启动成功。</p>
+<p>至此，Seata的基础环境搭建完毕。</p>
+<h4 id="项目整合seata">项目整合Seata</h4>
+<p>在我们开发的微服务程序中，订单微服务下单成功后会调用库存微服务扣减商品的库存信息，而用户微服务只提供了查询用户信息的接口。这里，我们在商品微服务和订单微服务中整合Seata。</p>
+<h4 id="导入unlog表">导入unlog表</h4>
+<p>我们使用的是Seata的AT模式，需要我们在涉及到使用Seata解决分布式事务问题的每个业务库中创建一个Seata的undo_log数据表，Seata中本身提供了创建数据表的SQL文件，这些SQL文件位于Seata源码包下的<code>seata-1.4.2/script/client/at/db</code>目录中，如下所示。</p>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1659012267689.png" alt="" loading="lazy"></figure>
+<p>这里，我们使用mysql.sql脚本。mysql.sql脚本的内容如下所示。</p>
+<pre><code class="language-sql">-- for AT mode you must to init this sql for you business database. the seata server not need it.
+CREATE TABLE IF NOT EXISTS `undo_log`
+(
+    `branch_id`     BIGINT       NOT NULL COMMENT 'branch transaction id',
+    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
+    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
+    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
+    `log_status`    INT(11)      NOT NULL COMMENT '0:normal status,1:defense status',
+    `log_created`   DATETIME(6)  NOT NULL COMMENT 'create datetime',
+    `log_modified`  DATETIME(6)  NOT NULL COMMENT 'modify datetime',
+    UNIQUE KEY `ux_undo_log` (`xid`, `branch_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
+</code></pre>
+<p>注意，这里要在shop数据库中执行mysql.sql脚本，同样的，我会将这里的mysql.sql文件放到项目的<code>doc/nacos/config/chapter25</code>目录下，并重命名为mysql_client.sql。</p>
+<h4 id="商品微服务整合seata">商品微服务整合Seata</h4>
+<p>（1）在商品微服务shop-product的pom.xml文件中引入Seata依赖，如下所示。</p>
+<pre><code class="language-java">&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>（2）修改商品微服务shop-product的bootstrap.yml，修改后的文件如下所示。</p>
+<pre><code class="language-java">spring:
+  application:
+    name: server-product
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        group: product_group
+        shared-configs[0]:
+          data_id: server-all.yaml
+          group: all_group
+          refresh: true
+      discovery:
+        server-addr: 127.0.0.1:8848
+    alibaba:
+      seata:
+        tx-service-group: ${spring.application.name}-tx_group
+
+  profiles:
+    active: dev
+
+seata:
+  application-id: ${spring.application.name}
+  service:
+    vgroup-mapping:
+      server-product-tx_group: default
+
+  registry:
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: nacos
+      password: nacos
+      group: SEATA_GROUP
+      namespace: seata_namespace_001
+      application: seata-server
+
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: nacos
+      password: nacos
+      group: SEATA_GROUP
+      namespace: seata_namespace_001
+</code></pre>
+<p>其中，配置的Nacos的namespace与group与<code>registry.conf</code>文件中的一致。</p>
+<h4 id="订单微服务整合seata">订单微服务整合Seata</h4>
+<p>（1）在订单微服务shop-product的pom.xml文件中引入Seata依赖，如下所示。</p>
+<pre><code class="language-java">&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>（2）修改订单微服务shop-order的bootstrap.yml，修改后的文件如下所示。</p>
+<pre><code class="language-java">spring:
+  application:
+    name: server-order
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        group: order_group
+        shared-configs[0]:
+          data_id: server-all.yaml
+          group: all_group
+          refresh: true
+      discovery:
+        server-addr: 127.0.0.1:8848
+    alibaba:
+      seata:
+        tx-service-group: ${spring.application.name}-tx_group
+
+  profiles:
+    active: dev
+
+seata:
+  application-id: ${spring.application.name}
+  service:
+    vgroup-mapping:
+      server-order-tx_group: default
+
+  registry:
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: nacos
+      password: nacos
+      group: SEATA_GROUP
+      namespace: seata_namespace_001
+      application: seata-server
+
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: nacos
+      password: nacos
+      group: SEATA_GROUP
+      namespace: seata_namespace_001
+</code></pre>
+<p>（3）修改订单微服务的<code>io.binghe.shop.order.service.impl.OrderServiceV8Impl</code>类的saveOrder()方法，在saveOrder()方法上添加Seata的@GlobalTransactional注解，如下所示。</p>
+<pre><code class="language-java">@Override
+@GlobalTransactional
+public void saveOrder(OrderParams orderParams) {
+ //省略具体方法代码
+}
+</code></pre>
+<p>至此，搭建并整合Seata完毕，就是这么简单。</p>
+<h3 id="验证seata事务">验证Seata事务</h3>
+<h4 id="重置数据库数据">重置数据库数据</h4>
+<p>这里，首先将商品数据表t_product中id为1001的数据的库存信息重置为100，如下所示。</p>
+<pre><code class="language-sql">update t_product set t_pro_stock = 100 where id = 1001;
+</code></pre>
+<h4 id="查询数据表数据">查询数据表数据</h4>
+<p>（1）打开cmd终端，进入MySQL命令行，并进入shop商城数据库，如下所示。</p>
+<pre><code class="language-shell">C:\Users\binghe&gt;mysql -uroot -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 5.7.35 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql&gt; use shop;
+Database changed
+</code></pre>
+<p>（2）查看商品数据表，如下所示。</p>
+<pre><code class="language-shell">mysql&gt; select * from t_product;
++------+------------+-------------+-------------+
+| id   | t_pro_name | t_pro_price | t_pro_stock |
++------+------------+-------------+-------------+
+| 1001 | 华为       |     2399.00 |         100 |
+| 1002 | 小米       |     1999.00 |         100 |
+| 1003 | iphone     |     4999.00 |         100 |
++------+------------+-------------+-------------+
+3 rows in set (0.00 sec)
+</code></pre>
+<p>这里，我们以id为1001的商品为例，此时发现商品的库存为100。</p>
+<p>（3）查询订单数据表，如下所示。</p>
+<pre><code class="language-shell">mysql&gt; select * from t_order;
+Empty set (0.00 sec)
+</code></pre>
+<p>可以发现订单数据表为空。</p>
+<p>（4）查询订单条目数据表，如下所示。</p>
+<pre><code class="language-shell">mysql&gt; select * from t_order_item;
+Empty set (0.00 sec)
+</code></pre>
+<p>可以看到，订单条目数据表为空。</p>
+<h4 id="验证seata事务-2">验证Seata事务</h4>
+<p>（1）分别启动Nacos、Sentinel、ZinKin、RocketMQ，Seata，并启动用户微服务，商品微服务，订单微服务和服务网关。打开浏览器访问<code>http://localhost:10001/server-order/order/submit_order?userId=1001&amp;productId=1001&amp;count=1</code>，如下所示。</p>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1659012289306.png" alt="" loading="lazy"></figure>
+<p>返回的原始数据如下所示。</p>
+<pre><code class="language-java">{&quot;code&quot;:500,&quot;codeMsg&quot;:&quot;执行失败&quot;,&quot;data&quot;:&quot;/ by zero&quot;}
+</code></pre>
+<p>（2）查看各个微服务和网关输出的日志信息，分别如下所示。</p>
+<ul>
+<li>用户微服务输出的日志如下所示。</li>
+</ul>
+<pre><code class="language-java">获取到的用户信息为：{&quot;address&quot;:&quot;北京&quot;,&quot;id&quot;:1001,&quot;password&quot;:&quot;c26be8aaf53b15054896983b43eb6a65&quot;,&quot;phone&quot;:&quot;13212345678&quot;,&quot;username&quot;:&quot;binghe&quot;}
+</code></pre>
+<p>说明用户微服务无异常信息。</p>
+<ul>
+<li>商品微服务输出的日志如下所示。</li>
+</ul>
+<pre><code class="language-java">获取到的商品信息为：{&quot;id&quot;:1001,&quot;proName&quot;:&quot;华为&quot;,&quot;proPrice&quot;:2399.00,&quot;proStock&quot;:100}
+更新商品库存传递的参数为: 商品id:1001, 购买数量:1 
+</code></pre>
+<p>说明商品微服务无异常信息。</p>
+<p>值得注意的是，整合Seata后，商品微服务同时输出了如下日志。</p>
+<pre><code class="language-shell">rm handle branch rollback process:xid=192.168.0.111:8091:6638572304823066625,branchId=6638572304823066634,branchType=AT,resourceId=jdbc:mysql://localhost:3306/shop,applicationData=null
+Branch Rollbacking: 192.168.0.111:8091:6638572304823066625 6638572304823066634 jdbc:mysql://localhost:3306/shop
+xid 192.168.0.111:8091:6638572304823066625 branch 6638572304823066634, undo_log deleted with GlobalFinished
+Branch Rollbacked result: PhaseTwo_Rollbacked
+</code></pre>
+<p>看上去应该是有事务回滚了。</p>
+<ul>
+<li>订单微服务输出的日志如下所示。</li>
+</ul>
+<pre><code class="language-java">提交订单时传递的参数:{&quot;count&quot;:1,&quot;empty&quot;:false,&quot;productId&quot;:1001,&quot;userId&quot;:1001}
+库存扣减成功
+服务器抛出了异常：{}
+java.lang.ArithmeticException: / by zero
+</code></pre>
+<p>说明订单微服务抛出了ArithmeticException异常。</p>
+<p>同时，商品微服务会输出如下日志。</p>
+<pre><code class="language-java">Branch Rollbacked result: PhaseTwo_Rollbacked
+[192.168.0.111:8091:6638572304823066625] rollback status: Rollbacked
+</code></pre>
+<p>看上去应该是有事务回滚了。</p>
+<ul>
+<li>网关服务输出的日志如下所示。</li>
+</ul>
+<pre><code class="language-java">执行前置过滤器逻辑
+执行后置过滤器逻辑
+访问接口主机: localhost
+访问接口端口: 10001
+访问接口URL: /server-order/order/submit_order
+访问接口URL参数: userId=1001&amp;productId=1001&amp;count=1
+访问接口时长: 1632ms
+</code></pre>
+<p>可以看到，网关服务无异常信息。</p>
+<p>通过微服务打印出的日志信息，可以看到，有事务回滚了。</p>
+<h4 id="查询数据表数据-2">查询数据表数据</h4>
+<p>（1）打开cmd终端，进入MySQL命令行，并进入shop商城数据库，如下所示。</p>
+<pre><code class="language-shell">C:\Users\binghe&gt;mysql -uroot -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 5.7.35 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql&gt; use shop;
+Database changed
+</code></pre>
+<p>（2）查看商品数据表，如下所示。</p>
+<pre><code class="language-shell">mysql&gt; select * from t_product;
++------+------------+-------------+-------------+
+| id   | t_pro_name | t_pro_price | t_pro_stock |
++------+------------+-------------+-------------+
+| 1001 | 华为       |     2399.00 |         100 |
+| 1002 | 小米       |     1999.00 |         100 |
+| 1003 | iphone     |     4999.00 |         100 |
++------+------------+-------------+-------------+
+3 rows in set (0.00 sec)
+</code></pre>
+<p>可以看到，此时商品数据表中，id为1001的商品库存数量仍然为100。</p>
+<p>（3）查看订单数据表，如下所示。</p>
+<pre><code class="language-shell">mysql&gt; select * from t_order;
+Empty set (0.00 sec)
+</code></pre>
+<p>可以看到，订单数据表为空。</p>
+<p>（4）查看订单条目数据表，如下所示。</p>
+<pre><code class="language-shell">mysql&gt; select * from t_order_item;
+Empty set (0.00 sec)
+</code></pre>
+<p>可以看到，订单条目数据表为空。</p>
+<p>至此，我们成功在项目中整合了Seata解决了分布式事务的问题</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Seata]]></title>
+        <id>https://tinaxiawuhao.github.io/post/XFKzbOO8H/</id>
+        <link href="https://tinaxiawuhao.github.io/post/XFKzbOO8H/">
+        </link>
+        <updated>2022-07-18T12:34:31.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="seata-是什么">Seata 是什么?</h3>
+<p>Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1659011805071.png" alt="" loading="lazy"></figure>
+<h3 id="at-模式">AT 模式</h3>
+<h4 id="前提">前提</h4>
+<ul>
+<li>基于支持本地 ACID 事务的关系型数据库。</li>
+<li>Java 应用，通过 JDBC 访问数据库。</li>
+</ul>
+<h4 id="整体机制">整体机制</h4>
+<p>两阶段提交协议的演变：</p>
+<ul>
+<li>
+<p>一阶段：业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。</p>
+</li>
+<li>
+<p>二阶段：</p>
+</li>
+<li>
+<ul>
+<li>提交异步化，非常快速地完成。</li>
+<li>回滚通过一阶段的回滚日志进行反向补偿。</li>
+</ul>
+</li>
+</ul>
+<h4 id="写隔离">写隔离</h4>
+<ul>
+<li>一阶段本地事务提交前，需要确保先拿到 <strong>「全局锁」</strong> 。</li>
+<li>拿不到 <strong>「全局锁」</strong> ，不能提交本地事务。</li>
+<li>拿 <strong>「全局锁」</strong> 的尝试被限制在一定范围内，超出范围将放弃，并回滚本地事务，释放本地锁。</li>
+</ul>
+<p>以一个示例来说明：</p>
+<p>两个全局事务 tx1 和 tx2，分别对 a 表的 m 字段进行更新操作，m 的初始值 1000。</p>
+<p>tx1 先开始，开启本地事务，拿到本地锁，更新操作 m = 1000 - 100 = 900。本地事务提交前，先拿到该记录的 <strong>「全局锁」</strong> ，本地提交释放本地锁。tx2 后开始，开启本地事务，拿到本地锁，更新操作 m = 900 - 100 = 800。本地事务提交前，尝试拿该记录的 <strong>「全局锁」</strong> ，tx1 全局提交前，该记录的全局锁被 tx1 持有，tx2 需要重试等待 <strong>「全局锁」</strong> 。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1659011821117.png" alt="" loading="lazy"></figure>
+<p>tx1 二阶段全局提交，释放 <strong>「全局锁」</strong> 。tx2 拿到 <strong>「全局锁」</strong> 提交本地事务。</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1659011828070.png" alt="" loading="lazy"></figure>
+<p>如果 tx1 的二阶段全局回滚，则 tx1 需要重新获取该数据的本地锁，进行反向补偿的更新操作，实现分支的回滚。</p>
+<p>此时，如果 tx2 仍在等待该数据的 <strong>「全局锁」</strong>，同时持有本地锁，则 tx1 的分支回滚会失败。分支的回滚会一直重试，直到 tx2 的 <strong>「全局锁」</strong> 等锁超时，放弃 <strong>「全局锁」</strong> 并回滚本地事务释放本地锁，tx1 的分支回滚最终成功。</p>
+<p>因为整个过程 <strong>「全局锁」</strong> 在 tx1 结束前一直是被 tx1 持有的，所以不会发生 <strong>「脏写」</strong> 的问题。</p>
+<h4 id="读隔离">读隔离</h4>
+<p>在数据库本地事务隔离级别 <strong>「读已提交（Read Committed）」</strong> 或以上的基础上，Seata（AT 模式）的默认全局隔离级别是 <strong>「读未提交（Read Uncommitted）」</strong> 。</p>
+<p>如果应用在特定场景下，必需要求全局的 <strong>「读已提交」</strong> ，目前 Seata 的方式是通过 SELECT FOR UPDATE 语句的代理。</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1659011835961.png" alt="" loading="lazy"></figure>
+<p>SELECT FOR UPDATE 语句的执行会申请 <strong>「全局锁」</strong> ，如果 <strong>「全局锁」</strong> 被其他事务持有，则释放本地锁（回滚 SELECT FOR UPDATE 语句的本地执行）并重试。这个过程中，查询是被 block 住的，直到 <strong>「全局锁」</strong> 拿到，即读取的相关数据是 <strong>「已提交」</strong> 的，才返回。</p>
+<p>出于总体性能上的考虑，Seata 目前的方案并没有对所有 SELECT 语句都进行代理，仅针对 FOR UPDATE 的 SELECT 语句。</p>
+<h4 id="工作机制">工作机制</h4>
+<p>以一个示例来说明整个 AT 分支的工作过程。</p>
+<p>业务表：<code>product</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">id</td>
+<td style="text-align:left">bigint(20)</td>
+<td style="text-align:left">PRI</td>
+</tr>
+<tr>
+<td style="text-align:left">name</td>
+<td style="text-align:left">varchar(100)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">since</td>
+<td style="text-align:left">varchar(100)</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p>AT 分支事务的业务逻辑：</p>
+<pre><code class="language-sql">update product set name = 'GTS' where name = 'TXC';
+</code></pre>
+<p><strong>「一阶段」</strong></p>
+<p>过程：</p>
+<ol>
+<li>解析 SQL：得到 SQL 的类型（UPDATE），表（product），条件（where name = 'TXC'）等相关的信息。</li>
+<li>查询前镜像：根据解析得到的条件信息，生成查询语句，定位数据。</li>
+</ol>
+<pre><code class="language-sql">select id, name, since from product where name = 'TXC';
+</code></pre>
+<p>得到前镜像：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">id</th>
+<th style="text-align:left">name</th>
+<th style="text-align:left">since</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">TXC</td>
+<td style="text-align:left">2014</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>执行业务 SQL：更新这条记录的 name 为 'GTS'。</li>
+<li>查询后镜像：根据前镜像的结果，通过 <strong>「主键」</strong> 定位数据。</li>
+</ol>
+<pre><code class="language-sql">select id, name, since from product where id = 1;
+</code></pre>
+<p>得到后镜像：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">id</th>
+<th style="text-align:left">name</th>
+<th style="text-align:left">since</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">GTS</td>
+<td style="text-align:left">2014</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>插入回滚日志：把前后镜像数据以及业务 SQL 相关的信息组成一条回滚日志记录，插入到 <code>UNDO_LOG</code> 表中。</li>
+</ol>
+<pre><code class="language-json">{
+ &quot;branchId&quot;: 641789253,
+ &quot;undoItems&quot;: [{
+  &quot;afterImage&quot;: {
+   &quot;rows&quot;: [{
+    &quot;fields&quot;: [{
+     &quot;name&quot;: &quot;id&quot;,
+     &quot;type&quot;: 4,
+     &quot;value&quot;: 1
+    }, {
+     &quot;name&quot;: &quot;name&quot;,
+     &quot;type&quot;: 12,
+     &quot;value&quot;: &quot;GTS&quot;
+    }, {
+     &quot;name&quot;: &quot;since&quot;,
+     &quot;type&quot;: 12,
+     &quot;value&quot;: &quot;2014&quot;
+    }]
+   }],
+   &quot;tableName&quot;: &quot;product&quot;
+  },
+  &quot;beforeImage&quot;: {
+   &quot;rows&quot;: [{
+    &quot;fields&quot;: [{
+     &quot;name&quot;: &quot;id&quot;,
+     &quot;type&quot;: 4,
+     &quot;value&quot;: 1
+    }, {
+     &quot;name&quot;: &quot;name&quot;,
+     &quot;type&quot;: 12,
+     &quot;value&quot;: &quot;TXC&quot;
+    }, {
+     &quot;name&quot;: &quot;since&quot;,
+     &quot;type&quot;: 12,
+     &quot;value&quot;: &quot;2014&quot;
+    }]
+   }],
+   &quot;tableName&quot;: &quot;product&quot;
+  },
+  &quot;sqlType&quot;: &quot;UPDATE&quot;
+ }],
+ &quot;xid&quot;: &quot;xid:xxx&quot;
+}
+</code></pre>
+<ol>
+<li>提交前，向 TC 注册分支：申请 <code>product</code> 表中，主键值等于 1 的记录的 <strong>「全局锁」</strong> 。</li>
+<li>本地事务提交：业务数据的更新和前面步骤中生成的 UNDO LOG 一并提交。</li>
+<li>将本地事务提交的结果上报给 TC。</li>
+</ol>
+<p><strong>「二阶段-回滚」</strong></p>
+<ol>
+<li>收到 TC 的分支回滚请求，开启一个本地事务，执行如下操作。</li>
+<li>通过 XID 和 Branch ID 查找到相应的 UNDO LOG 记录。</li>
+<li>数据校验：拿 UNDO LOG 中的后镜与当前数据进行比较，如果有不同，说明数据被当前全局事务之外的动作做了修改。这种情况，需要根据配置策略来做处理，详细的说明在另外的文档中介绍。</li>
+<li>根据 UNDO LOG 中的前镜像和业务 SQL 的相关信息生成并执行回滚的语句：</li>
+</ol>
+<pre><code class="language-sql">update product set name = 'TXC' where id = 1;
+</code></pre>
+<ol>
+<li>提交本地事务。并把本地事务的执行结果（即分支事务回滚的结果）上报给 TC。</li>
+</ol>
+<p><strong>「二阶段-提交」</strong></p>
+<ol>
+<li>收到 TC 的分支提交请求，把请求放入一个异步任务的队列中，马上返回提交成功的结果给 TC。</li>
+<li>异步任务阶段的分支提交请求将异步和批量地删除相应 UNDO LOG 记录。</li>
+</ol>
+<h4 id="附录">附录</h4>
+<p><strong>「回滚日志表」</strong></p>
+<p>UNDO_LOG Table：不同数据库在类型上会略有差别。</p>
+<p>以 MySQL 为例：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">branch_id</td>
+<td style="text-align:left">bigint   PK</td>
+</tr>
+<tr>
+<td style="text-align:left">xid</td>
+<td style="text-align:left">varchar(100)</td>
+</tr>
+<tr>
+<td style="text-align:left">context</td>
+<td style="text-align:left">varchar(128)</td>
+</tr>
+<tr>
+<td style="text-align:left">rollback_info</td>
+<td style="text-align:left">longblob</td>
+</tr>
+<tr>
+<td style="text-align:left">log_status</td>
+<td style="text-align:left">tinyint</td>
+</tr>
+<tr>
+<td style="text-align:left">log_created</td>
+<td style="text-align:left">datetime</td>
+</tr>
+<tr>
+<td style="text-align:left">log_modified</td>
+<td style="text-align:left">datetime</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">-- 注意此处0.7.0+ 增加字段 context
+CREATE TABLE `undo_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `branch_id` bigint(20) NOT NULL,
+  `xid` varchar(100) NOT NULL,
+  `context` varchar(128) NOT NULL,
+  `rollback_info` longblob NOT NULL,
+  `log_status` int(11) NOT NULL,
+  `log_created` datetime NOT NULL,
+  `log_modified` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+</code></pre>
+<h3 id="tcc-模式">TCC 模式</h3>
+<p>回顾总览中的描述：一个分布式的全局事务，整体是 <strong>「两阶段提交」</strong> 的模型。全局事务是由若干分支事务组成的，分支事务要满足 <strong>「两阶段提交」</strong> 的模型要求，即需要每个分支事务都具备自己的：</p>
+<ul>
+<li>一阶段 prepare 行为</li>
+<li>二阶段 commit 或 rollback 行为</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1659011856143.png" alt="" loading="lazy"></figure>
+<p>根据两阶段行为模式的不同，我们将分支事务划分为 <strong>「Automatic (Branch) Transaction Mode」</strong> 和 <strong>「Manual (Branch) Transaction Mode」</strong>.</p>
+<p>AT 模式（参考链接 TBD）基于 <strong>「支持本地 ACID 事务」</strong> 的 <strong>「关系型数据库」</strong>：</p>
+<ul>
+<li>一阶段 prepare 行为：在本地事务中，一并提交业务数据更新和相应回滚日志记录。</li>
+<li>二阶段 commit 行为：马上成功结束，<strong>「自动」</strong> 异步批量清理回滚日志。</li>
+<li>二阶段 rollback 行为：通过回滚日志，<strong>「自动」</strong> 生成补偿操作，完成数据回滚。</li>
+</ul>
+<p>相应的，TCC 模式，不依赖于底层数据资源的事务支持：</p>
+<ul>
+<li>一阶段 prepare 行为：调用 <strong>「自定义」</strong> 的 prepare 逻辑。</li>
+<li>二阶段 commit 行为：调用 <strong>「自定义」</strong> 的 commit 逻辑。</li>
+<li>二阶段 rollback 行为：调用 <strong>「自定义」</strong> 的 rollback 逻辑。</li>
+</ul>
+<p>所谓 TCC 模式，是指支持把 <strong>「自定义」</strong> 的分支事务纳入到全局事务的管理中。</p>
+<h3 id="saga-模式">Saga 模式</h3>
+<p>Saga模式是SEATA提供的长事务解决方案，在Saga模式中，业务流程中每个参与者都提交本地事务，当出现某一个参与者失败则补偿前面已经成功的参与者，一阶段正向服务和二阶段补偿服务都由业务开发实现。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1659011864916.png" alt="" loading="lazy"></figure>
+<p>理论基础：Hector &amp; Kenneth 发表论⽂ Sagas （1987）</p>
+<h4 id="适用场景">适用场景</h4>
+<ul>
+<li>业务流程长、业务流程多</li>
+<li>参与者包含其它公司或遗留系统服务，无法提供 TCC 模式要求的三个接口</li>
+</ul>
+<h4 id="优势">优势</h4>
+<ul>
+<li>一阶段提交本地事务，无锁，高性能</li>
+<li>事件驱动架构，参与者可异步执行，高吞吐</li>
+<li>补偿服务易于实现</li>
+</ul>
+<h4 id="缺点">缺点</h4>
+<ul>
+<li>不保证隔离性</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[服务容错：服务雪崩与容错方案]]></title>
+        <id>https://tinaxiawuhao.github.io/post/WLM-Ra1r4/</id>
+        <link href="https://tinaxiawuhao.github.io/post/WLM-Ra1r4/">
+        </link>
+        <updated>2022-07-17T12:38:03.000Z</updated>
+        <content type="html"><![CDATA[<p>本文主要内容如下所示。</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1659011942593.png" alt="" loading="lazy"></figure>
+<h3 id="并发对系统的影响">并发对系统的影响</h3>
+<p>当一个系统的架构设计采用微服务架构模式时，会将庞大而复杂的业务拆分成一个个小的微服务，各个微服务之间以接口或者RPC的形式进行互相调用。在调用的过程中，就会涉及到网路的问题，再加上微服务自身的原因，例如很难做到100%的高可用等。如果众多微服务当中的某个或某些微服务出现问题，不可用或者宕机了，那么其他微服务调用这些微服务的接口时就会出现延迟。如果此时有大量请求进入系统，就会造成请求任务的大量堆积，甚至会造成整体服务的瘫痪。</p>
+<h4 id="压测说明">压测说明</h4>
+<p>为了更加直观的说明当系统没有容错能力时，高并发、大流量场景对于系统的影响，我们在这里模拟一个并发的场景。在订单微服务shop-order的<code>io.binghe.shop.order.controller.OrderController</code>类中新增一个concurrentRequest()方法，源码如下所示。</p>
+<pre><code class="language-java">@GetMapping(value = &quot;/concurrent_request&quot;)
+public String concurrentRequest(){
+    log.info(&quot;测试业务在高并发场景下是否存在问题&quot;);
+    return &quot;binghe&quot;;
+}
+</code></pre>
+<p>接下来，为了更好的演示效果，我们限制下Tomcat处理请求的最大并发数，在订单微服务shop-order的resources目录下的application.yml文件中添加如下配置。</p>
+<pre><code class="language-java">server:
+  port: 8080
+  tomcat:
+    max-threads: 20
+</code></pre>
+<p>限制Tomcat一次最多只能处理20个请求。接下来，我们就使用JMeter对 <code>http://localhost:8080/order/submit_order</code> 接口进行压测，由于订单微服务中没有做任何的容错处理，当对 <code>http://localhost:8080/order/submit_order</code> 接口的请求压力过大时，我们再访问<code>http://localhost:8080/order/concurrent_request</code> 接口时，会发现<code>http://localhost:8080/order/concurrent_request</code> 接口会受到并发请求的影响，访问很慢甚至根本访问不到。</p>
+<h4 id="压测实战">压测实战</h4>
+<p>使用JMeter对 <code>http://localhost:8080/order/submit_order</code> 接口进行压测，JMeter的配置过程如下所示。</p>
+<p>（1）打开JMeter的主界面，如下所示。</p>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1659011951588.png" alt="" loading="lazy"></figure>
+<p>（2）在JMeter中右键测试计划添加线程组，如下所示。</p>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1659011960761.png" alt="" loading="lazy"></figure>
+<p>（3）在JMeter中的线程组中配置并发线程数，如下所示。</p>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1659011967394.png" alt="" loading="lazy"></figure>
+<p>如上图所示，将线程数配置成50，Ramp-Up时间配置成0，循环次数为100。表示JMeter每次会在同一时刻向系统发送50个请求，发送100次为止。</p>
+<p>（4）在JMeter中右键线程组添加HTTP请求，如下所示。</p>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1659011974187.png" alt="" loading="lazy"></figure>
+<p>（5）在JMeter中配置HTTP请求，如下所示。</p>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1659011980518.png" alt="" loading="lazy"></figure>
+<p>具体配置如下所示。</p>
+<ul>
+<li>协议：http</li>
+<li>服务器名称或IP：localhost</li>
+<li>端口号：8080</li>
+<li>方法：GET</li>
+<li>路径：<code>/order/submit_order?userId=1001&amp;productId=1001&amp;count=1</code></li>
+<li>内容编码：UTF-8</li>
+</ul>
+<p>（6）配置好JMeter后，点击JMeter上的绿色小三角开始压测，如下所示。</p>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1659011987955.png" alt="" loading="lazy"></figure>
+<p>点击后会弹出需要保存JMeter脚本的弹出框，根据实际需要点击保存即可。</p>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1659011994122.png" alt="" loading="lazy"></figure>
+<p>点击保存后，开始对 <code>http://localhost:8080/order/submit_order</code> 接口进行压测，在压测的过程中会发现订单微服务打印日志时，会比较卡顿，同时在浏览器或其他工具中访问<code>http://localhost:8080/order/concurrent_request</code> 接口会卡顿，甚至根本访问不到。</p>
+<p>说明订单微服务中的某个接口一旦访问的并发量过高，其他接口也会受到影响，进而导致订单微服务整体不可用。为了说明这个问题，我们再来看看服务雪崩是个什么鬼。</p>
+<h3 id="服务雪崩">服务雪崩</h3>
+<p>系统采用分布式或微服务的架构模式后，由于网络或者服务自身的问题，一般服务是很难做到100%高可用的。如果一个服务出现问题，就可能会导致其他的服务级联出现问题，这种故障性问题会在整个系统中不断扩散，进而导致服务不可用，甚至宕机，最终会对整个系统造成灾难性后果。</p>
+<p>为了最大程度的预防服务雪崩，组成整体系统的各个微服务需要支持服务容错的功能。</p>
+<h3 id="服务容错方案">服务容错方案</h3>
+<p>服务容错在一定程度上就是尽最大努力来兼容错误情况的发生，因为在分布式和微服务环境中，不可避免的会出现一些异常情况，我们在设计分布式和微服务系统时，就要考虑到这些异常情况的发生，使得系统具备服务容错能力。</p>
+<p>常见的服务错误方案包含：服务限流、服务隔离、服务超时、服务熔断和服务降级等。</p>
+<h4 id="服务限流">服务限流</h4>
+<p>服务限流就是限制进入系统的流量，以防止进入系统的流量过大而压垮系统。其主要的作用就是保护服务节点或者集群后面的数据节点，防止瞬时流量过大使服务和数据崩溃（如前端缓存大量实效），造成不可用；还可用于平滑请求。</p>
+<p>限流算法有两种，一种就是简单的请求总量计数，一种就是时间窗口限流（一般为1s），如令牌桶算法和漏牌桶算法就是时间窗口的限流算法。</p>
+<h4 id="服务隔离">服务隔离</h4>
+<p>服务隔离有点类似于系统的垂直拆分，就按照一定的规则将系统划分成多个服务模块，并且每个服务模块之间是互相独立的，不会存在强依赖的关系。如果某个拆分后的服务发生故障后，能够将故障产生的影响限制在某个具体的服务内，不会向其他服务扩散，自然也就不会对整体服务产生致命的影响。</p>
+<p>互联网行业常用的服务隔离方式有：线程池隔离和信号量隔离。</p>
+<h4 id="服务超时">服务超时</h4>
+<p>整个系统采用分布式和微服务架构后，系统被拆分成一个个小服务，就会存在服务与服务之间互相调用的现象，从而形成一个个调用链。形成调用链关系的两个服务中，主动调用其他服务接口的服务处于调用链的上游，提供接口供其他服务调用的服务处于调用链的下游。</p>
+<p>服务超时就是在上游服务调用下游服务时，设置一个最大响应时间，如果超过这个最大响应时间下游服务还未返回结果，则断开上游服务与下游服务之间的请求连接，释放资源。</p>
+<h4 id="服务熔断">服务熔断</h4>
+<p>在分布式与微服务系统中，如果下游服务因为访问压力过大导致响应很慢或者一直调用失败时，上游服务为了保证系统的整体可用性，会暂时断开与下游服务的调用连接。这种方式就是熔断。</p>
+<p>服务熔断一般情况下会有三种状态：关闭、开启和半熔断。</p>
+<ul>
+<li>关闭状态：服务一切正常，没有故障时，上游服务调用下游服务时，不会有任何限制。</li>
+<li>开启状态：上游服务不再调用下游服务的接口，会直接返回上游服务中预定的方法。</li>
+<li>半熔断状态：处于开启状态时，上游服务会根据一定的规则，尝试恢复对下游服务的调用。此时，上游服务会以有限的流量来调用下游服务，同时，会监控调用的成功率。如果成功率达到预期，则进入关闭状态。如果未达到预期，会重新进入开启状态。</li>
+</ul>
+<h4 id="服务降级">服务降级</h4>
+<p>服务降级，说白了就是一种服务托底方案，如果服务无法完成正常的调用流程，就使用默认的托底方案来返回数据。例如，在商品详情页一般都会展示商品的介绍信息，一旦商品详情页系统出现故障无法调用时，会直接获取缓存中的商品介绍信息返回给前端页面。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[nocas长轮询]]></title>
+        <id>https://tinaxiawuhao.github.io/post/t9Kci8xf6/</id>
+        <link href="https://tinaxiawuhao.github.io/post/t9Kci8xf6/">
+        </link>
+        <updated>2022-07-16T12:32:04.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="前言"><strong>前言</strong></h3>
+<p>传统的静态配置方式想要修改某个配置时，必须重新启动一次应用，如果是数据库连接串的变更，那可能还容易接受一些，但如果变更的是一些运行时实时感知的配置，如某个功能项的开关，重启应用就显得有点大动干戈了。</p>
+<p>配置中心正是为了解决此类问题应运而生的，特别是在微服务架构体系中，更倾向于使用配置中心来统一管理配置。</p>
+<p>配置中心最核心的能力就是配置的动态推送，常见的配置中心如 Nacos、Apollo 等都实现了这样的能力。</p>
+<p>在早期接触配置中心时，我就很好奇，配置中心是如何做到服务端感知配置变化实时推送给客户端的？</p>
+<p>在没有研究过配置中心的实现原理之前，我一度认为配置中心是通过长连接来做到配置推送的。</p>
+<p>事实上，目前比较流行的两款配置中心：Nacos 和 Apollo 恰恰都没有使用长连接，而是使用的长轮询。</p>
+<p>本文便是介绍一下长轮询这种听起来好像已经是上个世纪的技术，老戏新唱，看看能不能品出别样的韵味。</p>
+<p>文中会有代码示例，呈现一个简易的配置监听流程。</p>
+<h3 id="数据交互模式"><strong>数据交互模式</strong></h3>
+<p>众所周知，数据交互有两种模式：Push（推模式）和 Pull（拉模式）。</p>
+<p>推模式指的是客户端与服务端建立好网络长连接，服务方有相关数据，直接通过长连接通道推送到客户端。</p>
+<p>其优点是及时，一旦有数据变更，客户端立马能感知到；另外对客户端来说逻辑简单，不需要关心有无数据这些逻辑处理。缺点是不知道客户端的数据消费能力，可能导致数据积压在客户端，来不及处理。</p>
+<p>拉模式指的是客户端主动向服务端发出请求，拉取相关数据。</p>
+<p>其优点是此过程由客户端发起请求，故不存在推模式中数据积压的问题。缺点是可能不够及时，对客户端来说需要考虑数据拉取相关逻辑，何时去拉，拉的频率怎么控制等等。</p>
+<h3 id="长轮询与轮询"><strong>长轮询与轮询</strong></h3>
+<p>在开头，重点介绍一下长轮询（Long Polling）和轮询（Polling）的区别，两者都是拉模式的实现。</p>
+<p>「轮询」是指不管服务端数据有无更新，客户端每隔定长时间请求拉取一次数据，可能有更新数据返回，也可能什么都没有。</p>
+<p>配置中心如果使用「轮询」实现动态推送，会有以下问题：</p>
+<ul>
+<li>推送延迟。客户端每隔 5s 拉取一次配置，若配置变更发生在第 6s，则配置推送的延迟会达到 4s。</li>
+<li>服务端压力。配置一般不会发生变化，频繁的轮询会给服务端造成很大的压力。</li>
+<li>推送延迟和服务端压力无法中和。降低轮询的间隔，延迟降低，压力增加；增加轮询的间隔，压力降低，延迟增高。</li>
+</ul>
+<p>「长轮询」则不存在上述的问题。</p>
+<p>客户端发起长轮询，如果服务端的数据没有发生变更，会 hold 住请求，直到服务端的数据发生变化，或者等待一定时间超时才会返回。返回后，客户端又会立即再次发起下一次长轮询。</p>
+<p>配置中心使用「长轮询」如何解决「轮询」遇到的问题也就显而易见了：</p>
+<ul>
+<li>推送延迟。服务端数据发生变更后，长轮询结束，立刻返回响应给客户端。</li>
+<li>服务端压力。长轮询的间隔期一般很长，例如 30s、60s，并且服务端 hold 住连接不会消耗太多服务端资源。</li>
+</ul>
+<p>以 Nacos 为例的长轮询流程如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1659011655397.png" alt="" loading="lazy"></figure>
+<p>可能有人会有疑问，为什么一次长轮询需要等待一定时间超时，超时后又发起长轮询，为什么不让服务端一直 hold 住？</p>
+<p>主要有两个层面的考虑，一是连接稳定性的考虑，长轮询在传输层本质上还是走的 TCP 协议，如果服务端假死、fullgc 等异常问题，或者是重启等常规操作，长轮询没有应用层的心跳机制，仅仅依靠 TCP 层的心跳保活很难确保可用性，所以一次长轮询设置一定的超时时间也是在确保可用性。</p>
+<p>除此之外，在配置中心场景，还有一定的业务需求需要这么设计。</p>
+<p>在配置中心的使用过程中，用户可能随时新增配置监听，而在此之前，长轮询可能已经发出，新增的配置监听无法包含在旧的长轮询中，所以在配置中心的设计中，一般会在一次长轮询结束后，将新增的配置监听给捎带上，而如果长轮询没有超时时间，只要配置一直不发生变化，响应就无法返回，新增的配置也就没法设置监听了。</p>
+<h3 id="配置中心长轮询设计"><strong>配置中心长轮询设计</strong></h3>
+<p>上文的图中，介绍了长轮询的流程，本节会详解配置中心长轮询的设计细节。</p>
+<p><strong>客户端发起长轮询</strong></p>
+<p>客户端发起一个 HTTP 请求，请求信息包含配置中心的地址，以及监听的 dataId（本文出于简化说明的考虑，认为 dataId 是定位配置的唯一键）。若配置没有发生变化，客户端与服务端之间一直处于连接状态。</p>
+<p><strong>服务端监听数据变化</strong></p>
+<p>服务端会维护 dataId 和长轮询的映射关系，如果配置发生变化，服务端会找到对应的连接，为响应写入更新后的配置内容。如果超时内配置未发生变化，服务端找到对应的超时长轮询连接，写入 304 响应。</p>
+<blockquote>
+<p>304 在 HTTP 响应码中代表“未改变”，并不代表错误。比较契合长轮询时，配置未发生变更的场景。</p>
+</blockquote>
+<p><strong>客户端接收长轮询响应</strong></p>
+<p>首先查看响应码是 200 还是 304，以判断配置是否变更，做出相应的回调。之后再次发起下一次长轮询。</p>
+<p><strong>服务端设置配置写入的接入点</strong></p>
+<p>主要用配置控制台和 client 发布配置，触发配置变更</p>
+<p>这几点便是配置中心实现长轮询的核心步骤，也是指导下面章节代码实现的关键。但在编码之前，仍有一些其他的注意点需要实现阐明。</p>
+<p>配置中心往往是为分布式的集群提供服务的，而每个机器上部署的应用，又会有多个 dataId 需要监听，实例级别 * 配置数是一个不小的数字，配置中心服务端维护这些 dataId 的长轮询连接显然不能用线程一一对应，否则会导致服务端线程数爆炸式增长。</p>
+<p>一个 Tomcat 默认也就 200 个线程，长轮询也不应该阻塞 Tomcat 的业务线程，所以需要配置中心在实现长轮询时，往往采用异步响应的方式来实现。</p>
+<p>而比较方便实现异步 HTTP 的常见手段便是 Servlet3.0 提供的 AsyncContext 机制。</p>
+<blockquote>
+<p>Servlet3.0 并不是一个特别新的规范，它跟 Java 6 是同一时期的产物。例如 SpringBoot 内嵌的 Tomcat 很早就支持了 Servlet3.0，你无需担心 AsyncContext 机制不起作用。</p>
+</blockquote>
+<p>SpringMVC 实现了 DeferredResult 和 Servlet3.0 提供的 AsyncContext 其实没有多大区别，我并没有深入研究过两个实现背后的源码，但从使用层面上来看，AsyncContext 更加的灵活，例如其可以自定义响应码，而 DeferredResult 在上层做了封装，可以快速的帮助开发者实现一个异步响应，但没法细粒度地控制响应。</p>
+<p>所以下文的示例中，我选择了 AsyncContext。</p>
+<h3 id="配置中心长轮询实现"><strong>配置中心长轮询实现</strong></h3>
+<pre><code class="language-xml">&lt;!--注解工具包--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+    &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+    &lt;optional&gt;true&lt;/optional&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.httpcomponents&lt;/groupId&gt;
+    &lt;artifactId&gt;httpclient&lt;/artifactId&gt;
+    &lt;version&gt;4.5.2&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- https://mvnrepository.com/artifact/com.google.guava/guava --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.google.guava&lt;/groupId&gt;
+    &lt;artifactId&gt;guava&lt;/artifactId&gt;
+    &lt;version&gt;22.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h4 id="客户端实现">客户端实现</h4>
+<pre><code class="language-java">@Slf4j
+public class ConfigClient {
+
+    private CloseableHttpClient httpClient;
+    private RequestConfig requestConfig;
+
+    public ConfigClient() {
+        this.httpClient = HttpClientBuilder.create().build();
+        // ① httpClient 客户端超时时间要大于长轮询约定的超时时间
+        this.requestConfig = RequestConfig.custom().setSocketTimeout(40000).build();
+    }
+
+    @SneakyThrows
+    public void longPolling(String url, String dataId) {
+        String endpoint = url + &quot;?dataId=&quot; + dataId;
+        HttpGet request = new HttpGet(endpoint);
+        CloseableHttpResponse response = httpClient.execute(request);
+        switch (response.getStatusLine().getStatusCode()) {
+            case 200: {
+                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity()
+                    .getContent()));
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                response.close();
+                String configInfo = result.toString();
+                log.info(&quot;dataId: [{}] changed, receive configInfo: {}&quot;, dataId, configInfo);
+                longPolling(url, dataId);
+                break;
+            }
+            // ② 304 响应码标记配置未变更
+            case 304: {
+                log.info(&quot;longPolling dataId: [{}] once finished, configInfo is unchanged, longPolling again&quot;, dataId);
+                longPolling(url, dataId);
+                break;
+            }
+            default: {
+                throw new RuntimeException(&quot;unExcepted HTTP status code&quot;);
+            }
+        }
+
+    }
+
+    public static void main(String[] args) {
+        // httpClient 会打印很多 debug 日志，关闭掉
+        Logger logger = (Logger)LoggerFactory.getLogger(&quot;org.apache.http&quot;);
+        logger.setLevel(Level.INFO);
+        logger.setAdditive(false);
+
+        ConfigClient configClient = new ConfigClient();
+        // ③ 对 dataId: user 进行配置监听 
+        configClient.longPolling(&quot;http://127.0.0.1:8080/listener&quot;, &quot;user&quot;);
+    }
+
+}
+</code></pre>
+<p>主要有三个注意点：</p>
+<ul>
+<li>RequestConfig.custom().setSocketTimeout(40000).build() 。httpClient 客户端超时时间要大于长轮询约定的超时时间。很好理解，不然还没等服务端返回，客户端会自行断开 HTTP 连接。</li>
+<li>response.getStatusLine().getStatusCode() == 304 。前文介绍过，约定使用 304 响应码来标识配置未发生变更，客户端继续发起长轮询。</li>
+<li>configClient.longPolling(&quot;http://127.0.0.1:8080/listener&quot;, &quot;user&quot;)。在示例中，我们处于简单考虑，仅仅启动一个客户端，对单一的 dataId：user 进行监听（注意，需要先启动 server 端）。</li>
+</ul>
+<h4 id="服务端实现">服务端实现</h4>
+<pre><code class="language-java">@RestController
+@Slf4j
+@SpringBootApplication
+public class ConfigServer {
+
+    @Data
+    private static class AsyncTask {
+        // 长轮询请求的上下文，包含请求和响应体
+        private AsyncContext asyncContext;
+        // 超时标记
+        private boolean timeout;
+
+        public AsyncTask(AsyncContext asyncContext, boolean timeout) {
+            this.asyncContext = asyncContext;
+            this.timeout = timeout;
+        }
+    }
+
+    // guava 提供的多值 Map，一个 key 可以对应多个 value
+    private Multimap&lt;String, AsyncTask&gt; dataIdContext = Multimaps.synchronizedSetMultimap(HashMultimap.create());
+
+    private ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat(&quot;longPolling-timeout-checker-%d&quot;)
+        .build();
+    private ScheduledExecutorService timeoutChecker = new ScheduledThreadPoolExecutor(1, threadFactory);
+
+    // 配置监听接入点
+    @RequestMapping(&quot;/listener&quot;)
+    public void addListener(HttpServletRequest request, HttpServletResponse response) {
+
+        String dataId = request.getParameter(&quot;dataId&quot;);
+        
+        // 开启异步
+        AsyncContext asyncContext = request.startAsync(request, response);
+        AsyncTask asyncTask = new AsyncTask(asyncContext, true);
+
+        // 维护 dataId 和异步请求上下文的关联
+        dataIdContext.put(dataId, asyncTask);
+
+        // 启动定时器，30s 后写入 304 响应
+        timeoutChecker.schedule(() -&gt; {
+            if (asyncTask.isTimeout()) {
+                dataIdContext.remove(dataId, asyncTask);
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                asyncContext.complete();
+            }
+        }, 30000, TimeUnit.MILLISECONDS);
+    }
+
+    // 配置发布接入点
+    @RequestMapping(&quot;/publishConfig&quot;)
+    @SneakyThrows
+    public String publishConfig(String dataId, String configInfo) {
+        log.info(&quot;publish configInfo dataId: [{}], configInfo: {}&quot;, dataId, configInfo);
+        Collection&lt;AsyncTask&gt; asyncTasks = dataIdContext.removeAll(dataId);
+        for (AsyncTask asyncTask : asyncTasks) {
+            asyncTask.setTimeout(false);
+            HttpServletResponse response = (HttpServletResponse)asyncTask.getAsyncContext().getResponse();
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().println(configInfo);
+            asyncTask.getAsyncContext().complete();
+        }
+        return &quot;success&quot;;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(ConfigServer.class, args);
+    }
+
+}
+</code></pre>
+<p>对上述实现的一些说明：</p>
+<p>@RequestMapping(&quot;/listener&quot;) ，配置监听接入点，也是长轮询的入口。在获取 dataId 之后，使用 request.startAsync 将请求设置为异步，这样在方法结束后，不会占用 Tomcat 的线程池。</p>
+<p>接着 dataIdContext.put(dataId, asyncTask) 会将 dataId 和异步请求上下文给关联起来，方便配置发布时，拿到对应的上下文。</p>
+<p>注意这里使用了一个 guava 提供的数据结构 Multimap&lt;String, AsyncTask&gt; dataIdContext ，它是一个多值 Map，一个 key 可以对应多个 value，你也可以理解为 Map&lt;String,List&gt; ，但使用 Multimap 维护起来可以更方便地处理一些并发逻辑。</p>
+<p>至于为什么会有多值，很好理解，因为配置中心的 Server 端会接受来自多个客户端对同一个 dataId 的监听。</p>
+<p>timeoutChecker.schedule() 启动定时器，30s 后写入 304 响应。再结合之前客户端的逻辑，接收到 304 之后，会重新发起长轮询，形成一个循环。</p>
+<p>@RequestMapping(&quot;/publishConfig&quot;) ，配置发布的入口。配置变更后，根据 dataId 一次拿出所有的长轮询，为之写入变更的响应，同时不要忘记取消定时任务。至此，完成了一个配置变更后推送的流程。</p>
+<h4 id="启动配置监听">启动配置监听</h4>
+<p>先启动 ConfigServer，再启动 ConfigClient。客户端打印长轮询的日志如下：</p>
+<pre><code class="language-shell">22:18:09.185 [main] INFO moe.cnkirito.demo.ConfigClient - longPolling dataId: [user] once finished, configInfo is unchanged, longPolling again
+22:18:39.197 [main] INFO moe.cnkirito.demo.ConfigClient - longPolling dataId: [user] once finished, configInfo is unchanged, longPolling again
+</code></pre>
+<p>发布一条配置，curl -X GET &quot;localhost:8080/publishConfig?dataId=user&amp;configInfo=helloworld&quot;</p>
+<p>服务端打印日志如下：</p>
+<pre><code class="language-shell">22:18:50.801  INFO 73301 --- [nio-8080-exec-6] moe.cnkirito.demo.ConfigServer           : publish configInfo dataId: [user], configInfo: helloworld
+</code></pre>
+<p>客户端接受配置推送：</p>
+<pre><code class="language-shell">22:18:50.806 [main] INFO moe.cnkirito.demo.ConfigClient - dataId: [user] changed, receive configInfo: helloworld
+</code></pre>
+<h3 id="实现细节思考"><strong>实现细节思考</strong></h3>
+<h4 id="为什么需要定时器返回-304">为什么需要定时器返回 304</h4>
+<p>上述的实现中，服务端采用了一个定时器，在配置未发生变更时，定时返回 304，客户端接收到 304 之后，重新发起长轮询。</p>
+<p>在前文，已经解释过了为什么需要超时后重新发起长轮询，而不是由服务端一直 hold，直到配置变更再返回。</p>
+<p>但可能有读者还会有疑问，为什么不由客户端控制超时，服务端去除掉定时器，这样客户端超时后重新发起下一次长轮询，这样的设计不是更简单吗？</p>
+<p>无论是 Nacos 还是 Apollo 都有这样的定时器，而不是靠客户端控制超时，这样做主要有两点考虑：</p>
+<ul>
+<li>和真正的客户端超时区分开。</li>
+<li>仅仅使用异常（Exception）来表达异常流，而不应该用异常来表达正常的业务流。304 不是超时异常，而是长轮询中配置未变更的一种正常流程，不应该使用超时异常来表达。</li>
+</ul>
+<p>客户端超时需要单独配置，且需要比服务端长轮询的超时要长。</p>
+<p>正如上述的 demo 中客户端超时设置的是 40s，服务端判断一次长轮询超时是 30s。</p>
+<p>这两个值在 Nacos 中默认是 30s 和 29.5s，在 Apollo 中默认是是 90s 和 60s。</p>
+<h4 id="长轮询包含多组-dataid">长轮询包含多组 dataId</h4>
+<p>在上述的 demo 中，一个 dataId 会发起一次长轮询，在实际配置中心的设计中肯定不能这样设计，一般的优化方式是，一批 dataId 组成一个组批量包含在一个长轮询任务中。</p>
+<p>在 Nacos 中，按照 3000 个 dataId 为一组包装成一个长轮询任务。</p>
+<h4 id="长轮询和长连接">长轮询和长连接</h4>
+<p>讲完实现细节，本文最核心的部分已经介绍完了。</p>
+<p>再回到最前面提到的数据交互模式上提到的推模型和拉模型，其实在写这篇文章时，我曾经问过交流群中的小伙伴们“配置中心实现动态推送的原理”，他们中绝大多数人认为是长连接的推模型。</p>
+<p>然而事实上，主流的配置中心几乎都是使用了本文介绍的长轮询方案，这又是为什么呢？</p>
+<p>我也翻阅了不少博客，显然他们给出的理由并不能说服我，我尝试着从自己的角度分析了一下这个既定的事实。</p>
+<ul>
+<li>长轮询实现起来比较容易，完全依赖于 HTTP 便可以实现全部逻辑，而 HTTP 是最能够被大众接受的通信方式。</li>
+<li>长轮询使用 HTTP，便于多语言客户端的编写，大多数语言都有 HTTP 的客户端。</li>
+</ul>
+<p>那么长连接是不是真的就不适合用于配置中心场景呢？</p>
+<p>有人可能会认为维护一条长连接会消耗大量资源，而长轮询可以提升系统的吞吐量，而在配置中心场景，这一假设并没有实际的压测数据能够论证，benchmark everything！please~</p>
+<p>另外，翻阅了一下 Nacos 2.0 的 milestone，我发现了一个有意思的规划，Nacos 的注册中心（目前是短轮询 + udp 推送）和配置中心（目前是长轮询）都有计划改造为长连接模式。</p>
+<p>再回过头来看，长轮询实现已经将配置中心这个组件支撑的足够好了，替换成长连接，一定需要找到合适的理由才行。</p>
+<h3 id="总结"><strong>总结</strong></h3>
+<ul>
+<li>本文介绍了长轮询、轮询、长连接这几种数据交互模型的差异性。</li>
+<li>分析了 Nacos 和 Apollo 等主流配置中心均是通过长轮询的方式实现配置的实时推送的。实时感知建立在客户端拉的基础上，因为本质上还是通过 HTTP 进行的数据交互，之所以有“推”的感觉，是因为服务端 hold 住了客户端的响应体，并且在配置变更后主动写入了返回 response 对象再进行返回。</li>
+<li>通过一个简单的 demo，实现了长轮询配置实时推送的过程演示</li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ZipKin核心架构]]></title>
         <id>https://tinaxiawuhao.github.io/post/OTKk-Bytc/</id>
@@ -26348,17 +27642,7 @@ Exception in thread &quot;main&quot; java.lang.OutOfMemoryError: Metaspace
 </li>
 </ol>
 <p>双亲委派模型的工作过程如下：</p>
-<ol>
-<li>
-<p>如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成。</p>
-</li>
-<li>
-<p>每一层的类加载器都重复第一步，因此所有的类加载请求最终都传送到了顶层的类加载器中。</p>
-</li>
-<li>
-<p>只有父类加载器返回自己无法完成这个加载请求，子加载器才会尝试自己去加载。</p>
-</li>
-</ol>
+<p>当一个类加载器收到某个类的加载请求时，该类加载器不会去加载该类，而是先查看该类加载器的缓存空间是否已经加载了该类，如果已经加载过了就直接返回，如果不存在，则委托给父亲加载器去加载（也是先查看父亲加载器的缓存空间是否已经加载过该类，如果已加载则直接返回），每一层都是如此，如果缓存空间中都没有加载过该类的记录，最终类加载的请求就会传送到顶端的启动类加载器，如果启动类加载器不能加载该类，则返回给拓展类加载器（儿子）去尝试加载，如果还是不能加载，则再到应用类加载器，再到自定义加载器加载</p>
 <h2 id="对象的创建-存储和访问">对象的创建、存储和访问</h2>
 <h3 id="对象的创建">对象的创建</h3>
 <ol>
@@ -31242,2732 +32526,6 @@ Leader的工作流程简图如下所示，在实际实现中，流程要比下�
 </ol>
 <p>以上就是最终一致性的五类常见的变种，在时间系统实践中，可以将其中的若干个变种互相结合起来，以构建一个具有最终一致性的分布式系统。事实上，可以将其中的若干个变种相互结合起来，以构建一个具有最终一致性特性的分布式系统。事实上，最终一致性并不是只有那些大型分布式系统才设计的特性，许多现代的关系型数据库都采用了最终一致性模型。在现代关系型数据库中，大多都会采用同步和异步方式来实现主备数据复制技术。在同步方式中，数据的复制国耻鞥通常是更新事务的一部分，因此在事务完成后，主备数据库的数据就会达到一致。而在异步方式中，备库的更新往往存在延时，这取决于事务日志在主备数据库之间传输的时间长短，如果传输时间过长或者甚至在日志传输过程中出现异常导致无法及时将事务应用到备库上，那么狠显然，从备库中读取的的数据将是旧的，因此就出现了不一致的情况。当然，无论是采用多次重试还是认为数据订正，关系型数据库还是能搞保证最终数据达到一致——这就是系统提供最终一致性保证的经典案例。</p>
 <p>总的来说，BASE理论面向的是大型高可用可扩展的分布式系统，和传统事务的ACID特性使相反的，它完全不同于ACID的强一致性模型，而是提出通过牺牲强一致性来获得可用性，并允许数据在一段时间内是不一致的，但最终达到一致状态。但同时，在实际的分布式场景中，不同业务单元和组件对数据一致性的要求是不同的，因此在具体的分布式系统架构设计过程中，ACID特性与BASE理论往往又会结合在一起使用。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[MyBatis 缓存详解]]></title>
-        <id>https://tinaxiawuhao.github.io/post/P-yYZmx9j/</id>
-        <link href="https://tinaxiawuhao.github.io/post/P-yYZmx9j/">
-        </link>
-        <updated>2021-06-01T08:51:37.000Z</updated>
-        <content type="html"><![CDATA[<p>缓存是一般的ORM 框架都会提供的功能，目的就是提升查询的效率和减少数据库的压力。跟Hibernate 一样，MyBatis 也有一级缓存和二级缓存，并且预留了集成第三方缓存的接口。</p>
-<p>缓存体系结构：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622193533861.png" alt="" loading="lazy"></figure>
-<p>MyBatis 跟缓存相关的类都在cache 包里面，其中有一个Cache 接口，只有一个默认的实现类 <code>PerpetualCache</code>，它是用<code>HashMap</code> 实现的。</p>
-<p>所有的缓存实现类总体上可分为三类：基本缓存、淘汰算法缓存、装饰器缓存。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">缓存实现类</th>
-<th style="text-align:center">描述</th>
-<th style="text-align:center">作用</th>
-<th style="text-align:center">装饰条件</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">基本缓存</td>
-<td style="text-align:center">缓存基本实现类</td>
-<td style="text-align:center">默认是PerpetualCache，也可以自定义比如RedisCache等，具备基本功能的缓存类</td>
-<td style="text-align:center">无</td>
-</tr>
-<tr>
-<td style="text-align:center">LruCache</td>
-<td style="text-align:center">LRU策略的缓存</td>
-<td style="text-align:center">当缓存达到上限时，删除最近最少使用的缓存</td>
-<td style="text-align:center">eviction=“LRU” （默认）</td>
-</tr>
-<tr>
-<td style="text-align:center">FifoCache</td>
-<td style="text-align:center">FIFO策略的缓存</td>
-<td style="text-align:center">当缓存达到上限时，删除最先入队的缓存</td>
-<td style="text-align:center">eviction=“FIFO”</td>
-</tr>
-<tr>
-<td style="text-align:center">SoftCache/WeakCache</td>
-<td style="text-align:center">带清理策略的缓存</td>
-<td style="text-align:center">通过JVM的软引用和弱引用来实现缓存，当JVM内存不足时，会自动清理掉这些缓存</td>
-<td style="text-align:center">eviction=“SOFT”/eviction=“WEAK”</td>
-</tr>
-<tr>
-<td style="text-align:center">LoggingCache</td>
-<td style="text-align:center">带日志功能的缓存</td>
-<td style="text-align:center">比如输出缓存命中率</td>
-<td style="text-align:center">基本</td>
-</tr>
-<tr>
-<td style="text-align:center">SynchronizedCache</td>
-<td style="text-align:center">同步缓存</td>
-<td style="text-align:center">基于Synchronized关键字实现，解决并发问题</td>
-<td style="text-align:center">基本</td>
-</tr>
-<tr>
-<td style="text-align:center">BlockingCache</td>
-<td style="text-align:center">阻塞缓存</td>
-<td style="text-align:center">通过在get/put方式中加锁，保证只有一个线程操作缓存，基于Java重入锁实现</td>
-<td style="text-align:center">blocking=true</td>
-</tr>
-<tr>
-<td style="text-align:center">SerializedCache</td>
-<td style="text-align:center">支持序列化的缓存</td>
-<td style="text-align:center">将对象序列化以后存到缓存中，取出是反序列化</td>
-<td style="text-align:center">readOnly=false(默认)</td>
-</tr>
-<tr>
-<td style="text-align:center">ScheduledCache</td>
-<td style="text-align:center">定时调度的缓存</td>
-<td style="text-align:center">在进行 get/put/remove/getSize 等操作前，判断 缓存时间是否超过了设置的最长缓存时间（默认是 一小时），如果是则清空缓存–即每隔一段时间清 空一次缓存</td>
-<td style="text-align:center">flushInterval不为空</td>
-</tr>
-<tr>
-<td style="text-align:center">TransactionalCache</td>
-<td style="text-align:center">事务缓存</td>
-<td style="text-align:center">在二级缓存中使用，可以一次存入多个缓存，删除多个缓存</td>
-<td style="text-align:center">在TransactionalCacheManager中用Map维护对应关系</td>
-</tr>
-</tbody>
-</table>
-<h3 id="一级缓存本地缓存">一级缓存（本地缓存）</h3>
-<p>一级缓存也叫本地缓存，MyBatis 的一级缓存是在会话（SqlSession）层面进行缓存的。MyBatis 的一级缓存是默认开启的，不需要任何的配置。首先我们必须去弄清楚一个问题，在MyBatis 执行的流程里面，涉及到这么多的对象，那么缓存<code>PerpetualCache</code> 应该放在哪个对象里面去维护？如果要在同一个会话里面共享一级缓存，这个对象肯定是在SqlSession 里面创建的，作为SqlSession 的一个属性。</p>
-<p><code>DefaultSqlSession</code> 里面只有两个属性，Configuration 是全局的，所以缓存只可能放在Executor 里面维护——<code>SimpleExecutor/ReuseExecutor/BatchExecutor</code> 的父类<code>BaseExecutor</code>的构造函数中持有了<code>PerpetualCache</code>。在同一个会话里面，多次执行相同的SQL 语句，会直接从内存取到缓存的结果，不会再发送SQL 到数据库。但是不同的会话里面，即使执行的SQL 一模一样（通过一个Mapper 的同一个方法的相同参数调用），也不能使用到一级缓存。</p>
-<p>如下图所示，MyBatis会在一次会话的表示----一个SqlSession对象中创建一个本地缓存(local cache)，对于每一次查询，都会尝试根据查询的条件去本地缓存中查找是否在缓存中，如果在缓存中，就直接从缓存中取出，然后返回给用户；否则，从数据库读取数据，将查询结果存入缓存并返回给用户。</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622193556324.png" alt="" loading="lazy"></figure>
-<p>一级缓存的生命周期有多长？</p>
-<ol>
-<li>MyBatis在开启一个数据库会话时，会 创建一个新的<code>SqlSession</code>对象，<code>SqlSession</code>对象中会有一个新的Executor对象，Executor对象中持有一个新的<code>PerpetualCache</code>对象；当会话结束时，<code>SqlSession</code>对象及其内部的Executor对象还有<code>PerpetualCache</code>对象也一并释放掉。</li>
-<li>如果<code>SqlSession</code>调用了close()方法，会释放掉一级缓存<code>PerpetualCache</code>对象，一级缓存将不可用；</li>
-<li>如果<code>SqlSession</code>调用了<code>clearCache()</code>，会清空<code>PerpetualCache</code>对象中的数据，但是该对象仍可使用；</li>
-<li><code>SqlSession</code>中执行了任何一个update操作(update()、delete()、insert()) ，都会清空<code>PerpetualCache</code>对象的数据，但是该对象可以继续使用；</li>
-</ol>
-<p>SqlSession 一级缓存的工作流程：</p>
-<ol>
-<li>对于某个查询，根据<code>statementId</code>,<code>params</code>,<code>rowBounds</code>来构建一个key值，根据这个key值去缓存Cache中取出对应的key值存储的缓存结果</li>
-<li>判断从Cache中根据特定的key值取的数据数据是否为空，即是否命中；</li>
-<li>如果命中，则直接将缓存结果返回；</li>
-<li>如果没命中：</li>
-</ol>
-<ul>
-<li>
-<ol>
-<li>去数据库中查询数据，得到查询结果；</li>
-<li>将key和查询到的结果分别作为key,value对存储到Cache中；</li>
-<li>将查询结果返回；</li>
-</ol>
-</li>
-</ul>
-<p>接下来我们来验证一下，MyBatis 的一级缓存到底是不是只能在一个会话里面共享，以及跨会话（不同session）操作相同的数据会产生什么问题。判断是否命中缓存：如果再次发送SQL 到数据库执行，说明没有命中缓存；如果直接打印对象，说明是从内存缓存中取到了结果。</p>
-<ol>
-<li>
-<p>在同一个session 中共享（不同session 不能共享）</p>
-</li>
-<li>
-<p>同一个会话中，update（包括delete）会导致一级缓存被清空</p>
-</li>
-<li>
-<p>其他会话更新了数据，导致读取到脏数据（一级缓存不能跨会话共享）</p>
-</li>
-</ol>
-<p>一级缓存的不足：</p>
-<p>使用一级缓存的时候，因为缓存不能跨会话共享，不同的会话之间对于相同的数据可能有不一样的缓存。在有多个会话或者分布式环境下，会存在脏数据的问题。如果要解决这个问题，就要用到二级缓存。MyBatis 一级缓存（MyBaits 称其为 Local Cache）无法关闭，但是有两种级别可选：</p>
-<ol>
-<li>session 级别的缓存，在同一个 sqlSession 内，对同样的查询将不再查询数据库，直接从缓存中。</li>
-<li>statement 级别的缓存，避坑： 为了避免这个问题，可以将一级缓存的级别设为 statement 级别的，这样每次查询结束都会清掉一级缓存。</li>
-</ol>
-<h3 id="二级缓存">二级缓存</h3>
-<p>二级缓存是用来解决一级缓存不能跨会话共享的问题的，范围是<code>namespace</code> 级别的，可以被多个<code>SqlSession</code> 共享（只要是同一个接口里面的相同方法，都可以共享），生命周期和应用同步。如果你的MyBatis使用了二级缓存，并且你的Mapper和select语句也配置使用了二级缓存，那么在执行select查询的时候，MyBatis会先从二级缓存中取输入，其次才是一级缓存，即MyBatis查询数据的顺序是：二级缓存  —&gt; 一级缓存 —&gt; 数据库。</p>
-<p>作为一个作用范围更广的缓存，它肯定是在SqlSession 的外层，否则不可能被多个SqlSession 共享。而一级缓存是在SqlSession 内部的，所以第一个问题，肯定是工作在一级缓存之前，也就是只有取不到二级缓存的情况下才到一个会话中去取一级缓存。第二个问题，二级缓存放在哪个对象中维护呢？ 要跨会话共享的话，SqlSession 本身和它里面的BaseExecutor 已经满足不了需求了，那我们应该在BaseExecutor 之外创建一个对象。</p>
-<p>实际上MyBatis 用了一个装饰器的类来维护，就是<code>CachingExecutor</code>。如果启用了二级缓存，MyBatis 在创建Executor 对象的时候会对Executor 进行装饰。<code>CachingExecutor</code> 对于查询请求，会判断二级缓存是否有缓存结果，如果有就直接返回，如果没有委派交给真正的查询器Executor 实现类，比如<code>SimpleExecutor</code> 来执行查询，再走到一级缓存的流程。最后会把结果缓存起来，并且返回给用户。</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622193575153.png" alt="" loading="lazy"></figure>
-<p>开启二级缓存的方法</p>
-<p>第一步：配置 <code>mybatis.configuration.cache-enabled=true</code>，只要没有显式地设置<code>cacheEnabled=false</code>，都会用<code>CachingExecutor</code> 装饰基本的执行器。</p>
-<p>第二步：在Mapper.xml 中配置<cache/>标签：</p>
-<pre><code class="language-xml">&lt;cache type=&quot;org.apache.ibatis.cache.impl.PerpetualCache&quot;
-    size=&quot;1024&quot;
-eviction=&quot;LRU&quot;
-flushInterval=&quot;120000&quot;
-readOnly=&quot;false&quot;/&gt;
-</code></pre>
-<p>基本上就是这样。这个简单语句的效果如下:</p>
-<ul>
-<li>映射语句文件中的所有 select 语句的结果将会被缓存。</li>
-<li>映射语句文件中的所有 insert、update 和 delete 语句会刷新缓存。</li>
-<li>缓存会使用最近最少使用算法（LRU, Least Recently Used）算法来清除不需要的缓存。</li>
-<li>缓存不会定时进行刷新（也就是说，没有刷新间隔）。</li>
-<li>缓存会保存列表或对象（无论查询方法返回哪种）的 1024 个引用。</li>
-<li>缓存会被视为读/写缓存，这意味着获取到的对象并不是共享的，可以安全地被调用者修改，而不干扰其他调用者或线程所做的潜在修改。</li>
-</ul>
-<p>这个更高级的配置创建了一个 FIFO 缓存，每隔 60 秒刷新，最多可以存储结果对象或列表的 512 个引用，而且返回的对象被认为是只读的，因此对它们进行修改可能会在不同线程中的调用者产生冲突。可用的清除策略有：</p>
-<ul>
-<li>LRU – 最近最少使用：移除最长时间不被使用的对象。</li>
-<li>FIFO – 先进先出：按对象进入缓存的顺序来移除它们。</li>
-<li>SOFT – 软引用：基于垃圾回收器状态和软引用规则移除对象。</li>
-<li>WEAK – 弱引用：更积极地基于垃圾收集器状态和弱引用规则移除对象。</li>
-</ul>
-<p>默认的清除策略是 LRU。</p>
-<p><strong><code>flushInterval</code></strong>（刷新间隔）属性可以被设置为任意的正整数，设置的值应该是一个以毫秒为单位的合理时间量。 默认情况是不设置，也就是没有刷新间隔，缓存仅仅会在调用语句时刷新。</p>
-<p><strong><code>size</code></strong>（引用数目）属性可以被设置为任意正整数，要注意欲缓存对象的大小和运行环境中可用的内存资源。默认值是 1024。</p>
-<p><strong><code>readOnly</code></strong>（只读）属性可以被设置为 true 或 false。只读的缓存会给所有调用者返回缓存对象的相同实例。 因此这些对象不能被修改。这就提供了可观的性能提升。而可读写的缓存会（通过序列化）返回缓存对象的拷贝。 速度上会慢一些，但是更安全，因此默认值是 false。</p>
-<p>注：二级缓存是事务性的。这意味着，当 SqlSession 完成并提交时，或是完成并回滚，但没有执行 <code>flushCache=true</code>的 <code>insert/delete/update</code> 语句时，缓存会获得更新。</p>
-<p><code>Mapper.xml</code> 配置了<cache>之后，select()会被缓存。update()、delete()、insert()会刷新缓存。：如果<code>cacheEnabled=true</code>，<code>Mapper.xml</code> 没有配置标签，还有二级缓存吗？（没有）还会出现CachingExecutor 包装对象吗？（会）</p>
-<p>只要<code>cacheEnabled=true</code> 基本执行器就会被装饰。有没有配置<cache>，决定了在启动的时候会不会创建这个mapper 的Cache 对象，只是最终会影响到<code>CachingExecutorquery</code> 方法里面的判断。如果某些查询方法对数据的实时性要求很高，不需要二级缓存，怎么办？我们可以在单个Statement ID 上显式关闭二级缓存（默认是true）：</p>
-<pre><code class="language-xml">&lt;select id=&quot;selectBlog&quot; resultMap=&quot;BaseResultMap&quot; useCache=&quot;false&quot;&gt;
-</code></pre>
-<h4 id="第三方缓存做二级缓存">第三方缓存做二级缓存</h4>
-<p>除了MyBatis 自带的二级缓存之外，我们也可以通过实现Cache 接口来自定义二级缓存。MyBatis 官方提供了一些第三方缓存集成方式，比如ehcache 和redis：https://github.com/mybatis/redis-cache ,这里就不过多介绍了。当然，我们也可以使用独立的缓存服务，不使用MyBatis 自带的二级缓存。</p>
-<p>pom 文件引入依赖：</p>
-<pre><code class="language-java">&lt;dependency&gt;
-	&lt;groupId&gt;org.mybatis.caches&lt;/groupId&gt;
-	&lt;artifactId&gt;mybatis-redis&lt;/artifactId&gt;
-	&lt;version&gt;1.0.0-beta2&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<p>MybatisRedisCache</p>
-<pre><code class="language-java">
-import com.xxx.util.JsonUtils;
-import org.apache.ibatis.cache.Cache;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.data.redis.core.RedisTemplate;
- 
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
- 
-/**
- * Mybatis - redis二级缓存
- *
- */
-public final class MybatisRedisCache implements Cache {
-    /**
-     * 日志工具类
-     */
-    private static final Logger logger = LogManager.getLogger(MybatisRedisCache.class);
- 
-    /**
-     * 读写锁
-     */
-    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    /**
-     * ID
-     */
-    private String id;
- 
-    /**
-     * 集成redisTemplate
-     */
-    private static RedisTemplate redisTemplate;
- 
-    public MybatisRedisCache() {
-    }
- 
-    public MybatisRedisCache(String id) {
-        if (id == null) {
-            throw new IllegalArgumentException(&quot;Cache instances require an ID&quot;);
-        } else {
-            logger.debug(&quot;MybatisRedisCache.id={}&quot;, id);
-            this.id = id;
-        }
-    }
- 
- 
-    @Override
-    public String getId() {
-        return this.id;
-    }
- 
-    @Override
-    public int getSize() {
-        try {
-            Long size = redisTemplate.opsForHash().size(this.id.toString());
-            logger.debug(&quot;MybatisRedisCache.getSize: {}-&gt;{}&quot;, id, size);
-            return size.intValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
- 
-    @Override
-    public void putObject(final Object key, final Object value) {
-        try {
-            logger.debug(&quot;MybatisRedisCache.putObject: {}-&gt;{}-&gt;{}&quot;, id, key, JsonUtils.toJson(value));
-            redisTemplate.opsForHash().put(this.id.toString(), key.toString(), value);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
- 
-    @Override
-    public Object getObject(final Object key) {
-        try {
-            Object hashVal = redisTemplate.opsForHash().get(this.id.toString(), key.toString());
-            logger.debug(&quot;MybatisRedisCache.getObject: {}-&gt;{}-&gt;{}&quot;, id, key, JsonUtils.toJson(hashVal));
-            return hashVal;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
- 
-    @Override
-    public Object removeObject(final Object key) {
-        try {
-            redisTemplate.opsForHash().delete(this.id.toString(), key.toString());
-            logger.debug(&quot;MybatisRedisCache.removeObject: {}-&gt;{}-&gt;{}&quot;, id, key);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
- 
-    @Override
-    public void clear() {
-        try {
-            redisTemplate.delete(this.id.toString());
-            logger.debug(&quot;MybatisRedisCache.clear: {}&quot;, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
- 
-    @Override
-    public ReadWriteLock getReadWriteLock() {
-        return this.readWriteLock;
-    }
- 
-    @Override
-    public String toString() {
-        return &quot;MybatisRedisCache {&quot; + this.id + &quot;}&quot;;
-    }
- 
-    /**
-     * 设置redisTemplate
-     *
-     * @param redisTemplate
-     */
-    public void setRedisTemplate(RedisTemplate redisTemplate) {
-        MybatisRedisCache.redisTemplate = redisTemplate;
-    }
-}
-</code></pre>
-<p>RedisConfig</p>
-<pre><code class="language-java">import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-/**
- * Redis配置
- *
- */
-
-@Configuration
-public class RedisConfig {
-
-    /**
-     * 配置RedisTemplate
-     *
-     * @param factory
-     * @return
-     */
-    @Bean
-    public RedisTemplate redisTemplate(RedisConnectionFactory factory, Jackson2JsonRedisSerializer redisJsonSerializer) {
-        RedisTemplate&lt;Object, Object&gt; template = new RedisTemplate&lt;&gt;();
-        //redis连接工厂
-        template.setConnectionFactory(factory);
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        //redis.key序列化器
-        template.setKeySerializer(stringRedisSerializer);
-        //redis.value序列化器
-        template.setValueSerializer(redisJsonSerializer);
-        //redis.hash.key序列化器
-        template.setHashKeySerializer(stringRedisSerializer);
-        //redis.hash.value序列化器
-        template.setHashValueSerializer(redisJsonSerializer);
-        //调用其他初始化逻辑
-        template.afterPropertiesSet();
-        //这里设置redis事务一致
-        template.setEnableTransactionSupport(true);
-        return template;
-    }
-
-    /**
-     * 配置redis Json序列化器
-     *
-     * @return
-     */
-    @Bean
-    public Jackson2JsonRedisSerializer redisJsonSerializer() {
-        //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值（默认使用JDK的序列化方式）
-        Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        serializer.setObjectMapper(mapper);
-        return serializer;
-    }
-
-}
-</code></pre>
-<p>开启Mybatis二级缓存设置</p>
-<p>方式1：mybatis-config.xml</p>
-<pre><code class="language-java">&lt;configuration&gt;
-    &lt;settings&gt;
-        &lt;!-- 开启二级缓存 --&gt;
-        &lt;setting name=&quot;cacheEnabled&quot; value=&quot;true&quot;/&gt;
-    &lt;/settings&gt;
-   ...
-&lt;/configuration&gt;
-</code></pre>
-<p>方式2：Springboot - application.properties</p>
-<pre><code class="language-java">#使全局的映射器启用或禁用缓存。
-mybatis.configuration.cache-enabled=true
-</code></pre>
-<p>Mapper.xml 配置，type 使用RedisCache：</p>
-<pre><code class="language-java">&lt;cache type=&quot;org.mybatis.caches.redis.RedisCache&quot;
-eviction=&quot;FIFO&quot; flushInterval=&quot;60000&quot; size=&quot;512&quot; readOnly=&quot;true&quot;/&gt;
-</code></pre>
-<p>redis.properties 配置：</p>
-<pre><code class="language-java">host=localhost
-port=6379
-connectionTimeout=5000
-soTimeout=5000
-database=0
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[springBoot概述]]></title>
-        <id>https://tinaxiawuhao.github.io/post/O58auJO44/</id>
-        <link href="https://tinaxiawuhao.github.io/post/O58auJO44/">
-        </link>
-        <updated>2021-05-31T08:29:40.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="spring-boot-优点">Spring Boot 优点</h2>
-<ol>
-<li>容易上手，提升开发效率，为 Spring 开发提供一个更快、更广泛的入门体验。</li>
-<li>开箱即用，远离繁琐的配置。</li>
-<li>提供了一系列大型项目通用的非业务性功能，例如：内嵌服务器、安全管理、运行数据监控、运行状况检查和外部化配置等。</li>
-<li>没有代码生成，也不需要XML配置。</li>
-<li>避免大量的 Maven 导入和各种版本冲突。</li>
-</ol>
-<h2 id="spring-boot-的核心注解是哪个它主要由哪几个注解组成的">Spring Boot 的核心注解是哪个？它主要由哪几个注解组成的？</h2>
-<p>启动类上面的注解是@SpringBootApplication，它也是 Spring Boot 的核心注解，主要组合包含了以下 3 个注解：</p>
-<p><code>@SpringBootConfiguration</code>：组合了 @Configuration 注解，实现配置文件的功能。</p>
-<p><code>@EnableAutoConfiguration</code>：打开自动配置的功能，也可以关闭某个自动配置的选项，如关闭数据源自动配置功能： <code>@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })</code>。</p>
-<p><code>@ComponentScan</code>：Spring组件扫描。</p>
-<p>所有其它 Spring 组件(如Controller层、Service层、Dao层、定时器等)都必须放在应用  @SpringBootApplication 注解所在类的同包或者其子包下面，因为应用从启动类开始启动，然后会扫描启动类同包及其子包下面的组件，如果放在其它地方则会因为扫描不到而加载不了</p>
-<h2 id="javaconfig">JavaConfig</h2>
-<p><code>Spring JavaConfig</code> 是 Spring 社区的产品，它提供了配置 Spring IoC 容器的纯Java 方法。因此它有助于避免使用 XML 配置。使用 JavaConfig 的优点在于：</p>
-<p>（1）面向对象的配置。由于配置被定义为 JavaConfig 中的类，因此用户可以充分利用 Java 中的面向对象功能。一个配置类可以继承另一个，重写它的@Bean 方法等。</p>
-<p>（2）减少或消除 XML 配置。基于依赖注入原则的外化配置的好处已被证明。但是，许多开发人员不希望在 XML 和 Java 之间来回切换。JavaConfig 为开发人员提供了一种纯 Java 方法来配置与 XML 配置概念相似的 Spring 容器。从技术角度来讲，只使用 JavaConfig 配置类来配置容器是可行的，但实际上很多人认为将JavaConfig 与 XML 混合匹配是理想的。</p>
-<p>（3）类型安全和重构友好。JavaConfig 提供了一种类型安全的方法来配置 Spring容器。由于 Java 5.0 对泛型的支持，现在可以按类型而不是按名称检索 bean，不需要任何强制转换或基于字符串的查找。</p>
-<pre><code class="language-java">/**
- * @ConfigurationProperties 表示 告诉 SpringBoot 将本类中的所有属性和配置文件中相关的配置进行绑定；
- * prefix = &quot;user&quot; 表示 将配置文件中 key 为 user 的下面所有的属性与本类属性进行一一映射注入值，如果配置文件中
- * 不存在 &quot;user&quot; 的 key，则不会为 POJO 注入值，属性值仍然为默认值
- * @Component 将本来标识为一个 Spring 组件，因为只有是容器中的组件，容器才会为 @ConfigurationProperties 提供此注入功能
- * @PropertySource (value = { &quot; classpath : user.properties &quot; }) 指明加载类路径下的哪个配置文件来注入值
- */
-@PropertySource(value = {&quot;classpath:user.properties&quot;})
-@Component
-@ConfigurationProperties(prefix = &quot;user&quot;)
-public class User {
-    private Integer id;
-    private String lastName;
-    private Integer age;
-    private Date birthday;
-    private List&lt;String&gt; colorList;
-    private Map&lt;String, String&gt; cityMap;
-}
-/**
- * 文中的@Configuration 可以替换为@Component运行结果是一样的，但是两者是有不同的，@Configuration会为配置类生成CGLIB代理Class，@Component不会
- */
-@PropertySource(value = {&quot;classpath:user.properties&quot;})
-@Configuration
-public class User {
-    @Value(${user.id})
-    private Integer id;
-     @Value(${user.lastName})
-    private String lastName;
-     @Value(${user.age})
-    private Integer age;
-     @Value(${user.birthday})
-    private Date birthday;
-     @Value(${user.colorList})
-    private List&lt;String&gt; colorList;
-     @Value(${user.maps})
-    private Map&lt;String, String&gt; cityMap;
-}
-</code></pre>
-<p><strong>user.properties</strong></p>
-<pre><code class="language-java">user.id=111
-user.lastName=张无忌
-user.age=120
-user.birthday=2018/07/11
-user.colorList=red,yellow,green,blacnk
-user.cityMap.mapK1=长沙市
-user.cityMap.mapK2=深圳市
-user.maps=&quot;{mapK1: '长沙市', mapK2: '深圳市'}&quot;
-</code></pre>
-<h2 id="spring-boot-自动配置">Spring Boot 自动配置</h2>
-<p>注解 @EnableAutoConfiguration, @Configuration, @ConditionalOnClass 就是自动配置的核心，</p>
-<p>@EnableAutoConfiguration 给容器导入META-INF/spring.factories 里定义的自动配置类。</p>
-<p>筛选有效的自动配置类。</p>
-<p>每一个自动配置类结合对应的 xxxProperties.java 读取配置文件进行自动配置功能</p>
-<h2 id="spring-boot-配置加载顺序">Spring Boot 配置加载顺序</h2>
-<p>Spring Boot 支持多种外部配置方式，如下所示，从上往下加载优先级由高到低，内容相同时覆盖，不相同时累加。</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622190707004.png" alt="" loading="lazy"></figure>
-<p>如果在不同的目录中存在多个配置文件，它的读取顺序是：<br>
-1、config/application.properties（项目根目录中config目录下）<br>
-2、config/application.yml<br>
-3、application.properties（项目根目录下）<br>
-4、application.yml<br>
-5、resources/config/application.properties（项目resources目录中config目录下）<br>
-6、resources/config/application.yml<br>
-7、resources/application.properties（项目的resources目录下）<br>
-8、resources/application.yml</p>
-<h2 id="yaml-配置">YAML 配置</h2>
-<p>YAML 现在可以算是非常流行的一种配置文件格式了，无论是前端还是后端，都可以见到 YAML 配置。那么 YAML 配置和传统的 properties 配置相比到底有哪些优势呢？</p>
-<ol>
-<li>配置有序，在一些特殊的场景下，配置有序很关键</li>
-<li>支持数组，数组中的元素可以是基本数据类型也可以是对象</li>
-<li>简洁</li>
-</ol>
-<p>相比 properties 配置文件，YAML 还有一个缺点，就是不支持 <code>@PropertySource</code> 注解导入自定义的 YAML 配置。</p>
-<h2 id="spring-boot-是否可以使用-xml-配置">Spring Boot 是否可以使用 XML 配置</h2>
-<p>Spring Boot 推荐使用 Java 配置而非 XML 配置，但是 Spring Boot 中也可以使用 XML 配置，通过 <code>@ImportResource</code> 注解可以引入一个 XML 配置。</p>
-<h2 id="spring-boot-核心配置文件bootstrapproperties和-applicationproperties-有何区别">spring boot 核心配置文件bootstrap.properties和 application.properties 有何区别</h2>
-<p>单纯做 Spring Boot 开发，可能不太容易遇到 <code>bootstrap.properties</code> 配置文件，但是在结合 Spring Cloud 时，这个配置就会经常遇到了，特别是在需要加载一些远程配置文件的时侯。</p>
-<p>spring boot 核心的两个配置文件：</p>
-<ul>
-<li>bootstrap (. yml 或者 . properties)：boostrap 由父 ApplicationContext 加载的，比 applicaton 优先加载，配置在应用程序上下文的引导阶段生效。一般来说我们在 Spring Cloud Config 或者 Nacos 中会用到它。且 boostrap 里面的属性不能被覆盖；</li>
-<li>application (. yml 或者 . properties)： 由ApplicatonContext 加载，用于 spring boot 项目的自动化配置。</li>
-</ul>
-<h2 id="spring-profiles">Spring Profiles</h2>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622190724869.png" alt="" loading="lazy"></figure>
-<pre><code class="language-yaml">spring:
- profiles:
-  active: devel #指定激活哪个环境配置，激活后，第一个文档内容失效;不指定时，以第一个文档为准
-server:
- port: 8083
---- #&quot;---&quot;用于分隔不同的profiles（）文档块
-spring:
- profiles: devel #指定环境标识为&quot;devel&quot;,相当于&quot;application-{profile}.properties/yml&quot;中的profile
-server:
- port: 8081
----
-spring:
- profiles: deploy #指定环境标识为&quot;deploy&quot;,相当于&quot;application-{profile}.properties/yml&quot;中的profile
-server:
- port: 8082
-</code></pre>
-<h2 id="比较一下-spring-security-和-shiro-各自的优缺点">比较一下 Spring Security 和 Shiro 各自的优缺点</h2>
-<p>由于 Spring Boot 官方提供了大量的非常方便的开箱即用的 Starter ，包括 Spring Security 的 Starter ，使得在 Spring Boot 中使用 Spring Security 变得更加容易，甚至只需要添加一个依赖就可以保护所有的接口，所以，如果是 Spring Boot 项目，一般选择 Spring Security 。当然这只是一个建议的组合，单纯从技术上来说，无论怎么组合，都是没有问题的。Shiro 和 Spring Security 相比，主要有如下一些特点：</p>
-<ol>
-<li>Spring Security 是一个重量级的安全管理框架；Shiro 则是一个轻量级的安全管理框架</li>
-<li>Spring Security 概念复杂，配置繁琐；Shiro 概念简单、配置简单</li>
-<li>Spring Security 功能强大；Shiro 功能简单</li>
-</ol>
-<h2 id="spring-boot-中如何解决跨域问题">Spring Boot 中如何解决跨域问题</h2>
-<p>跨域可以在前端通过 JSONP 来解决，但是 JSONP 只可以发送 GET 请求，无法发送其他类型的请求，在 RESTful 风格的应用中，就显得非常鸡肋，因此我们推荐在后端通过 CORS，(Cross-origin resource sharing） 来解决跨域问题。这种解决方案并非 Spring Boot 特有的，在传统的 SSM 框架中，就可以通过 CORS 来解决跨域问题，只不过之前我们是在 XML 文件中配置 CORS ，现在可以通过实现WebMvcConfigurer接口然后重写addCorsMappings方法解决跨域问题。</p>
-<pre><code class="language-java">@Configuration
-public class CorsConfig implements WebMvcConfigurer {
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping(&quot;/**&quot;)
-                .allowedOrigins(&quot;*&quot;)
-                .allowCredentials(true)
-                .allowedMethods(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;)
-                .maxAge(3600);
-    }
-
-}
-</code></pre>
-<p>项目中前后端分离部署，所以需要解决跨域的问题。</p>
-<p>我们使用cookie存放用户登录的信息，在spring拦截器进行权限控制，当权限不符合时，直接返回给用户固定的json结果。</p>
-<p>当用户登录以后，正常使用；当用户退出登录状态时或者token过期时，由于拦截器和跨域的顺序有问题，出现了跨域的现象。</p>
-<p>我们知道一个http请求，先走filter，到达servlet后才进行拦截器的处理，如果我们把cors放在filter里，就可以优先于权限拦截器执行。</p>
-<pre><code class="language-java">@Configuration
-public class CorsConfig {
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin(&quot;*&quot;);
-        corsConfiguration.addAllowedHeader(&quot;*&quot;);
-        corsConfiguration.addAllowedMethod(&quot;*&quot;);
-        corsConfiguration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration(&quot;/**&quot;, corsConfiguration);
-        return new CorsFilter(urlBasedCorsConfigurationSource);
-    }
-}
-</code></pre>
-<h2 id="spring-boot-中的监视器">Spring Boot 中的监视器</h2>
-<p>Spring boot actuator 是 spring 启动框架中的重要功能之一。Spring boot 监视器可帮助您访问生产环境中正在运行的应用程序的当前状态。有几个指标必须在生产环境中进行检查和监控。即使一些外部应用程序可能正在使用这些服务来向相关人员触发警报消息。监视器模块公开了一组可直接作为 HTTP URL 访问的REST 端点来检查状态。</p>
-<h2 id="注册-servlet-三大组件-servlet-filter-listener">注册 Servlet 三大组件 Servlet、Filter、Listener</h2>
-<h3 id="继承接口实现方式">继承，接口实现方式</h3>
-<h4 id="servletregistrationbean-注册-servlet">ServletRegistrationBean 注册 Servlet</h4>
-<p>1、自定义类继承 javax.servlet.http.HttpServlet，然后重写其 doGet 与 doPost 方法，在方法中编写控制代码；</p>
-<p>2、第二步将 ServletRegistrationBean 组件添加到 Spring 容器中</p>
-<pre><code class="language-java">import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-/**
- * Created by Administrator 
- * 标准的 Servlet 实现 HttpServlet；重写其 doGet 、doPost 方法
- */
-public class BookServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doPost(req, resp);
-    }
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(&quot;:com.lct.servlet.BookServlet:&quot; + req.getRequestURL());
-        /**讲求转发到后台的 user/users 请求去，即会进入*/
-        req.getRequestDispatcher(&quot;user/users&quot;).forward(req, resp);
-    }
-}
-</code></pre>
-<p>3、上面 Serlvet 转发到下面的 UserControllr 控制器中</p>
-<p>4、@Configuration 配置类相当于以前的 beans.xml 中的配置，将 ServletRegistrationBean 也添加到 Spring 容器中来</p>
-<pre><code class="language-java">import com.lct.component.MyLocaleResolve;
-import com.lct.servlet.BookServlet;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.LocaleResolver;
-/**
- * Created by Administrator 
- * 自定义配置类
- */
-@Configuration
-public class MyMvcConfig {
-    /**
-     * 注册 Servlet 三大组件 之  Servlet
-     * 添加 ServletRegistrationBean ，就相当于以前在 web.xml 中配置的 &lt;servlet&gt;&lt;/servlet&gt;标签
-     */
-    @Bean
-    public ServletRegistrationBean myServlet() {
-        /**第二个参数是个不定参数组，可以配置映射多个请求
-         * 相当于以前在 web.xml中配置的 &lt;servlet-mapptin&gt;&lt;/servlet-mapptin&gt;*/
-        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new
-                BookServlet(), &quot;/bookServlet&quot;);
-        return registrationBean;
-    }
-}
-</code></pre>
-<p>5、运行测试：</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622190757311.gif" alt="" loading="lazy"></figure>
-<h4 id="filterregistrationbean-注册-filter">FilterRegistrationBean 注册 Filter</h4>
-<p>1、Filter(过滤器) 是 Servlet 技术中最实用的技术之一</p>
-<p>2、Web 开发人员通过 Filter 技术，对 web 服务器管理的所有 web 资源(如动态的 Jsp、 Servlet，以及静态的 image、 html、CSS、JS 文件等) 进行过滤拦截，从而实现一些特殊的功能(如实现 URL 级别的权限访问控制、过滤敏感词汇、压缩响应信息等)</p>
-<p>3、Filter 主要用于对用户请求进行预处理，也可以对 HttpServletResponse 进行后期处理(如编码设置，返回时禁用浏览器缓存等)</p>
-<p>4、Filter 使用完整流程：Filter 对用户请求进行预处理，接着将请求交给 Servlet 进行处理并生成响应，最后 Filter 再对服务器响应进行后处理。</p>
-<p>5、Servlet 的 Filter 经常会拿来与 Spring MVC 的 Interceptor(拦截器) 做对比</p>
-<p>​	1）拦截器是基于 Java 的反射机制的，而过滤器是基于函数回调</p>
-<p>​	2）拦截器不依赖与 servle t容器，过滤器依赖与 servlet 容器</p>
-<p>​	3）拦截器可以访问 action 上下文、值栈里的对象，而过滤器不能访问</p>
-<p>​	4）在 action 的生命周期中，拦截器可以多次被调用，而过滤器只能在容器初始化时被调用一次</p>
-<p>​	5）拦截器可以获取 IOC 容器中的各个 bean，而过滤器就不行，这点很重要，在拦截器里注入一个 service，可以调用业务逻辑</p>
-<p>​	6）SpringMVC 有自己的拦截器</p>
-<pre><code class="language-java">import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-/**
- * Created by Administrator 
- * 标准 Servlet 过滤器，实现 javax.servlet.Filter 接口
- * 并重写它的 三个方法
- */
-public class SystemFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println(&quot;javax.servlet.Filter：：服务器启动....&quot;);
-    }
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        /**
-         * 转为 HttpServletRequest 输出请求路径 容易查看 请求地址
-         */
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        System.out.println(&quot;javax.servlet.Filter：：过滤器放行前....&quot; + request.getRequestURL());
-        filterChain.doFilter(servletRequest, servletResponse);
-        System.out.println(&quot;javax.servlet.Filter：：过滤器返回后....&quot; + request.getRequestURL());
-    }
-    @Override
-    public void destroy() {
-        System.out.println(&quot;javax.servlet.Filter：：服务器关闭....&quot;);
-    }
-}
-</code></pre>
-<p>6、使用 FilterRegistrationBean 添加 FIlter ：</p>
-<pre><code class="language-java">import com.lct.component.MyLocaleResolve;
-import com.lct.filter.SystemFilter;
-import com.lct.servlet.BookServlet;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.LocaleResolver;
-import javax.servlet.DispatcherType;
-import java.util.Arrays;
-/**
- * Created by Administrator 
- * 自定义配置类
- */
-@Configuration
-public class MyMvcConfig {
-    /**
-     * 注册 Servlet 三大组件 之  Filter (过滤器)
-     * 添加 FilterRegistrationBean ，就相当于以前在 web.xml 中配置的 &lt;filter&gt;&lt;/filter&gt; 标签
-     */
-    @Bean
-    public FilterRegistrationBean myFilter() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-        /**同样添加自定义的 Filter*/
-        registrationBean.setFilter(new SystemFilter());
-        /**然后设置过滤的路径，参数是个集合 ,相当于 web.xml中配置的 &lt;filter-mapptin&gt;&lt;/filter-mapptin&gt;
-         * &quot;/*&quot;: 表示过滤所有 get 与 post 请求*/
-        registrationBean.setUrlPatterns(Arrays.asList(&quot;/*&quot;));
-        /**
-         * setDispatcherTypes 相当于 web.xml 配置中 &lt;filter-mapptin&gt; 下的 &lt;dispatcher&gt; 标签
-         * 用于过滤非常规的 get 、post 请求
-         * REQUEST：默认方式，写了之后会过滤所有静态资源的请求
-         * FORWARD：过滤所有的转发请求，无论是 jsp 中的 &lt;jsp:forward&lt;/&gt;、&lt;%@ page errorPage= %&gt;、还是后台的转发
-         * INCLUDE：过滤 jsp 中的动态包含&lt;jsp:include 请求
-         * ERROR：过滤在 web.xml 配置的全局错误页面
-         * 了解即可，实际中也很少这么做
-         */
-        registrationBean.setDispatcherTypes(DispatcherType.REQUEST);
-        return registrationBean;
-    }
-}
-</code></pre>
-<h4 id="servletlistenerregistrationbean-注册-listener">ServletListenerRegistrationBean 注册 Listener</h4>
-<p>1、自定义监听器：</p>
-<pre><code class="language-java">import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-/**
- * Created by Administrator on 2018/8/11 0011.
- * 标准 Servlet 监听器，实现 javax.servlet.ServletContextListener 接口
- * 然后实现方法
- * ServletContextListener：属于 Servlet 应用启动关闭监听器，监听容器初始化与销毁
- */
-public class SystemListener implements ServletContextListener {
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.out.println(&quot;com.lct.listener.SystemListener::服务器启动.....&quot;);
-    }
-    @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        System.out.println(&quot;com.lct.listener.SystemListener::服务器关闭.....&quot;);
-    }
-}
-</code></pre>
-<p>2、注册 ServletListenerRegistrationBean：</p>
-<pre><code class="language-java">import com.lct.component.MyLocaleResolve;
-import com.lct.filter.SystemFilter;
-import com.lct.listener.SystemListener;
-import com.lct.servlet.BookServlet;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.LocaleResolver;
-import java.util.Arrays;
-/**
- * Created by Administrator 
- * 自定义配置类
- */
-@Configuration
-public class MyMvcConfig {
-    /**
-     * 注册 Servlet 三大组件 之  Listner
-     * 添加 ServletListenerRegistrationBean ，就相当于以前在 web.xml 中配置的 &lt;listener&gt;&lt;/listener&gt;标签
-     */
-    @Bean
-    public ServletListenerRegistrationBean myListener() {
-        /**ServletListenerRegistrationBean&lt;T extends EventListener&gt; 属于的是泛型，可以注册常见的任意监听器
-         * 将自己的监听器注册进来*/
-        ServletListenerRegistrationBean registrationBean = new ServletListenerRegistrationBean(new SystemListener());
-        return registrationBean;
-    }
-}
-</code></pre>
-<h3 id="注解方式">注解方式</h3>
-<p>1、Servlet 三大组件 Servlet、Filter、Listener 在传统项目中需要在 web.xml 中进行相应的配置。Servlet 3.0 开始在 javax.servlet.annotation 包下提供 3 个对应</p>
-<p>的 @WebServlet、@WebFilter、@WebListener 注解来简化操作。</p>
-<p>2、Spring Boot 应用中这三个注解默认是不被扫描的，需要在项目启动类上添加 @ServletComponentScan 注解, 表示对 Servlet 组件扫描。</p>
-<h4 id="webservlet">@WebServlet</h4>
-<pre><code class="language-java">import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
- 
-/**
- * 标准的 Servlet ，实现 javax.servlet.http.HttpServlet. 重写其 doGet 、doPost 方法
- * name :表示 servlet 名称，可以不写，默认为空
- * urlPatterns: 表示请求的路径，如 http://ip:port/context-path/userServlet
- */
-@WebServlet(name = &quot;UserServlet&quot;, urlPatterns = {&quot;/userServlet&quot;})
-public class UserServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doPost(req, resp);
-    }
- 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        StringBuffer requestURL = req.getRequestURL();
-        System.out.println(&quot;com.wmx.servlet.UserServlet -- &quot; + requestURL);
-        resp.sendRedirect(&quot;/index.html&quot;);//浏览器重定向到服务器下的 index.html 页面
-    }
-}
-</code></pre>
-<h4 id="webfilter">@WebFilter</h4>
-<pre><code class="language-java">import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
- 
-/**
- * 标准 Servlet 过滤器，实现 javax.servlet.Filter 接口，并重现它的 3 个方法
- * filterName：表示过滤器名称，可以不写
- * value：配置请求过滤的规则，如 &quot;/*&quot; 表示过滤所有请求，包括静态资源，如 &quot;/user/*&quot; 表示 /user 开头的所有请求
- */
-@WebFilter(filterName = &quot;SystemFilter&quot;, value = {&quot;/*&quot;})
-public class SystemFilter implements Filter {
- 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println(&quot;com.wmx.servlet.SystemFilter -- 系统启动...&quot;);
-    }
- 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        //转为 HttpServletRequest 输出请求路径
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        System.out.println(&quot;com.wmx.servlet.SystemFilter -- 过滤器放行前....&quot; + request.getRequestURL());
-        filterChain.doFilter(servletRequest, servletResponse);
-        System.out.println(&quot;com.wmx.servlet.SystemFilter -- 过滤器返回后....&quot; + request.getRequestURL());
-    }
- 
-    @Override
-    public void destroy() {
-        System.out.println(&quot;com.wmx.servlet.SystemFilter -- 系统关闭...&quot;);
-    }
-}
-</code></pre>
-<h4 id="weblistener">@WebListener</h4>
-<pre><code class="language-java">import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
- 
-/**
- * 标准 Servlet 监听器，实现 javax.servlet.ServletContextListener 接口，并重写方法
- * ServletContextListener 属于 Servlet 应用启动关闭监听器，监听容器初始化与销毁。常用的监听器还有：
- * ServletRequestListener：HttpServletRequest 对象的创建和销毁监听器
- * HttpSessionListener：HttpSession 数据对象创建和销毁监听器
- * HttpSessionAttributeListener 监听HttpSession中属性变化
- * ServletRequestAttributeListener 监听ServletRequest中属性变化
- */
-@WebListener
-public class SystemListener implements ServletContextListener {
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        System.out.println(&quot;com.wmx.servlet.SystemListener -- 服务器启动.&quot;);
-    }
- 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println(&quot;com.wmx.servlet.SystemListener -- 服务器关闭.&quot;);
-    }
-}
-</code></pre>
-<h4 id="servletcomponentscan">@ServletComponentScan</h4>
-<p>Spring Boot 应用中这三个注解默认是不被扫描的，需要在项目启动类上添加 @ServletComponentScan 注解, 表示对 Servlet 组件扫描。</p>
-<pre><code class="language-java">import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
- 
-@SpringBootApplication
-@ServletComponentScan //对 servlet 注解进行扫描
-public class RedisStuWebApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(RedisStuWebApplication.class, args);
-    }
-}
-</code></pre>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1622190795511.gif" alt="" loading="lazy"></figure>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[SpringMVC工作原理]]></title>
-        <id>https://tinaxiawuhao.github.io/post/7cW_XVJ41/</id>
-        <link href="https://tinaxiawuhao.github.io/post/7cW_XVJ41/">
-        </link>
-        <updated>2021-05-30T03:08:06.000Z</updated>
-        <content type="html"><![CDATA[<p>SpringMVC的工作原理图：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622171698834.jpeg" alt="" loading="lazy"></figure>
-<p><strong>SpringMVC流程</strong></p>
-<p>1、 用户发送请求至前端控制器DispatcherServlet。</p>
-<p>2、 DispatcherServlet收到请求调用HandlerMapping处理器映射器。</p>
-<p>3、 处理器映射器找到具体的处理器(可以根据xml配置、注解进行查找)，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。</p>
-<p>4、 DispatcherServlet调用HandlerAdapter处理器适配器。</p>
-<p>5、 HandlerAdapter经过适配调用具体的处理器(Controller，也叫后端控制器)。</p>
-<p>6、 Controller执行完成返回ModelAndView。</p>
-<p>7、 HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet。</p>
-<p>8、 DispatcherServlet将ModelAndView传给ViewReslover视图解析器。</p>
-<p>9、 ViewReslover解析后返回具体View。</p>
-<p>10、DispatcherServlet根据View进行渲染视图（即将模型数据填充至视图中）。</p>
-<p>11、 DispatcherServlet响应用户。</p>
-<p><strong>组件说明：</strong></p>
-<p>以下组件通常使用框架提供实现：</p>
-<p>DispatcherServlet：作为前端控制器，整个流程控制的中心，控制其它组件执行，统一调度，降低组件之间的耦合性，提高每个组件的扩展性。</p>
-<p>HandlerMapping：通过扩展处理器映射器实现不同的映射方式，例如：配置文件方式，实现接口方式，注解方式等。</p>
-<p>HandlAdapter：通过扩展处理器适配器，支持更多类型的处理器。</p>
-<p>ViewResolver：通过扩展视图解析器，支持更多类型的视图解析，例如：jsp、freemarker、pdf、excel等。</p>
-<p><strong>组件：</strong></p>
-<p><strong>1、前端控制器DispatcherServlet（不需要工程师开发）,由框架提供</strong></p>
-<p>作用：接收请求，响应结果，相当于转发器，中央处理器。有了dispatcherServlet减少了其它组件之间的耦合度。</p>
-<p>用户请求到达前端控制器，它就相当于mvc模式中的c，dispatcherServlet是整个流程控制的中心，由它调用其它组件处理用户的请求，dispatcherServlet的存在降低了组件之间的耦合性。</p>
-<p><strong>2、处理器映射器HandlerMapping(不需要工程师开发),由框架提供</strong></p>
-<p>作用：根据请求的url查找Handler</p>
-<p>HandlerMapping负责根据用户请求找到Handler即处理器，springmvc提供了不同的映射器实现不同的映射方式，例如：配置文件方式，实现接口方式，注解方式等。</p>
-<p><strong>3、处理器适配器HandlerAdapter</strong></p>
-<p>作用：按照特定规则（HandlerAdapter要求的规则）去执行Handler</p>
-<p>通过HandlerAdapter对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</p>
-<p><strong>4、处理器Handler(需要工程师开发)</strong></p>
-<p><strong>注意：编写Handler时按照HandlerAdapter的要求去做，这样适配器才可以去正确执行Handler</strong></p>
-<p>Handler 是继DispatcherServlet前端控制器的后端控制器，在DispatcherServlet的控制下Handler对具体的用户请求进行处理。</p>
-<p>由于Handler涉及到具体的用户业务请求，所以一般情况需要工程师根据业务需求开发Handler。</p>
-<p><strong>5、视图解析器View resolver(不需要工程师开发),由框架提供</strong></p>
-<p>作用：进行视图解析，根据逻辑视图名解析成真正的视图（view）</p>
-<p>View Resolver负责将处理结果生成View视图，View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成View视图对象，最后对View进行渲染将处理结果通过页面展示给用户。 springmvc框架提供了很多的View视图类型，包括：jstlView、freemarkerView、pdfView等。</p>
-<p>一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由工程师根据业务需求开发具体的页面。</p>
-<p><strong>6、视图View(需要工程师开发jsp...)</strong></p>
-<p>View是一个接口，实现类支持不同的View类型（jsp、freemarker、pdf...）</p>
-<p><strong>核心架构的具体流程步骤如下：</strong></p>
-<p>1、首先用户发送请求——&gt;DispatcherServlet，前端控制器收到请求后自己不进行处理，而是委托给其他的解析器进行处理，作为统一访问点，进行全局的流程控制；</p>
-<p>2、DispatcherServlet——&gt;HandlerMapping， HandlerMapping 将会把请求映射为HandlerExecutionChain 对象（包含一个Handler 处理器（页面控制器）对象、多个HandlerInterceptor 拦截器）对象，通过这种策略模式，很容易添加新的映射策略；</p>
-<p>3、DispatcherServlet——&gt;HandlerAdapter，HandlerAdapter 将会把处理器包装为适配器，从而支持多种类型的处理器，即适配器设计模式的应用，从而很容易支持很多类型的处理器；</p>
-<p>4、HandlerAdapter——&gt;处理器功能处理方法的调用，HandlerAdapter 将会根据适配的结果调用真正的处理器的功能处理方法，完成功能处理；并返回一个ModelAndView 对象（包含模型数据、逻辑视图名）；</p>
-<p>5、ModelAndView的逻辑视图名——&gt; ViewResolver， ViewResolver 将把逻辑视图名解析为具体的View，通过这种策略模式，很容易更换其他视图技术；</p>
-<p>6、View——&gt;渲染，View会根据传进来的Model模型数据进行渲染，此处的Model实际是一个Map数据结构，因此很容易支持其他视图技术；</p>
-<p>7、返回控制权给DispatcherServlet，由DispatcherServlet返回响应给用户，到此一个流程结束。</p>
-<p>下边两个组件通常情况下需要开发：</p>
-<p>Handler：处理器，即后端控制器用controller表示。</p>
-<p>View：视图，即展示给用户的界面，视图中通常需要标签语言展示模型数据。</p>
-<p><strong>在讲SpringMVC之前我们先来看一下什么是MVC模式</strong></p>
-<p>MVC：MVC是一种设计模式</p>
-<p>MVC的原理图：</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622171719747.png" alt="" loading="lazy"></figure>
-<p><strong>分析：</strong></p>
-<p>M-Model 模型（完成业务逻辑：有javaBean构成，service+dao+entity）</p>
-<p>V-View 视图（做界面的展示  jsp，html……）</p>
-<p>C-Controller 控制器（接收请求—&gt;调用模型—&gt;根据结果派发页面）</p>
-<p><strong>springMVC是什么：</strong></p>
-<p>springMVC是一个MVC的开源框架，springMVC=struts2+spring，springMVC就相当于是Struts2加上sring的整合，但是这里有一个疑惑就是，springMVC和spring是什么样的关系呢？这个在百度百科上有一个很好的解释：意思是说，springMVC是spring的一个后续产品，其实就是spring在原有基础上，又提供了web应用的MVC模块，可以简单的把springMVC理解为是spring的一个模块（类似AOP，IOC这样的模块），网络上经常会说springMVC和spring无缝集成，其实springMVC就是spring的一个子模块，所以根本不需要同spring进行整合。</p>
-<p><strong>SpringMVC的原理图：</strong></p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622171762295.png" alt="" loading="lazy"></figure>
-<p><strong>看到这个图大家可能会有很多的疑惑，现在我们来看一下这个图的步骤：（可以对比MVC的原理图进行理解）</strong></p>
-<p>第一步:用户发起请求到前端控制器（DispatcherServlet）</p>
-<p>第二步：前端控制器请求处理器映射器（HandlerMappering）去查找处理器（Handle）：通过xml配置或者注解进行查找</p>
-<p>第三步：找到以后处理器映射器（HandlerMappering）像前端控制器返回执行链（HandlerExecutionChain）</p>
-<p>第四步：前端控制器（DispatcherServlet）调用处理器适配器（HandlerAdapter）去执行处理器（Handler）</p>
-<p>第五步：处理器适配器去执行Handler</p>
-<p>第六步：Handler执行完给处理器适配器返回ModelAndView</p>
-<p>第七步：处理器适配器向前端控制器返回ModelAndView</p>
-<p>第八步：前端控制器请求视图解析器（ViewResolver）去进行视图解析</p>
-<p>第九步：视图解析器像前端控制器返回View</p>
-<p>第十步：前端控制器对视图进行渲染</p>
-<p>第十一步：前端控制器向用户响应结果</p>
-<p><strong>看到这些步骤我相信大家很感觉非常的乱，这是正常的，但是这里主要是要大家理解springMVC中的几个组件：</strong></p>
-<p>前端控制器（DispatcherServlet）：接收请求，响应结果，相当于电脑的CPU。</p>
-<p>处理器映射器（HandlerMapping）：根据URL去查找处理器</p>
-<p>处理器（Handler）：（需要程序员去写代码处理逻辑的）</p>
-<p>处理器适配器（HandlerAdapter）：会把处理器包装成适配器，这样就可以支持多种类型的处理器，类比笔记本的适配器（适配器模式的应用）</p>
-<p>视图解析器（ViewResovler）：进行视图解析，多返回的字符串，进行处理，可以解析成对应的页面</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[elasticSearch基础概念汇总]]></title>
-        <id>https://tinaxiawuhao.github.io/post/w_tIMVx00/</id>
-        <link href="https://tinaxiawuhao.github.io/post/w_tIMVx00/">
-        </link>
-        <updated>2021-05-29T07:17:08.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="1什么是elasticsearch">1.什么是ElasticSearch？</h3>
-<p>Elasticsearch是一个基于Lucene的搜索引擎。它提供了具有HTTP Web界面和无架构JSON文档的分布式，多租户能力的全文搜索引擎。Elasticsearch是用Java开发的，根据Apache许可条款作为开源发布。它可以用于全文搜索，结构化搜索以及分析，当然你也可以将这三者进行组合。</p>
-<h3 id="2为什么要使用elasticsearch">2.为什么要使用Elasticsearch?</h3>
-<p>用数据库，也可以实现搜索的功能，为什么还需要搜索引擎呢？</p>
-<p>就像 <a href="https://link.zhihu.com/?target=https%3A//stackoverflow.com/questions/51639166/elasticsearch-vs-relational-database">Stackoverflow</a> 的网友说的：</p>
-<blockquote>
-<p>A relational database can store data and also index it. A search engine can index data but also store it.</p>
-</blockquote>
-<p>数据库（理论上来讲，ES 也是数据库，这里的数据库，指的是关系型数据库），首先是存储，搜索只是顺便提供的功能，</p>
-<p>而搜索引擎，首先是搜索，但是不把数据存下来就搜不了，所以只好存一存。</p>
-<p>术业有专攻，专攻搜索的搜索引擎，自然会提供更强大的搜索能力。。</p>
-<ol>
-<li>Elasticsearch是分布式的。不需要其他组件，分发是实时的，被叫做”Push replication”。</li>
-<li>Elasticsearch 完全支持 Apache Lucene 的接近实时的搜索。</li>
-<li>处理多租户（<a href="http://en.wikipedia.org/wiki/Multitenancy">multitenancy</a>）不需要特殊配置，而Solr则需要更多的高级设置。</li>
-<li>Elasticsearch 采用 Gateway 的概念，使得完备份更加简单。</li>
-<li>各节点组成对等的网络结构，某些节点出现故障时会自动分配其他节点代替其进行工作。</li>
-</ol>
-<h3 id="3elasticsearch是如何实现master选举的">3.Elasticsearch是如何实现Master选举的？</h3>
-<ul>
-<li>Elasticsearch的选主是ZenDiscovery模块负责的，主要包含Ping（节点之间通过这个RPC来发现彼此）和Unicast（单播模块包含一个主机列表以控制哪些节点需要ping通）这两部分；</li>
-<li>对所有可以成为master的节点（<strong>node.master: true</strong>）根据nodeId字典排序，每次选举每个节点都把自己所知道节点排一次序，然后选出第一个（第0位）节点，暂且认为它是master节点。</li>
-<li>如果对某个节点的投票数达到一定的值（可以成为master节点数n/2+1）并且该节点自己也选举自己，那这个节点就是master。否则重新选举一直到满足上述条件。</li>
-<li><em>补充：master节点的职责主要包括集群、节点和索引的管理，不负责文档级别的管理；data节点可以关闭http功能</em>。</li>
-</ul>
-<h3 id="4elasticsearch中如何避免脑裂">4.Elasticsearch中如何避免脑裂？</h3>
-<p>为了避免产生脑裂，ES采用了常见的分布式系统思路，保证选举出的master被多数派(quorum)的master-eligible node认可，以此来保证只有一个master。这个quorum通过以下配置进行配置：</p>
-<pre><code class="language-java">conf/elasticsearch.yml:
-    discovery.zen.minimum_master_nodes: 2
-</code></pre>
-<h3 id="5elasticsearch中的倒排索引">5.Elasticsearch中的倒排索引</h3>
-<h4 id="为什么叫倒排索引">为什么叫倒排索引</h4>
-<p>在没有搜索引擎时，我们是直接输入一个网址，然后获取网站内容，这时我们的行为是：<code>document -&gt; to -&gt; words</code> 通过文章，获取里面的单词，此谓「正向索引」，forward index.后来，我们希望能够输入一个单词，找到含有这个单词，或者和这个单词有关系的文章：<code>word -&gt; to -&gt; documents</code>于是我们把这种索引，成为inverted index，直译过来，应该叫「反向索引」，国内翻译成「倒排索引」。</p>
-<h4 id="倒排索引的内部结构">倒排索引的内部结构</h4>
-<p>首先，在数据生成的时候，比如爬虫爬到一篇文章，这时我们需要对这篇文章进行分析，将文本拆解成一个个单词。</p>
-<p>这个过程很复杂，比如“生存还是死亡”，你要如何让分词器自动将它分解为“生存”、“还是”、“死亡”三个词语，然后把“还是”这个无意义的词语干掉。这里不展开，感兴趣的同学可以查看关于「分析器」的内容。</p>
-<p>接着，把这两个词语以及它对应的文档id存下来：</p>
-<table>
-<thead>
-<tr>
-<th>word</th>
-<th>documentId</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>生存</td>
-<td>1</td>
-</tr>
-<tr>
-<td>死亡</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-<p>接着爬虫继续爬，又爬到一个含有“生存”的文档，于是索引变成：</p>
-<table>
-<thead>
-<tr>
-<th>word</th>
-<th>documentId</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>生存</td>
-<td>1，2</td>
-</tr>
-<tr>
-<td>死亡</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-<p>下次搜索“生存”，就会返回文档ID是 1、2两份文档。然而上面这套索引的实现，给小孩子当玩具玩还行，要上生产环境，那还远着。想想看，这个世界上那么多单词，中文、英文、日文、韩文 … 你每次搜索一个单词，我都要全局遍历一遍，很明显不行。于是有了排序，我们需要对单词进行排序，像 B+ 树一样，可以在页里实现二分查找。光排序还不行，你单词都放在磁盘呢，磁盘 IO 慢的不得了，所以 Mysql 特意把索引缓存到了内存。你说好，我也学 Mysql 的，放内存，3，2，1，放，哐当，内存爆了。哪本字典，会把所有单词都贴在目录里的？</p>
-<p>所以，上图：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622014331550.png" alt="" loading="lazy"></figure>
-<p>Lucene 的倒排索，增加了最左边的一层「字典树」<code>term index</code>，它不存储所有的单词，只存储单词前缀，通过字典树找到单词所在的块，也就是单词的大概位置，再在块里二分查找，找到对应的单词，再找到单词对应的文档列表。</p>
-<p>当然，内存寸土寸金，能省则省，所以 Lucene 还用了 <code>FST（Finite State Transducers）</code>对它进一步压缩。</p>
-<p>最右边的 Posting List ，别看它只是存一个文档 ID 数组，但是它在设计时，遇到的问题可不少。</p>
-<p><strong>Frame Of Reference</strong></p>
-<p>原生的 Posting List 有两个痛点：</p>
-<ul>
-<li><strong>如何压缩以节省磁盘空间</strong></li>
-<li><strong>如何快速求交并集（intersections and unions）</strong></li>
-</ul>
-<p>先来聊聊压缩。我们来简化下 Lucene 要面对的问题，假设有这样一个数组：<strong>[73, 300, 302, 332, 343, 372]</strong></p>
-<p>Lucene 里，数据是按 Segment 存储的，每个 Segment 最多存 65536 个文档 ID， 所以文档 ID 的范围，从 0 到 2^16-1，所以如果不进行任何处理，那么每个元素都会占用 2 bytes ，对应上面的数组，就是 6 * 2 = 12 bytes.</p>
-<p>怎么压缩呢？</p>
-<p><strong>压缩，就是尽可能降低每个数据占用的空间，同时又能让信息不失真，能够还原回来。</strong></p>
-<p><strong>Step 1：Delta-encode —— 增量编码</strong></p>
-<p>我们只记录元素与元素之间的增量，于是数组变成了：[73, 227, 2, 30, 11, 29]</p>
-<p><strong>Step 2：Split into blocks —— 分割成块</strong></p>
-<p>Lucene里每个块是 256 个文档 ID，这样可以保证每个块，增量编码后，每个元素都不会超过 256（1 byte）.为了方便演示，我们假设每个块是 3 个文档 ID：</p>
-<p><strong>[73, 227, 2], [30, 11, 29]</strong></p>
-<p><strong>Step 3：Bit packing —— 按需分配空间</strong></p>
-<p>对于第一个块，[73, 227, 2]，最大元素是227，需要 8 bits，好，那我给你这个块的每个元素，都分配 8 bits的空间。但是对于第二个块，[30, 11, 29]，最大的元素才30，只需要 5 bits，那我就给你每个元素，只分配 5 bits 的空间，足矣。这一步，可以说是把吝啬发挥到极致，精打细算，按需分配。</p>
-<p>以上三个步骤，共同组成了一项编码技术，Frame Of Reference（FOR）：</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622014347604.png" alt="" loading="lazy"></figure>
-<p><strong>Roaring bitmaps</strong></p>
-<p>接着来聊聊 Posting List 的第二个痛点 —— 如何快速求交并集（intersections and unions）。</p>
-<p>在 Lucene 中查询，通常不只有一个查询条件，比如我们想搜索：</p>
-<ul>
-<li>含有“生存”相关词语的文档</li>
-<li>文档发布时间在最近一个月</li>
-<li>文档发布者是平台的特约作者</li>
-</ul>
-<p>这样就需要根据三个字段，去三棵倒排索引里去查，当然，磁盘里的数据，上一节提到过，用了 FOR 进行压缩，所以我们要把数据进行反向处理，即解压，才能还原成原始的文档 ID，然后把这三个文档 ID 数组在内存中做一个交集。</p>
-<blockquote>
-<p>即使没有多条件查询， Lucene 也需要频繁求并集，因为 Lucene 是分片存储的。</p>
-</blockquote>
-<p>同样，我们把 Lucene 遇到的问题，简化成一道算法题。</p>
-<p>假设有下面三个数组：</p>
-<pre><code class="language-java">[64, 300, 303, 343]
-
-[73, 300, 302, 303, 343, 372]
-
-[303, 311, 333, 343]
-</code></pre>
-<p>求它们的交集。</p>
-<p><strong>Option 1: Integer 数组</strong></p>
-<p>直接用原始的文档 ID ，可能你会说，那就逐个数组遍历一遍吧，遍历完就知道交集是什么了。</p>
-<p>其实对于有序的数组，用跳表（skip table）可以更高效，这里就不展开了，因为不管是从性能，还是空间上考虑，Integer 数组都不靠谱，假设有100M 个文档 ID，每个文档 ID 占 2 bytes，那已经是 200 MB，而这些数据是要放到内存中进行处理的，把这么大量的数据，从磁盘解压后丢到内存，内存肯定撑不住。</p>
-<p><strong>Option 2: Bitmap</strong></p>
-<p>假设有这样一个数组：<strong>[3,6,7,10]</strong> 那么我们可以这样来表示：<strong>[0,0,1,0,0,1,1,0,0,1]</strong> 看出来了么，对，<strong>我们用 0 表示角标对应的数字不存在，用 1 表示存在。</strong></p>
-<p>这样带来了两个好处：</p>
-<ul>
-<li>节省空间：既然我们只需要0和1，那每个文档 ID 就只需要 1 bit，还是假设有 100M 个文档，那只需要 100M bits = 100M * 1/8 bytes = 12.5 MB，比之前用 Integer 数组 的 200 MB，优秀太多</li>
-<li>运算更快：0 和 1，天然就适合进行位运算，求交集，「与」一下，求并集，「或」一下，一切都回归到计算机的起点</li>
-</ul>
-<p><strong>Option 3: Roaring Bitmaps</strong></p>
-<p>细心的你可能发现了，bitmap 有个硬伤，就是不管你有多少个文档，你占用的空间都是一样的，之前说过，Lucene Posting List 的每个 Segement 最多放 65536 个文档ID，举一个极端的例子，有一个数组，里面只有两个文档 ID：<strong>[0, 65535]<strong>用 Bitmap，要怎么表示？</strong>[1,0,0,0,….(超级多个0),…,0,0,1]</strong></p>
-<p>你需要 65536 个 bit，也就是 65536/8 = 8192 bytes，而用 Integer 数组，你只需要 2 * 2 bytes = 4 bytes</p>
-<p>呵呵，死板的 bitmap。可见在文档数量不多的时候，使用 Integer 数组更加节省内存。</p>
-<p>我们来算一下临界值，很简单，无论文档数量多少，bitmap都需要 8192 bytes，而 Integer 数组则和文档数量成线性相关，每个文档 ID 占 2 bytes，所以：<code>8192 / 2 = 4096</code>当文档数量少于 4096 时，用 Integer 数组，否则，用 bitmap.</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622014361997.png" alt="" loading="lazy"></figure>
-<blockquote>
-<p>这里补充一下 Roaring bitmaps 和 之前讲的 Frame Of Reference 的关系。<br>
-Frame Of Reference 是压缩数据，减少磁盘占用空间，所以当我们从磁盘取数据时，也需要一个反向的过程，即解压，解压后才有我们上面看到的这样子的文档ID数组：[73, 300, 302, 303, 343, 372] ，接着我们需要对数据进行处理，求交集或者并集，这时候数据是需要放到内存进行处理的，我们有三个这样的数组，这些数组可能很大，而内存空间比磁盘还宝贵，于是需要更强有力的压缩算法，同时还要有利于快速的求交并集，于是有了Roaring Bitmaps 算法。<br>
-另外，Lucene 还会把从磁盘取出来的数据，通过 Roaring bitmaps 处理后，缓存到内存中，Lucene 称之为 filter cache.</p>
-</blockquote>
-<h3 id="6elasticsearch中的集群-节点-索引-文档-类型是什么">6.ElasticSearch中的集群、节点、索引、文档、类型是什么？</h3>
-<p><strong><code>群集</code></strong> 是一个或多个节点（服务器）的集合，它们共同保存您的整个数据，并提供跨所有节点的联合索引和搜索功能。群集由唯一名称标识，默认情况下为“elasticsearch”。此名称很重要，因为如果节点设置为按名称加入群集，则该节点只能是群集的一部分。</p>
-<p><strong><code>节点</code></strong> 是属于集群一部分的单个服务器。它存储数据并参与群集索引和搜索功能。</p>
-<p><strong><code>索引</code></strong> 就像关系数据库中的“数据库”。它有一个定义多种类型的映射。索引是逻辑名称空间，映射到一个或多个主分片，并且可以有零个或多个副本分片。 MySQL =&gt;数据库 　　 ElasticSearch =&gt;索引</p>
-<p><strong><code>文档</code></strong> 类似于关系数据库中的一行。不同之处在于索引中的每个文档可以具有不同的结构（字段），但是对于通用字段应该具有相同的数据类型。 MySQL =&gt; Databases =&gt;Tables =&gt; Columns / Rows  ElasticSearch =&gt; Indices =&gt; Types =&gt;具有属性的文档</p>
-<p><strong><code>类型</code></strong> 是索引的逻辑类别/分区，其语义完全取决于用户。</p>
-<h3 id="7elasticsearch中的分片是什么">7.ElasticSearch中的分片是什么?</h3>
-<p>在大多数环境中，每个节点都在单独的盒子或虚拟机上运行。</p>
-<p><strong><code>索引</code></strong>  - 在Elasticsearch中，索引是文档的集合。</p>
-<p><strong><code>分片</code></strong>  -因为Elasticsearch是一个分布式搜索引擎，所以索引通常被分割成分布在多个节点上的被称为分片的元素。</p>
-<p><strong><code>Segment</code></strong> -每个shard（分片）包含多个segment（段），每一个segment都是一个倒排索引<br>
-在查询的时，会把所有的segment查询结果汇总归并后最为最终的分片查询结果返回<br>
-1.segment是不可变的，物理上你并不能从中删除信息，所以在删除文档的时候，是在文档上面打上一个删除的标记，然后在执行段合并的时候，进行删除<br>
-2.索引segment段的个数越多，搜索性能越低且消耗内存更多</p>
-<p>​		<strong><code>副本</code></strong>  -一个索引被分解成碎片以便于分发和扩展。副本是分片的副本。</p>
-<p>​		<strong><code>分析器</code></strong>  -在ElasticSearch中索引数据时，数据由为索引定义的Analyzer在内部进行转换。 分析器由一个Tokenizer和零个或多个TokenFilter组成。编译器可以在一个或多个CharFilter之前。分析模块允许您在逻辑名称下注册分析器，然后可以在映射定义或某些API中引用它们。Elasticsearch附带了许多可以随时使用的预建分析器。或者，您可以组合内置的字符过滤器，编译器和过滤器器来创建自定义分析器。</p>
-<p>​		<strong><code>编译器</code></strong>  -编译器用于将字符串分解为术语或标记流。一个简单的编译器可能会将字符串拆分为任何遇到空格或标点的地方。Elasticsearch有许多内置标记器，可用于构建自定义分析器。</p>
-<h3 id="8详细描述一下elasticsearch索引文档的过程">8.详细描述一下Elasticsearch索引文档的过程。</h3>
-<ul>
-<li>协调节点默认使用文档ID参与计算（也支持通过routing），以便为路由提供合适的分片。</li>
-</ul>
-<pre><code>shard = hash(document_id) % (num_of_primary_shards)
-</code></pre>
-<ul>
-<li>当分片所在的节点接收到来自协调节点的请求后，会将请求写入到Memory Buffer，然后定时（默认是每隔1秒）写入到Filesystem Cache，这个从Momery Buffer到Filesystem Cache的过程就叫做refresh；</li>
-<li>当然在某些情况下，存在Momery Buffer和Filesystem Cache的数据可能会丢失，ES是通过translog的机制来保证数据的可靠性的。其实现机制是接收到请求后，同时也会写入到translog中，当Filesystem cache中的数据写入到磁盘中时，才会清除掉，这个过程叫做flush；</li>
-<li>在flush过程中，内存中的缓冲将被清除，内容被写入一个新段，段的fsync将创建一个新的提交点，并将内容刷新到磁盘，旧的translog将被删除并开始一个新的translog。</li>
-<li>flush触发的时机是定时触发（默认30分钟）或者translog变得太大（默认为512M）时；</li>
-</ul>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1622018263120.jpeg" alt="" loading="lazy"></figure>
-<p><em>补充：关于Lucene的Segement：</em></p>
-<ul>
-<li>Lucene索引是由多个段组成，段本身是一个功能齐全的倒排索引。</li>
-<li>段是不可变的，允许Lucene将新的文档增量地添加到索引中，而不用从头重建索引。</li>
-<li>对于每一个搜索请求而言，索引中的所有段都会被搜索，并且每个段会消耗CPU的时钟周、文件句柄和内存。这意味着段的数量越多，搜索性能会越低。</li>
-<li>为了解决这个问题，Elasticsearch会合并小段到一个较大的段，提交新的合并段到磁盘，并删除那些旧的小段。</li>
-</ul>
-<h3 id="9详细描述一下elasticsearch更新和删除文档的过程">9.详细描述一下Elasticsearch更新和删除文档的过程</h3>
-<ul>
-<li>删除和更新也都是写操作，但是Elasticsearch中的文档是不可变的，因此不能被删除或者改动以展示其变更；</li>
-<li>磁盘上的每个段都有一个相应的.del文件。当删除请求发送后，文档并没有真的被删除，而是在.del文件中被标记为删除。该文档依然能匹配查询，但是会在结果中被过滤掉。当段合并时，在.del文件中被标记为删除的文档将不会被写入新段。</li>
-<li>在新的文档被创建时，Elasticsearch会为该文档指定一个版本号，当执行更新时，旧版本的文档在.del文件中被标记为删除，新版本的文档被索引到一个新段。旧版本的文档依然能匹配查询，但是会在结果中被过滤掉。</li>
-</ul>
-<h3 id="10详细描述一下elasticsearch搜索的过程">10.详细描述一下Elasticsearch搜索的过程</h3>
-<ul>
-<li>搜索被执行成一个两阶段过程，我们称之为 Query Then Fetch；</li>
-<li>在初始<em>查询阶段</em>时，查询会广播到索引中每一个分片拷贝（主分片或者副本分片）。 每个分片在本地执行搜索并构建一个匹配文档的大小为 from + size 的优先队列。<em>PS：在搜索的时候是会查询Filesystem Cache的，但是有部分数据还在Memory Buffer，所以搜索是近实时的。</em></li>
-<li>每个分片返回各自优先队列中 <strong>所有文档的 ID 和排序值</strong> 给协调节点，它合并这些值到自己的优先队列中来产生一个全局排序后的结果列表。</li>
-<li>接下来就是 <em>取回阶段</em>，协调节点辨别出哪些文档需要被取回并向相关的分片提交多个 GET 请求。每个分片加载并 <em>丰富</em> 文档，如果有需要的话，接着返回文档给协调节点。一旦所有的文档都被取回了，协调节点返回结果给客户端。</li>
-<li><em>补充：Query Then Fetch的搜索类型在文档相关性打分的时候参考的是本分片的数据，这样在文档数量较少的时候可能不够准确，DFS Query Then Fetch增加了一个预查询的处理，询问Term和Document frequency，这个评分更准确，但是性能会变差。</em></li>
-</ul>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1622014432949.jpeg" alt="" loading="lazy"></figure>
-<h3 id="11elasticsearch对于大数据量上亿量级的聚合如何实现">11.Elasticsearch对于大数据量（上亿量级）的聚合如何实现？</h3>
-<ul>
-<li>Elasticsearch 提供的首个近似聚合是cardinality 度量。它提供一个字段的基数，即该字段的<em>distinct</em>或者<em>unique</em>值的数目。它是基于HLL算法的。HLL 会先对我们的输入作哈希运算，然后根据哈希运算的结果中的 bits 做概率估算从而得到基数。其特点是：可配置的精度，用来控制内存的使用（更精确 ＝ 更多内存）；小的数据集精度是非常高的；我们可以通过配置参数，来设置去重需要的固定内存使用量。无论数千还是数十亿的唯一值，内存使用量只与你配置的精确度相关。</li>
-</ul>
-<h3 id="12在并发情况下elasticsearch如果保证读写一致">12.在并发情况下，Elasticsearch如果保证读写一致？</h3>
-<ul>
-<li>可以通过版本号使用乐观并发控制，以确保新版本不会被旧版本覆盖，由应用层来处理具体的冲突；</li>
-<li>另外对于写操作，一致性级别支持quorum/one/all，默认为quorum，即只有当大多数分片可用时才允许写操作。但即使大多数可用，也可能存在因为网络等原因导致写入副本失败，这样该副本被认为故障，分片将会在一个不同的节点上重建。</li>
-<li>对于读操作，可以设置replication为sync(默认)，这使得操作在主分片和副本分片都完成后才会返回；如果设置replication为async时，也可以通过设置搜索请求参数_preference为primary来查询主分片，确保文档是最新版本。</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[elasticSearch查询语句]]></title>
-        <id>https://tinaxiawuhao.github.io/post/AdeCmc8BU/</id>
-        <link href="https://tinaxiawuhao.github.io/post/AdeCmc8BU/">
-        </link>
-        <updated>2021-05-28T06:13:34.000Z</updated>
-        <content type="html"><![CDATA[<!-- more -->
-<blockquote>
-<p>原文：https://distributedbytes.timojo.com/2016/07/23-useful-elasticsearch-example-queries.html<br>
-作者：Tim Ojo</p>
-</blockquote>
-<p>为了演示不同类型的 ElasticSearch 的查询，我们将使用以下字段搜索书籍文档的集合（ title（标题）, authors（作者）, summary（摘要）, publish_date（发布日期）和 num_reviews（浏览数））。</p>
-<p>在这之前，首先我们应该先创建一个新的索引（index），并批量导入一些文档：</p>
-<p>创建索引：</p>
-<pre><code class="language-json">PUT /bookdb_index
-    { &quot;settings&quot;: { &quot;number_of_shards&quot;: 1 }} 
-</code></pre>
-<p>批量上传文档：</p>
-<pre><code class="language-json">POST /bookdb_index/book/_bulk
-    { &quot;index&quot;: { &quot;_id&quot;: 1 }}
-    { &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;, &quot;authors&quot;: [&quot;clinton gormley&quot;, &quot;zachary tong&quot;], &quot;summary&quot; : &quot;A distibuted real-time search and analytics engine&quot;, &quot;publish_date&quot; : &quot;2015-02-07&quot;, &quot;num_reviews&quot;: 20, &quot;publisher&quot;: &quot;oreilly&quot; }
-    { &quot;index&quot;: { &quot;_id&quot;: 2 }}
-    { &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;, &quot;authors&quot;: [&quot;grant ingersoll&quot;, &quot;thomas morton&quot;, &quot;drew farris&quot;], &quot;summary&quot; : &quot;organize text using approaches such as full-text search, proper name recognition, clustering, tagging, information extraction, and summarization&quot;, &quot;publish_date&quot; : &quot;2013-01-24&quot;, &quot;num_reviews&quot;: 12, &quot;publisher&quot;: &quot;manning&quot; }
-    { &quot;index&quot;: { &quot;_id&quot;: 3 }}
-    { &quot;title&quot;: &quot;Elasticsearch in Action&quot;, &quot;authors&quot;: [&quot;radu gheorge&quot;, &quot;matthew lee hinman&quot;, &quot;roy russo&quot;], &quot;summary&quot; : &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;, &quot;publish_date&quot; : &quot;2015-12-03&quot;, &quot;num_reviews&quot;: 18, &quot;publisher&quot;: &quot;manning&quot; }
-    { &quot;index&quot;: { &quot;_id&quot;: 4 }}
-    { &quot;title&quot;: &quot;Solr in Action&quot;, &quot;authors&quot;: [&quot;trey grainger&quot;, &quot;timothy potter&quot;], &quot;summary&quot; : &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;, &quot;publish_date&quot; : &quot;2014-04-05&quot;, &quot;num_reviews&quot;: 23, &quot;publisher&quot;: &quot;manning&quot; }
-</code></pre>
-<h2 id="例子">例子</h2>
-<h3 id="1基本比对查询">1.基本比对查询</h3>
-<p>执行基本的全文本（匹配）查询有两种方式：使用Search Lite API（它希望所有搜索参数都作为URL的一部分传入），或使用完整的JSON请求正文（允许您使用完整的Elasticsearch DSL)。</p>
-<p>这是一个基本的匹配查询，它在所有字段中搜索字符串“ guide”</p>
-<pre><code class="language-json">GET /bookdb_index/book/_search?q=guide
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.28168046,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;authors&quot;: [
-            &quot;clinton gormley&quot;,
-            &quot;zachary tong&quot;
-          ],
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;publisher&quot;: &quot;manning&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.24144039,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;authors&quot;: [
-            &quot;trey grainger&quot;,
-            &quot;timothy potter&quot;
-          ],
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;,
-          &quot;num_reviews&quot;: 23,
-          &quot;publisher&quot;: &quot;manning&quot;
-        }
-      }
-    ]
-
-</code></pre>
-<p>该查询的完整版本如下所示，其产生的结果与上述搜索精简版相同。</p>
-<pre><code class="language-java">{
-    &quot;query&quot;: {
-        &quot;multi_match&quot; : {
-            &quot;query&quot; : &quot;guide&quot;,
-            &quot;fields&quot; : [&quot;_all&quot;]
-        }
-    }
-}
- 
-</code></pre>
-<p>使用<code>multi_match</code>关键字代替关键字<code>match</code>是对多个字段运行相同查询的便捷快捷方式。该<code>fields</code>属性指定要查询的字段，在这种情况下，我们要查询文档中的所有字段。<br>
-这两个API均允许您指定要搜索的字段。例如，要在标题字段中搜索带有“in action”字样的图书，请执行以下操作：</p>
-<pre><code class="language-java">GET /bookdb_index/book/_search?q=title:in action
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.6259885,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;authors&quot;: [
-            &quot;trey grainger&quot;,
-            &quot;timothy potter&quot;
-          ],
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;,
-          &quot;num_reviews&quot;: 23,
-          &quot;publisher&quot;: &quot;manning&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 0.5975345,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;authors&quot;: [
-            &quot;radu gheorge&quot;,
-            &quot;matthew lee hinman&quot;,
-            &quot;roy russo&quot;
-          ],
-          &quot;summary&quot;: &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;,
-          &quot;num_reviews&quot;: 18,
-          &quot;publisher&quot;: &quot;manning&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p>但是，全身DSL在创建更复杂的查询（如我们将在后面看到）以及指定您希望如何返回结果方面给您更大的灵活性。在下面的示例中，我们指定要返回的结果数，开始的偏移量（用于分页），要返回的文档字段以及术语突出显示。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;match&quot; : {
-            &quot;title&quot; : &quot;in action&quot;
-        }
-    },
-    &quot;size&quot;: 2,
-    &quot;from&quot;: 0,
-    &quot;_source&quot;: [ &quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot; ],
-    &quot;highlight&quot;: {
-        &quot;fields&quot; : {
-            &quot;title&quot; : {}
-        }
-    }
-}
-
-[Results]
-&quot;hits&quot;: {
-    &quot;total&quot;: 2,
-    &quot;max_score&quot;: 0.9105287,
-    &quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 0.9105287,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        },
-        &quot;highlight&quot;: {
-          &quot;title&quot;: [
-            &quot;Elasticsearch &lt;em&gt;in&lt;/em&gt; &lt;em&gt;Action&lt;/em&gt;&quot;
-          ]
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.9105287,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        },
-        &quot;highlight&quot;: {
-          &quot;title&quot;: [
-            &quot;Solr &lt;em&gt;in&lt;/em&gt; &lt;em&gt;Action&lt;/em&gt;&quot;
-          ]
-        }
-      }
-    ]
-  }
- 
-</code></pre>
-<p><strong>注意</strong>：对于多字查询，该<code>match</code>查询使您可以指定是否使用<code>and</code>运算符而不是默认<code>or</code>运算符。您还可以指定<code>minimum_should_match</code>选项来调整返回结果的相关性。可以在<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/match-multi-word.html">这里</a>找到详细信息。</p>
-<h3 id="2多字段搜索">2.多字段搜索</h3>
-<p>正如我们已经看到的，要在搜索中查询多个文档字段（例如，在标题和摘要中搜索相同的查询字符串），则可以使用该<code>multi_match</code>查询。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;multi_match&quot; : {
-            &quot;query&quot; : &quot;elasticsearch guide&quot;,
-            &quot;fields&quot;: [&quot;title&quot;, &quot;summary&quot;]
-        }
-    }
-}
-
-[Results]
-&quot;hits&quot;: {
-    &quot;total&quot;: 3,
-    &quot;max_score&quot;: 0.9448582,
-    &quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.9448582,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;authors&quot;: [
-            &quot;clinton gormley&quot;,
-            &quot;zachary tong&quot;
-          ],
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;publisher&quot;: &quot;manning&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 0.17312013,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;authors&quot;: [
-            &quot;radu gheorge&quot;,
-            &quot;matthew lee hinman&quot;,
-            &quot;roy russo&quot;
-          ],
-          &quot;summary&quot;: &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;,
-          &quot;num_reviews&quot;: 18,
-          &quot;publisher&quot;: &quot;manning&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.14965448,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;authors&quot;: [
-            &quot;trey grainger&quot;,
-            &quot;timothy potter&quot;
-          ],
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;,
-          &quot;num_reviews&quot;: 23,
-          &quot;publisher&quot;: &quot;manning&quot;
-        }
-      }
-    ]
-  }
- 
-</code></pre>
-<p>请注意，命中数字3相匹配，因为在摘要中找到了“指南”一词。</p>
-<h3 id="3提高字段重要性">3.提高字段重要性</h3>
-<p>由于我们正在多个字段中进行搜索，因此我们可能希望提高特定字段中的得分。在以下人为设计的示例中，我们将摘要字段的得分提高了3倍，以提高摘要字段的重要性，这反过来又会增加文档<code>_id 4</code>的相关性。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;multi_match&quot; : {
-            &quot;query&quot; : &quot;elasticsearch guide&quot;,
-            &quot;fields&quot;: [&quot;title&quot;, &quot;summary^3&quot;]
-        }
-    },
-    &quot;_source&quot;: [&quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot;]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.31495273,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.14965448,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 0.13094766,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意</strong> ：Boosting不仅仅意味着计算出的分数会乘以Boosting系数。实际应用的升压值经过归一化和一些内部优化。有关增强工作原理的更多信息，请参见 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/query-time-boosting.html">Elasticsearch指南</a>。</p>
-<h3 id="4布尔查询">4.布尔查询</h3>
-<p>AND / OR / NOT运算符可用于微调我们的搜索查询，以提供更相关或更具体的结果。这是在搜索API中作为<code>bool</code>查询实现的。该<code>bool</code>查询接受一个<code>must</code>参数（等同于AND），一个<code>must_not</code>参数（等同于NOT）和一个<code>should</code>参数（等同于OR）。例如，如果我要搜索书名中带有“ Elasticsearch”或“ Solr”字样的书，则AND由“克林顿·戈姆利”（clinton gormley）创作，而不由“ radu gheorge”（radu gheorge）创作：</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;bool&quot;: {
-            &quot;must&quot;: {
-                &quot;bool&quot; : { &quot;should&quot;: [
-                      { &quot;match&quot;: { &quot;title&quot;: &quot;Elasticsearch&quot; }},
-                      { &quot;match&quot;: { &quot;title&quot;: &quot;Solr&quot; }} ] }
-            },
-            &quot;must&quot;: { &quot;match&quot;: { &quot;authors&quot;: &quot;clinton gormely&quot; }},
-            &quot;must_not&quot;: { &quot;match&quot;: {&quot;authors&quot;: &quot;radu gheorge&quot; }}
-        }
-    }
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.3672021,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;authors&quot;: [
-            &quot;clinton gormley&quot;,
-            &quot;zachary tong&quot;
-          ],
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;publisher&quot;: &quot;oreilly&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意</strong>：如您所见，布尔查询可以包装任何其他查询类型，包括其他布尔查询，以创建任意复杂或深度嵌套的查询。</p>
-<h3 id="5模糊查询">5.模糊查询</h3>
-<p>可以在“匹配”和“多匹配”查询中启用模糊匹配，以捕获拼写错误。模糊程度是根据距原始单词的Levenshtein距离指定的。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;multi_match&quot; : {
-            &quot;query&quot; : &quot;comprihensiv guide&quot;,
-            &quot;fields&quot;: [&quot;title&quot;, &quot;summary&quot;],
-            &quot;fuzziness&quot;: &quot;AUTO&quot;
-        }
-    },
-    &quot;_source&quot;: [&quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot;],
-    &quot;size&quot;: 1
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.5961596,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意</strong>：模糊度值<code>&quot;AUTO&quot;</code>等于指定<code>2</code>术语长度大于5时的值。但是，设置80％的人类拼写错误的编辑距离为<code>1</code>，并将模糊度设置为<code>1</code>可以改善整体搜索性能。有关更多信息，请参见《Elasticsearch最终指南》的“<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/fuzziness.html">错别字和拼写错误”</a>一章。</p>
-<h3 id="6通配符查询">6.通配符查询</h3>
-<p>通配符查询使您可以指定要匹配的模式，而不是整个术语。<code>?</code>匹配任何字符并<code>*</code>匹配零个或多个字符。例如，要查找所有作者姓名以字母“ t”开头的记录</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;wildcard&quot; : {
-            &quot;authors&quot; : &quot;t*&quot;
-        }
-    },
-    &quot;_source&quot;: [&quot;title&quot;, &quot;authors&quot;],
-    &quot;highlight&quot;: {
-        &quot;fields&quot; : {
-            &quot;authors&quot; : {}
-        }
-    }
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 1,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;authors&quot;: [
-            &quot;clinton gormley&quot;,
-            &quot;zachary tong&quot;
-          ]
-        },
-        &quot;highlight&quot;: {
-          &quot;authors&quot;: [
-            &quot;zachary &lt;em&gt;tong&lt;/em&gt;&quot;
-          ]
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;2&quot;,
-        &quot;_score&quot;: 1,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;,
-          &quot;authors&quot;: [
-            &quot;grant ingersoll&quot;,
-            &quot;thomas morton&quot;,
-            &quot;drew farris&quot;
-          ]
-        },
-        &quot;highlight&quot;: {
-          &quot;authors&quot;: [
-            &quot;&lt;em&gt;thomas&lt;/em&gt; morton&quot;
-          ]
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 1,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;authors&quot;: [
-            &quot;trey grainger&quot;,
-            &quot;timothy potter&quot;
-          ]
-        },
-        &quot;highlight&quot;: {
-          &quot;authors&quot;: [
-            &quot;&lt;em&gt;trey&lt;/em&gt; grainger&quot;,
-            &quot;&lt;em&gt;timothy&lt;/em&gt; potter&quot;
-          ]
-        }
-      }
-    ] 
- 
-</code></pre>
-<h3 id="7正则表达式查询">7.正则表达式查询</h3>
-<p>正则表达式查询使您可以指定比通配符查询更复杂的模式。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;regexp&quot; : {
-            &quot;authors&quot; : &quot;t[a-z]*y&quot;
-        }
-    },
-    &quot;_source&quot;: [&quot;title&quot;, &quot;authors&quot;],
-    &quot;highlight&quot;: {
-        &quot;fields&quot; : {
-            &quot;authors&quot; : {}
-        }
-    }
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 1,
-        &quot;_source&quot;: {
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;authors&quot;: [
-            &quot;trey grainger&quot;,
-            &quot;timothy potter&quot;
-          ]
-        },
-        &quot;highlight&quot;: {
-          &quot;authors&quot;: [
-            &quot;&lt;em&gt;trey&lt;/em&gt; grainger&quot;,
-            &quot;&lt;em&gt;timothy&lt;/em&gt; potter&quot;
-          ]
-        }
-      }
-    ]
- 
-</code></pre>
-<h3 id="8匹配词组查询">8.匹配词组查询</h3>
-<p>匹配词组查询要求查询字符串中的所有术语都存在于文档中，并按照查询字符串中指定的顺序并且彼此接近。默认情况下，术语必须彼此完全平行，但是您可以指定一个<code>slop</code>值，该值指示在仍将文档视为匹配项时允许相隔多远的术语。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;multi_match&quot; : {
-            &quot;query&quot;: &quot;search engine&quot;,
-            &quot;fields&quot;: [&quot;title&quot;, &quot;summary&quot;],
-            &quot;type&quot;: &quot;phrase&quot;,
-            &quot;slop&quot;: 3
-        }
-    },
-    &quot;_source&quot;: [ &quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot; ]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.22327082,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.16113183,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意</strong>：在上面的示例中，对于非短语类型查询，文档的<code>_id 1</code>得分通常更高，并且<code>_id 4</code>由于其字段长度较短而出现在文档的前面。但是，在进行短语查询时，会考虑到术语的接近度，因此文档<code>_id 4</code>得分会更高。</p>
-<h3 id="9匹配词组前缀">9.匹配词组前缀</h3>
-<p>匹配词组前缀查询可在查询时提供“按需输入”或“穷人”版本的自动完成功能，而无需以任何方式准备数据。像match_phrase查询一样，它接受一个<code>slop</code>参数以使单词顺序和相对位置的刚性降低一些。我还接受该<code>max_expansions</code>参数来限制匹配项的数量，以降低资源强度。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;match_phrase_prefix&quot; : {
-            &quot;summary&quot;: {
-                &quot;query&quot;: &quot;search en&quot;,
-                &quot;slop&quot;: 3,
-                &quot;max_expansions&quot;: 10
-            }
-        }
-    },
-    &quot;_source&quot;: [ &quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot; ]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.5161346,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.37248808,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意</strong>：“按类型查询时搜索”会降低性能。更好的解决方案是按类型进行索引时间搜索。请查看<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters-completion.html">完成提示API</a>或使用<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/_index_time_search_as_you_type.html">Edge-Ngram过滤器</a>以获取更多信息。</p>
-<h3 id="10请求参数">10.请求参数</h3>
-<p>该<code>query_string</code>查询提供了一种以简洁的速记语法执行多重匹配查询，布尔查询，增强查询，模糊匹配，通配符，正则表达式和范围查询的方法。在下面的示例中，我们对术语“ saerch算法”执行模糊搜索，其中作者之一是“ grant ingersoll”或“ tom morton”。我们搜索所有字段，但对摘要字段加2。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;query_string&quot; : {
-            &quot;query&quot;: &quot;(saerch~1 algorithm~1) AND (grant ingersoll)  OR (tom morton)&quot;,
-            &quot;fields&quot;: [&quot;_all&quot;, &quot;summary^2&quot;]
-        }
-    },
-    &quot;_source&quot;: [ &quot;title&quot;, &quot;summary&quot;, &quot;authors&quot; ],
-    &quot;highlight&quot;: {
-        &quot;fields&quot; : {
-            &quot;summary&quot; : {}
-        }
-    }
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;2&quot;,
-        &quot;_score&quot;: 0.14558059,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;organize text using approaches such as full-text search, proper name recognition, clustering, tagging, information extraction, and summarization&quot;,
-          &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;,
-          &quot;authors&quot;: [
-            &quot;grant ingersoll&quot;,
-            &quot;thomas morton&quot;,
-            &quot;drew farris&quot;
-          ]
-        },
-        &quot;highlight&quot;: {
-          &quot;summary&quot;: [
-            &quot;organize text using approaches such as full-text &lt;em&gt;search&lt;/em&gt;, proper name recognition, clustering, tagging, information extraction, and summarization&quot;
-          ]
-        }
-      }
-    ]
- 
-</code></pre>
-<h3 id="11简单查询字符串">11.简单查询字符串</h3>
-<p>该<code>simple_query_string</code>查询是该查询的一种版本<code>query_string</code>，它更适合在暴露给用户的单个搜索框中使用。它分别用+ / | /-代替了AND / OR / NOT的使用，并且丢弃了查询的无效部分，而不是在用户犯错时抛出异常。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;simple_query_string&quot; : {
-            &quot;query&quot;: &quot;(saerch~1 algorithm~1) + (grant ingersoll)  | (tom morton)&quot;,
-            &quot;fields&quot;: [&quot;_all&quot;, &quot;summary^2&quot;]
-        }
-    },
-    &quot;_source&quot;: [ &quot;title&quot;, &quot;summary&quot;, &quot;authors&quot; ],
-    &quot;highlight&quot;: {
-        &quot;fields&quot; : {
-            &quot;summary&quot; : {}
-        }
-    }
-} 
- 
-</code></pre>
-<h3 id="12术语查询">12.术语查询</h3>
-<p>以上示例是全文搜索的示例。有时，我们对结构化搜索更感兴趣，在结构化搜索中我们希望找到完全匹配并返回结果。在<code>term</code>与<code>terms</code>查询帮助我们在这里。在下面的示例中，我们正在搜索Manning Publications出版的索引中的所有书籍。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;term&quot; : {
-            &quot;publisher&quot;: &quot;manning&quot;
-        }
-    },
-    &quot;_source&quot; : [&quot;title&quot;,&quot;publish_date&quot;,&quot;publisher&quot;]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;2&quot;,
-        &quot;_score&quot;: 1.2231436,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;manning&quot;,
-          &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;,
-          &quot;publish_date&quot;: &quot;2013-01-24&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 1.2231436,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;manning&quot;,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 1.2231436,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;manning&quot;,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p>可以使用<code>terms</code>关键字代替并传递搜索词数组来指定多个词。</p>
-<pre><code class="language-java">{
-    &quot;query&quot;: {
-        &quot;terms&quot; : {
-            &quot;publisher&quot;: [&quot;oreilly&quot;, &quot;packt&quot;]
-        }
-    }
-} 
- 
-</code></pre>
-<h3 id="13字词查询-排序">13.字词查询-排序</h3>
-<p>术语查询结果（与任何其他查询结果一样）可以轻松地进行排序。也允许多级排序</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;term&quot; : {
-            &quot;publisher&quot;: &quot;manning&quot;
-        }
-    },
-    &quot;_source&quot; : [&quot;title&quot;,&quot;publish_date&quot;,&quot;publisher&quot;],
-    &quot;sort&quot;: [
-        { &quot;publish_date&quot;: {&quot;order&quot;:&quot;desc&quot;}},
-        { &quot;title&quot;: { &quot;order&quot;: &quot;desc&quot; }}
-    ]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: null,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;manning&quot;,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        },
-        &quot;sort&quot;: [
-          1449100800000,
-          &quot;in&quot;
-        ]
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: null,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;manning&quot;,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        },
-        &quot;sort&quot;: [
-          1396656000000,
-          &quot;solr&quot;
-        ]
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;2&quot;,
-        &quot;_score&quot;: null,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;manning&quot;,
-          &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;,
-          &quot;publish_date&quot;: &quot;2013-01-24&quot;
-        },
-        &quot;sort&quot;: [
-          1358985600000,
-          &quot;to&quot;
-        ]
-      }
-    ]
- 
-</code></pre>
-<h3 id="14范围查询">14.范围查询</h3>
-<p>另一个结构化查询示例是范围查询。在此示例中，我们搜索2015年出版的图书。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;range&quot; : {
-            &quot;publish_date&quot;: {
-                &quot;gte&quot;: &quot;2015-01-01&quot;,
-                &quot;lte&quot;: &quot;2015-12-31&quot;
-            }
-        }
-    },
-    &quot;_source&quot; : [&quot;title&quot;,&quot;publish_date&quot;,&quot;publisher&quot;]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 1,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;oreilly&quot;,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 1,
-        &quot;_source&quot;: {
-          &quot;publisher&quot;: &quot;manning&quot;,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意</strong>：范围查询适用于日期，数字和字符串类型字段。</p>
-<h3 id="15过滤查询">15.过滤查询</h3>
-<p>筛选查询允许您筛选查询结果。对于我们的示例，我们正在查询标题或摘要中带有“ Elasticsearch”一词的图书，但我们希望将搜索结果过滤为仅包含20条或更多评论的图书。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;filtered&quot;: {
-            &quot;query&quot; : {
-                &quot;multi_match&quot;: {
-                    &quot;query&quot;: &quot;elasticsearch&quot;,
-                    &quot;fields&quot;: [&quot;title&quot;,&quot;summary&quot;]
-                }
-            },
-            &quot;filter&quot;: {
-                &quot;range&quot; : {
-                    &quot;num_reviews&quot;: {
-                        &quot;gte&quot;: 20
-                    }
-                }
-            }
-        }
-    },
-    &quot;_source&quot; : [&quot;title&quot;,&quot;summary&quot;,&quot;publisher&quot;, &quot;num_reviews&quot;]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.5955761,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;publisher&quot;: &quot;oreilly&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意</strong>：筛选查询并不要求存在要对其进行筛选的查询。如果未指定<code>match_all</code>查询，则运行查询，该查询基本上返回索引中的所有文档，然后对其进行过滤。实际上，首先运行过滤器，以减少需要查询的表面积。此外，过滤器在首次使用后会被缓存，这使其性能非常好。</p>
-<p><strong>更新</strong>：已过滤的查询已从即将推出的Elasticsearch 5.0中删除，以支持bool查询。这是与上面相同的示例，改写为使用bool查询。返回的结果完全相同。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;bool&quot;: {
-            &quot;must&quot; : {
-                &quot;multi_match&quot;: {
-                    &quot;query&quot;: &quot;elasticsearch&quot;,
-                    &quot;fields&quot;: [&quot;title&quot;,&quot;summary&quot;]
-                }
-            },
-            &quot;filter&quot;: {
-                &quot;range&quot; : {
-                    &quot;num_reviews&quot;: {
-                        &quot;gte&quot;: 20
-                    }
-                }
-            }
-        }
-    },
-    &quot;_source&quot; : [&quot;title&quot;,&quot;summary&quot;,&quot;publisher&quot;, &quot;num_reviews&quot;]
-}
-</code></pre>
-<p>在下面的示例中，这也适用于多个过滤器。</p>
-<h3 id="16多个过滤器">16.多个过滤器</h3>
-<p>可以通过使用过滤器来组合多个过滤<code>bool</code>器。在下一个示例中，过滤器确定返回的结果必须至少具有20条评论，不得在2015年之前发布，而应由oreilly发布。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;filtered&quot;: {
-            &quot;query&quot; : {
-                &quot;multi_match&quot;: {
-                    &quot;query&quot;: &quot;elasticsearch&quot;,
-                    &quot;fields&quot;: [&quot;title&quot;,&quot;summary&quot;]
-                }
-            },
-            &quot;filter&quot;: {
-                &quot;bool&quot;: {
-                    &quot;must&quot;: {
-                        &quot;range&quot; : { &quot;num_reviews&quot;: { &quot;gte&quot;: 20 } }
-                    },
-                    &quot;must_not&quot;: {
-                        &quot;range&quot; : { &quot;publish_date&quot;: { &quot;lte&quot;: &quot;2014-12-31&quot; } }
-                    },
-                    &quot;should&quot;: {
-                        &quot;term&quot;: { &quot;publisher&quot;: &quot;oreilly&quot; }
-                    }
-                }
-            }
-        }
-    },
-    &quot;_source&quot; : [&quot;title&quot;,&quot;summary&quot;,&quot;publisher&quot;, &quot;num_reviews&quot;, &quot;publish_date&quot;]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.5955761,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;publisher&quot;: &quot;oreilly&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      }
-    ] 
- 
-</code></pre>
-<h3 id="17功能评分字段值因子">17.功能评分：字段值因子</h3>
-<p>在某些情况下，您可能希望将文档中特定字段的值纳入相关性分数的计算中。在您希望根据文档的受欢迎程度提高其相关性的情况下，这是典型的情况。在我们的示例中，我们希望增加受欢迎的书籍（根据评论数判断）。使用<code>field_value_factor</code>功能评分可以做到这一点。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;function_score&quot;: {
-            &quot;query&quot;: {
-                &quot;multi_match&quot; : {
-                    &quot;query&quot; : &quot;search engine&quot;,
-                    &quot;fields&quot;: [&quot;title&quot;, &quot;summary&quot;]
-                }
-            },
-            &quot;field_value_factor&quot;: {
-                &quot;field&quot; : &quot;num_reviews&quot;,
-                &quot;modifier&quot;: &quot;log1p&quot;,
-                &quot;factor&quot; : 2
-            }
-        }
-    },
-    &quot;_source&quot;: [&quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot;, &quot;num_reviews&quot;]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.44831306,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.3718407,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;num_reviews&quot;: 23,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 0.046479136,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;,
-          &quot;num_reviews&quot;: 18,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;2&quot;,
-        &quot;_score&quot;: 0.041432835,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;organize text using approaches such as full-text search, proper name recognition, clustering, tagging, information extraction, and summarization&quot;,
-          &quot;num_reviews&quot;: 12,
-          &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;,
-          &quot;publish_date&quot;: &quot;2013-01-24&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<p><strong>注意1</strong>：我们本来可以运行常规<code>multi_match</code>查询并按num_reviews字段进行排序，但是这样就失去了进行相关性评分的好处。<br>
-<strong>注意2</strong>：还有许多其他参数可以调整对原始相关性得分的增强效果，例如“修饰符”，“因子”，“ boost_mode”等。这些参数在<a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/boosting-by-popularity.html">Elasticsearch指南</a>中进行了详细探讨。</p>
-<h3 id="18作用分值衰减功能">18.作用分值：衰减功能</h3>
-<p>假设您不想以某个字段的值递增，而希望拥有理想的目标值，并且希望该增益因子随着距离该值的增加而衰减。这通常在基于纬度/经度，价格或日期等数字字段的提升中很有用。在我们精心设计的示例中，我们正在搜索理想情况下于2014年6月左右出版的“搜索引擎”书籍。</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;function_score&quot;: {
-            &quot;query&quot;: {
-                &quot;multi_match&quot; : {
-                    &quot;query&quot; : &quot;search engine&quot;,
-                    &quot;fields&quot;: [&quot;title&quot;, &quot;summary&quot;]
-                }
-            },
-            &quot;functions&quot;: [
-                {
-                    &quot;exp&quot;: {
-                        &quot;publish_date&quot; : {
-                            &quot;origin&quot;: &quot;2014-06-15&quot;,
-                            &quot;offset&quot;: &quot;7d&quot;,
-                            &quot;scale&quot; : &quot;30d&quot;
-                        }
-                    }
-                }
-            ],
-            &quot;boost_mode&quot; : &quot;replace&quot;
-        }
-    },
-    &quot;_source&quot;: [&quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot;, &quot;num_reviews&quot;]
-}
-
-[Results]
-&quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.27420625,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;num_reviews&quot;: 23,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.005920768,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;2&quot;,
-        &quot;_score&quot;: 0.000011564,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;organize text using approaches such as full-text search, proper name recognition, clustering, tagging, information extraction, and summarization&quot;,
-          &quot;num_reviews&quot;: 12,
-          &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;,
-          &quot;publish_date&quot;: &quot;2013-01-24&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 0.0000059171475,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;,
-          &quot;num_reviews&quot;: 18,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        }
-      }
-    ]
- 
-</code></pre>
-<h3 id="19功能评分脚本评分">19.功能评分：脚本评分</h3>
-<p>如果内置的评分功能无法满足您的需求，则可以选择指定Groovy脚本进行评分。在我们的示例中，我们希望指定一个脚本，该脚本在决定要考虑评论数量的因素之前，先考虑publish_date。较新的书可能没有那么多的评论，因此不应因此受到惩罚。<br>
-评分脚本如下所示：</p>
-<pre><code class="language-java">publish_date = doc['publish_date'].value
-num_reviews = doc['num_reviews'].value
-
-if (publish_date &gt; Date.parse('yyyy-MM-dd', threshold).getTime()) {
-  my_score = Math.log(2.5 + num_reviews)
-} else {
-  my_score = Math.log(1 + num_reviews)
-}
-return my_score
- 
-</code></pre>
-<p>要动态使用评分脚本，我们使用<code>script_score</code>参数</p>
-<pre><code class="language-java">POST /bookdb_index/book/_search
-{
-    &quot;query&quot;: {
-        &quot;function_score&quot;: {
-            &quot;query&quot;: {
-                &quot;multi_match&quot; : {
-                    &quot;query&quot; : &quot;search engine&quot;,
-                    &quot;fields&quot;: [&quot;title&quot;, &quot;summary&quot;]
-                }
-            },
-            &quot;functions&quot;: [
-                {
-                    &quot;script_score&quot;: {
-                        &quot;params&quot; : {
-                            &quot;threshold&quot;: &quot;2015-07-30&quot;
-                        },
-                        &quot;script&quot;: &quot;publish_date = doc['publish_date'].value; num_reviews = doc['num_reviews'].value; if (publish_date &gt; Date.parse('yyyy-MM-dd', threshold).getTime()) { return log(2.5 + num_reviews) }; return log(1 + num_reviews);&quot;
-                    }
-                }
-            ]
-        }
-    },
-    &quot;_source&quot;: [&quot;title&quot;, &quot;summary&quot;, &quot;publish_date&quot;, &quot;num_reviews&quot;]
-}
-
-[Results]
-&quot;hits&quot;: {
-    &quot;total&quot;: 4,
-    &quot;max_score&quot;: 0.8463001,
-    &quot;hits&quot;: [
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;1&quot;,
-        &quot;_score&quot;: 0.8463001,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;A distibuted real-time search and analytics engine&quot;,
-          &quot;num_reviews&quot;: 20,
-          &quot;title&quot;: &quot;Elasticsearch: The Definitive Guide&quot;,
-          &quot;publish_date&quot;: &quot;2015-02-07&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;4&quot;,
-        &quot;_score&quot;: 0.7067348,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;Comprehensive guide to implementing a scalable search engine using Apache Solr&quot;,
-          &quot;num_reviews&quot;: 23,
-          &quot;title&quot;: &quot;Solr in Action&quot;,
-          &quot;publish_date&quot;: &quot;2014-04-05&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;3&quot;,
-        &quot;_score&quot;: 0.08952084,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;build scalable search applications using Elasticsearch without having to do complex low-level programming or understand advanced data science algorithms&quot;,
-          &quot;num_reviews&quot;: 18,
-          &quot;title&quot;: &quot;Elasticsearch in Action&quot;,
-          &quot;publish_date&quot;: &quot;2015-12-03&quot;
-        }
-      },
-      {
-        &quot;_index&quot;: &quot;bookdb_index&quot;,
-        &quot;_type&quot;: &quot;book&quot;,
-        &quot;_id&quot;: &quot;2&quot;,
-        &quot;_score&quot;: 0.07602123,
-        &quot;_source&quot;: {
-          &quot;summary&quot;: &quot;organize text using approaches such as full-text search, proper name recognition, clustering, tagging, information extraction, and summarization&quot;,
-          &quot;num_reviews&quot;: 12,
-          &quot;title&quot;: &quot;Taming Text: How to Find, Organize, and Manipulate It&quot;,
-          &quot;publish_date&quot;: &quot;2013-01-24&quot;
-        }
-      }
-    ]
-  }
- 
-</code></pre>
-<p><strong>注意1</strong>：要使用动态脚本，必须为<code>config/elasticsearch.yaml</code>文件中的Elasticsearch实例启用动态脚本。也可以使用存储在Elasticsearch服务器上的脚本。查阅<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting.html">Elasticsearch参考文档</a>了解更多信息。</p>
-<p><strong>注意2</strong> ：JSON无法包含嵌入的换行符，因此分号用于分隔语句。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[docker安装ELK]]></title>
-        <id>https://tinaxiawuhao.github.io/post/3D5Sr6L0c/</id>
-        <link href="https://tinaxiawuhao.github.io/post/3D5Sr6L0c/">
-        </link>
-        <updated>2021-05-27T07:39:14.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="docker部署elasticsearch">Docker部署ElasticSearch</h2>
-<h3 id="搜索elasticsearch镜像">搜索ElasticSearch镜像</h3>
-<pre><code class="language-java">docker search elasticsearch
-</code></pre>
-<h3 id="拉取镜像">拉取镜像</h3>
-<p>拉取镜像的时候，可以指定版本，如果不指定，默认使用latest。</p>
-<pre><code class="language-java">docker pull elasticsearch:7.12.0
-</code></pre>
-<h3 id="查看镜像">查看镜像</h3>
-<pre><code class="language-java">docker images
-</code></pre>
-<h3 id="docker-启动-elasticsearch">docker 启动 elasticsearch</h3>
-<pre><code class="language-java"># --name : 为 elasticsearch 容器起个别名
-# -e : 指定为单节点集群模式
-# -i：表示运行容器
-# -t：表示容器启动后会进入其命令行。加入这两个参数后，容器创建就能登录进去。即分配一个伪终端。
-# -v：表示目录映射关系（前者是宿主机目录，后者是映射到宿主机上的目录），可以使用多个－v做多个目录或文件映射。注意：最好做目录映射，在宿主机上做修改，然后共享到容器上。
-# -d：在run后面加上-d参数,则会创建一个守护式容器在后台运行（这样创建容器后不会自动登录容器，如果只加-i -t两个参数，创建后就会自动进去容器）。
-# -p：表示端口映射，前者是宿主机端口，后者是容器内的映射端口。可以使用多个-p做多个端口映射
-docker run -di --name elasticsearch -p 9200:9200 -p 9300:9300 -e &quot;discovery.type=single-node&quot; elasticsearch:7.12.0 
-</code></pre>
-<h3 id="elasticsearch配置">elasticsearch配置</h3>
-<h4 id="创建elasticsearch滚动策略">创建elasticsearch滚动策略</h4>
-<pre><code class="language-json"># 定义审计日志管理策略
-curl -X PUT &quot;${host}/_ilm/policy/audit_policy&quot; -H 'Content-Type: application/json' -d'
-{
-  &quot;policy&quot;: {                       
-    &quot;phases&quot;: {
-      &quot;hot&quot;: {                      
-        &quot;actions&quot;: {
-          &quot;rollover&quot;: {             
-            &quot;max_size&quot;: &quot;30GB&quot;,
-            &quot;max_age&quot;: &quot;180d&quot;
-          }
-        }
-      },
-      &quot;delete&quot;: {
-        &quot;min_age&quot;: &quot;180d&quot;,           
-        &quot;actions&quot;: {
-          &quot;delete&quot;: {}              
-        }
-      }
-    }
-  }
-}
-</code></pre>
-<p>热数据最大30G,最多180天，数据最少保持180天后删除</p>
-<h4 id="创建索引模板">创建索引模板</h4>
-<pre><code class="language-json"># 导出日志索引模板
-curl -X PUT &quot;${host}/_template/export_log_index_template&quot; -H 'Content-Type: application/json' -d'
-{
-  &quot;index_patterns&quot;: [
-    &quot;export_log_index*&quot;
-  ],
-  &quot;settings&quot;: {
-    &quot;number_of_shards&quot;: 1,
-    &quot;number_of_replicas&quot;: 1,
-    &quot;index.lifecycle.name&quot;: &quot;audit_policy&quot;,
-    &quot;index.lifecycle.rollover_alias&quot;: &quot;export_log_index&quot;,
-    &quot;index.max_result_window&quot;: &quot;100000&quot;
-  },
-  &quot;mappings&quot;: {
-    &quot;properties&quot;: {
-      &quot;applicationSide&quot;: {
-        &quot;type&quot;: &quot;integer&quot;
-      },
-      &quot;exportComment&quot;: {
-        &quot;type&quot;: &quot;keyword&quot;
-      },
-      &quot;exportFileSize&quot;: {
-        &quot;type&quot;: &quot;integer&quot;
-      },
-      &quot;exportType&quot;: {
-        &quot;type&quot;: &quot;integer&quot;
-      },
-      &quot;id&quot;: {
-        &quot;type&quot;: &quot;keyword&quot;
-      },
-      &quot;operationTime&quot;: {
-        &quot;type&quot;: &quot;date&quot;,
-        &quot;store&quot;: true,
-        &quot;format&quot;: &quot;yyyy-MM-dd HH:mm:ss&quot;
-      },
-      &quot;operationUser&quot;: {
-        &quot;type&quot;: &quot;keyword&quot;
-      },
-      &quot;operationUserName&quot;: {
-        &quot;type&quot;: &quot;text&quot;,
-        &quot;analyzer&quot;: &quot;ik_max_word&quot;,
-        &quot;fields&quot;: {
-          &quot;keyword&quot;: {
-            &quot;type&quot;: &quot;keyword&quot;
-          }
-        }
-      },
-      &quot;remarks&quot;: {
-        &quot;type&quot;: &quot;keyword&quot;
-      },
-      &quot;successful&quot;: {
-        &quot;type&quot;: &quot;boolean&quot;
-      }
-    }
-  }
-}
-</code></pre>
-<h4 id="创建索引">创建索引</h4>
-<pre><code class="language-json"># 创建导出日志索引，按日期命名
-curl -X PUT &quot;${host}/%3Cexport_log_index-%7Bnow%2Fd%7D-1%3E&quot; -H 'Content-Type: application/json' -d'
-{
-  &quot;aliases&quot;: {
-    &quot;export_log_index&quot;: {
-      &quot;is_write_index&quot;: true
-    }
-  }
-}
-</code></pre>
-<h2 id="docker-安装-kibana">docker 安装 kibana</h2>
-<h3 id="拉取镜像-2">拉取镜像</h3>
-<p>拉取镜像的时候，需要注意的是, <strong>kibana 的版本最好与 elasticsearch 保持一致</strong>, 避免发生不必要的错误</p>
-<pre><code class="language-java">docker pull kibana:7.12.0
-</code></pre>
-<h3 id="查看镜像-2">查看镜像</h3>
-<pre><code class="language-java">docker images
-</code></pre>
-<h3 id="docker-启动-kibana">docker 启动 kibana</h3>
-<pre><code class="language-java"># -e : 指定环境变量配置, 提供汉化
-# --like : 建立两个容器之间的关联, kibana 关联到 es
-docker run -di --name kibana --link elasticsearch:elasticsearch -e &quot;I18N_LOCALE=zh-CN&quot; -p 5601:5601 kibana:7.12.0
-# kibana 的汉化我感觉做的并不好
-# 如果不习惯汉化, 可以把条件去除
-docker run -di --name kibana --link elasticsearch:elasticsearch -p 5601:5601 kibana:7.12.0
-</code></pre>
-<h2 id="docker-安装-logstash">Docker 安装 Logstash</h2>
-<h3 id="拉取镜像-3">拉取镜像</h3>
-<p>拉取镜像的时候，需要注意的是, <strong>Logstash 的版本最好与 elasticsearch 保持一致</strong>, 避免发生不必要的错误</p>
-<pre><code class="language-java">docker pull logstash:7.12.0
-</code></pre>
-<h3 id="查看镜像-3">查看镜像</h3>
-<pre><code class="language-java">docker images
-</code></pre>
-<h3 id="文件映射">文件映射</h3>
-<p>在本机建立配置文件和目录,用来存放所有配置的映射</p>
-<pre><code class="language-java">/usr/local/logstash/config/logstash.yml
-/usr/local/logstash/conf.d/
-</code></pre>
-<p>logstash.yml (文件内容)</p>
-<pre><code class="language-java">path.config: /usr/share/logstash/conf.d/*.conf
-path.logs: /var/log/logstash
-</code></pre>
-<p>conf.d/configuration.conf (文件内容)</p>
-<p><strong>Filebeat和elasticsearch的交互</strong></p>
-<pre><code class="language-json">input {
-    beats {
-    port =&gt; 5044
-    codec =&gt; &quot;json&quot;
-}
-}
-
-output {
-  elasticsearch { 
-    hosts =&gt; [&quot;elasticsearch:9200&quot;]，
-	index =&gt; &quot;export_log_index&quot;
-  }
-  stdout { codec =&gt; rubydebug }
-}
-</code></pre>
-<p><strong>mysql和elasticsearch的交互</strong></p>
-<pre><code class="language-json">input {
-  jdbc {
-    jdbc_driver_class =&gt; &quot;com.mysql.jdbc.Driver&quot;
-    jdbc_connection_string =&gt; &quot;jdbc:mysql://localhost:3306/db_example&quot;
-    jdbc_user =&gt; root
-    jdbc_password =&gt; ymruan123
-    #启用追踪，如果为true，则需要指定tracking_column
-    use_column_value =&gt; true
-    #指定追踪的字段，
-    tracking_column =&gt; &quot;last_updated&quot;
-    #追踪字段的类型，目前只有数字(numeric)和时间类型(timestamp)，默认是数字类型
-    tracking_column_type =&gt; &quot;numeric&quot;
-    #记录最后一次运行的结果
-    record_last_run =&gt; true
-    #上面运行结果的保存位置
-    last_run_metadata_path =&gt; &quot;jdbc-position.txt&quot;
-    statement =&gt; &quot;SELECT * FROM user where last_updated &gt;:sql_last_value;&quot;
-    schedule =&gt; &quot; * * * * * *&quot;
-  }
-}
-output {
-  elasticsearch {
-    document_id =&gt; &quot;%{id}&quot;
-    document_type =&gt; &quot;_doc&quot;
-    index =&gt; &quot;export_log_index&quot;
-    hosts =&gt; [&quot;http://localhost:9200&quot;]
-  }
-  stdout{
-    codec =&gt; rubydebug
-  }
-}
-</code></pre>
-<p><strong>kafka和elasticsearch的交互</strong></p>
-<pre><code class="language-json">input {
- kafka{
-    topics =&gt; &quot;topic_export&quot;    #kafka中topic名称，记得创建该topic
-    group_id =&gt; &quot;group_export&quot;     #默认为“logstash”
-    codec =&gt; &quot;json&quot;    #与Shipper端output配置项一致
-    consumer_threads =&gt; 1    #消费线程数，集群中所有logstash相加最好等于 topic 分区数
-    bootstrap_servers =&gt; &quot;kafka:9092&quot;
-    decorate_events =&gt; true    #在输出消息的时候回输出自身的信息，包括：消费消息的大小、topic来源以及consumer的group信息。
-    type =&gt; &quot;topic_export&quot;  
-    tags =&gt; [&quot;canal&quot;] # 标签，额外使用该参数可以在elastci中创建不同索引
-  }
-  
-}
- 
- 
-filter {
-  # 把默认的data字段重命名为message字段，方便在elastic中显示
-  mutate {
-    rename =&gt; [&quot;data&quot;, &quot;message&quot;]
-  }
-  # 还可以使用其他的处理方式，在此就不再列出来了
-}
- 
-output {
-  elasticsearch {
-    hosts =&gt; [&quot;http://172.17.107.187:9203&quot;, &quot;http://172.17.107.187:9201&quot;,&quot;http://172.17.107.187:9202&quot;]
-    index =&gt; &quot;export_log_index&quot; # decorate_events=true的作用，可以使用metadata中的数据
-    #user =&gt; &quot;elastic&quot;
-    #password =&gt; &quot;escluter123456&quot;
-  }
- }
-</code></pre>
-<p><strong>logback和和elasticsearch的交互</strong></p>
-<p>引入依赖</p>
-<pre><code class="language-xml">&lt;dependency&gt;
-      &lt;groupId&gt;net.logstash.logback&lt;/groupId&gt;
-      &lt;artifactId&gt;logstash-logback-encoder&lt;/artifactId&gt;
-     &lt;version&gt;4.10&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<p>参数配置</p>
-<pre><code class="language-json">input {
-  # 应用日志
-  tcp{
-    type =&gt; &quot;app&quot;
-    mode =&gt; &quot;server&quot;
-    host =&gt; &quot;0.0.0.0&quot;
-    port =&gt; 4560
-    codec =&gt; json
-  }
-}
-
-output {
-   elasticsearch {
-      hosts =&gt; &quot;http://127.0.0.1:9200&quot;
-      index =&gt; &quot;export_log_index&quot;
-    }
-}
-
-</code></pre>
-<p>应用日志入口端口为4560，需要配置java客户端logstash入口</p>
-<pre><code class="language-xml">&lt;!-- 这个是控制台日志输出格式 方便调试对比--&gt;
-&lt;appender name=&quot;console&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
-    &lt;encoder&gt;
-        &lt;pattern&gt;%d{yyyy-MM-dd HH:mm:ss} %contextName %-5level %logger{50} -%msg%n&lt;/pattern&gt;
-    &lt;/encoder&gt;
-&lt;/appender&gt;
-&lt;!--开启tcp格式的logstash传输，通过TCP协议连接Logstash--&gt;
-&lt;appender name=&quot;STASH&quot; class=&quot;net.logstash.logback.appender.LogstashTcpSocketAppender&quot;&gt;
-    &lt;destination&gt;127.0.0.1:9600&lt;/destination&gt;
-
-    &lt;encoder class=&quot;net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder&quot;&gt;
-        &lt;!--中文序列化--&gt;
-        &lt;jsonFactoryDecorator class=&quot;net.logstash.logback.decorate.CharacterEscapesJsonFactoryDecorator&quot;&gt;
-            &lt;escape&gt;
-                &lt;targetCharacterCode&gt;10&lt;/targetCharacterCode&gt;
-                &lt;escapeSequence&gt;\u2028&lt;/escapeSequence&gt;
-            &lt;/escape&gt;
-        &lt;/jsonFactoryDecorator&gt;
-        &lt;providers&gt;
-            &lt;pattern&gt;
-                &lt;pattern&gt;
-                    &lt;!--{
-                    &quot;timestamp&quot;:&quot;%date{ISO8601}&quot;,
-                    &quot;user&quot;:&quot;test&quot;,
-                    &quot;message&quot;:&quot;[%d{yyyy-MM-dd HH:mm:ss.SSS}][%p][%t][%l{80}|%L]%m&quot;}%n
-                    }--&gt;
-                    {
-                    &quot;timestamp&quot;: &quot;%date{\&quot;yyyy-MM-dd' 'HH:mm:ss,SSSZ\&quot;}&quot;,
-                    &quot;level&quot;: &quot;%level&quot;,
-                    &quot;thread&quot;: &quot;%thread&quot;,
-                    &quot;class_name&quot;: &quot;%class&quot;,
-                    &quot;line_number&quot;: &quot;%line&quot;,
-                    &quot;message&quot;: &quot;%message&quot;,
-                    &quot;stack_trace&quot;: &quot;%exception{5}&quot;,
-                    &quot;req_id&quot;: &quot;%X{reqId}&quot;,
-                    &quot;elapsed_time&quot;: &quot;#asLong{%X{elapsedTime}}&quot;
-                    }
-                &lt;/pattern&gt;
-            &lt;/pattern&gt;
-        &lt;/providers&gt;
-        &lt;!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--&gt;
-
-
-    &lt;/encoder&gt;
-    &lt;keepAliveDuration&gt;5 minutes&lt;/keepAliveDuration&gt;
-&lt;/appender&gt;
-
-&lt;root level=&quot;INFO&quot;&gt;
-    &lt;appender-ref ref=&quot;STASH&quot;/&gt;
-    &lt;appender-ref ref=&quot;console&quot;/&gt;
-&lt;/root&gt;
-</code></pre>
-<h3 id="docker-启动-logstash">docker 启动 Logstash</h3>
-<pre><code class="language-java">#docker容器互访 运行容器的时候加上参数link
-docker run -id -p 5044:5044 --name logstash --link elasticsearch --link beats -v /usr/local/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml -v /usr/local/logstash/conf.d/:/usr/share/logstash/conf.d/ logstash:7.4.1
-</code></pre>
-<h2 id="docker-安装-filebeat">Docker 安装 Filebeat</h2>
-<h3 id="拉取镜像-4">拉取镜像</h3>
-<p>拉取镜像的时候，需要注意的是, <strong>Filebeat 的版本最好与 elasticsearch 保持一致</strong>, 避免发生不必要的错误</p>
-<pre><code class="language-java">docker pull store/elastic/filebeat:7.12.0
-</code></pre>
-<h3 id="查看镜像-4">查看镜像</h3>
-<pre><code class="language-java">docker images
-</code></pre>
-<h3 id="文件映射-2">文件映射</h3>
-<p><strong>下载默认官方配置文件</strong></p>
-<pre><code class="language-http">wget https://raw.githubusercontent.com/elastic/beats/7.12/deploy/docker/filebeat.docker.yml
-</code></pre>
-<p>注意：文件放在宿主机/data/elk/filebeat目录下</p>
-<p><strong>打开配置文件</strong><br>
-<code>vim filebeat.docker.yml</code>，内容如下：</p>
-<pre><code class="language-xml"># 日志输入配置
-filebeat.inputs:
-- type: log
-  enabled: true
-  paths:
-  # 需要收集的日志所在的位置，可使用通配符进行配置
-  #- /data/elk/*.log
-  - /logs/*/*.log
-
-#日志输出配置(采用 logstash 收集日志，5044为logstash端口)
-output.logstash:
-  hosts: ['192.168.12.183:5044']
-</code></pre>
-<h3 id="docker运行filebeat">docker运行Filebeat</h3>
-<pre><code class="language-java">docker run --name filebeat --user=root -d --net somenetwork --volume=&quot;/usr/local/filebeat/log/nginx/:/var/log/nginx/&quot; --volume=&quot;/data/elk/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml&quot; --volume=&quot;/var/lib/docker/containers:/var/lib/docker/containers:ro&quot; --volume=&quot;/var/run/docker.sock:/var/run/docker.sock:ro&quot; store/elastic/filebeat:7.12.0
-</code></pre>
 ]]></content>
     </entry>
 </feed>

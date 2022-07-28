@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1658669780051"
+            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -277,17 +277,7 @@
 </li>
 </ol>
 <p>双亲委派模型的工作过程如下：</p>
-<ol>
-<li>
-<p>如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成。</p>
-</li>
-<li>
-<p>每一层的类加载器都重复第一步，因此所有的类加载请求最终都传送到了顶层的类加载器中。</p>
-</li>
-<li>
-<p>只有父类加载器返回自己无法完成这个加载请求，子加载器才会尝试自己去加载。</p>
-</li>
-</ol>
+<p>当一个类加载器收到某个类的加载请求时，该类加载器不会去加载该类，而是先查看该类加载器的缓存空间是否已经加载了该类，如果已经加载过了就直接返回，如果不存在，则委托给父亲加载器去加载（也是先查看父亲加载器的缓存空间是否已经加载过该类，如果已加载则直接返回），每一层都是如此，如果缓存空间中都没有加载过该类的记录，最终类加载的请求就会传送到顶端的启动类加载器，如果启动类加载器不能加载该类，则返回给拓展类加载器（儿子）去尝试加载，如果还是不能加载，则再到应用类加载器，再到自定义加载器加载</p>
 <h2 id="对象的创建-存储和访问">对象的创建、存储和访问</h2>
 <h3 id="对象的创建">对象的创建</h3>
 <ol>
