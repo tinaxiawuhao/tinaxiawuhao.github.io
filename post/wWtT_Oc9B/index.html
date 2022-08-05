@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="JWT介绍 | tianxia » Feed"
-  href="https://tinaxiawuhao.github.io/atom.xml">
+  href="http://localhost:4000/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="JWT介绍" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/wWtT_Oc9B/" />
+  <meta property="og:url" content="http://localhost:4000/post/wWtT_Oc9B/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,9 +147,9 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/THF9vS57Z/" class="tag">jwt</a>
+                <a href="http://localhost:4000/tag/THF9vS57Z/" class="tag">jwt</a>
                 
-                <a href="https://tinaxiawuhao.github.io/tag/RvlbUayk-/" class="tag">spring</a>
+                <a href="http://localhost:4000/tag/RvlbUayk-/" class="tag">spring</a>
                 
               </span>
               <h1>JWT介绍</h1>
@@ -170,19 +170,19 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/wWtT_Oc9B.png" alt="封面图">
+          <img class="post-feature-header-image" src="http://localhost:4000/post-images/wWtT_Oc9B.png" alt="封面图">
           </img>
           
           <h2 id="jwt介绍">JWT介绍</h2>
 <p>在介绍JWT之前先看一下传统校验令牌的方法，如下图：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1623401311518.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1623401311518.png" alt="" loading="lazy"></figure>
 <p>资源服务器授权流程如上图，客户端先去授权服务器申请令牌，申请令牌后，携带令牌访问资源服务器，资源服务器访问授权服务校验令牌的合法性，授权服务会返回校验结果，如果校验成功会返回用户信息给资源服务器，资源服务器如果接收到的校验结果通过了，则返回资源给客户端</p>
 <p><strong>问题：</strong></p>
 <p>传统授权方法的问题是用户每次请求资源服务，资源服务都需要携带令牌访问认证服务去校验令牌的合法性，并根据令牌获取用户的相关信息，性能低下。</p>
 <p><strong>解决：</strong></p>
 <p>使用JWT的思路是，用户认证通过会得到一个JWT令牌，JWT令牌中已经包括了用户相关的信息，客户端只需要携带JWT访问资源服务，资源服务根据事先约定的算法自行完成令牌校验，无需每次都请求认证服务完成授权。</p>
 <p>JWT令牌授权过程如下图：</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1623401320289.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1623401320289.png" alt="" loading="lazy"></figure>
 <h3 id="什么是jwt">什么是JWT？</h3>
 <p>JSON Web Token（JWT）是一个开放的行业标准（RFC 7519），它定义了一种简介的、自包含的协议格式，用于在通信双方传递json对象，传递的信息经过数字签名可以被验证和信任。JWT可以使用HMAC算法或使用RSA的公钥/私钥对来签名，防止被篡改。</p>
 <blockquote>
@@ -270,7 +270,7 @@
 <pre><code class="language-java">keytool ‐list ‐rfc ‐‐keystore xc.keystore | openssl x509 ‐inform pem ‐pubkey
 </code></pre>
 <p>输入密钥库密码：</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1623908661423.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1623908661423.png" alt="" loading="lazy"></figure>
 <p>下边这一段就是公钥内容：</p>
 <pre><code class="language-java">-----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAijyxMdq4S6L1Af1rtB8SjCZHNgsQG8JTfGy55eYvzG0B/E4AudR2prSRBvF7NYPL47scRCNPgLnvbQczBHbBug6uOr78qnWsYxHlW6Aa5dI5NsmOD4DLtSw8eX0hFyK5Fj6ScYOSFBz9cd1nNTvx2+oIv0lJDcpQdQhsfgsEr1ntvWterZt/8r7xNN83gHYuZ6TM5MYvjQNBc5qC7Krs9wM7UoQuL+s0X6RlOib7/mcLn/lFLsLDdYQAZkSDx/6+t+1oHdMarChIPYT1sx9Dwj2j2mvFNDTKKKKAq0cv14Vrhz67Vjmz2yMJePDqUi0JYS2r0iIo7n8vN7s83v5uOQIDAQAB 
 -----END PUBLIC KEY-----
@@ -363,7 +363,7 @@ System.out.println(encoded);
           
             
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/DOckY7njv/">
+                <a href="http://localhost:4000/post/DOckY7njv/">
                   <span class="post-title">
                     zookeeper概述&rarr;
                   </span>
@@ -373,7 +373,7 @@ System.out.println(encoded);
           
             
            <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/ZsckGVdlz/">
+                 <a href="http://localhost:4000/post/ZsckGVdlz/">
                    <span class="post-title">
                      SpringBoot  JWT实现&rarr;
                    </span>
@@ -420,7 +420,7 @@ System.out.println(encoded);
             
               
               <!-- <li class="list-inline-item">
-              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+              <a href="http://localhost:4000/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -435,10 +435,10 @@ System.out.println(encoded);
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -483,11 +483,11 @@ System.out.println(encoded);
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "https://tinaxiawuhao.github.io/";
-        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+        var home_Path = "http://localhost:4000/";
+        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -508,7 +508,7 @@ System.out.println(encoded);
     }
 </script>
   
-  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

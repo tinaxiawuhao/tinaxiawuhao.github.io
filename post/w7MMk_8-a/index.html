@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="第一章 Kafka的安装与使用 | tianxia » Feed"
-  href="https://tinaxiawuhao.github.io/atom.xml">
+  href="http://localhost:4000/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="第一章 Kafka的安装与使用" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/w7MMk_8-a/" />
+  <meta property="og:url" content="http://localhost:4000/post/w7MMk_8-a/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/imdZqq48T/" class="tag">kafka</a>
+                <a href="http://localhost:4000/tag/imdZqq48T/" class="tag">kafka</a>
                 
               </span>
               <h1>第一章 Kafka的安装与使用</h1>
@@ -168,21 +168,21 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/w7MMk_8-a.png" alt="封面图">
+          <img class="post-feature-header-image" src="http://localhost:4000/post-images/w7MMk_8-a.png" alt="封面图">
           </img>
           
           <h3 id="kafka-基础知识">Kafka 基础知识</h3>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619146086328.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1619146086328.png" alt="" loading="lazy"></figure>
 <p>对于大数据，我们要考虑的问题有很多，首先海量数据如何收集（如 Flume），然后对于收集到的数据如何存储（典型的分布式文件系统 HDFS、分布式数据库 HBase、NoSQL 数据库 Redis），其次存储的数据不是存起来就没事了，要通过计算从中获取有用的信息，这就涉及到计算模型（典型的离线计算 MapReduce、流式实时计算Storm、Spark），或者要从数据中挖掘信息，还需要相应的机器学习算法。在这些之上，还有一些各种各样的查询分析数据的工具（如 Hive、Pig 等）。除此之外，要构建分布式应用还需要一些工具，比如分布式协调服务 Zookeeper 等等。</p>
 <p>这里，我们讲到的是消息系统，Kafka 专为分布式高吞吐量系统而设计，其他消息传递系统相比，Kafka 具有更好的吞吐量，内置分区，复制和固有的容错能力，这使得它非常适合大规模消息处理应用程序。</p>
 <h3 id="消息系统">消息系统</h3>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619146163330.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1619146163330.png" alt="" loading="lazy"></figure>
 <p>​		点对点消息系统：生产者发送一条消息到queue，一个queue可以有很多消费者，但是一个消息只能被一个消费者接受，当没有消费者可用时，这个消息会被保存直到有 一个可用的消费者，所以Queue实现了一个可靠的负载均衡。</p>
 <p>​		发布订阅消息系统：发布者发送到topic的消息，只有订阅了topic的订阅者才会收到消息。topic实现了发布和订阅，当你发布一个消息，所有订阅这个topic的服务都能得到这个消息，所以从1到N个订阅者都能得到这个消息的拷贝。</p>
 <h3 id="kafka术语">kafka术语</h3>
 <p>Apache Kafka 是一个分布式发布 - 订阅消息系统和一个强大的队列，可以处理大量的数据，并使你能够将消息从一个端点传递到另一个端点。 Kafka 适合离线和在线消息消费。 Kafka 消息保留在磁盘上，并在群集内复制以防止数据丢失。 Kafka 构建在 ZooKeeper 同步服务之上。 它与 Apache Storm 和 Spark 非常好地集成，用于实时流式数据分析。</p>
 <p>Kafka 是一个分布式消息队列，具有高性能、持久化、多副本备份、横向扩展能力。生产者往队列里写消息，消费者从队列里取消息进行业务逻辑。一般在架构设计中起到解耦、削峰、异步处理的作用。</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619146174125.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1619146174125.png" alt="" loading="lazy"></figure>
 <p>​		消息由producer产生，消息按照topic归类，并发送到broker中，broker中保存了一个或多个topic的消息，consumer通过订阅一组topic的消息，通过持续的poll操作从broker获取消息，并进行后续的消息处理。</p>
 <p><strong>Producer</strong> ：消息生产者，就是向broker发指定topic消息的客户端。</p>
 <p><strong>Consumer</strong> ：消息消费者，通过订阅一组topic的消息，从broker读取消息的客户端。</p>
@@ -203,11 +203,11 @@
 <p>另外，这里我们可以看到，实际上作为 leader 的 server 承担了该分区所有的读写请求，因此其压力是比较大的，从整体考虑，从多少个 partition 就意味着会有多少个leader，kafka 会将 leader 分散到不同的 broker 上，确保整体的负载均衡。</p>
 <h4 id="3-整体数据流程">3、整体数据流程</h4>
 <p>Kafka 的总体数据流满足下图，该图可以说是概括了整个 kafka 的基本原理。<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1622083894591.jpg" alt="" loading="lazy"></p>
+<img src="http://localhost:4000/post-images/1622083894591.jpg" alt="" loading="lazy"></p>
 <p><strong>（1）数据生产过程（Produce）</strong></p>
 <p>对于生产者要写入的一条记录，可以指定四个参数：分别是 topic、partition、key 和 value，其中 topic 和 value（要写入的数据）是必须要指定的，而 key 和 partition 是可选的。</p>
 <p>对于一条记录，先对其进行序列化，然后按照 Topic 和 Partition，放进对应的发送队列中。如果 Partition 没填，那么情况会是这样的：a、Key 有填。按照 Key 进行哈希，相同 Key 去一个 Partition。b、Key 没填。Round-Robin 来选 Partition。</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1622083907859.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1622083907859.png" alt="" loading="lazy"></figure>
 <p>producer 将会和Topic下所有 partition leader 保持 socket 连接，消息由 producer 直接通过 socket 发送到 broker。其中 partition leader 的位置( host : port )注册在 zookeeper 中，producer 作为 zookeeper client，已经注册了 watch 用来监听 partition leader 的变更事件，因此，可以准确的知道谁是当前的 leader。</p>
 <p>producer 端采用异步发送：将多条消息暂且在客户端 buffer 起来，并将他们批量的发送到 broker，小数据 IO 太多，会拖慢整体的网络延迟，批量延迟发送事实上提升了网络效率。</p>
 <p><strong>（2）数据消费过程（Consume）</strong></p>
@@ -215,7 +215,7 @@
 <p>如果所有的 Consumer 都具有相同的 group，那么就像是一个点对点的消息系统；如果每个 consumer 都具有不同的 group，那么消息会广播给所有的消费者。</p>
 <p>具体说来，这实际上是根据 partition 来分的，一个 Partition，只能被消费组里的一个消费者消费，但是可以同时被多个消费组消费，消费组里的每个消费者是关联到一个 partition 的，因此有这样的说法：对于一个 topic,同一个 group 中不能有多于 partitions 个数的 consumer 同时消费,否则将意味着某些 consumer 将无法得到消息。</p>
 <p>同一个消费组的两个消费者不会同时消费一个 partition。</p>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1622083921378.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1622083921378.png" alt="" loading="lazy"></figure>
 <p>在 kafka 中，采用了 pull 方式，即 consumer 在和 broker 建立连接之后，主动去 pull(或者说 fetch )消息，首先 consumer 端可以根据自己的消费能力适时的去 fetch 消息并处理，且可以控制消息消费的进度(offset)。</p>
 <p>partition 中的消息只有一个 consumer 在消费，且不存在消息状态的控制，也没有复杂的消息确认机制，可见 kafka broker 端是相当轻量级的。当消息被 consumer 接收之后，需要保存 Offset 记录消费到哪，以前保存在 ZK 中，由于 ZK 的写性能不好，以前的解决方法都是 Consumer 每隔一分钟上报一次，在 0.10 版本后，Kafka 把这个 Offset 的保存，从 ZK 中剥离，保存在一个名叫 consumeroffsets topic 的 Topic 中，由此可见，consumer 客户端也很轻量级。</p>
 <h4 id="4-消息传送机制">4、消息传送机制</h4>
@@ -227,12 +227,12 @@
 </ul>
 <h3 id="kafka安装和使用">kafka安装和使用</h3>
 <p>在Windows安装运行Kafka：https://blog.csdn.net/weixin_38004638/article/details/91893910</p>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1619146234260.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1619146234260.png" alt="" loading="lazy"></figure>
 <h3 id="kafka运行">kafka运行</h3>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1619146260426.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1619146275373.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1619146260426.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1619146275373.png" alt="" loading="lazy"></figure>
 <p>一次写入，支持多个应用读取，读取信息是相同的</p>
-<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1619146288083.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1619146288083.png" alt="" loading="lazy"></figure>
 <p><code>kafka-study.pom</code></p>
 <pre><code class="language-java">&lt;dependencies&gt;
     &lt;dependency&gt;
@@ -632,7 +632,7 @@ private static class MyProducerCallback implements Callback {
           
             
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/EEiV7EREL/">
+                <a href="http://localhost:4000/post/EEiV7EREL/">
                   <span class="post-title">
                     附录 Flink常见面试问题汇总&rarr;
                   </span>
@@ -642,7 +642,7 @@ private static class MyProducerCallback implements Callback {
           
             
            <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/wAqEEPZon/">
+                 <a href="http://localhost:4000/post/wAqEEPZon/">
                    <span class="post-title">
                      第二章 Apache Kafka 整合 Storm&rarr;
                    </span>
@@ -689,7 +689,7 @@ private static class MyProducerCallback implements Callback {
             
               
               <!-- <li class="list-inline-item">
-              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+              <a href="http://localhost:4000/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -704,10 +704,10 @@ private static class MyProducerCallback implements Callback {
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -752,11 +752,11 @@ private static class MyProducerCallback implements Callback {
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "https://tinaxiawuhao.github.io/";
-        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+        var home_Path = "http://localhost:4000/";
+        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -777,7 +777,7 @@ private static class MyProducerCallback implements Callback {
     }
 </script>
   
-  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

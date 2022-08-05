@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="第七章 时间语义与 Wartermark | tianxia » Feed"
-  href="https://tinaxiawuhao.github.io/atom.xml">
+  href="http://localhost:4000/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="第七章 时间语义与 Wartermark" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/GzZxLdaVh/" />
+  <meta property="og:url" content="http://localhost:4000/post/GzZxLdaVh/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
+                <a href="http://localhost:4000/tag/1WJzfk7Hi/" class="tag">flink</a>
                 
               </span>
               <h1>第七章 时间语义与 Wartermark</h1>
@@ -168,12 +168,12 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/GzZxLdaVh.png" alt="封面图">
+          <img class="post-feature-header-image" src="http://localhost:4000/post-images/GzZxLdaVh.png" alt="封面图">
           </img>
           
           <h2 id="flink-中的时间语义">Flink 中的时间语义</h2>
 <p>在 Flink 的流式处理中， 会涉及到时间的不同概念， 如下图所示：<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1618472695574.png" alt="" loading="lazy"><br>
+<img src="http://localhost:4000/post-images/1618472695574.png" alt="" loading="lazy"><br>
 图 Flink 时间概念<br>
 <code>Event Time</code>： 是事件创建的时间。 它通常由事件中的时间戳描述， 例如采集的<br>
 日志数据中， 每一条日志都会记录自己的生成时间， Flink 通过时间戳分配器访问事<br>
@@ -182,7 +182,7 @@
 <code>Processing Time</code>： 是每一个执行基于时间操作的算子的本地系统时间， 与机器<br>
 相关， 默认的时间属性就是 Processing Time。<br>
 一个例子——电影《 星球大战》 ：<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1618472731095.png" alt="" loading="lazy"><br>
+<img src="http://localhost:4000/post-images/1618472731095.png" alt="" loading="lazy"><br>
 例如， 一条日志进入 Flink 的时间为 2020-11-12 10:00:00.123， 到达 Window 的<br>
 系统时间为 2020-11-12 10:00:01.234， 日志的内容如下：</p>
 <pre><code class="language-sh">2020-11-02 18:37:15.624 INFO Fail over to rm2
@@ -202,7 +202,7 @@ env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 <h3 id="基本概念">基本概念</h3>
 <p style="text-indent:2em">我们知道， 流处理从事件产生， 到流经 source， 再到 operator， 中间是有一个过程和时间的， 虽然大部分情况下， 流到 operator 的数据都是按照事件产生的时间顺序来的， 但是也不排除由于网络、 分布式等原因， 导致乱序的产生， 所谓乱序， 就
 是指 Flink 接收到的事件的先后顺序不是严格按照事件的 Event Time 顺序排列的。</p>
-<p><img src="https://tinaxiawuhao.github.io/post-images/1618472852122.png" alt="" loading="lazy"><br>
+<p><img src="http://localhost:4000/post-images/1618472852122.png" alt="" loading="lazy"><br>
 图 数据的乱序</p>
 <p style="text-indent:2em">那么此时出现一个问题， 一旦出现乱序， 如果只根据 eventTime 决定 window 的运行， 我们不能明确数据是否全部到位， 但又不能无限期的等下去， 此时必须要有
 个机制来保证一个特定的时间后， 必须触发 window 去进行计算了， 这个特别的机
@@ -218,10 +218,10 @@ Watermark 机制结合 window 来实现。</li>
 小于 maxEventTime - t 的所有数据都已经到达， 如果有窗口的停止时间等于<br>
 maxEventTime – t， 那么这个窗口被触发执行。<br>
 有序流的 Watermarker 如下图所示： （ Watermark 设置为 0）<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1618472893459.png" alt="" loading="lazy"><br>
+<img src="http://localhost:4000/post-images/1618472893459.png" alt="" loading="lazy"><br>
 图 有序数据的 Watermark<br>
 乱序流的 Watermarker 如下图所示： （ Watermark 设置为 2）<br>
-<img src="https://tinaxiawuhao.github.io/post-images/1618472899867.png" alt="" loading="lazy"><br>
+<img src="http://localhost:4000/post-images/1618472899867.png" alt="" loading="lazy"><br>
 图 无序数据的 Watermark</li>
 </ol>
 <p style="text-indent:2em">当 Flink 接收到数据时， 会按照一定的规则去生成 Watermark， 这条 Watermark
@@ -510,7 +510,7 @@ sensor_1 的传感器的数据流插入 watermark：</p>
           
             
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/5uA_yv-aO/">
+                <a href="http://localhost:4000/post/5uA_yv-aO/">
                   <span class="post-title">
                     第六章 Flink 的Window 操作&rarr;
                   </span>
@@ -520,7 +520,7 @@ sensor_1 的传感器的数据流插入 watermark：</p>
           
             
            <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/cctea1w9G/">
+                 <a href="http://localhost:4000/post/cctea1w9G/">
                    <span class="post-title">
                      第八章 ProcessFunction API（底层 API）&rarr;
                    </span>
@@ -567,7 +567,7 @@ sensor_1 的传感器的数据流插入 watermark：</p>
             
               
               <!-- <li class="list-inline-item">
-              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+              <a href="http://localhost:4000/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -582,10 +582,10 @@ sensor_1 的传感器的数据流插入 watermark：</p>
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -630,11 +630,11 @@ sensor_1 的传感器的数据流插入 watermark：</p>
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "https://tinaxiawuhao.github.io/";
-        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+        var home_Path = "http://localhost:4000/";
+        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -655,7 +655,7 @@ sensor_1 的传感器的数据流插入 watermark：</p>
     }
 </script>
   
-  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

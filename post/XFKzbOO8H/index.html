@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Seata | tianxia » Feed"
-  href="https://tinaxiawuhao.github.io/atom.xml">
+  href="http://localhost:4000/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="Seata" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/XFKzbOO8H/" />
+  <meta property="og:url" content="http://localhost:4000/post/XFKzbOO8H/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
+                <a href="http://localhost:4000/tag/PvdavFGm6/" class="tag">springCloud</a>
                 
               </span>
               <h1>Seata</h1>
@@ -168,12 +168,12 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/XFKzbOO8H.png" alt="封面图">
+          <img class="post-feature-header-image" src="http://localhost:4000/post-images/XFKzbOO8H.png" alt="封面图">
           </img>
           
           <h3 id="seata-是什么">Seata 是什么?</h3>
 <p>Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1659011805071.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1659011805071.png" alt="" loading="lazy"></figure>
 <h3 id="at-模式">AT 模式</h3>
 <h4 id="前提">前提</h4>
 <ul>
@@ -205,16 +205,16 @@
 <p>以一个示例来说明：</p>
 <p>两个全局事务 tx1 和 tx2，分别对 a 表的 m 字段进行更新操作，m 的初始值 1000。</p>
 <p>tx1 先开始，开启本地事务，拿到本地锁，更新操作 m = 1000 - 100 = 900。本地事务提交前，先拿到该记录的 <strong>「全局锁」</strong> ，本地提交释放本地锁。tx2 后开始，开启本地事务，拿到本地锁，更新操作 m = 900 - 100 = 800。本地事务提交前，尝试拿该记录的 <strong>「全局锁」</strong> ，tx1 全局提交前，该记录的全局锁被 tx1 持有，tx2 需要重试等待 <strong>「全局锁」</strong> 。</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1659011821117.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1659011821117.png" alt="" loading="lazy"></figure>
 <p>tx1 二阶段全局提交，释放 <strong>「全局锁」</strong> 。tx2 拿到 <strong>「全局锁」</strong> 提交本地事务。</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1659011828070.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1659011828070.png" alt="" loading="lazy"></figure>
 <p>如果 tx1 的二阶段全局回滚，则 tx1 需要重新获取该数据的本地锁，进行反向补偿的更新操作，实现分支的回滚。</p>
 <p>此时，如果 tx2 仍在等待该数据的 <strong>「全局锁」</strong>，同时持有本地锁，则 tx1 的分支回滚会失败。分支的回滚会一直重试，直到 tx2 的 <strong>「全局锁」</strong> 等锁超时，放弃 <strong>「全局锁」</strong> 并回滚本地事务释放本地锁，tx1 的分支回滚最终成功。</p>
 <p>因为整个过程 <strong>「全局锁」</strong> 在 tx1 结束前一直是被 tx1 持有的，所以不会发生 <strong>「脏写」</strong> 的问题。</p>
 <h4 id="读隔离">读隔离</h4>
 <p>在数据库本地事务隔离级别 <strong>「读已提交（Read Committed）」</strong> 或以上的基础上，Seata（AT 模式）的默认全局隔离级别是 <strong>「读未提交（Read Uncommitted）」</strong> 。</p>
 <p>如果应用在特定场景下，必需要求全局的 <strong>「读已提交」</strong> ，目前 Seata 的方式是通过 SELECT FOR UPDATE 语句的代理。</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1659011835961.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1659011835961.png" alt="" loading="lazy"></figure>
 <p>SELECT FOR UPDATE 语句的执行会申请 <strong>「全局锁」</strong> ，如果 <strong>「全局锁」</strong> 被其他事务持有，则释放本地锁（回滚 SELECT FOR UPDATE 语句的本地执行）并重试。这个过程中，查询是被 block 住的，直到 <strong>「全局锁」</strong> 拿到，即读取的相关数据是 <strong>「已提交」</strong> 的，才返回。</p>
 <p>出于总体性能上的考虑，Seata 目前的方案并没有对所有 SELECT 语句都进行代理，仅针对 FOR UPDATE 的 SELECT 语句。</p>
 <h4 id="工作机制">工作机制</h4>
@@ -428,7 +428,7 @@ CREATE TABLE `undo_log` (
 <li>一阶段 prepare 行为</li>
 <li>二阶段 commit 或 rollback 行为</li>
 </ul>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1659011856143.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1659011856143.png" alt="" loading="lazy"></figure>
 <p>根据两阶段行为模式的不同，我们将分支事务划分为 <strong>「Automatic (Branch) Transaction Mode」</strong> 和 <strong>「Manual (Branch) Transaction Mode」</strong>.</p>
 <p>AT 模式（参考链接 TBD）基于 <strong>「支持本地 ACID 事务」</strong> 的 <strong>「关系型数据库」</strong>：</p>
 <ul>
@@ -445,7 +445,7 @@ CREATE TABLE `undo_log` (
 <p>所谓 TCC 模式，是指支持把 <strong>「自定义」</strong> 的分支事务纳入到全局事务的管理中。</p>
 <h3 id="saga-模式">Saga 模式</h3>
 <p>Saga模式是SEATA提供的长事务解决方案，在Saga模式中，业务流程中每个参与者都提交本地事务，当出现某一个参与者失败则补偿前面已经成功的参与者，一阶段正向服务和二阶段补偿服务都由业务开发实现。</p>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1659011864916.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1659011864916.png" alt="" loading="lazy"></figure>
 <p>理论基础：Hector &amp; Kenneth 发表论⽂ Sagas （1987）</p>
 <h4 id="适用场景">适用场景</h4>
 <ul>
@@ -499,7 +499,7 @@ CREATE TABLE `undo_log` (
           
             
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/WLM-Ra1r4/">
+                <a href="http://localhost:4000/post/WLM-Ra1r4/">
                   <span class="post-title">
                     服务容错：服务雪崩与容错方案&rarr;
                   </span>
@@ -509,7 +509,7 @@ CREATE TABLE `undo_log` (
           
             
            <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/IMU3BaL0b/">
+                 <a href="http://localhost:4000/post/IMU3BaL0b/">
                    <span class="post-title">
                      搭建并整合Seata&rarr;
                    </span>
@@ -556,7 +556,7 @@ CREATE TABLE `undo_log` (
             
               
               <!-- <li class="list-inline-item">
-              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+              <a href="http://localhost:4000/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -571,10 +571,10 @@ CREATE TABLE `undo_log` (
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -619,11 +619,11 @@ CREATE TABLE `undo_log` (
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "https://tinaxiawuhao.github.io/";
-        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+        var home_Path = "http://localhost:4000/";
+        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -644,7 +644,7 @@ CREATE TABLE `undo_log` (
     }
 </script>
   
-  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

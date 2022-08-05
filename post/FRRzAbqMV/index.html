@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="java基础之一集合 | tianxia » Feed"
-  href="https://tinaxiawuhao.github.io/atom.xml">
+  href="http://localhost:4000/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="java基础之一集合" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/FRRzAbqMV/" />
+  <meta property="og:url" content="http://localhost:4000/post/FRRzAbqMV/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                <a href="http://localhost:4000/tag/gvtXj5hZZ/" class="tag">java</a>
                 
               </span>
               <h1>java基础之一集合</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/FRRzAbqMV.png" alt="封面图">
+          <img class="post-feature-header-image" src="http://localhost:4000/post-images/FRRzAbqMV.png" alt="封面图">
           </img>
           
           <h2 id="基础数据结构说明">基础数据结构说明</h2>
@@ -181,7 +181,7 @@
 <p>比如我们要新增或查找某个元素，我们通过把当前元素的关键字 通过某个函数映射到数组中的某个位置，通过数组下标一次定位就可完成操作。</p>
 <p><strong>存储位置 = f(关键字)</strong></p>
 <p>其中，这个函数f一般称为<strong>哈希函数</strong>，这个函数的设计好坏会直接影响到哈希表的优劣。举个例子，比如我们要在哈希表中执行插入操作：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619592366553.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1619592366553.png" alt="" loading="lazy"></figure>
 <p>查找操作同理，先通过哈希函数计算出实际存储地址，然后从数组中对应地址取出即可。</p>
 <p><strong>哈希冲突</strong></p>
 <p>然而万事无完美，如果两个不同的元素，通过哈希函数得出的实际存储地址相同怎么办？也就是说，当我们对某个元素进行哈希运算，得到一个存储地址，然后要进行插入的时候，发现已经被其他元素占用了，其实这就是所谓的<strong>哈希冲突</strong>，也叫哈希碰撞。前面我们提到过，哈希函数的设计至关重要，好的哈希函数会尽可能地保证 <strong>计算简单</strong>和<strong>散列地址分布均匀</strong>但是，我们需要清楚的是，数组是一块连续的固定长度的内存空间，再好的哈希函数也不能保证得到的存储地址绝对不发生冲突。那么哈希冲突如何解决呢？哈希冲突的解决方案有多种:<code>开放定址法（线性探测）</code>（发生冲突，继续寻找下一块未被占用的存储地址），<code>再散列函数法</code>，<code>链地址法</code>。</p>
@@ -239,7 +239,7 @@
 
 </code></pre>
 <h2 id="集合说明">集合说明</h2>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619592387947.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1619592387947.png" alt="" loading="lazy"></figure>
 <h3 id="arraylist实现原理要点概括">ArrayList实现原理要点概括</h3>
 <ol>
 <li>
@@ -250,7 +250,7 @@
 <p></p>
 </li>
 </ol>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1619592476277.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1619592476277.png" alt="" loading="lazy"></figure>
 <p>说明：底层的数据结构就是数组，数组元素类型为Object类型，即可以存放所有类型数据。我们对ArrayList类的实例的所有的操作底层都是基于数组的。</p>
 <ol start="3">
 <li>
@@ -274,7 +274,7 @@
 <p>LinkedList数据结构如下</p>
 </li>
 </ol>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1619592485724.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1619592485724.png" alt="" loading="lazy"></figure>
 <p>说明：如上图所示，LinkedList底层使用的双向链表结构，有一个头结点和一个尾结点，双向链表意味着我们可以从头开始正向遍历，或者是从尾开始逆向遍历，并且可以针对头部和尾部进行相应的操作。</p>
 <ol start="3">
 <li>
@@ -332,7 +332,7 @@
 <p>底层使用数组实现，数组中每一项是个单向链表，即数组和链表的结合体；当链表长度大于8时，链表转换为红黑树，这样减少链表查询时间。</p>
 </li>
 </ol>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1619592496628.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1619592496628.png" alt="" loading="lazy"></figure>
 <ol start="3">
 <li>
 <p>HashMap在底层将key-value当成一个整体进行处理，这个整体就是一个Node对象。HashMap底层采用一个Node[]数组来保存所有的key-value对，当需要存储一个Node对象时，会根据key的hash算法来决定其在数组中的存储位置，再根据equals方法决定其在该数组位置上的链表中的存储位置；当需要取出一个Node时，也会根据key的hash算法找到其在数组中的存储位置，再根据equals方法从该位置上的链表中取出该Node。</p>
@@ -360,7 +360,7 @@
 <p>​		如果我们已经对HashMap的原理有了一定了解，这个结果就不难理解了。尽管我们在进行get和put操作的时候，使用的key从逻辑上讲是等值的（通过equals比较是相等的），但由于没有重写hashCode方法，所以put操作时，key(hashcode1)--&gt;hash--&gt;indexFor--&gt;最终索引位置 ，而通过key取出value的时候 key(hashcode2)--&gt;hash--&gt;indexFor--&gt;最终索引位置，由于hashcode1不等于hashcode2，导致没有定位到一个数组位置而返回逻辑上错误的值null（也有可能碰巧定位到一个数组位置，但是也会判断其entry的hash值是否相等。）</p>
 <p>所以，在重写equals的方法的时候，必须注意重写hashCode方法，同时还要保证通过equals判断相等的两个对象，调用hashCode方法要返回同样的整数值。而如果equals判断不相等的两个对象，其hashCode可以相同（只不过会发生哈希冲突，应尽量避免）。</p>
 <h3 id="hashtable实现原理要点概括">Hashtable实现原理要点概括</h3>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1619592758082.jfif" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1619592758082.jfif" alt="" loading="lazy"></figure>
 <ol>
 <li>Hashtable是基于哈希表的Map接口的同步实现，不允许使用null值和null键，Hashtable中的映射不是有序的</li>
 <li>底层使用数组实现，数组中每一项是个单链表，即数组和链表的结合体</li>
@@ -368,7 +368,7 @@
 <li>synchronized是针对整张Hash表的，即每次锁住整张表让线程独占</li>
 </ol>
 <h3 id="concurrenthashmap实现原理要点概括">ConcurrentHashMap实现原理要点概括</h3>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1619592765108.jpeg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1619592765108.jpeg" alt="" loading="lazy"></figure>
 <ol>
 <li>
 <p>ConcurrentHashMap允许多个修改操作并发进行，其关键在于使用了锁分离技术。</p>
@@ -393,7 +393,7 @@
 <p>​	那么这样的好处是什么呢?我先从老版本的添加流程说起吧,由于电脑里没有JDK1.7及以下的版本我没法给你看代码,所以使用文字描述的方式,首先,当我们使用put方法的时候,是对我们的key进行hash拿到一个整型,然后将整型对16取模,拿到对应的Segment,之后调用Segment的put方法,然后上锁,请注意,这里lock()的时候其实是this.lock(),也就是说,每个Segment的锁是分开的</p>
 <p>​	其中一个上锁不会影响另一个,此时也就代表了我可以有十六个线程进来,而ReentrantLock上锁的时候如果只有一个线程进来,是不会有线程挂起的操作的,也就是说只需要在AQS里使用CAS改变一个state的值为1,此时就能对代码进行操作,这样一来,我们等于将并发量/16了.</p>
 <p>好,说完了老版本的ConcurrentHashMap,我们再说说新版本的,请看下面的图:</p>
-<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1629875978754.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1629875978754.png" alt="" loading="lazy"></figure>
 <p>​	请注意Synchronized上锁的对象,请记住,Synchronized是靠对象的对象头和此对象对应的monitor来保证上锁的,也就是对象头里的重量级锁标志指向了monitor,而monitor呢,内部则保存了一个当前线程,也就是抢到了锁的线程.</p>
 <p>​	那么这里的这个f是什么呢?它是Node链表里的每一个Node,也就是说,Synchronized是将每一个Node对象作为了一个锁,这样做的好处是什么呢?将锁细化了,也就是说,除非两个线程同时操作一个Node,注意,是一个Node而不是一个Node链表哦,那么才会争抢同一把锁.</p>
 <p>​	如果使用ReentrantLock其实也可以将锁细化成这样的,只要让Node类继承ReentrantLock就行了,这样的话调用f.lock()就能做到和Synchronized(f)同样的效果,但为什么不这样做呢?</p>
@@ -411,7 +411,7 @@
 <li>对于HashSet而言，它是基于HashMap实现的，HashSet底层使用HashMap来保存所有元素，因此HashSet 的实现比较简单，相关HashSet的操作，基本上都是直接调用底层HashMap的相关方法来完成，API也是对HashMap的行为进行了封装，可参考HashMap</li>
 </ol>
 <h3 id="linkedhashmap实现原理要点概括">LinkedHashMap实现原理要点概括</h3>
-<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1619593405140.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="http://localhost:4000/post-images/1619593405140.png" alt="" loading="lazy"></figure>
 <ol>
 <li>LinkedHashMap继承于HashMap，底层使用哈希表和双向链表来保存所有元素，并且它是非同步，允许使用null值和null键。</li>
 <li>基本操作与父类HashMap相似，通过重写HashMap相关方法，重新定义了数组中保存的元素Entry，来实现自己的链接列表特性。该Entry除了保存当前对象的引用外，还保存了其上一个元素before和下一个元素after的引用，从而构成了双向链接列表。</li>
@@ -787,7 +787,7 @@ System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
           
             
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/fE1AHZqDl/">
+                <a href="http://localhost:4000/post/fE1AHZqDl/">
                   <span class="post-title">
                     Java线程同步五种方法&rarr;
                   </span>
@@ -797,7 +797,7 @@ System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
           
             
            <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/NjXzyw7sR/">
+                 <a href="http://localhost:4000/post/NjXzyw7sR/">
                    <span class="post-title">
                      Java基础之—反射&rarr;
                    </span>
@@ -844,7 +844,7 @@ System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
             
               
               <!-- <li class="list-inline-item">
-              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+              <a href="http://localhost:4000/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -859,10 +859,10 @@ System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -907,11 +907,11 @@ System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "https://tinaxiawuhao.github.io/";
-        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+        var home_Path = "http://localhost:4000/";
+        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -932,7 +932,7 @@ System.out.println(&quot;dest: &quot; + Arrays.toString(dest));
     }
 </script>
   
-  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

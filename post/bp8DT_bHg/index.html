@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Nacos核心源码剖析——配置中心 | tianxia » Feed"
-  href="https://tinaxiawuhao.github.io/atom.xml">
+  href="http://localhost:4000/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="Nacos核心源码剖析——配置中心" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/bp8DT_bHg/" />
+  <meta property="og:url" content="http://localhost:4000/post/bp8DT_bHg/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
+                <a href="http://localhost:4000/tag/PvdavFGm6/" class="tag">springCloud</a>
                 
               </span>
               <h1>Nacos核心源码剖析——配置中心</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/bp8DT_bHg.png" alt="封面图">
+          <img class="post-feature-header-image" src="http://localhost:4000/post-images/bp8DT_bHg.png" alt="封面图">
           </img>
           
           <p>Nacos官方文档：https://nacos.io/zh-cn/docs/quick-start.html</p>
@@ -199,7 +199,7 @@
 <li><strong>当需要获取配置时，先尝试从本地配置文件获取，获取不到时，再去远端Server获取；从远端获取成功后，保存到本地配置文件，后面通过ClientWorker中的长轮询完成配置的实时更新!</strong></li>
 </ul>
 <p>ClientWorker中有两个线程executor和executorService：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658666099885.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1658666099885.png" alt="" loading="lazy"></figure>
 <ul>
 <li>
 <p><strong>单线程executor定时任务</strong>：每10ms执行checkConfigInfo()方法，看看本地配置信息是否有变化，以3000个为一组，判断是否要增加新的LongPollingRunnable长轮询任务；</p>
@@ -210,7 +210,7 @@
 </li>
 </ul>
 <p><strong>服务端核心知识点：</strong></p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658666125421.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1658666125421.png" alt="" loading="lazy"></figure>
 <ul>
 <li><strong>服务端即使配置了mysql，每次请求也不是直接去查询mysql的，而是借助 本地内存缓存中的元数据 + 本地磁盘中的配置文件；</strong></li>
 <li><strong>Mysql主要用于集群节点启动时的数据加载（全量加载、增量加载） 和 数据变动时的刷新同步；</strong></li>
@@ -225,7 +225,7 @@
 <ul>
 <li>Springboot项目启动时，在prepareEnvironment()阶段，会通过spring.factories文件中的BootstrapConfiguration类找到NacosConfigBootstrapConfiguration配置类，并完成注入：</li>
 </ul>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658666155462.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1658666155462.png" alt="" loading="lazy"></figure>
 <ul>
 <li>NacosConfigBootstrapConfiguration配置类，会向Spring容器中注入几个Nacos配置读取重要的类</li>
 </ul>
@@ -255,9 +255,9 @@
 <ul>
 <li>然后在prepareContext()上下文的时候，会通过之前从spring.factories中读取到的ApplicationInitializer初始化器，这里遍历执行时，就会执行到springcloud的PropertySpurceBootstrapConfiguration类的initialize()方法：</li>
 </ul>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658666184206.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1658666184206.png" alt="" loading="lazy"></figure>
 <p>可以看到PropertySpurceBootstrapConfiguration.initialize()方法中需要用到PropertySourceLocator接口的实现类，而我们配置的Nacos正好为这个接口提供了实现类NacosPropertySourceLocator</p>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658666209114.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1658666209114.png" alt="" loading="lazy"></figure>
 <h4 id="2-通过nacospropertysourcelocator类理清nacos各中配置文件的优先级"><strong>2 通过NacosPropertySourceLocator类，理清Nacos各中配置文件的优先级：</strong></h4>
 <pre><code class="language-java">// com.alibaba.cloud.nacos.client.NacosPropertySourceLocator#locate
 public PropertySource&lt;?&gt; locate(Environment env) {
@@ -317,7 +317,7 @@ private void loadApplicationConfiguration(CompositePropertySource compositePrope
 </blockquote>
 <hr>
 <h3 id="二-nacos配置中心的核心类nacosconfigservice的引入">二 Nacos配置中心的核心类NacosConfigService的引入</h3>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1658666249886.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1658666249886.png" alt="" loading="lazy"></figure>
 <h4 id="1-客户端是何时从远程配置nacos服务端拉取配置的"><strong>1 客户端是何时从远程配置Nacos服务端拉取配置的</strong></h4>
 <pre><code class="language-java">// 还记得刚开始时候，通过spring.factories注入了一个配置类NacosConfigBootstrapConfiguration 
 // 该配置类，会向Spring容器中注入一个Bean：NacosConfigManager
@@ -367,7 +367,7 @@ public static ConfigService createConfigService(Properties properties) throws Na
 <li>如果<strong>本地文件不存在，则才会从远端Server获取</strong>；</li>
 <li>从<strong>远端Server成功获取配置后，会向本地文件保存快照</strong>，以备后用；（本地文件的更新由后面的长轮询完成）</li>
 </ul>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1658666274991.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1658666274991.png" alt="" loading="lazy"></figure>
 <pre><code class="language-java">private String getConfigInner(String tenant, String dataId, String group, long timeoutMs) throws NacosException {
     group = null2defaultGroup(group);
     ParamUtils.checkKeyParam(dataId, group);
@@ -509,7 +509,7 @@ public void checkConfigInfo() {
 </blockquote>
 <h4 id="5-nacos客户端长轮询longpolling任务的核心逻辑md5比对"><strong>5 Nacos客户端长轮询LongPolling任务的核心逻辑（md5比对）：</strong></h4>
 <p>监听配置的长轮询接口API：https://nacos.io/zh-cn/docs/open-api.html</p>
-<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1658666302821.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1658666302821.png" alt="" loading="lazy"></figure>
 <pre><code class="language-java">// LongPollingRunnable.run()
 public void run() {
      
@@ -689,7 +689,7 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
 }
 
 </code></pre>
-<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1658666327231.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1658666327231.png" alt="" loading="lazy"></figure>
 <blockquote>
 <p><strong>有了这一系列的监听器，当客户端知道配置发生改变时，就会回调对应的监听器的回调方法，通知应用程序更新对应的Bean（从IOC容器中删除旧Bean，放入新的Bean）。</strong></p>
 </blockquote>
@@ -701,7 +701,7 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
 <li><strong>各节点内存缓存：存储配置的元信息，如Md5值等；</strong></li>
 <li><strong>Mysql：具体的配置的最新值和历史记录，方便新节点启动时加载，以及节点之间的数据同步；</strong></li>
 </ul>
-<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1658666346288.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="http://localhost:4000/post-images/1658666346288.png" alt="" loading="lazy"></figure>
 <h4 id="1-配置文件的dump加载dumpservice"><strong>1 配置文件的Dump加载：DumpService</strong></h4>
 <p>DumpService由两个实现类：EmbeddedDumpService（derby） 和 ExternalDumpService（mysql）；</p>
 <p>当新节点启动时，需要从mysql中加载配置数据，如果最后心跳时间&gt;6h，则从mysql加载全量数据；如果最后心跳时间&lt;6h，则从mysql加载增量数据；</p>
@@ -754,7 +754,7 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
           
             
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/zolXTKRvU/">
+                <a href="http://localhost:4000/post/zolXTKRvU/">
                   <span class="post-title">
                     Nacos核心源码剖析（CP架构）——注册中心&rarr;
                   </span>
@@ -764,7 +764,7 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
           
             
            <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/Y45PUcltI/">
+                 <a href="http://localhost:4000/post/Y45PUcltI/">
                    <span class="post-title">
                      openfeign-ribbon核心源码剖析&rarr;
                    </span>
@@ -811,7 +811,7 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
             
               
               <!-- <li class="list-inline-item">
-              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+              <a href="http://localhost:4000/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -826,10 +826,10 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -874,11 +874,11 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "https://tinaxiawuhao.github.io/";
-        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+        var home_Path = "http://localhost:4000/";
+        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -899,7 +899,7 @@ List&lt;String&gt; checkUpdateConfigStr(String probeUpdateString, boolean isInit
     }
 </script>
   
-  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

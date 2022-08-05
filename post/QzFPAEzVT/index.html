@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="mysql概述二 | tianxia » Feed"
-  href="https://tinaxiawuhao.github.io/atom.xml">
+  href="http://localhost:4000/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="mysql概述二" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/QzFPAEzVT/" />
+  <meta property="og:url" content="http://localhost:4000/post/QzFPAEzVT/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1659012644247"
+            <form id="gridea-search-form" style="position: relative" data-update="1659699703857"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/8_sUkscaB/" class="tag">mysql</a>
+                <a href="http://localhost:4000/tag/8_sUkscaB/" class="tag">mysql</a>
                 
               </span>
               <h1>mysql概述二</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/QzFPAEzVT.png" alt="封面图">
+          <img class="post-feature-header-image" src="http://localhost:4000/post-images/QzFPAEzVT.png" alt="封面图">
           </img>
           
           <h3 id="索引">索引</h3>
@@ -201,11 +201,11 @@
 </ul>
 <h3 id="使用场景重点">使用场景（重点）</h3>
 <h4 id="where">where</h4>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1620897817779.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1620897817779.png" alt="" loading="lazy"></figure>
 <p>上图中，根据id查询记录，因为id字段仅建立了主键索引，因此此SQL执行可选的索引只有主键索引，如果有多个，最终会选一个较优的作为检索的依据。</p>
 <p>-- 增加一个没有建立索引的字段 <code>alter table innodb1 add sex char(1);</code></p>
 <p>-- 按sex检索时可选的索引为null <code>EXPLAIN SELECT * from innodb1 where sex='男';</code></p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1620897795644.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1620897795644.png" alt="" loading="lazy"></figure>
 <p>可以尝试在一个字段未建立索引时，根据该字段查询的效率，然后对该字段建立索引<code>alter table 表名 add index(字段名)</code>，同样的SQL执行的效率，你会发现查询效率会有明显的提升（数据量越大越明显）。</p>
 <h4 id="order-by">order by</h4>
 <p>当我们使用order by将查询结果按照某个字段排序时，如果该字段没有建立索引，那么执行计划会将查询出的所有数据使用外部排序（将数据从硬盘分批读取到内存使用内部排序，最后合并排序结果），这个操作是很影响性能的，因为需要将查询涉及到的所有数据从磁盘中读到内存（如果单条数据过大或者数据量过多都会降低效率），更无论读到内存之后的排序了。</p>
@@ -286,7 +286,7 @@ ALTER TABLE user_index DROP KEY id_card;
 ALTER TABLE user_index DROP KEY information;
 </code></pre>
 <p>删除主键索引：alter table 表名 drop primary key（因为主键只有一个）。这里值得注意的是，如果主键自增长，那么不能直接执行此操作（自增长依赖于主键索引）：</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1620897774703.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1620897774703.png" alt="" loading="lazy"></figure>
 <p>需要取消自增长再行删除：</p>
 <pre><code class="language-mysql">alter table user_index
 -- 重新定义字段
@@ -340,7 +340,7 @@ drop PRIMARY KEY
 <li>
 <p>B树索引</p>
 <p>mysql通过存储引擎取数据，基本上90%的人用的就是InnoDB了，按照实现方式分，InnoDB的索引类型目前只有两种：BTREE（B树）索引和HASH索引。B树索引是Mysql数据库中使用最频繁的索引类型，基本所有存储引擎都支持BTree索引。通常我们说的索引不出意外指的就是（B树）索引（实际是用B+树实现的，因为在查看表索引时<code>SHOW INDEX FROM &lt;表名&gt; [ FROM &lt;数据库名&gt;]</code>，mysql一律打印BTREE，所以简称为B树索引）</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1620984450233.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1620984450233.png" alt="" loading="lazy"></figure>
 <p><strong>查询方式：</strong></p>
 <p>主键索引区:PI(关联保存的数据的地址)按主键查询,</p>
 <p>普通索引区:si(关联的id的地址,然后再到达上面的地址)。所以按主键查询,速度最快</p>
@@ -356,13 +356,13 @@ drop PRIMARY KEY
 <p>简要说下，类似于数据结构中简单实现的HASH表（散列表）一样，当我们在mysql中用哈希索引时，主要就是通过Hash算法（常见的Hash算法有直接定址法、平方取中法、折叠法、除数取余法、随机数法），将数据库字段数据转换成定长的Hash值，与这条数据的行指针一并存入Hash表的对应位置；如果发生Hash碰撞（两个不同关键字的Hash值相同），则在对应Hash键下以链表形式存储。当然这只是简略模拟图。</p>
 </li>
 </ol>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1620897738341.webp" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1620897738341.webp" alt="" loading="lazy"></figure>
 <h3 id="b树和b树的区别">B树和B+树的区别</h3>
 <ul>
 <li>在B树中，你可以将键和值存放在内部节点和叶子节点；但在B+树中，内部节点都是键，没有值，叶子节点同时存放键和值。</li>
 <li>B+树的叶子节点有一条链相连，而B树的叶子节点各自独立。</li>
 </ul>
-<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1620897723431.jpeg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1620897723431.jpeg" alt="" loading="lazy"></figure>
 <h4 id="使用b树的好处">使用B树的好处</h4>
 <p>B树可以在内部节点同时存储键和值，因此，把频繁访问的数据放在靠近根节点的地方将会大大提高热点数据的查询效率。这种特性使得B树在特定数据重复多次查询的场景中更加高效。</p>
 <h4 id="使用b树的好处-2">使用B+树的好处</h4>
@@ -400,7 +400,7 @@ drop PRIMARY KEY
 </ul>
 <p>澄清一个概念：innodb中，在聚簇索引之上创建的索引称之为辅助索引，辅助索引访问数据总是需要二次查找，非聚簇索引都是辅助索引，像复合索引、前缀索引、唯一索引，辅助索引叶子节点存储的不再是行的物理位置，而是主键值</p>
 <p>何时使用聚簇索引与非聚簇索引</p>
-<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1620897704953.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1620897704953.png" alt="" loading="lazy"></figure>
 <h3 id="非聚簇索引一定会回表查询吗">非聚簇索引一定会回表查询吗？</h3>
 <p>不一定，这涉及到查询语句所要求的字段是否全部命中了索引，如果全部命中了索引，那么就不必再进行回表查询。</p>
 <p>举个简单的例子，假设我们在员工表的年龄上建立了索引，那么当进行<code>select age from employee where age &lt; 20</code>的查询时，在索引的叶子节点上，已经包含了age信息，不会再次进行回表查询。</p>
@@ -479,7 +479,7 @@ drop PRIMARY KEY
           
             
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/Nq-4WaiGL/">
+                <a href="http://localhost:4000/post/Nq-4WaiGL/">
                   <span class="post-title">
                     mysql概述一&rarr;
                   </span>
@@ -489,7 +489,7 @@ drop PRIMARY KEY
           
             
            <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/5ppmKteEb/">
+                 <a href="http://localhost:4000/post/5ppmKteEb/">
                    <span class="post-title">
                      mysql概述三&rarr;
                    </span>
@@ -536,7 +536,7 @@ drop PRIMARY KEY
             
               
               <!-- <li class="list-inline-item">
-              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+              <a href="http://localhost:4000/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -551,10 +551,10 @@ drop PRIMARY KEY
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -599,11 +599,11 @@ drop PRIMARY KEY
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "https://tinaxiawuhao.github.io/";
-        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+        var home_Path = "http://localhost:4000/";
+        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -624,7 +624,7 @@ drop PRIMARY KEY
     }
 </script>
   
-  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
 </body>
 
 </html>
