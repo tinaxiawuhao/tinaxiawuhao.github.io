@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Sleuth概述 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="Sleuth概述" />
-  <meta property="og:url" content="http://localhost:4000/post/ZbHW6UCYN/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/ZbHW6UCYN/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/PvdavFGm6/" class="tag">springCloud</a>
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
                 
               </span>
               <h1>Sleuth概述</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/ZbHW6UCYN.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/ZbHW6UCYN.png" alt="封面图">
           </img>
           
           <h2 id="sleuth概述">Sleuth概述</h2>
@@ -230,7 +230,7 @@ spring:
           route-id-prefix: gateway-
 </code></pre>
 <p>（3）分别启动Nacos、Sentinel、用户微服务shop-user，商品微服务shop-product，订单微服务shop-order和网关服务shop-gateway，在浏览器中输入链接<code>localhost:10001/server-order/order/submit_order?userId=1001&amp;productId=1001&amp;count=1</code>，如下所示。</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1658669367689.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658669367689.png" alt="" loading="lazy"></figure>
 <p>（4）分别查看用户微服务shop-user，商品微服务shop-product，订单微服务shop-order和网关服务shop-gateway的控制台输出，每个服务的控制台都输出了如下格式所示的信息。</p>
 <pre><code class="language-java">[微服务名称,TraceID,SpanID,是否将结果输出到第三方平台]
 </code></pre>
@@ -305,7 +305,7 @@ public String asyncApi() {
 }
 </code></pre>
 <p>（4）分别启动用户微服务和网关服务，在浏览器中输入链接<code>http://localhost:10001/server-user/user/async/api</code></p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1658669494937.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658669494937.png" alt="" loading="lazy"></figure>
 <p>（5）查看用户微服务与网关服务的控制台日志，分别存在如下日志。</p>
 <ul>
 <li>用户微服务</li>
@@ -345,13 +345,13 @@ public class ThreadPoolTaskExecutorConfig extends AsyncConfigurerSupport {
 }
 </code></pre>
 <p>（2）以debug的形式启动用户微服务和网关服务，并在<code>io.binghe.shop.user.config.ThreadPoolTaskExecutorConfig#getAsyncExecutor()</code>方法中打上断点，如下所示。</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1658669396054.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658669396054.png" alt="" loading="lazy"></figure>
 <p>可以看到，项目启动后并没有进入<code>io.binghe.shop.user.config.ThreadPoolTaskExecutorConfig#getAsyncExecutor()</code>方法，说明项目启动时，并不会创建异步任务线程池。</p>
 <p>（3）在浏览器中输入链接<code>http://localhost:10001/server-user/user/async/api</code>，此时可以看到程序已经执行到<code>io.binghe.shop.user.config.ThreadPoolTaskExecutorConfig#getAsyncExecutor()</code>方法的断点位置。</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1658669404005.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658669404005.png" alt="" loading="lazy"></figure>
 <p>说明异步任务线程池是在调用了异步任务的时候创建的。</p>
 <p>接下来，按F8跳过断点继续运行程序，可以看到浏览器上的显示结果如下。</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1658669411575.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658669411575.png" alt="" loading="lazy"></figure>
 <p>（4）查看用户微服务与网关服务的控制台日志，分别存在如下日志。</p>
 <ul>
 <li>用户微服务</li>
@@ -395,7 +395,7 @@ public class ThreadPoolTaskExecutorConfig extends AsyncConfigurerSupport {
 }
 </code></pre>
 <p>（2）分别启动用户微服务和网关服务，在浏览器中输入链接<code>http://localhost:10001/server-user/user/async/api</code></p>
-<p><img src="http://localhost:4000/post-images/1658669421269.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1658669421269.png" alt="" loading="lazy"><br>
 （3）查看用户微服务与网关服务的控制台日志，分别存在如下日志。</p>
 <ul>
 <li>用户微服务</li>
@@ -468,12 +468,12 @@ public String sleuthFilter(HttpServletRequest request) {
 }
 </code></pre>
 <p>（3）分别启动用户微服务和网关服务，在浏览器中输入<code>http://localhost:10001/server-user/user/sleuth/filter/api</code>，如下所示。</p>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1658669436388.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1658669436388.png" alt="" loading="lazy"></figure>
 <p>查看用户微服务的控制台会输出如下信息。</p>
 <pre><code class="language-java">获取到的traceId为: f63ae7702f6f4bba
 </code></pre>
 <p>查看浏览器的控制台，看到在响应的结果信息中新增了一个名称为SLEUTH-HEADER，值为f63ae7702f6f4bba的Header，如下所示。</p>
-<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1658669443121.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1658669443121.png" alt="" loading="lazy"></figure>
 <p>说明使用Sleuth的过滤器可以处理请求和响应信息，并且可以在Sleuth的过滤器中获取到TraceID。</p>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
@@ -515,7 +515,7 @@ public String sleuthFilter(HttpServletRequest request) {
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/Lq63Gr95h/">
+                <a href="https://tinaxiawuhao.github.io/post/Lq63Gr95h/">
                   <span class="post-title">
                     分布式链路追踪&rarr;
                   </span>
@@ -525,7 +525,7 @@ public String sleuthFilter(HttpServletRequest request) {
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/OTKk-Bytc/">
+                 <a href="https://tinaxiawuhao.github.io/post/OTKk-Bytc/">
                    <span class="post-title">
                      ZipKin核心架构&rarr;
                    </span>
@@ -572,7 +572,7 @@ public String sleuthFilter(HttpServletRequest request) {
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -587,10 +587,10 @@ public String sleuthFilter(HttpServletRequest request) {
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -635,11 +635,11 @@ public String sleuthFilter(HttpServletRequest request) {
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -660,7 +660,7 @@ public String sleuthFilter(HttpServletRequest request) {
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

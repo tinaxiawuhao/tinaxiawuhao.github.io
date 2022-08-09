@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="HTTP3 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="HTTP3" />
-  <meta property="og:url" content="http://localhost:4000/post/Um_5N4eGG/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/Um_5N4eGG/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/gvtXj5hZZ/" class="tag">java</a>
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
                 
               </span>
               <h1>HTTP3</h1>
@@ -168,13 +168,13 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/Um_5N4eGG.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/Um_5N4eGG.png" alt="封面图">
           </img>
           
           <h3 id="http3协议发布">HTTP3协议发布</h3>
 <p>自2017年起HTTP3协议已发布了29个Draft，推出在即，Chrome、Nginx等软件都在跟进实现最新的草案。本文将介绍HTTP3协议规范、应用场景及实现原理。</p>
 <p>2015年HTTP2协议正式推出后，已经有接近一半的互联网站点在使用它：</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1657191233668.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657191233668.jpg" alt="" loading="lazy"></figure>
 <p>HTTP2协议虽然大幅提升了HTTP/1.1的性能，然而，基于TCP实现的HTTP2遗留下3个问题：</p>
 <blockquote>
 <ul>
@@ -203,7 +203,7 @@
 </ul>
 </blockquote>
 <p>HTTP3在保持HTTP1语义不变的情况下，更改了编码格式，这由2个原因所致：首先，是为了减少编码长度。下图中HTTP1协议的编码使用了ASCII码，用空格、冒号以及\r\n作为分隔符，编码效率很低：</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1657191244440.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657191244440.jpg" alt="" loading="lazy"></figure>
 <p>HTTP2与HTTP3采用二进制、静态表、动态表与Huffman算法对HTTP Header编码，不只提供了高压缩率，还加快了发送端编码、接收端解码的速度。</p>
 <p>其次，由于HTTP1协议不支持多路复用，这样高并发只能通过多开一些TCP连接实现。然而，通过TCP实现高并发有3个弊端：</p>
 <blockquote>
@@ -214,11 +214,11 @@
 </ul>
 </blockquote>
 <p>因此，HTTP2与HTTP3都在应用层实现了多路复用功能：</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1657191252726.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657191252726.jpg" alt="" loading="lazy"></figure>
 <p>HTTP2协议基于TCP有序字节流实现，因此<strong>应用层的多路复用并不能做到无序地并发，在丢包场景下会出现队头阻塞问题</strong>。如下面的动态图片所示，服务器返回的绿色响应由5个TCP报文组成，而黄色响应由4个TCP报文组成，当第2个黄色报文丢失后，即使客户端接收到完整的5个绿色报文，但TCP层不会允许应用进程的read函数读取到最后5个报文，并发成了一纸空谈：</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1657191260722.gif" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657191260722.gif" alt="" loading="lazy"></figure>
 <p>当网络繁忙时，丢包概率会很高，多路复用受到了很大限制。因此，<strong>HTTP3采用UDP作为传输层协议，重新实现了无序连接，并在此基础上通过有序的QUIC Stream提供了多路复用</strong>，如下图所示：</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1657191268463.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657191268463.jpg" alt="" loading="lazy"></figure>
 <p>最早这一实验性协议由Google推出，并命名为gQUIC，因此，IETF草案中仍然保留了QUIC概念，用来描述HTTP3协议的传输层和表示层。HTTP3协议规范由以下5个部分组成：</p>
 <blockquote>
 <ul>
@@ -233,10 +233,10 @@
 <hr>
 <h3 id="连接迁移功能是怎样实现的">连接迁移功能是怎样实现的？</h3>
 <p>对于当下的HTTP1和HTTP2协议，传输请求前需要先完成耗时1个RTT的TCP三次握手、耗时1个RTT的TLS握手（TLS1.3），<strong>由于它们分属内核实现的传输层、openssl库实现的表示层，所以难以合并在一起</strong>，如下图所示：</p>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1657191282402.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657191282402.jpg" alt="" loading="lazy"></figure>
 <p>在IoT时代，移动设备接入的网络会频繁变动，从而导致设备IP地址改变。<strong>对于通过四元组（源IP、源端口、目的IP、目的端口）定位连接的TCP协议来说，这意味着连接需要断开重连，所以上述2个RTT的建链时延、TCP慢启动都需要重新来过</strong>。而HTTP3的QUIC层实现了连接迁移功能，允许移动设备更换IP地址后，只要仍保有上下文信息（比如连接ID、TLS密钥等），就可以复用原连接。</p>
 <p>在UDP报文头部与HTTP消息之间，共有3层头部，定义连接且实现了Connection Migration主要是在Packet Header中完成的，如下图所示：</p>
-<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1657191289184.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657191289184.jpg" alt="" loading="lazy"></figure>
 <p>这3层Header实现的功能各不相同：</p>
 <blockquote>
 <ul>
@@ -249,29 +249,29 @@
 </ul>
 </blockquote>
 <p>其中，Long Packet Header的格式如下图所示：</p>
-<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1657191297461.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657191297461.jpg" alt="" loading="lazy"></figure>
 <p>建立连接时，连接是由服务器通过Source Connection ID字段分配的，这样，后续传输时，双方只需要固定住Destination Connection ID，就可以在客户端IP地址、端口变化后，绕过UDP四元组（与TCP四元组相同），实现连接迁移功能。下图是Short Packet Header头部的格式，这里就不再需要传输Source Connection ID字段了：</p>
-<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1657191304638.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657191304638.jpg" alt="" loading="lazy"></figure>
 <p>上图中的Packet Number是每个报文独一无二的序号，基于它可以实现丢失报文的精准重发。如果你通过抓包观察Packet Header，会发现Packet Number被TLS层加密保护了，这是为了防范各类网络攻击的一种设计。下图给出了Packet Header中被加密保护的字段：</p>
-<figure data-type="image" tabindex="10"><img src="http://localhost:4000/post-images/1657191312018.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657191312018.jpg" alt="" loading="lazy"></figure>
 <p>其中，显示为E（Encrypt）的字段表示被TLS加密过。当然，Packet Header只是描述了最基本的连接信息，其上的Stream层、HTTP消息也是被加密保护的：</p>
-<figure data-type="image" tabindex="11"><img src="http://localhost:4000/post-images/1657191318976.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657191318976.jpg" alt="" loading="lazy"></figure>
 <p>现在我们已经对HTTP3协议的格式有了基本的了解，接下来我们通过队头阻塞问题，看看Packet之上的QUIC Frame、HTTP3 Frame帧格式。</p>
 <hr>
 <h3 id="stream多路复用时的队头阻塞是怎样解决的">Stream多路复用时的队头阻塞是怎样解决的？</h3>
 <p>其实，解决队头阻塞的方案，就是允许微观上有序发出的Packet报文，在接收端无序到达后也可以应用于并发请求中。比如上文的动态图中，如果丢失的黄色报文对其后发出的绿色报文不造成影响，队头阻塞问题自然就得到了解决：</p>
-<figure data-type="image" tabindex="12"><img src="http://localhost:4000/post-images/1657191326006.gif" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657191326006.gif" alt="" loading="lazy"></figure>
 <p>在Packet Header之上的QUIC Frame Header，定义了有序字节流Stream，而且Stream之间可以实现真正的并发。HTTP3的Stream，借鉴了HTTP2中的部分概念，所以在讨论QUIC Frame Header格式之前，我们先来看看HTTP2中的Stream长成什么样子：</p>
-<figure data-type="image" tabindex="13"><img src="http://localhost:4000/post-images/1657191333124.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657191333124.jpg" alt="" loading="lazy"></figure>
 <p>每个Stream就像HTTP1中的TCP连接，它保证了承载的HEADERS frame（存放HTTP Header）、DATA frame（存放HTTP Body）是有序到达的，多个Stream之间可以并行传输。在HTTP3中，上图中的HTTP2 frame会被拆解为两层，我们先来看底层的QUIC Frame。</p>
 <p>一个Packet报文中可以存放多个QUIC Frame，当然所有Frame的长度之和不能大于PMTUD（Path Maximum Transmission Unit Discovery，这是大于1200字节的值），你可以把它与IP路由中的MTU概念对照理解：</p>
-<figure data-type="image" tabindex="14"><img src="http://localhost:4000/post-images/1657191340236.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657191340236.jpg" alt="" loading="lazy"></figure>
 <p>每一个Frame都有明确的类型：</p>
-<figure data-type="image" tabindex="15"><img src="http://localhost:4000/post-images/1657191346617.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="https://tinaxiawuhao.github.io/post-images/1657191346617.jpg" alt="" loading="lazy"></figure>
 <p>前4个字节的Frame Type字段描述的类型不同，接下来的编码也不相同，下表是各类Frame的16进制Type值：</p>
-<figure data-type="image" tabindex="16"><img src="http://localhost:4000/post-images/1657191354925.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="https://tinaxiawuhao.github.io/post-images/1657191354925.jpg" alt="" loading="lazy"></figure>
 <p>在上表中，我们只要分析0x08-0x0f这8种STREAM类型的Frame，就能弄明白Stream流的实现原理，自然也就清楚队头阻塞是怎样解决的了。Stream Frame用于传递HTTP消息，它的格式如下所示：</p>
-<figure data-type="image" tabindex="17"><img src="http://localhost:4000/post-images/1657191362406.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1657191362406.jpg" alt="" loading="lazy"></figure>
 <p>可见，Stream Frame头部的3个字段，完成了多路复用、有序字节流以及报文段层面的二进制分隔功能，包括：</p>
 <ul>
 <li>Stream ID标识了一个有序字节流。当HTTP Body非常大，需要跨越多个Packet时，只要在每个Stream Frame中含有同样的Stream ID，就可以传输任意长度的消息。多个并发传输的HTTP消息，通过不同的Stream ID加以区别；</li>
@@ -285,7 +285,7 @@
 <li>第3位Fin，表示这是Stream中最后1个Frame，与HTTP2协议Frame帧中的FIN标志位相同。</li>
 </ul>
 <p>Stream数据中并不会直接存放HTTP消息，因为HTTP3还需要实现服务器推送、权重优先级设定、流量控制等功能，所以Stream Data中首先存放了HTTP3 Frame：</p>
-<figure data-type="image" tabindex="18"><img src="http://localhost:4000/post-images/1657191370693.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="18"><img src="https://tinaxiawuhao.github.io/post-images/1657191370693.jpg" alt="" loading="lazy"></figure>
 <p>其中，Length指明了HTTP消息的长度，而Type字段（请注意，低2位有特殊用途，在QPACK章节中会详细介绍）包含了以下类型：</p>
 <ul>
 <li>0x00：DATA帧，用于传输HTTP Body包体；</li>
@@ -301,18 +301,18 @@
 <h3 id="qpack编码是如何解决队头阻塞问题的">QPACK编码是如何解决队头阻塞问题的？</h3>
 <p>最后，我们再看下HTTP Header头部的编码方式，它需要面对另一种队头阻塞问题。</p>
 <p>与HTTP2中的HPACK编码方式相似，HTTP3中的QPACK也采用了静态表、动态表及Huffman编码：</p>
-<figure data-type="image" tabindex="19"><img src="http://localhost:4000/post-images/1657191378639.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="19"><img src="https://tinaxiawuhao.github.io/post-images/1657191378639.jpg" alt="" loading="lazy"></figure>
 <p>先来看静态表的变化。在上图中，GET方法映射为数字2，这是通过客户端、服务器协议实现层的硬编码完成的。在HTTP2中，共有61个静态表项：</p>
-<figure data-type="image" tabindex="20"><img src="http://localhost:4000/post-images/1657191385740.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="20"><img src="https://tinaxiawuhao.github.io/post-images/1657191385740.jpg" alt="" loading="lazy"></figure>
 <p>而在QPACK中，则上升为98个静态表项，比如Nginx上的ngx_htt_v3_static_table数组所示：</p>
-<figure data-type="image" tabindex="21"><img src="http://localhost:4000/post-images/1657191392331.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="21"><img src="https://tinaxiawuhao.github.io/post-images/1657191392331.jpg" alt="" loading="lazy"></figure>
 <p>你也可以从<a href="https://link.zhihu.com/?target=https%3A//datatracker.ietf.org/doc/html/draft-ietf-quic-qpack-14%23appendix-A">这里</a>找到完整的HTTP3静态表。对于Huffman以及整数的编码，QPACK与HPACK并无多大不同，但动态表编解码方式差距很大。</p>
 <p>所谓动态表，就是将未包含在静态表中的Header项，在其首次出现时加入动态表，这样后续传输时仅用1个数字表示，大大提升了编码效率。因此，动态表是天然具备时序性的，如果首次出现的请求出现了丢包，后续请求解码HPACK头部时，一定会被阻塞！</p>
 <p>QPACK是如何解决队头阻塞问题的呢？事实上，QPACK将动态表的编码、解码独立在单向Stream中传输，仅当单向Stream中的动态表编码成功后，接收端才能解码双向Stream上HTTP消息里的动态表索引。</p>
 <p>我们又引入了单向Stream和双向Stream概念，不要头疼，它其实很简单。单向指只有一端可以发送消息，双向则指两端都可以发送消息。还记得上一小节的QUIC Stream Frame头部吗？其中的Stream ID别有玄机，除了标识Stream外，它的低2位还可以表达以下组合：</p>
-<figure data-type="image" tabindex="22"><img src="http://localhost:4000/post-images/1657191400338.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="22"><img src="https://tinaxiawuhao.github.io/post-images/1657191400338.jpg" alt="" loading="lazy"></figure>
 <p>因此，当Stream ID是0、4、8、12时，这就是客户端发起的双向Stream（HTTP3不支持服务器发起双向Stream），它用于传输HTTP请求与响应。单向Stream有很多用途，所以它在数据前又多出一个Stream Type字段：</p>
-<figure data-type="image" tabindex="23"><img src="http://localhost:4000/post-images/1657191471479.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="23"><img src="https://tinaxiawuhao.github.io/post-images/1657191471479.jpg" alt="" loading="lazy"></figure>
 <p>Stream Type有以下取值：</p>
 <blockquote>
 <ul>
@@ -353,7 +353,7 @@
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/HHdQUUQvV/">
+                <a href="https://tinaxiawuhao.github.io/post/HHdQUUQvV/">
                   <span class="post-title">
                     binlog、redolog、undolog&rarr;
                   </span>
@@ -363,7 +363,7 @@
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/4kG3rvwit/">
+                 <a href="https://tinaxiawuhao.github.io/post/4kG3rvwit/">
                    <span class="post-title">
                      centos7安装Docker详细步骤&rarr;
                    </span>
@@ -410,7 +410,7 @@
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -425,10 +425,10 @@
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -473,11 +473,11 @@
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -498,7 +498,7 @@
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

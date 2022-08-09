@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Sentinel限流熔断降级——知识点总结 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="Sentinel限流熔断降级——知识点总结" />
-  <meta property="og:url" content="http://localhost:4000/post/XPUt_T_-A/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/XPUt_T_-A/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/PvdavFGm6/" class="tag">springCloud</a>
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
                 
               </span>
               <h1>Sentinel限流熔断降级——知识点总结</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/XPUt_T_-A.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/XPUt_T_-A.png" alt="封面图">
           </img>
           
           <blockquote>
@@ -179,7 +179,7 @@
 <h3 id="一-sentinel是什么为什么要引入sentinel">一 Sentinel是什么,为什么要引入Sentinel</h3>
 <h4 id="1-什么是服务雪崩">1 什么是“服务雪崩”？</h4>
 <p>在微服务架构中，存在着大量的服务间调用，有时候，由于某个服务发生了故障，而<strong>导致调用它的服务的资源得不到正常释放</strong>，从而也发生故障，故障不断传播，最终导致整个微服务无法对外提供服务，这就发生了“服务雪崩”！</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1658666676257.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658666676257.png" alt="" loading="lazy"></figure>
 <h4 id="2-服务雪崩如何解决">2 “服务雪崩”如何解决？</h4>
 <p>解决“服务雪崩”的核心点有2个：尽量控制流量，不要让服务因为过载还出现故障；当一个服务已经出现故障时，不要让故障在微服务整个调用链路中进行传播！</p>
 <p>针对上面两点，“服务雪崩”就有了常见的2大类解决方案：</p>
@@ -205,7 +205,7 @@
 </ul>
 <p>而上面所说的这一系列解决方案，Sentinel都为我们提供了实现，所以我们选择Sentinel！</p>
 <h4 id="3-阿里的sentinel和网飞的hystrix的对比">3 阿里的Sentinel和网飞的Hystrix的对比？</h4>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1658666694073.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658666694073.png" alt="" loading="lazy"></figure>
 <blockquote>
 <p>其实很明显，Sentinel比Hystrix强大很多，而且Hystrix已经进入维护期不再更新了，以后的微服务项目中肯定是选择Sentinel！</p>
 </blockquote>
@@ -293,7 +293,7 @@ feign:
 <li>
 <p><strong>原始模式</strong>：如果我们简单使用Dashboard，不做任何修改，就是采用的这种模式：</p>
 <p>​    客户端在启动时，会同时启动一个ServerSocket，默认端口为：8719（如果被占用，尝试3次后+1，继续尝试），告诉Dashboard，当Dashboard中的配置有变化时，通过API接口告诉我们的服务中的Sentinel客户端，Sentinel将这些配置存到内存中，服务重启即丢失，<strong>该模式只能用于简单测试，一定不能用于生产环境！</strong></p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1658666719119.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658666719119.png" alt="" loading="lazy"></figure>
 <p>可从Env类一路向下研究，就可以知道逻辑：</p>
 </li>
 </ul>
@@ -308,7 +308,7 @@ feign:
 <ul>
 <li>
 <p><strong>Pull模式</strong>：Sentinel客户端（我们的应用服务）向远端的配置管理中心主动定期轮询拉取规则，更新到内存缓存，同时写入到本地磁盘文件，这样的话也可以实现持久化，但是数据一致性、实时性不太好，而且大量的轮询对服务性能又有影响！</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1658666739217.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658666739217.png" alt="" loading="lazy"></figure>
 </li>
 </ul>
 <pre><code class="language-java"> // 需要在客户端注册数据源：
@@ -348,7 +348,7 @@ feign:
 </li>
 <li>
 <p>sentinel客户端（我们的应用程序）是从配置中心获取数据。</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1658666808514.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658666808514.png" alt="" loading="lazy"></figure>
 </li>
 </ul>
 </li>
@@ -362,11 +362,11 @@ feign:
 <hr>
 <h3 id="三-sentinel-dashboard中得各种规则配置与解读">三 Sentinel Dashboard中得各种规则配置与解读</h3>
 <p>首先，当我们第一次打开Sentinel Dashboard时，我们会发现控制台空空如也，这是由于Sentinel使用的是懒加载，所以，我们需要先调用一次服务的接口，然后才可以看到“簇点链路”：</p>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1658666865289.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1658666865289.png" alt="" loading="lazy"></figure>
 <p>之后我们就可以开始愉快的配置啦！</p>
 <p>本章节，不做具体配置和调试，主要是对所有的配置进行解释，加深印象！</p>
 <h4 id="1-流控规则见名知意流量控制">1 流控规则：见名知意，流量控制</h4>
-<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1658666880890.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1658666880890.png" alt="" loading="lazy"></figure>
 <ul>
 <li>
 <p><strong>2种阈值类型</strong>：</p>
@@ -423,7 +423,7 @@ feign:
 </li>
 </ul>
 <h4 id="2-热点规则热点限流规则-特殊的流控规则">2 热点规则（热点限流规则）—— 特殊的流控规则</h4>
-<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1658666900562.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1658666900562.png" alt="" loading="lazy"></figure>
 <p>由于Sentinel默认知乎将Springmvc的注解如@RequestMapping等注册为资源，所以当我们需要定义其它资源时，需要手动使用@SentinelResource注解去定义：</p>
 <pre><code class="language-java">@SentinelResource(&quot;hot&quot;)
 public Order queryOrderById(Long orderId) {
@@ -467,15 +467,15 @@ public class UserClientFallbackFactory implements FallbackFactory&lt;UserClient&
     }
 }
 </code></pre>
-<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1658666913571.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1658666913571.png" alt="" loading="lazy"></figure>
 <p>上图的熔断降级规则解读为：</p>
 <p>当ResponseTime时间<strong>超过400ms时为慢调用，统计最近10000ms内的请求，如果请求总数超过10次，且慢调用的比例达到0.6，则触发熔断</strong>OPEN；</p>
 <p>熔断时常为5秒；</p>
 <p><strong>5秒后，进入HALF-OPEN状态，放行一次请求做测试</strong>，如果OK，则断路器重新CLOSE闭合，开始正常工作！<br>
-<img src="http://localhost:4000/post-images/1658666926145.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1658666926145.png" alt="" loading="lazy"></p>
 <p><strong>4、授权规则（对请求的来源做控制）</strong></p>
 <p>有时候，我们担心由于服务暴露，导致有些请求会越过Gateway，而直接访问我们的服务，这时候，我们就可以通过Sentinel授权只允许从Gateway过来的请求访问我们的服务。</p>
-<figure data-type="image" tabindex="10"><img src="http://localhost:4000/post-images/1658666936655.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1658666936655.png" alt="" loading="lazy"></figure>
 <p>在gateway中通过filter为经过的请求增加一个header值 origin = gateway：</p>
 <pre><code class="language-yaml">spring:
   application:
@@ -512,7 +512,7 @@ public class HeaderOriginParser implements RequestOriginParser {
 }
 </code></pre>
 <p>最后，配置一条授权规则白名单：</p>
-<figure data-type="image" tabindex="11"><img src="http://localhost:4000/post-images/1658666945938.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1658666945938.png" alt="" loading="lazy"></figure>
 <blockquote>
 <p>上图授权规则解读：只允许请求头中，origin = gateway 的请求通过！</p>
 </blockquote>
@@ -598,7 +598,7 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/Y45PUcltI/">
+                <a href="https://tinaxiawuhao.github.io/post/Y45PUcltI/">
                   <span class="post-title">
                     openfeign-ribbon核心源码剖析&rarr;
                   </span>
@@ -608,7 +608,7 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/xdN8U8BuX/">
+                 <a href="https://tinaxiawuhao.github.io/post/xdN8U8BuX/">
                    <span class="post-title">
                      Sentinel核心源码——插槽机制（责任链模式）&rarr;
                    </span>
@@ -655,7 +655,7 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -670,10 +670,10 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -718,11 +718,11 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -743,7 +743,7 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

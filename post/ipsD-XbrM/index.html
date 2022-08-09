@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="网关断言 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="网关断言" />
-  <meta property="og:url" content="http://localhost:4000/post/ipsD-XbrM/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/ipsD-XbrM/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/PvdavFGm6/" class="tag">springCloud</a>
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
                 
               </span>
               <h1>网关断言</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/ipsD-XbrM.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/ipsD-XbrM.png" alt="封面图">
           </img>
           
           <h2 id="网关断言">网关断言</h2>
@@ -241,7 +241,7 @@
 <h3 id="演示内置断言">演示内置断言</h3>
 <p>在演示的示例中，我们基于Path请求路径的断言判断请求路径是否符合规则，基于远程地址的断言判断请求主机地址是否在地址段中，并且限制请求的方式为GET方式。整个演示的过程以访问用户微服务的接口为例。</p>
 <p>（1）由于在开发项目时，所有的服务都是在我本地启动的，首先查看下我本机的IP地址，如下所示。</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1658668997017.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658668997017.png" alt="" loading="lazy"></figure>
 <p>可以看到，我本机的IP地址为192.168.0.27，属于192.168.0.1/24网段。</p>
 <p>（2）在服务网关模块shop-gateway中，将application.yml文件备份成application-sentinel.yml文件，并将application.yml文件中的内容修改成application-simple.yml文件中的内容。接下来，在application.yml文件中的<code>spring.cloud.gateway.routes</code>节点下的<code>- id: user-gateway</code>下面进行断言配置，配置后的结果如下所示。</p>
 <pre><code class="language-java">spring:
@@ -260,18 +260,18 @@
 </code></pre>
 <p><strong>注意：完整的配置参见案例完整源代码。</strong></p>
 <p>（3）配置完成后启动用户微服务和网关服务，通过网关服务访问用户微服务，在浏览器中输入<code>http://localhost:10001/server-user/user/get/1001</code>，如下所示。</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1658669013855.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658669013855.png" alt="" loading="lazy"></figure>
 <p>可以看到通过<code>http://localhost:10001/server-user/user/get/1001</code>链接不能正确访问到用户信息。</p>
 <p>接下来，在浏览器中输入<code>http://192.168.0.27:10001/server-user/user/get/1001</code>，能够正确获取到用户的信息。</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1658669028281.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658669028281.png" alt="" loading="lazy"></figure>
 <p>（4）停止网关微服务，将基于远程地址的断言配置成<code>- RemoteAddr=192.168.1.1/24</code>，也就是将基于远程地址的断言配置成与我本机IP地址不在同一个网段，这样就能演示请求主机地址不在地址段中的情况，修改后的基于远程地址的断言配置如下所示。</p>
 <pre><code class="language-java">- RemoteAddr=192.168.1.1/24
 </code></pre>
 <p>（5）重启网关服务，再次在浏览器中输入<code>http://localhost:10001/server-user/user/get/1001</code>，如下所示。</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1658669041992.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658669041992.png" alt="" loading="lazy"></figure>
 <p>可以看到通过<code>http://localhost:10001/server-user/user/get/1001</code>链接不能正确访问到用户信息。</p>
 <p>接下来，在浏览器中输入<code>http://192.168.0.27:10001/server-user/user/get/1001</code>，也不能正确获取到用户的信息了。</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1658669056498.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658669056498.png" alt="" loading="lazy"></figure>
 <h3 id="自定义断言">自定义断言</h3>
 <p>SpringCloud Gateway支持自定义断言功能，我们可以在具体业务中，基于SpringCloud Gateway自定义特定的断言功能。</p>
 <h4 id="自定义断言概述">自定义断言概述</h4>
@@ -349,10 +349,10 @@ public class NameRoutePredicateFactory extends AbstractRoutePredicateFactory&lt;
             - StripPrefix=1
 </code></pre>
 <p>（4）分别启动用户微服务与网关服务，在浏览器中输入<code>http://localhost:10001/server-user/user/get/1001</code>，如下所示。</p>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1658669075580.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1658669075580.png" alt="" loading="lazy"></figure>
 <p>可以看到，在浏览器中输入<code>http://localhost:10001/server-user/user/get/1001</code>，无法获取到用户信息。</p>
 <p>（5）在浏览器中输入<code>http://localhost:10001/server-user/user/get/1001?name=binghe</code>，如下所示。</p>
-<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1658669099356.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1658669099356.png" alt="" loading="lazy"></figure>
 <p>可以看到，在访问链接后添加<code>?name=binghe</code>参数后，能够正确获取到用户信息。</p>
 <p>至此，我们实现了自定义断言功能。</p>
 <h2 id="网关过滤器">网关过滤器</h2>
@@ -367,7 +367,7 @@ public class NameRoutePredicateFactory extends AbstractRoutePredicateFactory&lt;
 <p>局部过滤器又称为网关过滤器，这种过滤器主要是作用于单一路由或者某个路由分组。</p>
 <h4 id="局部过滤器概述">局部过滤器概述</h4>
 <p>在SpringCloud Gateway中内置了很多不同类型的局部过滤器，主要如下所示。</p>
-<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1658669111264.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1658669111264.png" alt="" loading="lazy"></figure>
 <h4 id="演示内部过滤器">演示内部过滤器</h4>
 <p>演示内部过滤器时，我们为原始请求添加一个名称为IP的Header，值为localhost，并添加一个名称为name的参数，参数值为binghe。同时修改响应的结果状态，将结果状态修改为1001。</p>
 <p>（1）在服务网关的application.yml文件中的<code>spring.cloud.gateway.routes</code>节点下的<code>- id: user-gateway</code>下面进行如下配置。</p>
@@ -398,9 +398,9 @@ public String apiFilter1(HttpServletRequest request, HttpServletResponse respons
 </code></pre>
 <p>可以看到，在新增加的apiFilter1()方法中，获取到新增加的Header与参数，并将获取出来的参数与Header打印出来。并且方法返回的是字符串apiFilter1。</p>
 <p>（3）分别启动用户微服务与网关服务，在浏览器中输入<code>http://localhost:10001/server-user/user/api/filter1</code>，如下所示。</p>
-<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1658669123448.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1658669123448.png" alt="" loading="lazy"></figure>
 <p>此时，查看浏览器中的响应状态码，如下所示。</p>
-<figure data-type="image" tabindex="10"><img src="http://localhost:4000/post-images/1658669132840.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1658669132840.png" alt="" loading="lazy"></figure>
 <p>可以看到，此时的状态码已经被修改为1001。</p>
 <p>接下来，查看下用户微服务的控制台输出的信息，发现在输出的信息中存在如下数据。</p>
 <pre><code class="language-java">访问了apiFilter1接口
@@ -466,7 +466,7 @@ public class GrayscaleGatewayFilterFactory extends AbstractGatewayFilterFactory&
 }
 </code></pre>
 <p>（4）分别启动用户微服务和服务网关，在浏览器中输入<code>http://localhost:10001/server-user/user/get/1001</code>，如下所示。</p>
-<figure data-type="image" tabindex="11"><img src="http://localhost:4000/post-images/1658669147257.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1658669147257.png" alt="" loading="lazy"></figure>
 <p>可以看到，通过服务网关正确访问到了用户微服务，并正确获取到了用户信息。</p>
 <p>接下来，查看下服务网关的终端，发现已经成功输出了如下信息。</p>
 <pre><code class="language-java">开启了灰度发布功能...
@@ -476,7 +476,7 @@ public class GrayscaleGatewayFilterFactory extends AbstractGatewayFilterFactory&
 <p>全局过滤器是一系列特殊的过滤器，会根据条件应用到所有路由中。</p>
 <h4 id="全局过滤器概述">全局过滤器概述</h4>
 <p>在SpringCloud Gateway中内置了多种不同的全局过滤器，如下所示。</p>
-<figure data-type="image" tabindex="12"><img src="http://localhost:4000/post-images/1658669168091.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1658669168091.png" alt="" loading="lazy"></figure>
 <h4 id="演示全局过滤器">演示全局过滤器</h4>
 <p>（1）在服务网关模块shop-gateway模块下的<code>io.binghe.shop.config</code>包下新建GatewayFilterConfig类，并在类中配置几个全局过滤器，如下所示。</p>
 <pre><code class="language-java">/**
@@ -501,7 +501,7 @@ public class GatewayFilterConfig {
 </code></pre>
 <p><strong>注意：@Order注解中的数字越小，执行的优先级越高。</strong></p>
 <p>（2）启动用户微服务与服务网关，在浏览器中访问<code>http://localhost:10001/server-user/user/get/1001</code>，如下所示。</p>
-<figure data-type="image" tabindex="13"><img src="http://localhost:4000/post-images/1658669177407.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1658669177407.png" alt="" loading="lazy"></figure>
 <p>在服务网关终端输出如下信息。</p>
 <pre><code class="language-java">执行前置过滤器逻辑
 执行后置过滤器逻辑
@@ -548,7 +548,7 @@ public class GlobalGatewayLogFilter implements GlobalFilter, Ordered {
 </code></pre>
 <p>上述代码的实现逻辑还是比较简单的，这里就不再赘述了。</p>
 <p>（2）启动用户微服务与网关服务，在浏览器中输入<code>http://localhost:10001/server-user/user/api/filter1?name=binghe</code>，如下所示。</p>
-<figure data-type="image" tabindex="14"><img src="http://localhost:4000/post-images/1658669189664.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1658669189664.png" alt="" loading="lazy"></figure>
 <p>接下来，查看服务网关的终端日志，可以发现已经输出了如下信息。</p>
 <pre><code class="language-java">访问接口主机: localhost
 访问接口端口: 10001
@@ -622,7 +622,7 @@ public class GlobalGatewayLogFilter implements GlobalFilter, Ordered {
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/PN2nvPeue/">
+                <a href="https://tinaxiawuhao.github.io/post/PN2nvPeue/">
                   <span class="post-title">
                     gateway项目整合网关&rarr;
                   </span>
@@ -632,7 +632,7 @@ public class GlobalGatewayLogFilter implements GlobalFilter, Ordered {
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/Lq63Gr95h/">
+                 <a href="https://tinaxiawuhao.github.io/post/Lq63Gr95h/">
                    <span class="post-title">
                      分布式链路追踪&rarr;
                    </span>
@@ -679,7 +679,7 @@ public class GlobalGatewayLogFilter implements GlobalFilter, Ordered {
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -694,10 +694,10 @@ public class GlobalGatewayLogFilter implements GlobalFilter, Ordered {
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -742,11 +742,11 @@ public class GlobalGatewayLogFilter implements GlobalFilter, Ordered {
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -767,7 +767,7 @@ public class GlobalGatewayLogFilter implements GlobalFilter, Ordered {
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

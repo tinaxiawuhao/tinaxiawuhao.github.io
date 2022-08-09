@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Java内存结构JVM | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="Java内存结构JVM" />
-  <meta property="og:url" content="http://localhost:4000/post/nxmi3zjCk/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/nxmi3zjCk/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/gvtXj5hZZ/" class="tag">java</a>
+                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
                 
               </span>
               <h1>Java内存结构JVM</h1>
@@ -168,12 +168,12 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/nxmi3zjCk.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/nxmi3zjCk.png" alt="封面图">
           </img>
           
           <h2 id="jvm内存模型">JVM内存模型</h2>
 <p><code>内存空间(Runtime Data Area)</code>中可以按照是否线程共享分为两块，线程共享的是<code>方法区(Method Area)</code>和<code>堆(Heap)</code>，线程独享的是<code>Java虚拟机栈(Java Stack)</code>，<code>本地方法栈(Native Method Stack)</code>和<code>PC寄存器(Program Counter Register)</code>。具体参见下图：</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1619319113675.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1619319113675.png" alt="" loading="lazy"></figure>
 <h3 id="虚拟机栈">虚拟机栈：</h3>
 <p>每个线程有一个私有的栈，随着线程的创建而创建。栈里面存放着一种叫做“栈帧”的东西，每个方法会创建一个栈帧，栈帧中存放了局部变量表(基本数据类型和对象引用)、操作数栈、方法出口等信息。栈的大小可以固定也可以动态扩展。当栈调用深度大于<code>JVM</code>所允许的范围，会抛出<code>StackOverflowError</code>的错误，不过这个深度范围不是一个恒定的值，我们通过下面这段程序可以测试一下这个结果：</p>
 <pre><code class="language-java">// 栈溢出测试源码
@@ -202,9 +202,9 @@ public class StackErrorMock {
 }
 </code></pre>
 <p>运行三次，可以看出每次栈的深度都是不一样的，输出结果如下：<br>
-<img src="http://localhost:4000/post-images/1619327479989.png" alt="" loading="lazy"><br>
-<img src="http://localhost:4000/post-images/1619327486623.png" alt="" loading="lazy"><br>
-<img src="http://localhost:4000/post-images/1619319135044.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1619327479989.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619327486623.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1619319135044.png" alt="" loading="lazy"></p>
 <p>查看三张结果图，可以看出每次的Stack deep值都有所不同。究其原因，就需要深入到<code>JVM</code>的源码中才能探讨，这里不作赘述。</p>
 <p>虚拟机栈除了上述错误外，还有另一种错误，那就是当申请不到空间时，会抛出<code>OutOfMemoryError</code>。这里有一个小细节需要注意，catch捕获的是Throwable，而不是Exception，这是因为<code>StackOverflowError</code>和<code>OutOfMemoryError</code>都不属于Exception的子类。</p>
 <h3 id="本地方法栈">本地方法栈：</h3>
@@ -240,9 +240,9 @@ public class HeapOomMock {
 }
 </code></pre>
 <p>首先配置运行时虚拟机的启动参数：<br>
-<img src="http://localhost:4000/post-images/1619319145433.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1619319145433.png" alt="" loading="lazy"></p>
 <p>然后运行代码，输出结果如下：</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1619319151622.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1619319151622.png" alt="" loading="lazy"></figure>
 <p>注意，这里我们指定了堆内存的大小为16M，所以这个地方显示的Count=13(这个数字不是固定的)，至于为什么会是13或其他数字，需要根据GC日志来判断。</p>
 <h3 id="方法区">方法区：</h3>
 <p>方法区也是所有线程共享的。主要用于存储类的信息、常量池、方法数据、方法代码等。方法区逻辑上属于堆的一部分，但是为了与堆进行区分，通常又叫“非堆”。关于方法区的内存溢出问题会在下文中详细讨论。</p>
@@ -279,7 +279,7 @@ public class PermGenOomMock {
 public class Test {}
 </code></pre>
 <p>运行结果如下：</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1619319159980.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1619319159980.png" alt="" loading="lazy"></figure>
 <p>本例中使用的<code>JDK</code>版本是1.7，指定的<code>PermGen</code>区的大小为<code>8M</code>。通过每次生成不同<code>URLClassLoader</code>对象加载Test类，从而生成不同的类对象，这样就能看到我们熟悉的<code>“java.lang.OutOfMemoryError: PermGen space”</code>异常了。这里之所以采用<code>JDK 1.7</code>，是因为在<code>JDK 1.8</code>中，<code>HotSpot</code>已经没有<code>“PermGen space”</code>这个区间了，取而代之是一个叫做<code>Metaspace(元空间)</code>的东西。下面我们就来看看<code>Metaspace</code>与<code>PermGen space</code>的区别。</p>
 <h3 id="metaspace元空间">Metaspace(元空间)</h3>
 <p>其实，移除永久代的工作从<code>JDK 1.7</code>就开始了。<code>JDK 1.7</code>中，存储在永久代的部分数据就已经转移到<code>Java Heap</code>或者<code>Native Heap</code>。但永久代仍存在于<code>JDK 1.7</code>中，并没有完全移除，譬如符号引用(Symbols)转移到了native heap；字面量(interned strings)转移到了Java heap；类的静态变量(class statics)转移到了Java heap。我们可以通过一段程序来比较<code>JDK 1.6</code>、<code>JDK 1.7</code>与<code>JDK 1.8</code>的区别，以字符串常量为例：</p>
@@ -302,11 +302,11 @@ public class StringOomMock {
 </code></pre>
 <p>这段程序以2的指数级不断的生成新的字符串，这样可以比较快速的消耗内存。我们通过<code>JDK 1.6</code>、<code>JDK 1.7</code>和<code>JDK 1.8</code>分别运行：</p>
 <p><code>JDK 1.6</code>的运行结果：</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1619319168920.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1619319168920.png" alt="" loading="lazy"></figure>
 <p><code>JDK 1.7</code>的运行结果：</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1619319175662.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1619319175662.png" alt="" loading="lazy"></figure>
 <p><code>JDK 1.8</code>的运行结果：</p>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1619319183606.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1619319183606.png" alt="" loading="lazy"></figure>
 <p>从上述结果可以看出，<code>JDK 1.6</code>下，会出现<code>“PermGen space”</code>的内存溢出，而在<code>JDK 1.7</code>和<code>JDK 1.8</code>中，会出现堆内存溢出，并且<code>JDK 1.8</code>中参数<code>PermSize</code>和<code>MaxPermSize</code>已经失效。因此，可以大致验证<code>JDK 1.7</code>和<code>JDK 1.8</code>中将字符串常量由永久代转移到堆中，并且<code>JDK 1.8</code>中已经不存在永久代的结论。现在我们来看一看元空间到底是一个什么东西？</p>
 <p><code>JDK1.8</code>对<code>JVM</code>架构的改造将类元数据放到本地内存中，另外，将常量池和静态变量放到Java堆里。<code>HotSpot VM</code>将会为类的元数据明确分配和释放本地内存。在这种架构下，类元信息就突破了原来<code>-XX:MaxPermSize</code>的限制，现在可以使用更多的本地内存。这样就从一定程度上解决了原来在运行时生成大量类造成经常<code>Full GC</code>问题，如运行时使用反射、代理等。所以升级以后Java堆空间可能会增加。</p>
 <p>元空间的本质和永久代类似，都是对<code>JVM</code>规范中方法区的实现。不过元空间与永久代之间的最大区别在于：元空间并不在虚拟机中，而是使用本地内存。因此，默认情况下，元空间的大小仅受本地内存限制，但可以通过以下参数指定元空间的大小：</p>
@@ -316,7 +316,7 @@ public class StringOomMock {
 <p><code>-XX:MinMetaspaceFreeRatio</code>，在<code>GC</code>之后，最小的<code>Metaspace</code>剩余空间容量的百分比，减少为分配空间所导致的垃圾收集。</p>
 <p><code>-XX:MaxMetaspaceFreeRatio</code>，在<code>GC</code>之后，最大的<code>Metaspace</code>剩余空间容量的百分比，减少为释放空间所导致的垃圾收集。</p>
 <p>现在我们在<code>JDK 1.8</code>重新运行一下上面第二部分<code>(PermGen(永久代))</code>的代码，不过这次不再指定<code>PermSize</code>和<code>MaxPermSize</code>。而是制定<code>MetaspaceSize</code>和<code>MaxMetaspaceSize</code>的大小。输出结果如下：</p>
-<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1619319190434.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1619319190434.png" alt="" loading="lazy"></figure>
 <p>从输出结果，我们可以看出，这次不再出现永久代溢出，而是出现元空间的溢出。</p>
 <p><strong>四、总结</strong></p>
 <p>通过上面的分析，大家应该大致了解了<code>JVM</code>的内存划分，也清楚了<code>JDK 1.8</code>中永久代向元空间的转换。不过大家应该有一个疑问，就是为什么要做这个转换？以下为大家总结几点原因：</p>
@@ -358,7 +358,7 @@ public class StringOomMock {
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/jVTlR3ljT/">
+                <a href="https://tinaxiawuhao.github.io/post/jVTlR3ljT/">
                   <span class="post-title">
                      漫画：什么是B+树？&rarr;
                   </span>
@@ -368,7 +368,7 @@ public class StringOomMock {
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/8iu5aa5DN/">
+                 <a href="https://tinaxiawuhao.github.io/post/8iu5aa5DN/">
                    <span class="post-title">
                       JVM 的核心知识梳理&rarr;
                    </span>
@@ -415,7 +415,7 @@ public class StringOomMock {
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -430,10 +430,10 @@ public class StringOomMock {
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -478,11 +478,11 @@ public class StringOomMock {
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -503,7 +503,7 @@ public class StringOomMock {
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

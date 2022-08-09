@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="第九章 状态编程和容错机制 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="第九章 状态编程和容错机制" />
-  <meta property="og:url" content="http://localhost:4000/post/rxadb61B8/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/rxadb61B8/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/1WJzfk7Hi/" class="tag">flink</a>
+                <a href="https://tinaxiawuhao.github.io/tag/1WJzfk7Hi/" class="tag">flink</a>
                 
               </span>
               <h1>第九章 状态编程和容错机制</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/rxadb61B8.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/rxadb61B8.png" alt="封面图">
           </img>
           
           <p style="text-indent:2em">流式计算分为无状态和有状态两种情况。 无状态的计算观察每个独立事件， 并根据最后一个事件输出结果。 例如， 流处理应用程序从传感器接收温度读数， 并在
@@ -184,7 +184,7 @@
 <p style="text-indent:2em">下图展示了无状态流处理和有状态流处理的主要区别。 无状态流处理分别接收每条数据记录(图中的黑条)， 然后根据最新输入的数据生成输出数据(白条)。 有状态
 流处理会维护状态(根据每条输入记录进行更新)， 并基于最新输入的记录和当前的
 状态值生成输出记录(灰条)。</p>
-<p><img src="http://localhost:4000/post-images/1618478116508.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618478116508.png" alt="" loading="lazy"><br>
 图 无状态和有状态的流处理</p>
 <p style="text-indent:2em">上图中输入数据由黑条表示。 无状态流处理每次只转换一条输入记录， 并且仅根据最新的输入记录输出结果(白条)。 有状态 流处理维护所有已处理记录的状态
 值， 并根据每条新输入的记录更新状态， 因此输出记录(灰条)反映的是综合考虑多
@@ -201,7 +201,7 @@
 <h3 id="算子状态operator-state">算子状态（operator state）</h3>
 <p style="text-indent:2em">算子状态的作用范围限定为算子任务。 这意味着由同一并行任务所处理的所有数据都可以访问到相同的状态， 状态对于同一任务而言是共享的。 算子状态不能由
 相同或不同算子的另一个任务访问。</p>
-<p><img src="http://localhost:4000/post-images/1618478177511.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618478177511.png" alt="" loading="lazy"><br>
 图 具有算子状态的任务<br>
 Flink 为算子状态提供三种基本数据结构：</p>
 <ol>
@@ -218,7 +218,7 @@ Flink 为算子状态提供三种基本数据结构：</p>
 <p style="text-indent:2em">键控状态是根据输入数据流中定义的键（key） 来维护和访问的。 Flink 为每个键值维护一个状态实例， 并将具有相同键的所有数据， 都分区到同一个算子任务中， 这个任务会维护和处理这个 key 对应的状态。 当任务处理一条数据时， 它会自动将状态的访问范围限定为当
 前数据的 key。 因此， 具有相同 key 的所有数据都会访问相同的状态。 Keyed State 很类似于
 一个分布式的 key-value map 数据结构， 只能用于 KeyedStream（ keyBy 算子处理之后） 。</p>
-<p><img src="http://localhost:4000/post-images/1618478247650.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618478247650.png" alt="" loading="lazy"><br>
 图 具有键控状态的任务<br>
 Flink 的 Keyed State 支持以下数据类型：</p>
 <ol>
@@ -332,7 +332,7 @@ Flink 的一个重大价值在于， 它既保证了 exactly-once， 也具有�
 <p style="text-indent:2em">对于事务性写入， 具体又有两种实现方式： 预写日志（ WAL） 和两阶段提交（ 2PC） 。 DataStream API 提供了 GenericWriteAheadSink 模板类和
 TwoPhaseCommitSinkFunction 接口， 可以方便地实现这两种方式的事务性写入。
 不同 Source 和 Sink 的一致性保证可以用下表说明：</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1618538597897.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1618538597897.png" alt="" loading="lazy"></figure>
 <h2 id="检查点checkpoint">检查点（checkpoint）</h2>
 <p style="text-indent:2em">Flink 具体如何保证 exactly-once 呢? 它使用一种被称为"检查点"（ checkpoint）的特性， 在出现故障时将系统重置回正确状态。 下面通过简单的类比来解释检查点
 的作用。</p>
@@ -340,7 +340,7 @@ TwoPhaseCommitSinkFunction 接口， 可以方便地实现这两种方式的事�
 分神忘记数到哪里时， 怎么办呢? 如果项链上有很多珠子， 你显然不想从头再数一
 遍， 尤其是当三人的速度不一样却又试图合作的时候， 更是如此(比如想记录前一分
 钟三人一共数了多少颗珠子， 回想一下一分钟滚动窗口)。</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1618538624575.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1618538624575.png" alt="" loading="lazy"></figure>
 <p style="text-indent:2em">于是， 你想了一个更好的办法: 在项链上每隔一段就松松地系上一根有色皮筋，
 将珠子分隔开; 当珠子被拨动的时候， 皮筋也可以被拨动; 然后， 你安排一个助手，
 让他在你和朋友拨到皮筋时记录总数。 用这种方法， 当有人数错时， 就不必从头开
@@ -370,7 +370,7 @@ map 算子(mapWithState)。 map 算子在接收到每个元素后， 将输入�
 为 0(计数还未开始)。 所有 key 为 a 的记录将被顶层的 map 算子处理， 所有 key 为 b
 的记录将被中间层的 map 算子处理， 所有 key 为 c 的记录则将被底层的 map 算子处
 理。</p>
-<p><img src="http://localhost:4000/post-images/1618538699318.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618538699318.png" alt="" loading="lazy"><br>
 图 按 key 累加计数程序初始状态</p>
 <p style="text-indent:2em">上图是程序的初始状态。 注意， a、 b、 c 三组的初始计数状态都是 0， 即三个圆柱上的值。 ckpt 表示检查点分割线（ checkpoint barriers） 。 每条记录在处理顺序上严格地遵守在检查点之前或之后的规定， 例如["b",2]在检查点之前被处理， ["a",2]
 则在检查点之后被处理。</p>
@@ -379,11 +379,11 @@ map 算子(mapWithState)。 map 算子在接收到每个元素后， 将输入�
 遇到检查点屏障时， 它将其在输入流中的位置保存到持久化存储中。 如果输入流来
 自消息传输系统(Kafka)， 这个位置就是偏移量。 Flink 的存储机制是插件化的， 持久
 化存储可以是分布式文件系统， 如 HDFS。 下图展示了这个过程。</p>
-<p><img src="http://localhost:4000/post-images/1618538715815.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618538715815.png" alt="" loading="lazy"><br>
 图 遇到 checkpoint barrier 时， 保存其在输入流中的位置</p>
 <p style="text-indent:2em">当 Flink 数据源(在本例中与 keyBy 算子内联)遇到检查点分界线（ barrier） 时，它会将其在输入流中的位置保存到持久化存储中。 这让 Flink 可以根据该位置重启。检查点像普通数据记录一样在算子之间流动。 当 map 算子处理完前 3 条数据并
 收到检查点分界线时， 它们会将状态以异步的方式写入持久化存储， 如下图所示。</p>
-<p><img src="http://localhost:4000/post-images/1618538731125.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618538731125.png" alt="" loading="lazy"><br>
 图 保存 map 算子状态， 也就是当前各个 key 的计数值</p>
 <p style="text-indent:2em">位于检查点之前的所有记录(["b",2]、 ["b",3]和["c",1])被 map 算子处理之后的情况。 此时， 持久化存储已经备份了检查点分界线在输入流中的位置(备份操作发生在barrier 被输入算子处理的时候)。 map 算子接着开始处理检查点分界线， 并触发将状
 态异步备份到稳定存储中这个动作。</p>
@@ -393,7 +393,7 @@ map 算子(mapWithState)。 map 算子在接收到每个元素后， 将输入�
 而保证 exactly-once。 值得注意的是， 当没有出现故障时， Flink 检查点的开销极小，
 检查点操作的速度由持久化存储的可用带宽决定。 回顾数珠子的例子: 除了因为数
 错而需要用到皮筋之外， 皮筋会被很快地拨过。</p>
-<p><img src="http://localhost:4000/post-images/1618538743728.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618538743728.png" alt="" loading="lazy"><br>
 图 检查点操作完成， 继续处理数据</p>
 <p style="text-indent:2em">检查点操作完成， 状态和位置均已备份到稳定存储中。 输入流中的所有数据记录都已处理完成。 值得注意的是， 备份的状态值与实际的状态值是不同的。 备份反
 映的是检查点的状态。</p>
@@ -401,11 +401,11 @@ map 算子(mapWithState)。 map 算子在接收到每个元素后， 将输入�
 只有在一系列连续的检查点操作失败之后， Flink 才会抛出错误， 因为这通常预示着
 发生了严重且持久的错误。</p>
 <p>现在来看看下图所示的情况: 检查点操作已经完成， 但故障紧随其后。<br>
-<img src="http://localhost:4000/post-images/1618538750996.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1618538750996.png" alt="" loading="lazy"><br>
 图 故障紧跟检查点， 导致最底部的实例丢失</p>
 <p style="text-indent:2em">在这种情况下， Flink 会重新拓扑(可能会获取新的执行资源)， 将输入流倒回到上一个检查点， 然后恢复状态值并从该处开始继续计算。 在本例中， ["a",2]、 ["a",2]和["c",2]这几条记录将被重播。</p>
 <p style="text-indent:2em">下图展示了这一重新处理过程。 从上一个检查点开始重新计算， 可以保证在剩下的记录被处理之后， 得到的 map 算子的状态值与没有发生故障时的状态值一致。</p>
-<p><img src="http://localhost:4000/post-images/1618538757680.png" alt="" loading="lazy"><br>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1618538757680.png" alt="" loading="lazy"><br>
 图 故障时的状态恢复</p>
 <p style="text-indent:2em">Flink 将输入流倒回到上一个检查点屏障的位置， 同时恢复 map 算子的状态值。然后， Flink 从此处开始重新处理。 这样做保证了在记录被处理之后， map 算子的状
 态值与没有发生故障时的一致。</p>
@@ -510,7 +510,7 @@ TimeUnit.SECONDS)))
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/cctea1w9G/">
+                <a href="https://tinaxiawuhao.github.io/post/cctea1w9G/">
                   <span class="post-title">
                     第八章 ProcessFunction API（底层 API）&rarr;
                   </span>
@@ -520,7 +520,7 @@ TimeUnit.SECONDS)))
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/tloS_nSAM/">
+                 <a href="https://tinaxiawuhao.github.io/post/tloS_nSAM/">
                    <span class="post-title">
                      第十章 Table API 与 SQL&rarr;
                    </span>
@@ -567,7 +567,7 @@ TimeUnit.SECONDS)))
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -582,10 +582,10 @@ TimeUnit.SECONDS)))
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -630,11 +630,11 @@ TimeUnit.SECONDS)))
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -655,7 +655,7 @@ TimeUnit.SECONDS)))
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

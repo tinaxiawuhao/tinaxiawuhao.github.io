@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="RocketMQ | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="RocketMQ" />
-  <meta property="og:url" content="http://localhost:4000/post/BvbuvYGnx/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/BvbuvYGnx/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/3MF0KR5FN/" class="tag">MQ</a>
+                <a href="https://tinaxiawuhao.github.io/tag/3MF0KR5FN/" class="tag">MQ</a>
                 
               </span>
               <h1>RocketMQ</h1>
@@ -168,13 +168,13 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/BvbuvYGnx.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/BvbuvYGnx.png" alt="封面图">
           </img>
           
           <h3 id="可用性评估">可用性评估</h3>
 <p>系统可用性(Availability)是信息工业界用来衡量一个信息系统提供持续服务的能力，它表示的是在给定时间区间内系统或者系统某一能力在特定环境中能够正常工作的概率。</p>
 <p>简单地说， 可用性是平均故障间隔时间(MTBF)除以平均故障间隔时间(MTBF)和平均故障修复时间(MTTR)之和所得的结果， 即：</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1657627908926.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657627908926.png" alt="" loading="lazy"></figure>
 <p>通常业界习惯用N个9来表征系统可用性，表示系统可以正常使用时间与总时间(1年)之比，比如：</p>
 <ul>
 <li>99.9%代表3个9的可用性，意味着全年不可用时间在8.76小时以内，表示该系统在连续运行1年时间里最多可能的业务中断时间是8.76小时；</li>
@@ -199,7 +199,7 @@
 </ul>
 <h4 id="技术架构">技术架构</h4>
 <p>RocketMQ架构上主要分为四部分，如图所示:</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1657627944749.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1657627944749.png" alt="" loading="lazy"></figure>
 <ul>
 <li>Producer：消息发布的角色，支持分布式集群方式部署。Producer通过MQ的负载均衡模块选择相应的Broker集群队列进行消息投递，投递的过程支持快速失败并且低延迟。</li>
 <li>Consumer：消息消费的角色，支持分布式集群方式部署。支持以push推，pull拉两种模式对消息进行消费。同时也支持集群方式和广播方式的消费，它提供实时消息订阅机制，可以满足大多数用户的需求。</li>
@@ -243,7 +243,7 @@
 </ul>
 <p>基础的rocket高可用，主要采用第3种部署方式</p>
 <p>下图是第3种部署方式的简单图：</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1657627968609.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657627968609.png" alt="" loading="lazy"></figure>
 <p>第3种部署方式网络部署特点</p>
 <ul>
 <li>NameServer是一个几乎无状态节点，可集群部署，节点之间无任何信息同步。</li>
@@ -304,7 +304,7 @@
 </ul>
 <p>采用第3种部署方式时，Master和Slave可以采用同步复制和异步复制两种方式。</p>
 <p>下图是第3种部署方式的简单图：</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1657628006696.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657628006696.png" alt="" loading="lazy"></figure>
 <p>当采用多Master方式时，Master与Master之间是不需要知道彼此的，这样的设计直接降低了Broker实现的复杂性。</p>
 <p>你可以试想，如果Master与Master之间需要知道彼此的存在，这会需要在Master之中维护一个网络的Master列表，而且必然设计到Master发现和活跃Master数量变更等诸多状态更新问题，所以最简单也最可靠的做法就是Master只做好自己的事情（比如和Slave进行数据同步）即可。</p>
 <blockquote>
@@ -324,7 +324,7 @@
 <li>路由信息管理，每个NameServer将保存关于Broker集群的整个路由信息和用于客户端查询的队列信息。然后Producer和Conumser通过NameServer就可以知道整个Broker集群的路由信息，从而进行消息的投递和消费</li>
 </ul>
 <p>整个Rocketmq集群的工作原理如下图所示：</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1657628018847.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1657628018847.png" alt="" loading="lazy"></figure>
 <p>可以看到，Broker集群、Producer集群、Consumer集群都需要与NameServer集群进行通信：</p>
 <p><strong>Broker集群:</strong></p>
 <p>Broker用于接收生产者发送消息，或者消费者消费消息的请求。一个Broker集群由多组Master/Slave组成，Master可写可读，Slave只可以读，Master将写入的数据同步给Slave。</p>
@@ -359,7 +359,7 @@
 <p>虽然配置种类比较繁多，但是使用的还是普通消息和分区顺序消息。</p>
 <p>本文的主要介绍高可用，主要介绍普通消息，其他消息的高可用策略，也是类似侧。</p>
 <h3 id="rocketmq高可用">RocketMQ高可用</h3>
-<figure data-type="image" tabindex="6"><img src="http://localhost:4000/post-images/1657628078933.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://tinaxiawuhao.github.io/post-images/1657628078933.png" alt="" loading="lazy"></figure>
 <h4 id="nameserver-高可用">NameServer 高可用</h4>
 <p>由于 NameServer 节点是无状态的，且各个节点直接的数据是一致的，故存在多个 NameServer 节点的情况下，部分 NameServer 不可用也可以保证 MQ 服务正常运行</p>
 <h4 id="brokerserver-高可用">BrokerServer 高可用</h4>
@@ -378,23 +378,23 @@
 <h4 id="producer高可用">producer高可用</h4>
 <p>在创建Topic的时候，把Topic的多个Message Queue创建在多个Broker组上（相同Broker名称，不同 brokerId的机器组成一个Broker组）.</p>
 <p>这样当一个Broker组的Master不可用后，其他组的Master仍然可用，Producer仍然可以发送消息。</p>
-<figure data-type="image" tabindex="7"><img src="http://localhost:4000/post-images/1657628094386.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://tinaxiawuhao.github.io/post-images/1657628094386.png" alt="" loading="lazy"></figure>
 <h3 id="实现分布式集群多副本的三种方式">实现分布式集群多副本的三种方式</h3>
 <h4 id="ms模式">M/S模式</h4>
 <p>即Master/Slaver模式。</p>
 <p>该模式在过去使用的最多，RocketMq之前也是使用这样的主从模式来实现的。</p>
 <p>主从模式分为同步模式和异步模式，区别是在同步模式下只有主从复制完毕才会返回给客户端；而在异步模式中，主从的复制是异步的，不用等待即可返回。</p>
-<figure data-type="image" tabindex="8"><img src="http://localhost:4000/post-images/1657628109179.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657628109179.png" alt="" loading="lazy"></figure>
 <p>同步模式</p>
 <p><strong>同步模式特点</strong></p>
-<figure data-type="image" tabindex="9"><img src="http://localhost:4000/post-images/1657628128161.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://tinaxiawuhao.github.io/post-images/1657628128161.png" alt="" loading="lazy"></figure>
 <p>异步模式</p>
 <p><strong>异步模式特点</strong></p>
 <h4 id="基于zookeeper服务">基于zookeeper服务</h4>
-<figure data-type="image" tabindex="10"><img src="http://localhost:4000/post-images/1657628139871.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://tinaxiawuhao.github.io/post-images/1657628139871.png" alt="" loading="lazy"></figure>
 <p>和M/S模式相比zookeeper模式是自动选举的主节点，新版本rocketMq暂时不支持zookeeper。</p>
 <h4 id="基于raft">基于raft</h4>
-<figure data-type="image" tabindex="11"><img src="http://localhost:4000/post-images/1657628150637.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://tinaxiawuhao.github.io/post-images/1657628150637.png" alt="" loading="lazy"></figure>
 <p>相比zookeeper，raft自身就可以实现选举，raft通过投票的方式实现自身选举leader。去除额外依赖。目前RocketMq 4.5.0已经支持</p>
 <h3 id="可用性与可靠性">可用性与可靠性</h3>
 <p><strong>可用性</strong></p>
@@ -491,7 +491,7 @@
 <p>主从同步复制能够保证消息不丢失，即使 Master 节点异常，也能保证 Slave 节点存储所有消息并被正常消费掉。</p>
 <h3 id="producer高可用-2">producer高可用</h3>
 <p>producer具备发送到全部master的能力，如果有多个master，消息会发送到所有的master</p>
-<figure data-type="image" tabindex="12"><img src="http://localhost:4000/post-images/1657628176572.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://tinaxiawuhao.github.io/post-images/1657628176572.png" alt="" loading="lazy"></figure>
 <p>另外，在topic的不同的queue之间，producer还具备负载均衡能力。</p>
 <p>在实例发送消息时，默认会轮询所有订阅了改 Topic 的 broker 节点上的 message queue，让消息平均落在不同的 queue 上，而由于这些 queue 散落在不同的 broker 节点中，即使某个 broker 节点异常，其他存在订阅了这个 Topic 的 message queue 的 broker 依然能消费消息</p>
 <h3 id="消息者业务代码出现异常怎么办">消息者业务代码出现异常怎么办？</h3>
@@ -535,13 +535,13 @@ consumer.registerMessageListener(new MessageListenerConcurrently() {
 <p>在集群消费模式下，存在多个消费者同时消费消息，同一条消息只会被某一个消费者获取。即消息只需要被投递到订阅了这个 Topic 的消费者Group下的一个实例中即可。</p>
 <p>消费者采用主动拉去的方式拉去并消费，在拉取的时候需要明确指定拉取那一条消息队列中的消息。</p>
 <p>每当有实例变更，都会触发一次所有消费者实例的负载均衡，这是会按照queue的数量和实例的数量平均分配 queue 给每个消费者实例。</p>
-<figure data-type="image" tabindex="13"><img src="http://localhost:4000/post-images/1657628194080.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://tinaxiawuhao.github.io/post-images/1657628194080.png" alt="" loading="lazy"></figure>
 <p><strong>注意：</strong></p>
 <p>1）在集群模式下，一个 queue 只允许分配给一个消费者实例，这是由于若多个实例同时消费一个 queue 的小，由于拉取操作是由 consumer 主动发生的，可能导致同一个消息在不同的 consumer 实例中被消费。故算法保证了一个 queue 只会被一个 consumer 实例消费，但一个 consumer 实例能够消费多个 queue</p>
 <p>2）控制 consumer 数量，应小于 queue 数量。这是由于一个 queue 只允许分配给一个 consumer 实例，若 consumer 实例数量多于 queue，则多出的 consumer 实例无法分配到 queue消费，会浪费系统资源</p>
 <h4 id="广播模式">广播模式</h4>
 <p>广播模式其实不是负载均衡，由于每个消费者都能够拿到所有消息，故不能达到负载均衡的要求</p>
-<figure data-type="image" tabindex="14"><img src="http://localhost:4000/post-images/1657628208176.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657628208176.png" alt="" loading="lazy"></figure>
 <h3 id="消费者的消息重试">消费者的消息重试</h3>
 <h3 id="顺序消息重试">顺序消息重试</h3>
 <p>对于顺序消息，为了保证消息消费的顺序性，当consumer消费失败后，消息队列会自动不断进行消息重试(每次间隔时间为1s)，</p>
@@ -723,10 +723,10 @@ Consumer consumer =ONSFactory.createConsumer(properties);
 </ul>
 <h3 id="查看死信信息和重发">查看死信信息和重发</h3>
 <p>在控制台查看死信队列的主题信息</p>
-<figure data-type="image" tabindex="15"><img src="http://localhost:4000/post-images/1657628232656.png" alt="" loading="lazy"></figure>
-<figure data-type="image" tabindex="16"><img src="http://localhost:4000/post-images/1657628246206.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="https://tinaxiawuhao.github.io/post-images/1657628232656.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="https://tinaxiawuhao.github.io/post-images/1657628246206.png" alt="" loading="lazy"></figure>
 <p><strong>重发消息</strong></p>
-<figure data-type="image" tabindex="17"><img src="http://localhost:4000/post-images/1657628261517.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1657628261517.png" alt="" loading="lazy"></figure>
 <h3 id="消息幂等性">消息幂等性</h3>
 <h4 id="消费幂等">消费幂等</h4>
 <p>消费幂等即无论消费者消费多少次，其结果都是一样的。</p>
@@ -794,7 +794,7 @@ Consumer consumer =ONSFactory.createConsumer(properties);
 </blockquote>
 <h4 id="11-全局顺序消息">1.1、全局顺序消息</h4>
 <p>RocketMQ 在默认情况下不保证顺序，要保证全局顺序，需要把 Topic 的读写队列数设置为 1，然后生产者和消费者的并发设置也是 1。所以这样的话 高并发，高吞吐量的功能完全用不上。<br>
-<img src="http://localhost:4000/post-images/1657628280551.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1657628280551.png" alt="" loading="lazy"></p>
 <h5 id="111-适用场景">1.1.1、适用场景</h5>
 <p>适用于性能要求不高，所有的消息严格按照 FIFO 原则来发布和消费的场景。</p>
 <h5 id="112-示例">1.1.2、示例</h5>
@@ -829,12 +829,12 @@ Consumer consumer =ONSFactory.createConsumer(properties);
 一个死信队列包含了对应 Group ID 产生的所有死信消息，不论该消息属于哪个 <strong>Topic</strong>。<br>
 消息队列 MQ 控制台提供对死信消息的查询的功能。</p>
 <p>一般控制台直接查看死信消息会报错。<br>
-<img src="http://localhost:4000/post-images/1657628298619.png" alt="" loading="lazy"></p>
+<img src="https://tinaxiawuhao.github.io/post-images/1657628298619.png" alt="" loading="lazy"></p>
 <p>进入<strong>RocketMQ</strong>中服务器对应的 <strong>RocketMQ</strong> 中的/bin 目录，执行以下脚本</p>
 <pre><code class="language-shell">sh mqadmin updateTopic -b 192.168.0.128:10911 -n 192.168.0.128:9876 -t %DLQ%group1 -p 6
 </code></pre>
-<p><img src="http://localhost:4000/post-images/1657628311169.png" alt="" loading="lazy"><br>
-<img src="http://localhost:4000/post-images/1657628322848.png" alt="" loading="lazy"></p>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1657628311169.png" alt="" loading="lazy"><br>
+<img src="https://tinaxiawuhao.github.io/post-images/1657628322848.png" alt="" loading="lazy"></p>
 <h3 id="四-消费幂等">四、消费幂等</h3>
 <p>为了防止消息重复消费导致业务处理异常，消息队列 MQ 的消费者在接收到消息后，有必要根据业务上的唯一 Key 对消息做幂等处理。本文介绍消息幂 等的概念、适用场景以及处理方法。</p>
 <h4 id="41-什么是消息幂等">4.1、什么是消息幂等</h4>
@@ -1007,7 +1007,7 @@ Consumer consumer =ONSFactory.createConsumer(properties);
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/bPYM5y-vS/">
+                <a href="https://tinaxiawuhao.github.io/post/bPYM5y-vS/">
                   <span class="post-title">
                     CountDownLatch,CyclicBarrier,Semaphore的用法和区别&rarr;
                   </span>
@@ -1017,7 +1017,7 @@ Consumer consumer =ONSFactory.createConsumer(properties);
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/HHdQUUQvV/">
+                 <a href="https://tinaxiawuhao.github.io/post/HHdQUUQvV/">
                    <span class="post-title">
                      binlog、redolog、undolog&rarr;
                    </span>
@@ -1064,7 +1064,7 @@ Consumer consumer =ONSFactory.createConsumer(properties);
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -1079,10 +1079,10 @@ Consumer consumer =ONSFactory.createConsumer(properties);
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -1127,11 +1127,11 @@ Consumer consumer =ONSFactory.createConsumer(properties);
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -1152,7 +1152,7 @@ Consumer consumer =ONSFactory.createConsumer(properties);
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

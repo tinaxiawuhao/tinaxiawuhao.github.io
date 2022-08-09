@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Sentinel核心源码——插槽机制（责任链模式） | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="Sentinel核心源码——插槽机制（责任链模式）" />
-  <meta property="og:url" content="http://localhost:4000/post/xdN8U8BuX/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/xdN8U8BuX/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/PvdavFGm6/" class="tag">springCloud</a>
+                <a href="https://tinaxiawuhao.github.io/tag/PvdavFGm6/" class="tag">springCloud</a>
                 
               </span>
               <h1>Sentinel核心源码——插槽机制（责任链模式）</h1>
@@ -168,7 +168,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/xdN8U8BuX.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/xdN8U8BuX.png" alt="封面图">
           </img>
           
           <p>Sentinel核心源码——插槽机制（责任链模式）</p>
@@ -204,7 +204,7 @@
 <h3 id="一-processorslotchain处理器插槽链和node节点的引入">一 ProcessorSlotChain处理器插槽链和Node节点的引入</h3>
 <p>首先，根据官方Wiki中的图，我们可以很形象地看到，整个请求处理过程就像一个链条一样，一步步地向后执行，这是一种典型地“责任链模式”；</p>
 <p>责任链模式 —— 为请求创建一个接收者对象的链，链上的每一个节点服务处理各自的业务逻辑，实现解耦，每一个处理者节点记录着下一个节点的引用，请求将沿着这条链被传递下去，以此处理对应的逻辑。</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1658667201037.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658667201037.png" alt="" loading="lazy"></figure>
 <h4 id="1-processorslotchain处理器插槽链的引入">1 ProcessorSlotChain处理器插槽链的引入</h4>
 <p>ProcessorSlotChain是上图整个链的骨架，基于“责任链模式”设计，将“统计、授权、限流、降级等”处理逻辑封装成一个个的Slot插槽，串联起来。</p>
 <p>处理链中的Slot插槽可粗分为上下两大类：数据统计部分 + 规则判断部分</p>
@@ -233,7 +233,7 @@
 </li>
 </ul>
 <h4 id="2-为什么要存在nodeselectorslot和clusterbuilderslot两个插槽defaultnode和clusternode有什么区别">2 为什么要存在NodeSelectorSlot和ClusterBuilderSlot两个插槽？DefaultNode和ClusterNode有什么区别？</h4>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1658667225838.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1658667225838.png" alt="" loading="lazy"></figure>
 <ul>
 <li>**DefaultNode： 同一份资源，经过不同的链路调用，会创建不同的DefaultNode，记录不同链路访问当前资源的统计元数据 **，因为整个Sentinel是支持“根据链路限流”的，所以肯定要分开统计；</li>
 <li><strong>ClusterNode： 同一份资源，在整个系统中只会创建一个ClusterNode，记录所有入口访问当前资源的统计元数据</strong>，因为很多时候，我们只需要统计该资源的整体使用情况。</li>
@@ -325,7 +325,7 @@ spring:
 <hr>
 <h3 id="二-sentinel源码剖析context的初始化">二 Sentinel源码剖析——Context的初始化</h3>
 <h4 id="1-spring-cloud-starter-alibaba-sentinel-的-springfactory-中有两个相关的自动装配类">1 spring-cloud-starter-alibaba-sentinel 的 spring.factory 中有两个相关的自动装配类</h4>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1658667252485.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1658667252485.png" alt="" loading="lazy"></figure>
 <blockquote>
 <p>由于，Context的初始化，涉及到了将Controller中的方法定义为entranceNode的过程，所以肯定是看 SentinelWebAutoConfiguration 这个自动装配类！</p>
 </blockquote>
@@ -685,7 +685,7 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
 }
 </code></pre>
 <p>本地 META/services/ 目录下的 ProcessorSlot文件定义了9个插槽！</p>
-<figure data-type="image" tabindex="4"><img src="http://localhost:4000/post-images/1658667294348.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1658667294348.png" alt="" loading="lazy"></figure>
 <h4 id="5-最终构建成的processorslotchain的结构">5 最终构建成的ProcessorSlotChain的结构</h4>
 <p>首先，所有的9大ProcessorSlot都继承于一个AbstractLinkedProcessorSlot类：</p>
 <pre><code class="language-java">public abstract class AbstractLinkedProcessorSlot&lt;T&gt; implements ProcessorSlot&lt;T&gt; {
@@ -711,7 +711,7 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
 }
 </code></pre>
 <p>经过 next 指向，最终构建出来的 DefaultProcessorSlotChain 如下：</p>
-<figure data-type="image" tabindex="5"><img src="http://localhost:4000/post-images/1658667303745.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1658667303745.png" alt="" loading="lazy"></figure>
 <p>综上总结：</p>
 <ul>
 <li><strong>Sentinel会 为所有的资源，以资源名为区分，创建各自的DefaultProcessorSlotChain，放在缓存 中；</strong></li>
@@ -793,7 +793,7 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/XPUt_T_-A/">
+                <a href="https://tinaxiawuhao.github.io/post/XPUt_T_-A/">
                   <span class="post-title">
                     Sentinel限流熔断降级——知识点总结&rarr;
                   </span>
@@ -803,7 +803,7 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/xUda2KT1A/">
+                 <a href="https://tinaxiawuhao.github.io/post/xUda2KT1A/">
                    <span class="post-title">
                      Sentinel源码拓展之——限流的各种实现方式&rarr;
                    </span>
@@ -850,7 +850,7 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -865,10 +865,10 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -913,11 +913,11 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -938,7 +938,7 @@ public static &lt;T&gt; List&lt;T&gt; loadPrototypeInstanceListSorted(Class&lt;T
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>

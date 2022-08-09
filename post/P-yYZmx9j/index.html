@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="MyBatis 缓存详解 | tianxia » Feed"
-  href="http://localhost:4000/atom.xml">
+  href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
-<link href="http://localhost:4000/styles/main.css" rel="stylesheet">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
 <script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
 
 <script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
@@ -27,7 +27,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 
   <meta property="og:description" content="MyBatis 缓存详解" />
-  <meta property="og:url" content="http://localhost:4000/post/P-yYZmx9j/" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/P-yYZmx9j/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -38,7 +38,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
   <!-- Page Header -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
   <div class="container">
-    <a class="navbar-brand" href="http://localhost:4000">tianxia</a>
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
@@ -135,7 +135,7 @@
     </div>
   </div>
 </nav>
-<header class="masthead" style="background-image: url('http://localhost:4000/media/images/home-bg.jpg')">
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
@@ -147,7 +147,7 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="http://localhost:4000/tag/sSYudwLzE/" class="tag">mybatis</a>
+                <a href="https://tinaxiawuhao.github.io/tag/sSYudwLzE/" class="tag">mybatis</a>
                 
               </span>
               <h1>MyBatis 缓存详解</h1>
@@ -168,12 +168,12 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="http://localhost:4000/post-images/P-yYZmx9j.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/P-yYZmx9j.png" alt="封面图">
           </img>
           
           <p>缓存是一般的ORM 框架都会提供的功能，目的就是提升查询的效率和减少数据库的压力。跟Hibernate 一样，MyBatis 也有一级缓存和二级缓存，并且预留了集成第三方缓存的接口。</p>
 <p>缓存体系结构：</p>
-<figure data-type="image" tabindex="1"><img src="http://localhost:4000/post-images/1622193533861.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622193533861.png" alt="" loading="lazy"></figure>
 <p>MyBatis 跟缓存相关的类都在cache 包里面，其中有一个Cache 接口，只有一个默认的实现类 <code>PerpetualCache</code>，它是用<code>HashMap</code> 实现的。</p>
 <p>所有的缓存实现类总体上可分为三类：基本缓存、淘汰算法缓存、装饰器缓存。</p>
 <table>
@@ -252,7 +252,7 @@
 <p>一级缓存也叫本地缓存，MyBatis 的一级缓存是在会话（SqlSession）层面进行缓存的。MyBatis 的一级缓存是默认开启的，不需要任何的配置。首先我们必须去弄清楚一个问题，在MyBatis 执行的流程里面，涉及到这么多的对象，那么缓存<code>PerpetualCache</code> 应该放在哪个对象里面去维护？如果要在同一个会话里面共享一级缓存，这个对象肯定是在SqlSession 里面创建的，作为SqlSession 的一个属性。</p>
 <p><code>DefaultSqlSession</code> 里面只有两个属性，Configuration 是全局的，所以缓存只可能放在Executor 里面维护——<code>SimpleExecutor/ReuseExecutor/BatchExecutor</code> 的父类<code>BaseExecutor</code>的构造函数中持有了<code>PerpetualCache</code>。在同一个会话里面，多次执行相同的SQL 语句，会直接从内存取到缓存的结果，不会再发送SQL 到数据库。但是不同的会话里面，即使执行的SQL 一模一样（通过一个Mapper 的同一个方法的相同参数调用），也不能使用到一级缓存。</p>
 <p>如下图所示，MyBatis会在一次会话的表示----一个SqlSession对象中创建一个本地缓存(local cache)，对于每一次查询，都会尝试根据查询的条件去本地缓存中查找是否在缓存中，如果在缓存中，就直接从缓存中取出，然后返回给用户；否则，从数据库读取数据，将查询结果存入缓存并返回给用户。</p>
-<figure data-type="image" tabindex="2"><img src="http://localhost:4000/post-images/1622193556324.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622193556324.png" alt="" loading="lazy"></figure>
 <p>一级缓存的生命周期有多长？</p>
 <ol>
 <li>MyBatis在开启一个数据库会话时，会 创建一个新的<code>SqlSession</code>对象，<code>SqlSession</code>对象中会有一个新的Executor对象，Executor对象中持有一个新的<code>PerpetualCache</code>对象；当会话结束时，<code>SqlSession</code>对象及其内部的Executor对象还有<code>PerpetualCache</code>对象也一并释放掉。</li>
@@ -298,7 +298,7 @@
 <p>二级缓存是用来解决一级缓存不能跨会话共享的问题的，范围是<code>namespace</code> 级别的，可以被多个<code>SqlSession</code> 共享（只要是同一个接口里面的相同方法，都可以共享），生命周期和应用同步。如果你的MyBatis使用了二级缓存，并且你的Mapper和select语句也配置使用了二级缓存，那么在执行select查询的时候，MyBatis会先从二级缓存中取输入，其次才是一级缓存，即MyBatis查询数据的顺序是：二级缓存  —&gt; 一级缓存 —&gt; 数据库。</p>
 <p>作为一个作用范围更广的缓存，它肯定是在SqlSession 的外层，否则不可能被多个SqlSession 共享。而一级缓存是在SqlSession 内部的，所以第一个问题，肯定是工作在一级缓存之前，也就是只有取不到二级缓存的情况下才到一个会话中去取一级缓存。第二个问题，二级缓存放在哪个对象中维护呢？ 要跨会话共享的话，SqlSession 本身和它里面的BaseExecutor 已经满足不了需求了，那我们应该在BaseExecutor 之外创建一个对象。</p>
 <p>实际上MyBatis 用了一个装饰器的类来维护，就是<code>CachingExecutor</code>。如果启用了二级缓存，MyBatis 在创建Executor 对象的时候会对Executor 进行装饰。<code>CachingExecutor</code> 对于查询请求，会判断二级缓存是否有缓存结果，如果有就直接返回，如果没有委派交给真正的查询器Executor 实现类，比如<code>SimpleExecutor</code> 来执行查询，再走到一级缓存的流程。最后会把结果缓存起来，并且返回给用户。</p>
-<figure data-type="image" tabindex="3"><img src="http://localhost:4000/post-images/1622193575153.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622193575153.png" alt="" loading="lazy"></figure>
 <p>开启二级缓存的方法</p>
 <p>第一步：配置 <code>mybatis.configuration.cache-enabled=true</code>，只要没有显式地设置<code>cacheEnabled=false</code>，都会用<code>CachingExecutor</code> 装饰基本的执行器。</p>
 <p>第二步：在Mapper.xml 中配置<cache/>标签：</p>
@@ -583,7 +583,7 @@ database=0
           
             
             <p class="next-post">上一篇：
-                <a href="http://localhost:4000/post/O58auJO44/">
+                <a href="https://tinaxiawuhao.github.io/post/O58auJO44/">
                   <span class="post-title">
                     springBoot概述&rarr;
                   </span>
@@ -593,7 +593,7 @@ database=0
           
             
            <p class="prev-post">下一篇：
-                 <a href="http://localhost:4000/post/cxyiXFW2S/">
+                 <a href="https://tinaxiawuhao.github.io/post/cxyiXFW2S/">
                    <span class="post-title">
                      CAP/BASE&rarr;
                    </span>
@@ -640,7 +640,7 @@ database=0
             
               
               <!-- <li class="list-inline-item">
-              <a href="http://localhost:4000/atom.xml" target="_blank">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -655,10 +655,10 @@ database=0
    </footer>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
-  <!-- <script src="http://localhost:4000/media/scripts/clean-blog.min.js"></script> -->
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
   <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
 <a id="back_to_top" href="#" class="back_to_top">
   <span>▲</span></a>
@@ -703,11 +703,11 @@ database=0
 
         addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
             // 加载完成后再loadlive2d
-            loadlive2d("live2d", "http://localhost:4000/media/live2d/assets/tororo.model.json");
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
         });
 
-        var home_Path = "http://localhost:4000/";
-        addScript("http://localhost:4000/media/live2d/js/message.js", () => { });
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
     }
 
     // 插入js文件，完成后callback
@@ -728,7 +728,7 @@ database=0
     }
 </script>
   
-  <script src="http://localhost:4000/media/scripts/tocScript.js"></script>
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
 </body>
 
 </html>
