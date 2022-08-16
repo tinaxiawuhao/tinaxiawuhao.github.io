@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-08-05T11:41:53.933Z</updated>
+    <updated>2022-08-16T14:14:12.821Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -10,6 +10,618 @@
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, tianxia</rights>
+    <entry>
+        <title type="html"><![CDATA[工具类]]></title>
+        <id>https://tinaxiawuhao.github.io/post/uZBK7g699/</id>
+        <link href="https://tinaxiawuhao.github.io/post/uZBK7g699/">
+        </link>
+        <updated>2022-08-16T14:13:11.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="工具类">工具类</h3>
+<h4 id="httputil">HttpUtil</h4>
+<pre><code class="language-java">import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import dt.logincenter.exception.BusinessException;
+import dt.logincenter.exception.basic.ResponseCode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.Iterator;
+import java.util.Map;
+
+@Component
+@Slf4j
+public class HttpUtil {
+
+    @Resource
+    private RestTemplate restTemplate;
+
+    private static HttpUtil httpUtil;
+
+    @PostConstruct
+    public void init(){
+        httpUtil = this;
+        httpUtil.restTemplate = this.restTemplate;
+    }
+
+    /**
+     * 发送请求Get请求
+     *
+     * @param url   请求接口
+     * @param param 请求参数
+     * @param paramType 请求参数类型 json：false  String：true
+     */
+    public JSONObject sendGet(String url, String param, boolean paramType) throws Exception {
+        JSONObject jsonObject = null;
+        try {
+            //设置请求头
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            ResponseEntity&lt;String&gt; resEntity = null;
+            if (!paramType) {
+                HttpEntity httpEntity = new HttpEntity&lt;&gt;(param, headers);
+                resEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+            }else {
+                HttpEntity httpEntity = new HttpEntity&lt;&gt;(headers);
+                resEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class, param);
+            }
+
+            jsonObject = JSONUtil.parseObj(resEntity.getBody());
+        } catch (Exception e) {
+            if (e.toString().contains(&quot;timed out&quot;)) {
+                throw new BusinessException(ResponseCode.CONNECTION_TIMEOUT);
+            }
+            log.error(&quot;接口调用失败{}&quot;,e);
+            throw new BusinessException(ResponseCode.GETDATA_FAIL);
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 发送请求Get请求
+     *
+     * @param url   请求接口
+     * @param params 请求参数
+     */
+    public JSONObject sendGet(String url, Map&lt;Object, Object&gt; params){
+        StringBuffer stringBuffer = new StringBuffer(url);
+
+        if (params instanceof Map) {
+            Iterator iterator = ((Map) params).entrySet().iterator();
+            if (iterator.hasNext()) {
+                stringBuffer.append(&quot;?&quot;);
+                Object element;
+                while (iterator.hasNext()) {
+                    element = iterator.next();
+                    Map.Entry&lt;String, Object&gt; entry = (Map.Entry) element;
+                    if (entry.getValue() != null) {
+                        stringBuffer.append(element).append(&quot;&amp;&quot;);
+                    }
+                    url = stringBuffer.substring(0, stringBuffer.length() - 1);
+                }
+            }
+        } else {
+            throw new BusinessException(ResponseCode.REQUEST_PARAM_ERROR);
+        }
+
+        JSONObject jsonObject = null;
+        try {
+            //设置请求头
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            ResponseEntity&lt;String&gt; resEntity = null;
+            HttpEntity httpEntity = new HttpEntity&lt;&gt;(headers);
+            resEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+            jsonObject = JSONUtil.parseObj(resEntity.getBody());
+        } catch (Exception e) {
+            if (e.toString().contains(&quot;timed out&quot;)) {
+                throw new BusinessException(ResponseCode.CONNECTION_TIMEOUT);
+            }
+            log.error(&quot;接口调用失败{}&quot;,e);
+            throw new BusinessException(ResponseCode.GETDATA_FAIL);
+        }
+        return jsonObject;
+    }
+
+
+    /**
+     * 发送请求Put请求
+     *
+     * @param url   请求接口
+     * @param param 请求参数
+     */
+    public JSONObject sendPut(String url, JSONObject param) {
+        JSONObject jsonObject = null;
+        try {
+            //设置请求头
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity httpEntity = new HttpEntity&lt;&gt;(param, headers);
+            ResponseEntity&lt;String&gt; resEntity = restTemplate.exchange(url, HttpMethod.PUT, httpEntity, String.class);
+            jsonObject = JSONUtil.parseObj(resEntity.getBody());
+        } catch (Exception e) {
+            if (e.toString().contains(&quot;timed out&quot;)) {
+                throw new BusinessException(String.valueOf(ResponseCode.CONNECTION_TIMEOUT));
+            }
+            log.error(&quot;接口调用失败{}&quot;,e);
+            throw new BusinessException(String.valueOf(ResponseCode.GETDATA_FAIL));
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 发送请求Post请求
+     *
+     * @param url   请求接口
+     * @param param 请求参数
+     */
+    public JSONObject sendPost(String url, Object param) {
+        JSONObject jsonObject = null;
+        try {
+            //设置请求头
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity httpEntity = new HttpEntity&lt;&gt;(param, headers);
+            jsonObject = restTemplate.postForObject(url, httpEntity, JSONObject.class);
+        } catch (Exception e) {
+            if (e.toString().contains(&quot;timed out&quot;)) {
+                throw new BusinessException(String.valueOf(ResponseCode.CONNECTION_TIMEOUT));
+            }
+            log.error(&quot;接口调用失败{}&quot;,e);
+            throw new BusinessException(String.valueOf(ResponseCode.GETDATA_FAIL));
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 发送请求Post请求
+     *
+     * @param url   请求接口
+     * @param param 请求参数
+     */
+    public JSONObject sendPost(String url, Object param,Map&lt;String,String&gt; header) {
+        JSONObject jsonObject = null;
+        try {
+            //设置请求头
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            header.keySet().forEach(item-&gt;{
+                headers.add(item,header.get(item));
+            });
+
+            HttpEntity httpEntity = new HttpEntity&lt;&gt;(param, headers);
+            jsonObject = restTemplate.postForObject(url, httpEntity, JSONObject.class);
+        } catch (Exception e) {
+            if (e.toString().contains(&quot;timed out&quot;)) {
+                throw new BusinessException(String.valueOf(ResponseCode.CONNECTION_TIMEOUT));
+            }
+            log.error(&quot;接口调用失败{}&quot;,e);
+            throw new BusinessException(String.valueOf(ResponseCode.GETDATA_FAIL));
+        }
+        return jsonObject;
+    }
+    
+    /**
+     * 发送请求Get请求获取流文件
+     *
+     * @param url   请求接口
+     */
+    public InputStream sendGet(String url) {
+        try {
+            String path=ResourceUtils.getURL(&quot;classpath:&quot;).getPath();
+            File file = new File(path);
+            if (!file.exists())		{
+                file.mkdirs();
+            }
+            //创造文件
+            path=path+&quot;temp.excel&quot;;
+            File tempFile = new File(path);
+            if (!tempFile.exists())		{
+                tempFile.createNewFile();
+            }
+            ResponseEntity&lt;byte[]&gt; rsp = restTemplate.getForEntity(url, byte[].class);
+            System.out.println(&quot;文件下载请求结果状态码：&quot; + rsp.getStatusCode());
+            // 将下载下来的文件内容保存到本地
+            Files.write(Paths.get(path.substring(1)), Objects.requireNonNull(rsp.getBody(), &quot;未获取到下载文件&quot;));
+            return new FileInputStream(path);
+        } catch (Exception e) {
+            if (e.toString().contains(&quot;timed out&quot;)) {
+                throw new BusinessException(ResponseCode.CONNECTION_TIMEOUT);
+            }
+            log.error(&quot;接口调用失败{}&quot;,e);
+            throw new BusinessException(ResponseCode.GETDATA_FAIL);
+        }
+
+    }
+
+      /**
+     * 发送请求Get请求获取流文件
+     *
+     * @param url   请求接口
+     */
+    public InputStream sendGet(String url) {
+        try {
+            ResponseEntity&lt;byte[]&gt; entity = restTemplate.getForEntity(url, byte[].class);
+            Objects.requireNonNull(entity.getBody());
+            String path=ResourceUtils.getURL(&quot;classpath:&quot;).getPath()+&quot;temp.excel&quot;;
+            BufferedOutputStream bos;
+            FileOutputStream fos;
+            File file;
+            File dir = new File(path);
+            if (!dir.exists()) {// 判断文件目录是否存在
+                dir.mkdirs();
+            }
+            file = new File(path);
+            fos = new FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            bos.write(Objects.requireNonNull(entity.getBody()));
+            bos.close();
+            fos.close();
+
+            return new FileInputStream(file);
+        } catch (Exception e) {
+            if (e.toString().contains(&quot;timed out&quot;)) {
+                throw new BusinessException(ResponseCode.CONNECTION_TIMEOUT);
+            }
+            log.error(&quot;接口调用失败{}&quot;,e);
+            throw new BusinessException(ResponseCode.GETDATA_FAIL);
+        }
+
+    }
+}
+</code></pre>
+<h4 id="javascriptutil">JavaScriptUtil</h4>
+<pre><code class="language-java">import org.apache.tomcat.util.buf.StringUtils;
+
+import javax.script.*;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * java执行javaScript代码的工具类
+ *
+ * @author wuhao
+ */
+public class JavaScriptUtil {
+
+    /**
+     * 单例的JavaScript解析引擎
+     */
+    private static final ScriptEngine javaScriptEngine;
+
+    static {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine scriptEngine = manager.getEngineByName(&quot;js&quot;);
+        if (scriptEngine == null) {
+            throw new RuntimeException(&quot;获取JavaScript解析引擎失败&quot;);
+        }
+        javaScriptEngine = scriptEngine;
+    }
+
+
+    /**
+     * 执行一段JavaScript代码
+     *
+     * @param script JavaScript的代码
+     * @return JavaScript代码运行结果的值
+     * @throws ScriptException JavaScript代码运行异常
+     */
+    public static Object execute(String script) throws ScriptException {
+        return javaScriptEngine.eval(script);
+    }
+
+
+    /**
+     * 运行一个JavaScript代码段,并获取指定变量名的值
+     *
+     * @param script        代码段
+     * @param attributeName 已知的变量名
+     * @return 指定变量名对应的值
+     * @throws ScriptException JavaScript代码运行异常
+     */
+    public static Object executeForAttribute(String script, String attributeName) throws ScriptException {
+        javaScriptEngine.eval(script);
+        return javaScriptEngine.getContext().getAttribute(attributeName);
+    }
+
+    /**
+     * 获取当前语句运行后第一个有值变量的值
+     *
+     * @param script 代码段
+     * @return 第一个有值变量的值
+     * @throws ScriptException JavaScript代码运行异常
+     */
+    public static Object executeForFirstAttribute(String script) throws ScriptException {
+
+        //这里重新获取一个JavaScript解析引擎是为了避免代码中有其他调用工具类的地方的变量干扰
+        //重新获取后,这个JavaScript解析引擎只执行了这次传入的代码,不会保存其他地方的变量
+        //全局的解析器中会保存最大200个变量,JavaScript解析引擎本身最大保存100个变量
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine scriptEngine = manager.getEngineByName(&quot;js&quot;);
+        if (scriptEngine == null) {
+            throw new RuntimeException(&quot;获取JavaScript解析引擎失败&quot;);
+        }
+
+        scriptEngine.eval(script);
+        ScriptContext context = scriptEngine.getContext();
+        if (context == null) {
+            return null;
+        }
+        Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
+        if (bindings == null) {
+            return null;
+        }
+        Set&lt;Map.Entry&lt;String, Object&gt;&gt; entrySet = bindings.entrySet();
+        if (entrySet.isEmpty()) {
+            return null;
+        }
+        for (Map.Entry&lt;String, Object&gt; entry : entrySet) {
+            if (entry.getValue() != null) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 执行一段JavaScript代码，传入参数，获取返回值
+     * String script = &quot;Math.pow(x, y)&quot;;
+     * Map&lt;String, Object&gt; params = Maps.newHashMap();
+     * params.put(&quot;x&quot;, 10);
+     * params.put(&quot;y&quot;, 2);
+     * &lt;p&gt;
+     * String script = ”if (company == 1) {
+     * return true;
+     * } else if (company == 2 &amp;&amp; amt &gt; 100) {
+     * return true;
+     * } else if (company == 3 &amp;&amp; amt &gt; 200) {
+     * return true;
+     * } else {
+     * return false;
+     * }“
+     * &lt;p&gt;
+     * params.put(&quot;company&quot;, 1);
+     * params.put(&quot;amt&quot;, 100);
+     *
+     * @param script
+     * @param params
+     * @return
+     */
+    public static String execute(String script, Map&lt;String, Object&gt; params) {
+        try {
+            String paramsName = StringUtils.join(params.keySet(), ',');
+            String executeScript = String.format(&quot;function execute(%s) { %s }&quot;, paramsName, script);
+            javaScriptEngine.eval(executeScript);
+            Invocable jsInvoke = (Invocable) javaScriptEngine;
+            Object execute = jsInvoke.invokeFunction(&quot;execute&quot;, params.values().toArray());
+            return execute.toString();
+        } catch (ScriptException | NoSuchMethodException e) {
+            System.out.println(&quot;表达式runtime错误:&quot; + e.getMessage());
+        }
+        return null;
+    }
+}
+</code></pre>
+<h4 id="minioutil">MinioUtil</h4>
+<pre><code class="language-java">
+import io.minio.*;
+import io.minio.errors.*;
+import io.minio.http.Method;
+import io.minio.messages.Item;
+import io.minio.messages.Upload;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.crypto.SecretKey;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+@Slf4j
+public class MinioUtil {
+    @Autowired
+    private MinioClient minioClient;
+
+    private static final int DEFAULT_EXPIRY_TIME = 7 * 24 * 3600;
+
+    /**
+     * 检查存储桶是否存在
+     *
+     * @param bucketName 存储桶名称
+     * @return
+     * @throws Exception
+     */
+    public boolean bucketExists(String bucketName)  {
+        try {
+            return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+        } catch (Exception e) {
+            log.error(&quot;mino 服务端连接异常&quot;,e);
+            throw new RuntimeException(&quot;mino 服务端连接异常&quot;);
+        }
+    }
+
+    /**
+     * 创建存储桶
+     *
+     * @param bucketName 存储桶名称
+     * @return
+     * @throws Exception
+     */
+    public boolean makeBucket(String bucketName) throws Exception {
+        boolean flag = bucketExists(bucketName);
+        if (!flag) {
+            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 文件上传
+     *
+     * @param bucketName
+     * @param multipartFile
+     */
+    public void putObject(String bucketName, MultipartFile multipartFile, String filename, SecretKey secretKey) throws Exception {
+        makeBucket(bucketName);
+        PutObjectOptions putObjectOptions = new PutObjectOptions(multipartFile.getSize(), PutObjectOptions.MIN_MULTIPART_SIZE);
+        putObjectOptions.setContentType(multipartFile.getContentType());
+        if (null != secretKey) {
+            putObjectOptions.setSse(ServerSideEncryption.withCustomerKey(secretKey));
+        }
+        minioClient.putObject(bucketName, filename, multipartFile.getInputStream(), putObjectOptions);
+    }
+
+
+    /**
+     * 普通文件上传
+     * @param bucketName
+     * @param \
+     */
+    public void putObject(String bucketName, InputStream inputStream, String filename, SecretKey secretKey,long fileSize) throws Exception {
+        PutObjectOptions putObjectOptions = new PutObjectOptions(fileSize, 0);
+        minioClient.putObject(bucketName, filename, inputStream, putObjectOptions);
+    }
+
+    /**
+     * 分享。
+     *
+     * @param bucketName 存储桶名称
+     * @param objectName 存储桶里的对象名称
+     * @param expires    失效时间（以秒为单位），默认是7天，不得大于七天
+     * @return
+     */
+    public String getPresignedObjectUrl(String bucketName, String objectName, Integer expires) throws Exception {
+        boolean flag = bucketExists(bucketName);
+        if (flag) {
+            if (null == expires) {
+                expires = DEFAULT_EXPIRY_TIME;
+            }
+            if (expires &lt; 1 || expires &gt; DEFAULT_EXPIRY_TIME) {
+                throw new RuntimeException(&quot;expires must be in range of 1 to &quot; + DEFAULT_EXPIRY_TIME);
+            }
+            try {
+                return minioClient.getPresignedObjectUrl(Method.GET, bucketName, objectName, expires, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取一个临时可以上传的url
+     * @param bucketName
+     * @param objectName
+     * @return
+     * @throws Exception
+     */
+    public String presignedPutObject(String bucketName, String objectName) {
+        try {
+            return minioClient.presignedPutObject(bucketName, objectName);
+        } catch (Exception e) {
+            throw new RuntimeException(&quot;获取临时文件上传地址异常&quot;);
+        }
+    }
+
+    /**
+     * 列出某个存储桶中的所有对象
+     *
+     * @param bucketName
+     * @param objectNamePrefix 前缀
+     * @return
+     * @throws Exception
+     */
+    public List&lt;ComposeSource&gt; listObjectsSource(String bucketName, String objectNamePrefix) throws Exception {
+        List&lt;ComposeSource&gt; sources = new ArrayList&lt;&gt;();
+        Iterable&lt;Result&lt;Item&gt;&gt; results = minioClient.listObjects(bucketName, objectNamePrefix);
+        for (Result&lt;Item&gt; result : results) {
+            Item item = result.get();
+            sources.add(ComposeSource.builder().bucket(bucketName).object(objectNamePrefix).build());
+
+
+        }
+
+//        minioClient.listIncompleteUploads()
+        return sources;
+    }
+
+    /**
+     * 文件合并
+     *
+     * @param bucketName
+     * @param objectName
+     * @param sources
+     * @param secretKey
+     * @throws Exception
+     */
+    public void composeObject(String bucketName, String objectName, List&lt;ComposeSource&gt; sources, SecretKey secretKey) throws Exception {
+        List&lt;ComposeSource&gt; sourceObjectList = new ArrayList&lt;&gt;(sources.size());
+        for (int i=0;i&lt;sources.size();i++){
+           sourceObjectList.add(
+                    ComposeSource.builder()
+                            .bucket(bucketName)
+                            .object(sources.get(i).object()+&quot;_&quot; + i)
+                            .build()
+            );
+        }
+        ObjectWriteResponse objectWriteResponse = minioClient.composeObject(
+                ComposeObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(objectName)
+                        .sources(sourceObjectList)
+                        .build());
+        for (ComposeSource source : sourceObjectList) {
+            minioClient.removeObject(source.bucket(), source.object());
+        }
+    }
+
+    /**
+     * 查询已经上传成功的文件
+     * @param bucketName
+     * @param prefix
+     */
+    public List&lt;Integer&gt;  listIncompleteUploads(String bucketName,String prefix){
+        List&lt;Integer&gt; rslt=new ArrayList&lt;&gt;();
+        try {
+            Iterable&lt;Result&lt;Item&gt;&gt; results=minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(prefix)
+                            .maxKeys(1000)
+                            .build());
+            for (Result&lt;Item&gt; result : results) {
+                String obectName = result.get().objectName();
+                String[] split = StringUtils.split(obectName, &quot;_&quot;);
+                rslt.add(Integer.parseInt(split[split.length-1]));
+            }
+        }catch (Exception e) {
+            log.error(&quot;调用minio查询已经分片上传信息异常&quot;,e);
+            throw new RuntimeException(&quot;调用minio查询已经分片上传信息异常&quot;);
+        }
+        return rslt;
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[消息推送的7种方案]]></title>
         <id>https://tinaxiawuhao.github.io/post/GdjsuDFQV/</id>
@@ -32722,56 +33334,6 @@ Leader的工作流程简图如下所示，在实际实现中，流程要比下�
 <p>Follower的工作流程简图如下所示，在实际实现中，Follower是通过5个线程来实现功能的。</p>
 <p>​             <img src="https://tinaxiawuhao.github.io/post-images/1622442788398.png" alt="" loading="lazy"></p>
 <p>对于observer的流程不再叙述，observer流程和Follower的唯一不同的地方就是observer不会参加leader发起的投票。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Gossip协议]]></title>
-        <id>https://tinaxiawuhao.github.io/post/BmWrFaJAQ/</id>
-        <link href="https://tinaxiawuhao.github.io/post/BmWrFaJAQ/">
-        </link>
-        <updated>2021-06-03T06:05:22.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="gossip">Gossip</h2>
-<blockquote>
-<p>Gossip协议是一个通信协议，一种传播消息的方式，灵感来自于：瘟疫、社交网络等。使用Gossip协议的有：<a href="https://tinaxiawuhao.github.io/post/FWuQD6Kxu/">Redis Cluster</a>、Consul、Apache Cassandra等。</p>
-</blockquote>
-<h3 id="六度分隔理论">六度分隔理论</h3>
-<p>说到社交网络，就不得不提著名的六度分隔理论。1967年，哈佛大学的心理学教授Stanley Milgram想要描绘一个连结人与社区的人际连系网。做过一次连锁信实验，结果发现了“六度分隔”现象。简单地说：“你和任何一个陌生人之间所间隔的人不会超过六个，也就是说，最多通过六个人你就能够认识任何一个陌生人。</p>
-<p>数学解释该理论：若每个人平均认识260人，其六度就是260↑6 =1,188,137,600,000。消除一些节点重复，那也几乎覆盖了整个地球人口若干多多倍，这也是Gossip协议的雏形。</p>
-<h3 id="原理">原理</h3>
-<p>Gossip协议基本思想就是：一个节点想要分享一些信息给网络中的其他的一些节点。于是，它周期性的随机选择一些节点，并把信息传递给这些节点。这些收到信息的节点接下来会做同样的事情，即把这些信息传递给其他一些随机选择的节点。一般而言，信息会周期性的传递给N个目标节点，而不只是一个。这个N被称为fanout（这个单词的本意是扇出）。</p>
-<h3 id="用途">用途</h3>
-<p>Gossip协议的主要用途就是信息传播和扩散：即把一些发生的事件传播到全世界。它们也被用于数据库复制，信息扩散，集群成员身份确认，故障探测等。</p>
-<p>基于Gossip协议的一些有名的系统：Apache Cassandra，Redis（Cluster模式），Consul等。</p>
-<h3 id="图解">图解</h3>
-<p>接下来通过多张图片剖析Gossip协议是如何运行的。如下图所示，Gossip协议是周期循环执行的。图中的公式表示Gossip协议把信息传播到每一个节点需要多少次循环动作，需要说明的是，公式中的20表示整个集群有20个节点，4表示某个节点会向4个目标节点传播消息：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622442855693.jpg" alt="" loading="lazy"></figure>
-<p>Gossip Protocol</p>
-<p>如下图所示，红色的节点表示其已经“受到感染”，即接下来要传播信息的源头，连线表示这个初始化感染的节点能正常连接的节点（其不能连接的节点只能靠接下来感染的节点向其传播消息）。并且N等于4，我们假设4根较粗的线路，就是它第一次传播消息的线路：</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1622442872607.jpg" alt="" loading="lazy"></figure>
-<p>first infected node</p>
-<p>第一次消息完成传播后，新增了4个节点会被“感染”，即这4个节点也收到了消息。这时候，总计有5个节点变成红色：</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1622442882247.jpg" alt="" loading="lazy"></figure>
-<p>infected nodes</p>
-<p>那么在下一次传播周期时，总计有5个节点，且这5个节点每个节点都会向4个节点传播消息。最后，经过3次循环，20个节点全部被感染（都变成红色节点），即说明需要传播的消息已经传播给了所有节点：</p>
-<figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1622442890305.jpg" alt="" loading="lazy"></figure>
-<p>infected all nodes</p>
-<p>需要说明的是，20个节点且设置fanout=4，公式结果是2.16，这只是个近似值。真实传递时，可能需要3次甚至4次循环才能让所有节点收到消息。这是因为每个节点在传播消息的时候，是随机选择N个节点的，这样的话，就有可能某个节点会被选中2次甚至更多次。</p>
-<h3 id="发送消息">发送消息</h3>
-<p>由前面对Gossip协议图解分析可知，节点传播消息是周期性的，并且每个节点有它自己的周期。另外，节点发送消息时的目标节点数由参数fanout决定。至于往哪些目标节点发送，则是随机的。</p>
-<p>一旦消息被发送到目标节点，那么目标节点也会被感染。一旦某个节点被感染，那么它也会向其他节点传播消息，试图感染更多的节点。最终，每一个节点都会被感染，即消息被同步给了所有节点：</p>
-<h3 id="可扩展性">可扩展性</h3>
-<p>Gossip协议是可扩展的，因为它只需要O(logN) 个周期就能把消息传播给所有节点。某个节点在往固定数量节点传播消息过程中，并不需要等待确认（ack），并且，即使某条消息传播过程中丢失，它也不需要做任何补偿措施。打个比方，某个节点本来需要将消息传播给4个节点，但是由于网络或者其他原因，只有3个消息接收到消息，即使这样，这对最终所有节点接收到消息是没有任何影响的。</p>
-<p>如下表格所示，假定fanout=4，那么在节点数分别是20、40、80、160时，消息传播到所有节点需要的循环次数对比，在节点成倍扩大的情况下，循环次数并没有增加很多。所以，Gossip协议具备可扩展性：</p>
-<figure data-type="image" tabindex="5"><img src="https://tinaxiawuhao.github.io/post-images/1622442912159.jpg" alt="" loading="lazy"></figure>
-<h3 id="失败容错">失败容错</h3>
-<p>Gossip也具备失败容错的能力，即使网络故障等一些问题，Gossip协议依然能很好的运行。因为一个节点会多次分享某个需要传播的信息，即使不能连通某个节点，其他被感染的节点也会尝试向这个节点传播信息。</p>
-<h3 id="健壮性">健壮性</h3>
-<p>Gossip协议下，没有任何扮演特殊角色的节点（比如leader等）。任何一个节点无论什么时候下线或者加入，并不会破坏整个系统的服务质量。</p>
-<p>然而，Gossip协议也有不完美的地方，例如，拜占庭问题（Byzantine）。即，如果有一个恶意传播消息的节点，Gossip协议的分布式系统就会出问题。</p>
-<blockquote>
-<p>作者：阿飞的博客<br>
-原文地址：https://www.jianshu.com/p/54eab117e6ae</p>
-</blockquote>
 ]]></content>
     </entry>
 </feed>
