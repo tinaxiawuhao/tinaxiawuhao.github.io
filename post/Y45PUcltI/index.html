@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1660659241544"
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1660659241544"
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -175,9 +175,9 @@
 <h4 id="1-ribbonfeignopenfeign三者的对比">1 ribbon,feign,openfeign三者的对比</h4>
 <p>我们现在工作中现在几乎都是直接使用openfeign，而我们很有必要了解一下，ribbon、feign、openfeign三者之间的关系！</p>
 <ul>
-<li><strong>ribbon：<strong>ribbon是netflix开源的客户端负载均衡组件，可以</strong>调用注册中心获取服务列表，并通过负载均衡算法挑选一台Server</strong>；</li>
-<li>**feign：**feign也是netflix开源的，<strong>是对ribbon的一层封装，通过接口的方式使用，更加优雅</strong>，不需要每次都去写restTemplate，只需要定义一个接口来使用；<strong>但是Feign不支持springmvc的注解；</strong></li>
-<li><strong>openfeign：<strong>是</strong>对feign的进一步封装，使其能够支持springmvc注解，如@GetMapping等</strong>，使用起来更加方便和优雅！</li>
+<li><strong>ribbon</strong>：ribbon是netflix开源的客户端负载均衡组件，可以调用注册中心获取服务列表，并通过负载均衡算法挑选一台Server；</li>
+<li><strong>feign</strong>：feign也是netflix开源的，<strong>是对ribbon的一层封装，通过接口的方式使用，更加优雅</strong>，不需要每次都去写restTemplate，只需要定义一个接口来使用；<strong>但是Feign不支持springmvc的注解；</strong></li>
+<li><strong>openfeign</strong>：是对feign的进一步封装，使其能够支持springmvc注解，如@GetMapping等，使用起来更加方便和优雅！</li>
 </ul>
 <h4 id="2-工作中都是如何使用openfeign">2 工作中都是如何使用openfeign</h4>
 <pre><code class="language-java">// 想要使用openfeign，必须要在启动类增加@EnableFeignClient注解，否则启动报错

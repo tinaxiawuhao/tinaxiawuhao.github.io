@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>树形结构查询 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="树形结构查询 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="树形结构查询" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/0yWpE16Ha/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/sSYudwLzE/" class="tag">mybatis</a>
+                
+              </span>
+              <h1>树形结构查询</h1>
+              <span class="meta">
+                Posted on
+                2022-08-25，5 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/0yWpE16Ha.png" alt="封面图">
+          </img>
+          
+          <p>树型层级结构查询</p>
+<h3 id="数据sql">数据sql</h3>
+<pre><code class="language-sql">CREATE TABLE `sys_company` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `code` varchar(36) NOT NULL COMMENT '标识主键',
+  `company_name` varchar(255) NOT NULL COMMENT '组织名称',
+  `pid` int(10) DEFAULT NULL COMMENT '上级组织id',
+  `pname` varchar(255) DEFAULT NULL COMMENT '上级组织名称',
+  `sort` int(4) DEFAULT '0' COMMENT '排序',
+  `state` int(2) DEFAULT '0' COMMENT '是否可用，0可用，1禁用',
+  `create_by` varchar(50) DEFAULT NULL COMMENT '创建者',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` varchar(50) DEFAULT NULL COMMENT '修改者',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `code_index` (`code`) USING BTREE COMMENT '简单索引'
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='组织详情'
+</code></pre>
+<h3 id="dto">DTO</h3>
+<pre><code class="language-java">@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CompanyDTO {
+
+    @ApiModelProperty(value = &quot;主键&quot;)
+    private Integer id;
+
+    @ApiModelProperty(value = &quot;标识主键&quot;)
+    private String code;
+
+    @ApiModelProperty(value = &quot;组织名称&quot;)
+    private String companyName;
+
+    @ApiModelProperty(value = &quot;上级组织id&quot;)
+    private Integer pid;
+
+    @ApiModelProperty(value = &quot;上级组织名称&quot;)
+    private String pname;
+
+    @ApiModelProperty(value = &quot;排序&quot;)
+    private Integer sort;
+
+    @ApiModelProperty(value = &quot;是否可用，0可用，1禁用&quot;)
+    private Integer state;
+
+    @ApiModelProperty(value = &quot;创建者&quot;)
+    private String createBy;
+
+    @ApiModelProperty(value = &quot;创建时间&quot;)
+    private Date createTime;
+
+    @ApiModelProperty(value = &quot;修改者&quot;)
+    private String updateBy;
+
+    @ApiModelProperty(value = &quot;修改时间&quot;)
+    private Date updateTime;
+
+    @ApiModelProperty(value = &quot;子公司组织&quot;)
+    private List&lt;CompanyDTO&gt; children;
+
+    @ApiModelProperty(value = &quot;编辑删除操作权限标识 true:有 false:无&quot;)
+    private Boolean modAndDelFlag = false;
+    
+    private CompanyDTO CompanyDTO;
+}
+
+</code></pre>
+<h3 id="service">service</h3>
+<pre><code class="language-java">public List&lt;CompanyDTO&gt; getCompanyList(Integer companyId) {
+    CompanyDTO companyDTO = sysCompanyMapper.queryTopData(companyId);
+   
+    while (companyDTO.getCompanyDTO()!=null){
+        companyDTO = companyDTO.getCompanyDTO();
+    }
+    List&lt;CompanyDTO&gt; companyDTO = sysCompanyMapper.querySimpleTopData(companyDTO.getId());
+}
+</code></pre>
+<h3 id="xml">xml</h3>
+<pre><code class="language-xml">	&lt;resultMap id=&quot;BaseResultAllMap&quot; type=&quot;com.haier.dtosplat.entity.DTO.company.CompanyDTO&quot;&gt;
+        &lt;id column=&quot;id&quot; property=&quot;id&quot; /&gt;
+        &lt;result column=&quot;code&quot; property=&quot;code&quot; /&gt;
+        &lt;result column=&quot;company_name&quot; property=&quot;companyName&quot; /&gt;
+        &lt;result column=&quot;pid&quot; property=&quot;pid&quot; /&gt;
+        &lt;result column=&quot;pname&quot; property=&quot;pname&quot; /&gt;
+        &lt;result column=&quot;sort&quot; property=&quot;sort&quot; /&gt;
+        &lt;result column=&quot;state&quot; property=&quot;state&quot; /&gt;
+        &lt;result column=&quot;create_by&quot; property=&quot;createBy&quot; /&gt;
+        &lt;result column=&quot;create_time&quot; property=&quot;createTime&quot; /&gt;
+        &lt;result column=&quot;update_by&quot; property=&quot;updateBy&quot; /&gt;
+        &lt;result column=&quot;update_time&quot; property=&quot;updateTime&quot; /&gt;
+        &lt;association property=&quot;companyDTO&quot;
+                     column=&quot;{pid = pid}&quot;
+                     select=&quot;querySuper&quot;&gt;
+        &lt;/association&gt;
+    &lt;/resultMap&gt;
+
+	&lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;com.haier.dtosplat.entity.DTO.company.CompanyDTO&quot;&gt;
+        &lt;id column=&quot;id&quot; property=&quot;id&quot; /&gt;
+        &lt;result column=&quot;code&quot; property=&quot;code&quot; /&gt;
+        &lt;result column=&quot;company_name&quot; property=&quot;companyName&quot; /&gt;
+        &lt;result column=&quot;pid&quot; property=&quot;pid&quot; /&gt;
+        &lt;result column=&quot;pname&quot; property=&quot;pname&quot; /&gt;
+        &lt;result column=&quot;sort&quot; property=&quot;sort&quot; /&gt;
+        &lt;result column=&quot;state&quot; property=&quot;state&quot; /&gt;
+        &lt;result column=&quot;create_by&quot; property=&quot;createBy&quot; /&gt;
+        &lt;result column=&quot;create_time&quot; property=&quot;createTime&quot; /&gt;
+        &lt;result column=&quot;update_by&quot; property=&quot;updateBy&quot; /&gt;
+        &lt;result column=&quot;update_time&quot; property=&quot;updateTime&quot; /&gt;
+
+        &lt;collection property=&quot;children&quot; ofType=&quot;com.haier.dtosplat.entity.DTO.company.CompanyDTO&quot;
+                    column=&quot;{id = id}&quot; select=&quot;querySon&quot;&gt;
+        &lt;/collection&gt;
+    &lt;/resultMap&gt;
+
+
+    &lt;select id=&quot;queryTopData&quot; resultMap=&quot;BaseResultAllMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE id = #{companyId}
+    &lt;/select&gt;
+
+    &lt;select id=&quot;querySimpleTopData&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE id = #{companyId}
+    &lt;/select&gt;
+
+    &lt;select id=&quot;querySuper&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE id = #{pid}
+    &lt;/select&gt;
+
+    &lt;select id=&quot;querySon&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE pid = #{id}
+    &lt;/select&gt;
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E6%95%B0%E6%8D%AEsql">数据sql</a></li>
+<li><a href="#dto">DTO</a></li>
+<li><a href="#service">service</a></li>
+<li><a href="#xml">xml</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/Y9SH6oPXI/">
+                  <span class="post-title">
+                    Spring使用ThreadLocal存储内存泄露风险&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/Tm9S6oyiS/">
+                   <span class="post-title">
+                     springboot启动流程&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

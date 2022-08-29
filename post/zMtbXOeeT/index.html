@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1660659241544"
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1660659241544"
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -189,10 +189,10 @@
 <h3 id="二-nacos的服务架构图">二 NACOS的服务架构图</h3>
 <figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658665780310.png" alt="" loading="lazy"></figure>
 <ul>
-<li>**服务注册+服务心跳：**首先无论是“服务提供者”还是“服务消费者”都会将自己注册到nacos，并维持心跳。（每5秒发送一次心跳包）</li>
-<li>**服务健康检查：**服务端再启动后，会以Service为单位，开启ClientBeatCheckTask心跳检查任务。（每5秒检查一次，如果某个客户端最后一次心跳超过15秒，标记为不健康，超过30秒踢除）</li>
-<li><strong>服务发现：</strong>“服务消费者”会根据需要自己的自己所需的目标服务的namespace/group/serviceName/cluster只根据需要查询对应的服务注册表，保存在本地。（定时每10s去服务端更新一次）！</li>
-<li>**服务同步：**服务端集群之间会同步服务注册表，用来保证服务信息的一致性！（注意AP架构的集群中，即使配置了mysql，也不是用来存放注册表）</li>
+<li><strong>服务注册+服务心跳</strong>：首先无论是“服务提供者”还是“服务消费者”都会将自己注册到nacos，并维持心跳。（每5秒发送一次心跳包）</li>
+<li><strong>服务健康检查</strong>：服务端再启动后，会以Service为单位，开启ClientBeatCheckTask心跳检查任务。（每5秒检查一次，如果某个客户端最后一次心跳超过15秒，标记为不健康，超过30秒踢除）</li>
+<li><strong>服务发现</strong>：“服务消费者”会根据需要自己的自己所需的目标服务的namespace/group/serviceName/cluster只根据需要查询对应的服务注册表，保存在本地。（定时每10s去服务端更新一次）！</li>
+<li><strong>服务同步</strong>：服务端集群之间会同步服务注册表，用来保证服务信息的一致性！（注意AP架构的集群中，即使配置了mysql，也不是用来存放注册表）</li>
 </ul>
 <hr>
 <h3 id="三-nacos的核心注册表结构双层concurrenthashmap">三 Nacos的核心注册表结构（双层ConcurrentHashMap）</h3>

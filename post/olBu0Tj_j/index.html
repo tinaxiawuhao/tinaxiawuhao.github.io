@@ -74,7 +74,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1660659241544"
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -124,7 +124,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1660659241544"
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -171,10 +171,10 @@
           <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/olBu0Tj_j.png" alt="封面图">
           </img>
           
-          <h1 id="思维导图">思维导图：</h1>
+          <p>思维导图：</p>
 <figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657628837809.png" alt="" loading="lazy"></figure>
-<h1 id="1-消息队列">1. 消息队列</h1>
-<h2 id="11-消息队列模式">1.1 消息队列模式</h2>
+<h2 id="1-消息队列">1. 消息队列</h2>
+<h3 id="11-消息队列模式">1.1 消息队列模式</h3>
 <p>消息队列目前主要 2 种模式，分别为“点对点模式”和“发布/订阅模式”。</p>
 <h4 id="111-点对点模式">1.1.1 点对点模式</h4>
 <p>一个具体的消息只能由一个消费者消费，多个生产者可以向同一个消息队列发送消息，但是一个消息在被一个消息者处理的时候，这个消息在队列上会被锁住或者被移除并且其他消费者无法处理该消息。</p>
@@ -187,7 +187,7 @@
 <li><strong>持久（durable）订阅</strong>：这种订阅会一直存在，除非主动去删除。消费者退出后，消息系统会继续维护该订阅，并且后续消息可以被继续处理。</li>
 </ul>
 <figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657628852760.png" alt="" loading="lazy"></figure>
-<h2 id="12-衡量标准">1.2 衡量标准</h2>
+<h3 id="12-衡量标准">1.2 衡量标准</h3>
 <p>对消息队列进行技术选型时，需要通过以下指标衡量你所选择的消息队列，是否可以满足你的需求：</p>
 <ul>
 <li><strong>消息顺序</strong>：发送到队列的消息，消费时是否可以保证消费的顺序，比如A先下单，B后下单，应该是A先去扣库存，B再去扣，顺序不能反。</li>
@@ -199,9 +199,9 @@
 <li><strong>伸缩</strong>：当消息队列性能有问题，比如消费太慢，是否可以快速支持库容；当消费队列过多，浪费系统资源，是否可以支持缩容。</li>
 <li><strong>吞吐量</strong>：支持的最高并发数。</li>
 </ul>
-<h1 id="2-rabbitmq-原理初探">2. RabbitMQ 原理初探</h1>
+<h2 id="2-rabbitmq-原理初探">2. RabbitMQ 原理初探</h2>
 <p>RabbitMQ 2007 年发布，是使用 Erlang 语言开发的开源消息队列系统，基于 AMQP 协议来实现。</p>
-<h2 id="21-基本概念">2.1 基本概念</h2>
+<h3 id="21-基本概念">2.1 基本概念</h3>
 <p>提到RabbitMQ，就不得不提AMQP协议。AMQP协议是具有现代特征的二进制协议。是一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计。</p>
 <p>先了解一下AMQP协议中间的几个重要概念：</p>
 <ul>
@@ -215,7 +215,7 @@
 <li>RoutingKey：路由键，生产者将消息发送给交换器的时候，会发送一个RoutingKey，用来指定路由规则，这样交换器就知道把消息发送到哪个队列。路由键通常为一个“.”分割的字符串，例如“com.rabbitmq”。</li>
 <li>Queue：消息队列，用来保存消息，供消费者消费。</li>
 </ul>
-<h2 id="22-工作原理">2.2 工作原理</h2>
+<h3 id="22-工作原理">2.2 工作原理</h3>
 <p>AMQP 协议模型由三部分组成：生产者、消费者和服务端，执行流程如下：</p>
 <ol>
 <li>生产者是连接到 Server，建立一个连接，开启一个信道。</li>
@@ -226,7 +226,7 @@
 <li>订阅了消息队列的消费者就可以获取到消息，进行消费。</li>
 </ol>
 <figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657628882128.png" alt="" loading="lazy"></figure>
-<h2 id="23-常用交换器">2.3 常用交换器</h2>
+<h3 id="23-常用交换器">2.3 常用交换器</h3>
 <p>RabbitMQ常用的交换器类型有direct、topic、fanout、headers四种：</p>
 <ul>
 <li>Direct Exchange：见文知意，直连交换机意思是此交换机需要绑定一个队列，要求该消息与一个特定的路由键完全匹配。简单点说就是一对一的，点对点的发送。</li>
@@ -252,7 +252,7 @@
 <li>Headers Exchange：这种交换机用的相对没这么多。它跟上面三种有点区别，它的路由不是用routingKey进行路由匹配，而是在匹配请求头中所带的键值进行路由。创建队列需要设置绑定的头部信息，有两种模式：全部匹配和部分匹配。如上图所示，交换机会根据生产者发送过来的头部信息携带的键值去匹配队列绑定的键值，路由到对应的队列。</li>
 </ul>
 <figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657628934149.png" alt="" loading="lazy"></figure>
-<h2 id="24-消费原理">2.4 消费原理</h2>
+<h3 id="24-消费原理">2.4 消费原理</h3>
 <p>我们先看几个基本概念：</p>
 <ul>
 <li>broker：每个节点运行的服务程序，功能为维护该节点的队列的增删以及转发队列操作请求。</li>
@@ -269,7 +269,7 @@
 <blockquote>
 <p>所以，到这里小伙伴们就可以看到 RabbitMQ的不足：由于master queue单节点，导致性能瓶颈，吞吐量受限。虽然为了提高性能，内部使用了Erlang这个语言实现，但是终究摆脱不了架构设计上的致命缺陷。</p>
 </blockquote>
-<h2 id="25-高级特性">2.5 高级特性</h2>
+<h3 id="25-高级特性">2.5 高级特性</h3>
 <h4 id="251-过期时间">2.5.1 过期时间</h4>
 <p>Time To Live，也就是生存时间，是一条消息在队列中的最大存活时间，单位是毫秒，下面看看RabbitMQ过期时间特性：</p>
 <ul>
@@ -305,7 +305,7 @@
 <p>一般的队列，消息一旦进入队列就会被消费者立即消费。延迟队列就是进入该队列的消息会被消费者延迟消费，延迟队列中存储的对象是的延迟消息，“延迟消息”是指当消息被发送以后，等待特定的时间后，消费者才能拿到这个消息进行消费。</p>
 <p>延迟队列用于需要延迟工作的场景。最常见的使用场景：淘宝或者天猫我们都使用过，用户在下单之后通常有30分钟的时间进行支付，如果这30分钟之内没有支付成功，那么订单就会自动取消。</p>
 <p>除了延迟消费，延迟队列的典型应用场景还有延迟重试。比如消费者从队列里面消费消息失败了，可以延迟一段时间以后进行重试。</p>
-<h2 id="26-特性分析">2.6 特性分析</h2>
+<h3 id="26-特性分析">2.6 特性分析</h3>
 <p>这里才是内容的重点，不仅需要知道Rabbit的特性，还需要知道支持这些特性的原因：</p>
 <ul>
 <li><strong>消息路由（支持）</strong>：RabbitMQ可以通过不同的交换器支持不同种类的消息路由；</li>
@@ -317,7 +317,7 @@
 <li><strong>消息回溯（不支持）</strong>：因为消息不支持永久保存，所以自然就不支持回溯。</li>
 <li><strong>高吞吐（中等）</strong>：因为所有的请求的执行，最后都是在master queue，它的这个设计，导致单机性能达不到十万级的标准。</li>
 </ul>
-<h1 id="3-rabbitmq环境搭建">3. RabbitMQ环境搭建</h1>
+<h2 id="3-rabbitmq环境搭建">3. RabbitMQ环境搭建</h2>
 <p>因为我用的是Mac，所以直接可以参考官网：</p>
 <blockquote>
 <p>https://www.rabbitmq.com/install-homebrew.html</p>
@@ -348,8 +348,8 @@ rabbitmq-server
 <p>会出现RabbitMQ后台管理界面（用户名和密码都为guest）：</p>
 <figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657629021755.png" alt="" loading="lazy"></figure>
 <p>通过brew安装，一行命令搞定，真香！</p>
-<h1 id="4-rabbitmq测试">4. RabbitMQ测试</h1>
-<h2 id="41-添加账号">4.1 添加账号</h2>
+<h2 id="4-rabbitmq测试">4. RabbitMQ测试</h2>
+<h3 id="41-添加账号">4.1 添加账号</h3>
 <p>首先得启动mq</p>
 <pre><code class="language-java">## 添加账号
 ./rabbitmqctl add_user admin admin
@@ -358,7 +358,7 @@ rabbitmq-server
 ## 设置超级权限
 ./rabbitmqctl set_user_tags admin administrator
 </code></pre>
-<h2 id="42-编码实测">4.2 编码实测</h2>
+<h3 id="42-编码实测">4.2 编码实测</h3>
 <p>因为代码中引入了java 8的特性，pom引入依赖：</p>
 <pre><code class="language-java">&lt;dependency&gt;
     &lt;groupId&gt;com.rabbitmq&lt;/groupId&gt;
@@ -450,8 +450,8 @@ rabbitmq-server
 <blockquote>
 <p>示例中的代码讲解，可以直接参考官网：https://www.rabbitmq.com/tutorials/tutorial-one-java.html</p>
 </blockquote>
-<h1 id="5-基本使用姿势">5. 基本使用姿势</h1>
-<h2 id="51-公共代码封装">5.1 公共代码封装</h2>
+<h2 id="5-基本使用姿势">5. 基本使用姿势</h2>
+<h3 id="51-公共代码封装">5.1 公共代码封装</h3>
 <p>封装工厂类：</p>
 <pre><code class="language-java">public class RabbitUtil {
     public static ConnectionFactory getConnectionFactory() {
@@ -517,7 +517,7 @@ rabbitmq-server
     }
 }
 </code></pre>
-<h2 id="52-direct方式">5.2 Direct方式</h2>
+<h3 id="52-direct方式">5.2 Direct方式</h3>
 <figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1657629073366.png" alt="" loading="lazy"></figure>
 <h4 id="521-direct示例">5.2.1 Direct示例</h4>
 <p>生产者：</p>
@@ -625,7 +625,7 @@ rabbitmq-server
 <blockquote>
 <p>思考：不执行消费者，看不到这个Queres中信息，我其实可以把这个界面理解为消费者信息界面。不过感觉还是怪怪的，这个queues如果是消费者信息，就不应该叫queues，我理解queues应该是RabbitMQ中实际存放数据的queues，难道是我理解错了？</p>
 </blockquote>
-<h2 id="53-fanout方式指定队列">5.3 Fanout方式（指定队列）</h2>
+<h3 id="53-fanout方式指定队列">5.3 Fanout方式（指定队列）</h3>
 <figure data-type="image" tabindex="23"><img src="https://tinaxiawuhao.github.io/post-images/1657629161615.png" alt="" loading="lazy"></figure>
 <p>生产者封装：</p>
 <pre><code class="language-java">public class FanoutProducer {
@@ -679,7 +679,7 @@ rabbitmq-server
 <blockquote>
 <p>注意：往队列塞数据时，可能通过界面看不到消息个数的增加，可能是你之前已经开启了消费进程，导致增加的消息马上被消费了。</p>
 </blockquote>
-<h2 id="54-fanout方式随机获取队列">5.4 Fanout方式（随机获取队列）</h2>
+<h3 id="54-fanout方式随机获取队列">5.4 Fanout方式（随机获取队列）</h3>
 <p>上面我们是指定了队列，这个方式其实很不友好，比如对于Fanout，我其实根本无需关心队列的名字，如果还指定对应队列进行消费，感觉这个很冗余，所以我们这里就采用随机获取队列名字的方式，下面代码直接Copy官网。</p>
 <p>生成者封装：</p>
 <pre><code class="language-java">public static void publishMsgV2(String exchange, BuiltinExchangeType exchangeType, String message) throws IOException, TimeoutException {
@@ -762,15 +762,15 @@ rabbitmq-server
 <figure data-type="image" tabindex="26"><img src="https://tinaxiawuhao.github.io/post-images/1657629216023.png" alt="" loading="lazy"></figure>
 <figure data-type="image" tabindex="27"><img src="https://tinaxiawuhao.github.io/post-images/1657629228908.png" alt="" loading="lazy"></figure>
 <figure data-type="image" tabindex="28"><img src="https://tinaxiawuhao.github.io/post-images/1657629242632.png" alt="" loading="lazy"></figure>
-<h2 id="55-topic方式">5.5 Topic方式</h2>
+<h3 id="55-topic方式">5.5 Topic方式</h3>
 <figure data-type="image" tabindex="29"><img src="https://tinaxiawuhao.github.io/post-images/1657629257404.png" alt="" loading="lazy"></figure>
 <p>代码详见官网：https://www.rabbitmq.com/tutorials/tutorial-five-java.html</p>
 <blockquote>
 <p>更多方式，请直接查看官网：https://www.rabbitmq.com/getstarted.html</p>
 </blockquote>
 <figure data-type="image" tabindex="30"><img src="https://tinaxiawuhao.github.io/post-images/1657629270305.png" alt="" loading="lazy"></figure>
-<h1 id="6-rabbitmq-进阶">6. RabbitMQ 进阶</h1>
-<h2 id="61-durable-和-autodeleted">6.1 durable 和 autoDeleted</h2>
+<h2 id="6-rabbitmq-进阶">6. RabbitMQ 进阶</h2>
+<h3 id="61-durable-和-autodeleted">6.1 durable 和 autoDeleted</h3>
 <p>在定义Queue时，可以指定这两个参数：</p>
 <pre><code class="language-java">/**
  * Declare an exchange.
@@ -840,11 +840,11 @@ channel.basicConsume(queue, false, consumer);
 </code></pre>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
-<li><a href="#%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE">思维导图：</a></li>
+<li>
+<ul>
 <li><a href="#1-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">1. 消息队列</a>
 <ul>
-<li><a href="#11-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%A8%A1%E5%BC%8F">1.1 消息队列模式</a><br>
-*
+<li><a href="#11-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%A8%A1%E5%BC%8F">1.1 消息队列模式</a>
 <ul>
 <li><a href="#111-%E7%82%B9%E5%AF%B9%E7%82%B9%E6%A8%A1%E5%BC%8F">1.1.1 点对点模式</a></li>
 <li><a href="#112-%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F">1.1.2 发布/订阅模式</a></li>
@@ -859,8 +859,7 @@ channel.basicConsume(queue, false, consumer);
 <li><a href="#22-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86">2.2 工作原理</a></li>
 <li><a href="#23-%E5%B8%B8%E7%94%A8%E4%BA%A4%E6%8D%A2%E5%99%A8">2.3 常用交换器</a></li>
 <li><a href="#24-%E6%B6%88%E8%B4%B9%E5%8E%9F%E7%90%86">2.4 消费原理</a></li>
-<li><a href="#25-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7">2.5 高级特性</a><br>
-*
+<li><a href="#25-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7">2.5 高级特性</a>
 <ul>
 <li><a href="#251-%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4">2.5.1 过期时间</a></li>
 <li><a href="#252-%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4">2.5.2 消息确认</a></li>
@@ -882,8 +881,7 @@ channel.basicConsume(queue, false, consumer);
 <li><a href="#5-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF">5. 基本使用姿势</a>
 <ul>
 <li><a href="#51-%E5%85%AC%E5%85%B1%E4%BB%A3%E7%A0%81%E5%B0%81%E8%A3%85">5.1 公共代码封装</a></li>
-<li><a href="#52-direct%E6%96%B9%E5%BC%8F">5.2 Direct方式</a><br>
-*
+<li><a href="#52-direct%E6%96%B9%E5%BC%8F">5.2 Direct方式</a>
 <ul>
 <li><a href="#521-direct%E7%A4%BA%E4%BE%8B">5.2.1 Direct示例</a></li>
 <li><a href="#522-%E9%97%AE%E9%A2%98%E6%8E%A2%E8%AE%A8">5.2.2 问题探讨</a></li>
@@ -896,12 +894,13 @@ channel.basicConsume(queue, false, consumer);
 </li>
 <li><a href="#6-rabbitmq-%E8%BF%9B%E9%98%B6">6. RabbitMQ 进阶</a>
 <ul>
-<li><a href="#61-durable-%E5%92%8C-autodeleted">6.1 durable 和 autoDeleted</a><br>
-*
+<li><a href="#61-durable-%E5%92%8C-autodeleted">6.1 durable 和 autoDeleted</a>
 <ul>
 <li><a href="#611-durable">6.1.1 durable</a></li>
 <li><a href="#612-autodeleted">6.1.2 autoDeleted</a></li>
 <li><a href="#613-%E5%B0%8F%E8%8A%82">6.1.3 小节</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#64-ack">6.4 ACK</a></li>

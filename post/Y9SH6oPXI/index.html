@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>Spring使用ThreadLocal存储内存泄露风险 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Spring使用ThreadLocal存储内存泄露风险 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="Spring使用ThreadLocal存储内存泄露风险" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/Y9SH6oPXI/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1661777296391"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RvlbUayk-/" class="tag">spring</a>
+                
+              </span>
+              <h1>Spring使用ThreadLocal存储内存泄露风险</h1>
+              <span class="meta">
+                Posted on
+                2022-08-23，5 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/Y9SH6oPXI.png" alt="封面图">
+          </img>
+          
+          <p>Spring使用ThreadLocal存储内存泄露风险<br>
+Spring 中有时候我们需要存储一些和 Request 相关联的变量，例如用户的登陆有关信息等，它的生命周期和 Request 相同。</p>
+<p>一个容易想到的实现办法是使用ThreadLocal</p>
+<pre><code class="language-java">@Slf4j
+public class CurrentUserHelper {
+    //存储用户信息
+    private static final InheritableThreadLocal&lt;SysUser&gt; CURRENT_USER = new InheritableThreadLocal&lt;SysUser&gt;();
+
+    public static void setCurrentUser(SysUser currentUserInfo) {
+        CURRENT_USER.set(currentUserInfo);
+    }
+
+    public static SysUser getCurrentUser() {
+        return (SysUser)CURRENT_USER.get();
+    }
+
+    public static void clear() {
+        CURRENT_USER.remove();
+    }
+
+}
+</code></pre>
+<p>使用一个自定义的HandlerInterceptor将有关信息注入进去</p>
+<pre><code class="language-java">@Slf4j
+@Component
+public class RequestInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
+            Exception {
+        try {
+            CurrentUserHelper.setCurrentUser(retrieveUserInfo(request));
+        } catch (Exception ex) {
+            log.warn(&quot;读取请求信息失败&quot;, ex);
+        }
+        return true;
+    }
+    
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable
+            ModelAndView modelAndView) throws Exception {
+        CurrentUserHelper.clear();
+
+}
+</code></pre>
+<p>通过这样，我们就可以在 Controller 中直接使用这个 context，很方便的获取到有关用户的信息</p>
+<pre><code class="language-java">@Slf4j
+@RestController
+class Controller {
+  public Result get() {
+     SysUser user = CurrentUserHelper.get();
+     // ...
+  }
+
+}
+</code></pre>
+<p>这个方法也是很多博客中使用的。然而这个方法却存在着一个很隐蔽的坑： HandlerInterceptor 的 postHandle 并不总是会调用。</p>
+<p>当Controller中出现Exception</p>
+<pre><code class="language-java">@Slf4j
+@RestController
+class Controller {
+
+  public Result get() {
+      SysUser user = CurrentUserHelper.get();
+     // ...
+     throw new RuntimeException();
+  }
+}
+</code></pre>
+<p>或者在HandlerInterceptor的preHandle中出现Exception</p>
+<pre><code class="language-java">@Slf4j
+@Component
+public class RequestInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
+            Exception {
+        try {
+            CurrentUserHelper.setCurrentUser(retrieveUserInfo(request));
+        } catch (Exception ex) {
+            log.warn(&quot;读取请求信息失败&quot;, ex);
+        }
+    
+        // ...
+        throw new RuntimeException();
+        //...
+        return true;
+    }
+}
+</code></pre>
+<p>这些情况下， postHandle 并不会调用。这就导致了 ThreadLocal 变量不能被清理。</p>
+<p>在平常的 Java 环境中，ThreadLocal 变量随着 Thread 本身的销毁，是可以被销毁掉的。但 Spring 由于采用了线程池的设计，响应请求的线程可能会一直常驻，这就导致了变量一直不能被 GC 回收。更糟糕的是，这个没有被正确回收的变量，由于线程池对线程的复用，可能会串到别的 Request 当中，进而直接导致代码逻辑的错误。</p>
+<p>为了解决这个问题，我们可以使用 Spring 自带的 RequestContextHolder ，它背后的原理也是 ThreadLocal，不过它总会被更底层的 Servlet 的 Filter 清理掉，因此不存在泄露的问题。</p>
+<p>下面是一个使用RequestContextHolder重写的例子</p>
+<pre><code class="language-java">public class SecurityContextHolder {
+
+    private static final String SECURITY_CONTEXT_ATTRIBUTES = &quot;SECURITY_CONTEXT&quot;;
+    
+    public static void setContext(SysUser context) {
+        RequestContextHolder.currentRequestAttributes().setAttribute(
+                SECURITY_CONTEXT_ATTRIBUTES,
+                context,
+                RequestAttributes.SCOPE_REQUEST);
+    
+    }
+    
+    public static SecurityContext get() {
+        return (SysUser)RequestContextHolder.currentRequestAttributes()
+                .getAttribute(SECURITY_CONTEXT_ATTRIBUTES, RequestAttributes.SCOPE_REQUEST);
+    }
+}
+</code></pre>
+<p>项目中实现WebMvcConfigurer接口或者WebMvcConfigurationSupport接口实现跨域资源访问配置时，要重写addInterceptors方法</p>
+<pre><code class="language-java">@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        //配置允许跨域访问的路径
+        registry.addMapping(&quot;/**&quot;)
+                .allowedOrigins(&quot;*&quot;)
+                // 允许提交请求的方法，*表示全部允许
+                .allowedMethods(&quot;GET&quot;, &quot;POST&quot;, &quot;DELETE&quot;, &quot;PUT&quot;)
+                .allowedHeaders(&quot;*&quot;)
+                .exposedHeaders(&quot;Access-Control-Allow-Origin&quot;)
+                //是否允许证书 不再默认开启
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry interceptor) {
+        interceptor.addInterceptor(new RequestInterceptor()).addPathPatterns(&quot;/**&quot;);
+    }
+
+}
+</code></pre>
+<p>除了使用 RequestContextHolder 还可以使用 Request Scope 的 Bean，或者使用 ThreadLocalTargetSource ，原理上是类似的。</p>
+<p>需要时刻注意 ThreadLocal 相当于线程内部的 static 变量，是一个非常容易产生泄露的点，因此使用 ThreadLocal 应该额外小心。</p>
+<p>Threadlocal可能会产生内存泄露的问题及原理<br>
+刚遇到一个关于threadlocal的内存泄漏问题，刚好总结一下</p>
+<p>比较常用的这里先不提，直接提比较重要的部分</p>
+<p>为什么会产生内存泄露？</p>
+<pre><code class="language-java">public void set(T value) {
+
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null)
+        map.set(this, value);
+    else
+        createMap(t, value);
+}
+</code></pre>
+<p>set方法里面，先调用到当前线程thread，每个线程里都会有一个threadlocals成员变量，指向对应的ThreadLocalMap ，然后以new出来的引用作为key，和给定的value一块保存起来。</p>
+<p>当外部引用解除以后，对应的ThreadLocal对象由于被内部ThreadLocalMap 引用，不会GC，可能会导致内存泄露。</p>
+<p>JVM解决的办法</p>
+<pre><code class="language-java">static class Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt; {
+
+    /** The value associated with this ThreadLocal. */
+    Object value;
+    
+    Entry(ThreadLocal&lt;?&gt; k, Object v) {
+        super(k);
+        value = v;
+    }  
+}
+</code></pre>
+<p>继承了一个软引用，在系统进行gc的时候就可以回收</p>
+<p>但是回收以后，key变成null，value也无法被访问到，还是可能存在内存泄露。 因此一旦不用了，必须对里面的keyvalue对remove掉，否则就会有内存泄露；而且在threadlocal源码里面，在每次get或者set的时候会清楚里面key为value的记录</p>
+
+          <div class="toc-container"></div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/uZBK7g699/">
+                  <span class="post-title">
+                    工具类&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/0yWpE16Ha/">
+                   <span class="post-title">
+                     树形结构查询&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

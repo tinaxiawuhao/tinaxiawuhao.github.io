@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tinaxiawuhao.github.io</id>
     <title>tianxia</title>
-    <updated>2022-08-16T14:14:12.821Z</updated>
+    <updated>2022-08-29T12:48:29.573Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tinaxiawuhao.github.io"/>
     <link rel="self" href="https://tinaxiawuhao.github.io/atom.xml"/>
@@ -10,6 +10,1143 @@
     <logo>https://tinaxiawuhao.github.io/images/avatar.png</logo>
     <icon>https://tinaxiawuhao.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, tianxia</rights>
+    <entry>
+        <title type="html"><![CDATA[springboot启动流程]]></title>
+        <id>https://tinaxiawuhao.github.io/post/Tm9S6oyiS/</id>
+        <link href="https://tinaxiawuhao.github.io/post/Tm9S6oyiS/">
+        </link>
+        <updated>2022-08-29T12:37:52.000Z</updated>
+        <content type="html"><![CDATA[<p>SpringBoot 启动流程</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1661776742013.png" alt="" loading="lazy"></figure>
+<h3 id="new-springapplication阶段">new SpringApplication阶段</h3>
+<p>一般的springboot的启动类长这个样子。</p>
+<pre><code class="language-java">@SpringBootApplication
+public class SampleApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SampleApplication.class, args);
+    }
+
+}
+</code></pre>
+<p>可以看到这个main方法里面只有简单的一行code，这一行就是理解springboot启动过程的入口了。点进去看一看它做了什么事情，大致上可以认为分为两个部分，首先是new了一个SpringApplication对象，然后调用了它的run方法。</p>
+<pre><code class="language-java">/**
+ * Static helper that can be used to run a {@link SpringApplication} from the
+ * specified source using default settings.
+ * @param primarySource the primary source to load
+ * @param args the application arguments (usually passed from a Java main method)
+ * @return the running {@link ApplicationContext}
+ */
+public static ConfigurableApplicationContext run(Class&lt;?&gt; primarySource, String... args) {
+    return run(new Class&lt;?&gt;[] { primarySource }, args);
+}
+
+/**
+ * Static helper that can be used to run a {@link SpringApplication} from the
+ * specified sources using default settings and user supplied arguments.
+ * @param primarySources the primary sources to load
+ * @param args the application arguments (usually passed from a Java main method)
+ * @return the running {@link ApplicationContext}
+ */
+public static ConfigurableApplicationContext run(Class&lt;?&gt;[] primarySources, String[] args) {
+    return new SpringApplication(primarySources).run(args);
+}
+</code></pre>
+<p>new SpringApplication 阶段做了哪些事情<br>
+结合code我们看一下在new SpringApplication时，SpringBoot框架做了哪些事情</p>
+<pre><code class="language-java">public SpringApplication(ResourceLoader resourceLoader, Class&lt;?&gt;... primarySources) {
+    this.resourceLoader = resourceLoader;
+    Assert.notNull(primarySources, &quot;PrimarySources must not be null&quot;);
+    //设置primarySources
+    this.primarySources = new LinkedHashSet&lt;&gt;(Arrays.asList(primarySources));
+    //确定application类型
+    this.webApplicationType = WebApplicationType.deduceFromClasspath();
+    //读取配置在spring.factories文件中的ApplicationContextInitializer，需要注意一下，在这个方法里面，springboot会开始读取spring.factories里面的配置并且根据ClassLoader的不同，缓存到内存中。这个之后再展开讲。
+    setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
+    //读取配置在spring.factories文件中的ApplicationListener。
+    setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
+    //确定入口类
+    this.mainApplicationClass = deduceMainApplicationClass();
+}
+</code></pre>
+<h4 id="确定应用程序类型servlet">确定应用程序类型(servlet)</h4>
+<p>首先就是确定一下我们这个项目的类型<br>
+判断方法比较简单粗暴，就是看一下你项目中有没有对应类型的标志性的类。举个例子，如果你有WEBFLUX_INDICATOR_CLASS这个类的话，就认为你的项目类型是REACTIVE。</p>
+<pre><code class="language-java">private static final String WEBMVC_INDICATOR_CLASS = &quot;org.springframework.web.servlet.DispatcherServlet&quot;;
+
+private static final String WEBFLUX_INDICATOR_CLASS = &quot;org.springframework.web.reactive.DispatcherHandler&quot;;
+
+private static final String JERSEY_INDICATOR_CLASS = &quot;org.glassfish.jersey.servlet.ServletContainer&quot;;
+
+private static final String SERVLET_APPLICATION_CONTEXT_CLASS = &quot;org.springframework.web.context.WebApplicationContext&quot;;
+
+private static final String REACTIVE_APPLICATION_CONTEXT_CLASS = &quot;org.springframework.boot.web.reactive.context.ReactiveWebApplicationContext&quot;;
+
+static WebApplicationType deduceFromClasspath() {
+    if (ClassUtils.isPresent(WEBFLUX_INDICATOR_CLASS, null) &amp;&amp; !ClassUtils.isPresent(WEBMVC_INDICATOR_CLASS, null)
+        &amp;&amp; !ClassUtils.isPresent(JERSEY_INDICATOR_CLASS, null)) {
+        return WebApplicationType.REACTIVE;
+    }
+    for (String className : SERVLET_INDICATOR_CLASSES) {
+        if (!ClassUtils.isPresent(className, null)) {
+            return WebApplicationType.NONE;
+        }
+    }
+    return WebApplicationType.SERVLET;
+}
+</code></pre>
+<h4 id="spi加载springfactories">spi加载spring.factories</h4>
+<p>然后就是通过SPI机制获取spring.factories的配置<br>
+在构造器中，我们可以很明显的看到有两次对于getSpringFactoriesInstances方法的调用，这个方法兜兜转转，最后会调用到SpringFactoriesLoader的loadSpringFactories的方法。在这个方法中，对于相同的classsloader，只会尝试load一次spring.factories文件中的配置。</p>
+<pre><code class="language-java">private static Map&lt;String, List&lt;String&gt;&gt; loadSpringFactories(@Nullable ClassLoader classLoader) {
+    MultiValueMap&lt;String, String&gt; result = cache.get(classLoader);
+    if (result != null) {
+        return result;
+    }
+
+    try {
+        Enumeration&lt;URL&gt; urls = (classLoader != null ?
+                                 classLoader.getResources(FACTORIES_RESOURCE_LOCATION) :
+                                 ClassLoader.getSystemResources(FACTORIES_RESOURCE_LOCATION));
+        result = new LinkedMultiValueMap&lt;&gt;();
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            UrlResource resource = new UrlResource(url);
+            Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+            for (Map.Entry&lt;?, ?&gt; entry : properties.entrySet()) {
+                String factoryTypeName = ((String) entry.getKey()).trim();
+                for (String factoryImplementationName : StringUtils.commaDelimitedListToStringArray((String) entry.getValue())) {
+                    result.add(factoryTypeName, factoryImplementationName.trim());
+                }
+            }
+        }
+        cache.put(classLoader, result);
+        return result;
+    }
+    catch (IOException ex) {
+        throw new IllegalArgumentException(&quot;Unable to load factories from location [&quot; +
+                                           FACTORIES_RESOURCE_LOCATION + &quot;]&quot;, ex);
+    }
+}
+</code></pre>
+<h4 id="加载applicationcontextinitializer初始化器和applicationlistener监听器">加载ApplicationContextInitializer(初始化器)和ApplicationListener(监听器)</h4>
+<p>从load好的spring.factorie中获取配置好的ApplicationContextInitializer和ApplicationListener<br>
+这个就没啥好说了。需要注意的是，这些ApplicationListener是在调用run方法之前就已经加载进来的，所以这些ApplicationListener不仅仅能够接收ApplicationStartedEvent以及之后的ApplicationEvent，之前的比如ApplicationStartingEvent、ApplicationEnvironmentPreparedEvent等等事件类型也都可以接收到。</p>
+<p>确定主类<br>
+这个的逻辑也比较简单，首先获取当前的方法调用栈（这点还是有疑问为啥不通过Thread.currentThread().getStackTrace()这种看起来更加正式的方法来获取stackTrace）。然后从栈顶一个一个找下去，直到找到一个名字为main的方法，这个方法所对应的类就可以认为是主类了。</p>
+<pre><code class="language-java">private Class&lt;?&gt; deduceMainApplicationClass() {
+    try {
+        StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            if (&quot;main&quot;.equals(stackTraceElement.getMethodName())) {
+                return Class.forName(stackTraceElement.getClassName());
+            }
+        }
+    }
+    catch (ClassNotFoundException ex) {
+        // Swallow and continue
+    }
+    return null;
+}
+</code></pre>
+<p>为了验证我也写个了sample</p>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        SampleApplication.main(args);
+    }
+}
+
+@SpringBootApplication
+public class SampleApplication {
+    public static void main(String[] args) {
+    	SpringApplication.run(SampleApplication.class, args);
+    }
+}
+</code></pre>
+<p>发现调用Test.main方法之后，定位出来的mainclass确实是SampleApplication。</p>
+<h3 id="run方法">run()方法</h3>
+<p>run()方法做了哪些事情<br>
+还是先看这些稍微加了点注释的源码</p>
+<pre><code class="language-java">public ConfigurableApplicationContext run(String... args) {
+
+    //起了个timer，用于计时，不用管
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
+    ConfigurableApplicationContext context = null;
+    Collection&lt;SpringBootExceptionReporter&gt; exceptionReporters = new ArrayList&lt;&gt;();
+    //这个就是配置个系统环境变量 java.awt.headless
+    configureHeadlessProperty();
+    //获取SpringApplicationRunListeners，这个和之前提到的ApplicationListener是两个不同的接口。两者间的联系在于，
+    //在springboot的默认实现中，有一个特殊的类EventPublishingRunListener会继承SpringApplicationRunListeners，
+    //他会在springboot的特殊阶段发布对应的ApplicationEvent，并且被ApplicationListener接收。
+    SpringApplicationRunListeners listeners = getRunListeners(args);
+    //进入starting阶段，发布ApplicationStartingEvent事件。
+    listeners.starting();
+    try {
+        //包装启动参数
+        ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+        //准备environment，确定propertiesSource。发布ApplicationEnvironmentPreparedEvent。
+        ConfigurableEnvironment environment = prepareEnvironment(listeners, applicationArguments);
+        //配置环境变量spring.beaninfo.ignore
+        configureIgnoreBeanInfo(environment);
+        Banner printedBanner = printBanner(environment);
+        //创建应用上下文
+        context = createApplicationContext();
+        //获取SpringBootExceptionReporter
+        exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
+                                                         new Class[] { ConfigurableApplicationContext.class }, context);
+        //发布ApplicationContextInitializedEvent事件和ApplicationPreparedEvent事件
+        prepareContext(context, environment, listeners, applicationArguments, printedBanner);
+        /划重点，进行bean的初始化工作
+            refreshContext(context);
+        //暂时是个空function。
+        afterRefresh(context, applicationArguments);
+        //关闭计算器，也就是前面创建的那个timer
+        stopWatch.stop();
+        if (this.logStartupInfo) {
+            new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
+        }
+        //发布ApplicationStartedEvent事件
+        listeners.started(context);
+        //运行ApplicationRunner和CommandLineRunner
+        callRunners(context, applicationArguments);
+    }
+    catch (Throwable ex) {
+        handleRunFailure(context, ex, exceptionReporters, listeners);
+        throw new IllegalStateException(ex);
+    }
+
+    try {
+
+        //发布ApplicationReadyEvent事件
+        listeners.running(context);
+    }
+    catch (Throwable ex) {
+        handleRunFailure(context, ex, exceptionReporters, null);
+        throw new IllegalStateException(ex);
+    }
+    return context;
+}
+</code></pre>
+<p>可以看到这个方法比较复杂，基本上每一行语句都对应着一个函数。为了更加方便地捋清楚整个flow，我们跟着SpringApplicationRunListener，看一下它的每个方法都在什么时候被trigger，两个方法之间都做了什么事情。</p>
+<p>首先看一下SpringApplicationRunListener(s)有哪些方法<br>
+SpringApplicationRunListener并没有直接被SpringApplication调用，而是作为一个整体SpringApplicationRunListeners被统一调用，它有starting、environmentPrepared、contextPrepared、contextLoaded、started、running、failed等七个方法。由于这一篇我们只讲SpringBoot的启动流程，因此只讨论前六个方法，看他们的调用时机。</p>
+<pre><code class="language-java">public interface SpringApplicationRunListener {
+
+    /**
+     * Called immediately when the run method has first started. Can be used for very
+     * early initialization.
+     */
+    default void starting() {
+    }
+    
+    /**
+     * Called once the environment has been prepared, but before the
+     * {@link ApplicationContext} has been created.
+     * @param environment the environment
+     */
+    default void environmentPrepared(ConfigurableEnvironment environment) {
+    }
+    
+    /**
+     * Called once the {@link ApplicationContext} has been created and prepared, but
+     * before sources have been loaded.
+     * @param context the application context
+     */
+    default void contextPrepared(ConfigurableApplicationContext context) {
+    }
+    
+    /**
+     * Called once the application context has been loaded but before it has been
+     * refreshed.
+     * @param context the application context
+     */
+    default void contextLoaded(ConfigurableApplicationContext context) {
+    }
+    
+    /**
+     * The context has been refreshed and the application has started but
+     * {@link CommandLineRunner CommandLineRunners} and {@link ApplicationRunner
+     * ApplicationRunners} have not been called.
+     * @param context the application context.
+     * @since 2.0.0
+     */
+    default void started(ConfigurableApplicationContext context) {
+    }
+    
+    /**
+     * Called immediately before the run method finishes, when the application context has
+     * been refreshed and all {@link CommandLineRunner CommandLineRunners} and
+     * {@link ApplicationRunner ApplicationRunners} have been called.
+     * @param context the application context.
+     * @since 2.0.0
+     */
+    default void running(ConfigurableApplicationContext context) {
+    }
+    
+    /**
+     * Called when a failure occurs when running the application.
+     * @param context the application context or {@code null} if a failure occurred before
+     * the context was created
+     * @param exception the failure
+     * @since 2.0.0
+     */
+    default void failed(ConfigurableApplicationContext context, Throwable exception) {
+    }
+
+}
+</code></pre>
+<p>在starting方法之前<br>
+springboot在调用run方法后，基本上第一时间就trigger了listener的starting方式，在这之前，基本上没做啥事。</p>
+<pre><code class="language-java">StopWatch stopWatch = new StopWatch();
+stopWatch.start();
+ConfigurableApplicationContext context = null;
+Collection&lt;SpringBootExceptionReporter&gt; exceptionReporters = new ArrayList&lt;&gt;();
+configureHeadlessProperty();
+SpringApplicationRunListeners listeners = getRunListeners(args);
+</code></pre>
+<h4 id="开启计时器">开启计时器</h4>
+<p>一个是创建了一个timer（StopWatch）用来之后计算启动耗时，下面这段日志就是它功能的体现。</p>
+<pre><code class="language-java">2021-09-22 16:29:38.241  INFO 8044 --- [           main] com.sample.app.SampleApplication       : Started SampleApplication in 32.023 seconds (JVM running for 121.055)
+</code></pre>
+<h4 id="headlesstrue-设置无外接设备启动">headless=true 设置无外接设备启动</h4>
+<p>一个是调用configureHeadlessProperty方法来设置java.awt.headless的系统环境变量，这个默认值是true。</p>
+<pre><code class="language-java"> private boolean headless = true;
+
+  private void configureHeadlessProperty() {
+      System.setProperty(SYSTEM_PROPERTY_JAVA_AWT_HEADLESS,
+              System.getProperty(SYSTEM_PROPERTY_JAVA_AWT_HEADLESS, Boolean.toString(this.headless)));
+  }
+</code></pre>
+<h4 id="获取并启用监听器">获取并启用监听器</h4>
+<p>再有就是从之前解析好的spring.factories中读取所有的SpringApplicationRunListeners。</p>
+<pre><code class="language-java">private SpringApplicationRunListeners getRunListeners(String[] args) {
+    Class&lt;?&gt;[] types = new Class&lt;?&gt;[] { SpringApplication.class, String[].class };
+    return new SpringApplicationRunListeners(logger,
+            getSpringFactoriesInstances(SpringApplicationRunListener.class, types, this, args));
+}
+</code></pre>
+<p>在starting方法<br>
+EventPublishingRunListener发布ApplicationStartingEvent事件</p>
+<pre><code class="language-java">public void starting() {
+    this.initialMulticaster.multicastEvent(new ApplicationStartingEvent(this.application, this.args));
+}
+</code></pre>
+<p>订阅了这个事件的ApplicationListener倒是找到了几个，除了LogbackLoggingSystem进行了一些与log相关的简单操作外，都没做啥事。</p>
+<pre><code class="language-java">LiquibaseServiceLocatorApplicationListener
+DelegatingApplicationListener
+LogbackLoggingSystem
+BackgroundPreinitializer
+</code></pre>
+<h4 id="设置应用程序参数">设置应用程序参数</h4>
+<p>staring之后，environmentPrepared之前<br>
+对应的代码在run方法里对应两行，其中第一行是把系统参数包装一下，使得用起来更加方便。第二行则是进行一些环境的准备工作。</p>
+<pre><code class="language-java">ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+ConfigurableEnvironment environment = prepareEnvironment(listeners, applicationArguments);
+</code></pre>
+<h4 id="准备环境变量">准备环境变量</h4>
+<p>我们重点看prepareEnvironment这个方法中做了哪些工作。</p>
+<pre><code class="language-java">private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners,
+        ApplicationArguments applicationArguments) {
+    // Create and configure the environment
+    ConfigurableEnvironment environment = getOrCreateEnvironment();
+    configureEnvironment(environment, applicationArguments.getSourceArgs());
+    ConfigurationPropertySources.attach(environment);
+    listeners.environmentPrepared(environment);
+    bindToSpringApplication(environment);
+    if (!this.isCustomEnvironment) {
+        environment = new EnvironmentConverter(getClassLoader()).convertEnvironmentIfNecessary(environment,
+                deduceEnvironmentClass());
+    }
+    ConfigurationPropertySources.attach(environment);
+    return environment;
+}
+</code></pre>
+<p>可以清楚的看到，在调用listeners.environmentPrepared(environment);方法之前，只有三行code，分别做了三件事情。<br>
+getOrCreateEnvironment根据应用类型来创建ConfigurableEnvironment</p>
+<pre><code class="language-java">private ConfigurableEnvironment getOrCreateEnvironment() {
+    if (this.environment != null) {
+        return this.environment;
+    }
+    switch (this.webApplicationType) {
+    case SERVLET:
+        return new StandardServletEnvironment();
+    case REACTIVE:
+        return new StandardReactiveWebEnvironment();
+    default:
+        return new StandardEnvironment();
+    }
+}
+</code></pre>
+<p>configureEnvironment 来配置propertiesSource和profiles<br>
+这里面其实做了三件事情，除了上面说的propertiesSource和profiles之外还有对conversionService的配置，但是我还不清楚conversionService这个东西到底是干啥用的，所以先空着吧。先解释剩下的两个吧。</p>
+<pre><code class="language-java">protected void configureEnvironment(ConfigurableEnvironment environment, String[] args) {
+       if (this.addConversionService) {
+           ConversionService conversionService = ApplicationConversionService.getSharedInstance();
+           environment.setConversionService((ConfigurableConversionService) conversionService);
+       }
+       configurePropertySources(environment, args);
+       configureProfiles(environment, args);
+   }
+</code></pre>
+<p>其中，configurePropertySources是配置environment中的propertySources属性。propertySources是用于记录系统的配置参数可以从哪里读取，各个propertySource在其中的先后顺序体现了他们彼此的优先级。默认的propertySources包括systemProperties和systemEnvironment两个。在configurePropertySources步骤中根据代码或者参数的不同，可能会额外加上defaultProperties和commandLineArgs两个propertySource。</p>
+<pre><code class="language-java">protected void configurePropertySources(ConfigurableEnvironment environment, String[] args) {
+    MutablePropertySources sources = environment.getPropertySources();
+    if (this.defaultProperties != null &amp;&amp; !this.defaultProperties.isEmpty()) {
+        sources.addLast(new MapPropertySource(&quot;defaultProperties&quot;, this.defaultProperties));
+    }
+    if (this.addCommandLineProperties &amp;&amp; args.length &gt; 0) {
+        String name = CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME;
+        if (sources.contains(name)) {
+            PropertySource&lt;?&gt; source = sources.get(name);
+            CompositePropertySource composite = new CompositePropertySource(name);
+            composite.addPropertySource(
+                    new SimpleCommandLinePropertySource(&quot;springApplicationCommandLineArgs&quot;, args));
+            composite.addPropertySource(source);
+            sources.replace(name, composite);
+        }
+        else {
+            sources.addFirst(new SimpleCommandLinePropertySource(args));
+        }
+    }
+}
+</code></pre>
+<p>configureProfiles则是试图从现有的propertySources中尝试获取spring.profiles.active参数。需要注意的是，此时的propertySources并不包含与你的配置文件（比如application.properties）相对应的propertySource，所以无论你的配置文件怎么配置，对这个阶段都不造成影响。</p>
+<pre><code class="language-java">protected void configureProfiles(ConfigurableEnvironment environment, String[] args) {
+    Set&lt;String&gt; profiles = new LinkedHashSet&lt;&gt;(this.additionalProfiles);
+    profiles.addAll(Arrays.asList(environment.getActiveProfiles()));
+    environment.setActiveProfiles(StringUtils.toStringArray(profiles));
+}
+</code></pre>
+<p>ConfigurationPropertySources.attach(environment)将自己置于propertySources的第一个的位置<br>
+前面也讲了，各个PropertySource在propertySources中的先后顺序决定了优先级，现在把ConfigurationPropertySources放到第一位，也就意味着它的优先级是最高的。细心的人应该也会注意到ConfigurationPropertySources.attach(environment)这一行前后调用了两次，这个也是为了确保ConfigurationPropertySources优先加载的顺序。</p>
+<pre><code class="language-java">public static void attach(Environment environment) {
+    Assert.isInstanceOf(ConfigurableEnvironment.class, environment);
+    MutablePropertySources sources = ((ConfigurableEnvironment) environment).getPropertySources();
+    PropertySource&lt;?&gt; attached = sources.get(ATTACHED_PROPERTY_SOURCE_NAME);
+    if (attached != null &amp;&amp; attached.getSource() != sources) {
+        sources.remove(ATTACHED_PROPERTY_SOURCE_NAME);
+        attached = null;
+    }
+    if (attached == null) {
+        sources.addFirst(new ConfigurationPropertySourcesPropertySource(ATTACHED_PROPERTY_SOURCE_NAME,
+                new SpringConfigurationPropertySources(sources)));
+    }
+}
+</code></pre>
+<p>在environmentPrepared方法<br>
+EventPublishingRunListener发布ApplicationEnvironmentPreparedEvent事件</p>
+<pre><code class="language-java">public void starting() {
+    this.initialMulticaster.multicastEvent(new ApplicationStartingEvent(this.application, this.args));
+}
+</code></pre>
+<p>订阅了这个事件的ApplicationListener也找到了几个，我们先记录下来。</p>
+<pre><code class="language-java">ConfigFileApplicationListener
+AnsiOutputApplicationListener
+LoggingApplicationListener
+ClasspathLoggingApplicationListener
+BackgroundPreinitializer
+DelegatingApplicationListener
+FileEncodingApplicationListener
+</code></pre>
+<p>其中比较有意思的是ConfigFileApplicationListener，因此我们展开讲一下，剩下的等有空了再说。<br>
+在接收到ApplicationEnvironmentPreparedEvent之后，做了这件事</p>
+<pre><code class="language-java">private void onApplicationEnvironmentPreparedEvent(ApplicationEnvironmentPreparedEvent event) {
+
+    // 加载所有EnvironmentPostProcessor并排序
+    List&lt;EnvironmentPostProcessor&gt; postProcessors = loadPostProcessors();
+    postProcessors.add(this);
+    AnnotationAwareOrderComparator.sort(postProcessors);
+    //依次调用EnvironmentPostProcessor的postProcessEnvironment方法
+    for (EnvironmentPostProcessor postProcessor : postProcessors) {
+        postProcessor.postProcessEnvironment(event.getEnvironment(), event.getSpringApplication());
+    }
+}
+</code></pre>
+<p>在这块逻辑中，会调用它自身的postProcessEnvironment方法，从而实现配置文件的加载</p>
+<pre><code class="language-java">@Override
+public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+    addPropertySources(environment, application.getResourceLoader());
+}
+
+/**
+    * Add config file property sources to the specified environment.
+    * @param environment the environment to add source to
+    * @param resourceLoader the resource loader
+    * @see #addPostProcessors(ConfigurableApplicationContext)
+    */
+protected void addPropertySources(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
+    RandomValuePropertySource.addToEnvironment(environment);
+    new Loader(environment, resourceLoader).load();
+}
+</code></pre>
+<p>其中，loader的load方法我们也记录一下</p>
+<pre><code class="language-java">void load() {
+    FilteredPropertySource.apply(this.environment, DEFAULT_PROPERTIES, LOAD_FILTERED_PROPERTY,
+                                 (defaultProperties) -&gt; {
+                                     this.profiles = new LinkedList&lt;&gt;();
+                                     this.processedProfiles = new LinkedList&lt;&gt;();
+                                     this.activatedProfiles = false;
+                                     this.loaded = new LinkedHashMap&lt;&gt;();
+                                     initializeProfiles();
+                                     while (!this.profiles.isEmpty()) {
+                                         Profile profile = this.profiles.poll();
+                                         if (isDefaultProfile(profile)) {
+                                             addProfileToEnvironment(profile.getName());
+                                         }
+                                         load(profile, this::getPositiveProfileFilter,
+                                              addToLoaded(MutablePropertySources::addLast, false));
+                                         this.processedProfiles.add(profile);
+                                     }
+                                     load(null, this::getNegativeProfileFilter, addToLoaded(MutablePropertySources::addFirst, true));
+                                     addLoadedPropertySources();
+                                     applyActiveProfiles(defaultProperties);
+                                 });
+}
+</code></pre>
+<h4 id="忽略bean信息">忽略bean信息</h4>
+<pre><code class="language-java"> private void configureIgnoreBeanInfo(ConfigurableEnvironment environment) {
+		if (System.getProperty(
+				CachedIntrospectionResults.IGNORE_BEANINFO_PROPERTY_NAME) == null) {
+			Boolean ignore = environment.getProperty(&quot;spring.beaninfo.ignore&quot;,
+					Boolean.class, Boolean.TRUE);
+			System.setProperty(CachedIntrospectionResults.IGNORE_BEANINFO_PROPERTY_NAME,
+					ignore.toString());
+		}
+ }
+</code></pre>
+<h4 id="打印banner信息">打印banner信息</h4>
+<p>显而易见，这个流程就是用来打印控制台那个很大的spring的banner的，就是下面这个东东<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1661777022899.png" alt="" loading="lazy"><br>
+那他在哪里打印的呢？他在 SpringBootBanner.java 里面打印的，这个类实现了Banner 接口，</p>
+<p>而且banner信息是直接在代码里面写死的；<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1661777039318.png" alt="" loading="lazy"><br>
+有些公司喜欢自定义banner信息，如果想要改成自己喜欢的图标该怎么办呢，其实很简单,只需要在resources目录下添加一个 banner.txt 的文件即可，一定要添加到resources目录下，别加错了</p>
+<h4 id="创建应用程序上下文">创建应用程序上下文</h4>
+<p>environmentPrepared之后，contextPrepared之前<br>
+这部分在SpringApplication对应的代码主要是这么三行</p>
+<pre><code class="language-java">//初始化
+context = createApplicationContext();
+exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
+                                                 new Class[] { ConfigurableApplicationContext.class }, context);
+prepareContext(context, environment, listeners, applicationArguments, printedBanner);
+</code></pre>
+<p>第一行是根据应用类型，创建ApplicationContext的实例</p>
+<pre><code class="language-java">protected ConfigurableApplicationContext createApplicationContext() {
+        Class&lt;?&gt; contextClass = this.applicationContextClass;
+        if (contextClass == null) {
+            try {
+                switch (this.webApplicationType) {
+                case SERVLET:
+                    contextClass = Class.forName(DEFAULT_SERVLET_WEB_CONTEXT_CLASS);
+                    break;
+                case REACTIVE:
+                    contextClass = Class.forName(DEFAULT_REACTIVE_WEB_CONTEXT_CLASS);
+                    break;
+                default:
+                    contextClass = Class.forName(DEFAULT_CONTEXT_CLASS);
+                }
+            }
+            catch (ClassNotFoundException ex) {
+                throw new IllegalStateException(
+                        &quot;Unable create a default ApplicationContext, please specify an ApplicationContextClass&quot;, ex);
+            }
+        }
+        return (ConfigurableApplicationContext) BeanUtils.instantiateClass(contextClass);
+    }
+</code></pre>
+<h4 id="实例化异常报告器">实例化异常报告器</h4>
+<p>第二行就是获取SpringBootExceptionReporter的实例。</p>
+<p>异常报告器是用来捕捉全局异常使用的，当springboot应用程序在发生异常时，异常报告器会将其捕捉并做相应处理，在spring.factories 文件里配置了默认的异常报告器，</p>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1661777103389.png" alt="" loading="lazy"><br>
+需要注意的是，这个异常报告器只会捕获启动过程抛出的异常，如果是在启动完成后，在用户请求时报错，异常报告器不会捕获请求中出现的异常，<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1661777116513.png" alt="" loading="lazy"><br>
+了解原理了，接下来我们自己配置一个异常报告器来玩玩；</p>
+<p>MyExceptionReporter.java 继承 SpringBootExceptionReporter 接口</p>
+<pre><code class="language-java">package com.spring.application;
+ 
+import org.springframework.boot.SpringBootExceptionReporter;
+import org.springframework.context.ConfigurableApplicationContext;
+ 
+public class MyExceptionReporter implements SpringBootExceptionReporter {
+ 
+ 
+    private ConfigurableApplicationContext context;
+    // 必须要有一个有参的构造函数，否则启动会报错
+    MyExceptionReporter(ConfigurableApplicationContext context) {
+        this.context = context;
+    }
+ 
+    @Override
+    public boolean reportException(Throwable failure) {
+        System.out.println(&quot;进入异常报告器&quot;);
+        failure.printStackTrace();
+        // 返回false会打印详细springboot错误信息，返回true则只打印异常信息 
+        return false;
+    }
+}
+</code></pre>
+<p>在 spring.factories 文件中注册异常报告器</p>
+<pre><code class="language-bash"># Error Reporters 异常报告器
+org.springframework.boot.SpringBootExceptionReporter=\
+com.spring.application.MyExceptionReporter
+</code></pre>
+<p><img src="https://tinaxiawuhao.github.io/post-images/1661777135828.png" alt="" loading="lazy"><br>
+接着我们在application.yml 中 把端口号设置为一个很大的值，这样肯定会报错，</p>
+<pre><code class="language-bash">server:
+  port: 80828888
+</code></pre>
+<p>启动后，控制台打印如下图<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1661777149995.png" alt="" loading="lazy"></p>
+<h4 id="准备上下文环境">准备上下文环境</h4>
+<p>第三行所对应的方法比较复杂，和我们这个阶段对应的主要是这么几行。</p>
+<pre><code class="language-java">private void prepareContext(ConfigurableApplicationContext context, ConfigurableEnvironment environment,
+        SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
+    context.setEnvironment(environment);
+    postProcessApplicationContext(context);
+    applyInitializers(context);
+            ....
+}
+</code></pre>
+<p>其中applyInitializers(context)这行就是对我们在new SpringApplication()时找到的ApplicationContextInitializer进行初始化工作。这部分包含两个特殊的ApplicationContextInitializer，他们会增加对应的BeanFactoryPostProcessor。BeanFactoryPostProcessor这个类比较重要，它可以读取并覆盖应用程序上下文中配置的bean属性。</p>
+<pre><code class="language-java">class SharedMetadataReaderFactoryContextInitializer
+        implements ApplicationContextInitializer&lt;ConfigurableApplicationContext&gt;, Ordered {
+...
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        applicationContext.addBeanFactoryPostProcessor(new CachingMetadataReaderFactoryPostProcessor());
+    }
+...
+}
+
+public class ConfigurationWarningsApplicationContextInitializer
+        implements ApplicationContextInitializer&lt;ConfigurableApplicationContext&gt; {
+...
+    @Override
+    public void initialize(ConfigurableApplicationContext context) {
+        context.addBeanFactoryPostProcessor(new ConfigurationWarningsPostProcessor(getChecks()));
+    }
+...
+}
+</code></pre>
+<p>在contextPrepared方法<br>
+EventPublishingRunListener发布ApplicationContextInitializedEvent事件</p>
+<pre><code class="language-java">public void contextPrepared(ConfigurableApplicationContext context) {
+    this.initialMulticaster
+            .multicastEvent(new ApplicationContextInitializedEvent(this.application, this.args, context));
+}
+</code></pre>
+<p>订阅了这个事件的ApplicationListener只找到个两个，我们先记录下来。都没做啥事</p>
+<pre><code class="language-java">BackgroundPreinitializer
+DelegatingApplicationListener
+</code></pre>
+<p>contextPrepared 之后，contextLoaded之前<br>
+这个部分code都被包含在prepareContext这个SpringApplication的私有方法中了。</p>
+<p>其中比较重要的load(context, sources.toArray(new Object[0]))这一行。这一行会为之后bean的扫描路径做好准备。</p>
+<p>在contextLoaded方法<br>
+EventPublishingRunListener将listener注册到创建好的ApplicationContext之中，之后发布ApplicationPreparedEvent事件。</p>
+<pre><code class="language-java">public void contextLoaded(ConfigurableApplicationContext context) {
+    for (ApplicationListener&lt;?&gt; listener : this.application.getListeners()) {
+        if (listener instanceof ApplicationContextAware) {
+            ((ApplicationContextAware) listener).setApplicationContext(context);
+        }
+        context.addApplicationListener(listener);
+    }
+    this.initialMulticaster.multicastEvent(new ApplicationPreparedEvent(this.application, this.args, context));
+}
+</code></pre>
+<p>订阅了这个事件的ApplicationListener，我们记录下来。其中比较特殊的是ConfigFileApplicationListener，它注册了一个PropertySourceOrderingPostProcessor的BeanFactoryPostProcessor实例到context中。</p>
+<pre><code class="language-java">CloudFoundryVcapEnvironmentPostProcessor
+ConfigFileApplicationListener
+LoggingApplicationListener
+BackgroundPreinitializer
+DelegatingApplicationListener
+</code></pre>
+<h4 id="刷新上下文">刷新上下文</h4>
+<p>contextLoaded之后，started之前<br>
+这个在run方法中只对应了一行代码refreshContext(context);。它会间接的对ApplicationContext的refresh方法进行调用。由于我们现在debug的是一个web项目，因此走进去对应的ApplicationContext的实现类是ServletWebServerApplicationContext。它的refresh方法可以简单的视为对父类refresh方法的调用，它的onRefresh方法则在父类(AbstractApplicationContext)的方法之上创建了WebServer。</p>
+<pre><code class="language-java">@Override
+public final void refresh() throws BeansException, IllegalStateException {
+    try {
+        super.refresh();
+    }
+    catch (RuntimeException ex) {
+        WebServer webServer = this.webServer;
+        if (webServer != null) {
+            webServer.stop();
+        }
+        throw ex;
+    }
+}
+
+@Override
+protected void onRefresh() {
+    super.onRefresh();
+    try {
+        createWebServer();
+    }
+    catch (Throwable ex) {
+        throw new ApplicationContextException(&quot;Unable to start web server&quot;, ex);
+    }
+}
+</code></pre>
+<p>我们看一下在父类的refresh方法中做了哪些事情</p>
+<pre><code class="language-java">public void refresh() throws BeansException, IllegalStateException {
+    synchronized (this.startupShutdownMonitor) {
+        //这个步骤会清除缓存，检查是否缺少环境参数，保存前期加载的ApplicationListener实例(从applicationListeners属性到earlyApplicationListeners)
+        // Prepare this context for refreshing.
+        prepareRefresh();
+        // Tell the subclass to refresh the internal bean factory.
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+        //这个步骤通过调用ignoreDependencyInterface，registerResolvableDependency，addBeanPostProcessor等方法完成beanFactory的一些配置。其中addBeanPostProcessor方法会被调用至少两次，传参分别为ApplicationContextAwareProcessor和ApplicationListenerDetector
+        // Prepare the bean factory for use in this context.
+        prepareBeanFactory(beanFactory);
+        //这个步骤会清除缓存，检查是否缺少环境参数，保存前期加载的ApplicationListener实例(从applicationListeners属性到earlyApplicationListeners)
+        // Prepare this context for refreshing.
+        prepareRefresh();
+        // Tell the subclass to refresh the internal bean factory.
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+        //这个步骤通过调用ignoreDependencyInterface，registerResolvableDependency，addBeanPostProcessor等方法完成beanFactory的一些配置。其中addBeanPostProcessor方法会被调用至少两次，传参分别为ApplicationContextAwareProcessor和ApplicationListenerDetector
+        // Prepare the bean factory for use in this context.
+        prepareBeanFactory(beanFactory);
+        try {
+            // Allows post-processing of the bean factory in context subclasses.
+            postProcessBeanFactory(beanFactory);
+            //这个步骤会加载bean的definition
+            // Invoke factory processors registered as beans in the context.
+            invokeBeanFactoryPostProcessors(beanFactory);
+            // Register bean processors that intercept bean creation.
+            registerBeanPostProcessors(beanFactory);
+
+            // Initialize message source for this context.
+            initMessageSource();
+
+            // Initialize event multicaster for this context.
+            initApplicationEventMulticaster();
+            //Web类型的App将在这个步骤创建WebServer，但是WebServer此时并不会立刻启动
+            // Initialize other special beans in specific context subclasses.
+            onRefresh();
+            //注册监听
+            // Check for listener beans and register them.
+            registerListeners();
+            //这个时候会根据之前获取的的bean的definition，进行bean的初始化
+            // Instantiate all remaining (non-lazy-init) singletons.
+            finishBeanFactoryInitialization(beanFactory);
+            //Web类型的App将在这个步骤启动之前创建好的WebServer
+            // Last step: publish corresponding event.
+            finishRefresh();
+        }
+        catch (BeansException ex) {
+            if (logger.isWarnEnabled()) {
+                logger.warn(&quot;Exception encountered during context initialization - &quot; +
+                            &quot;cancelling refresh attempt: &quot; + ex);
+            }
+
+            // Destroy already created singletons to avoid dangling resources.
+            destroyBeans();
+
+            // Reset 'active' flag.
+            cancelRefresh(ex);
+
+            // Propagate exception to caller.
+            throw ex;
+        }
+
+        finally {
+            // Reset common introspection caches in Spring's core, since we
+            // might not ever need metadata for singleton beans anymore...
+            resetCommonCaches();
+        }
+    }
+}
+</code></pre>
+<h4 id="刷新上下文后置处理">刷新上下文后置处理</h4>
+<p>afterRefresh 方法是启动后的一些处理，留给用户扩展使用，目前这个方法里面是空的，</p>
+<pre><code class="language-java">/**
+	 * Called after the context has been refreshed.
+	 * @param context the application context
+	 * @param args the application arguments
+	 */
+	protected void afterRefresh(ConfigurableApplicationContext context,
+			ApplicationArguments args) {
+	}
+</code></pre>
+<h4 id="结束计时器">结束计时器</h4>
+<h4 id="发布上下文准备就绪事件">发布上下文准备就绪事件</h4>
+<p>started之后，running之前<br>
+这个部分就比较简单了，主要是invoke了ApplicationRunner和CommandLineRunner</p>
+<pre><code class="language-java">private void callRunners(ApplicationContext context, ApplicationArguments args) {
+    List&lt;Object&gt; runners = new ArrayList&lt;&gt;();
+    runners.addAll(context.getBeansOfType(ApplicationRunner.class).values());
+    runners.addAll(context.getBeansOfType(CommandLineRunner.class).values());
+    AnnotationAwareOrderComparator.sort(runners);
+    for (Object runner : new LinkedHashSet&lt;&gt;(runners)) {
+        if (runner instanceof ApplicationRunner) {
+            callRunner((ApplicationRunner) runner, args);
+        }
+        if (runner instanceof CommandLineRunner) {
+            callRunner((CommandLineRunner) runner, args);
+        }
+    }
+}
+</code></pre>
+<p>这是一个扩展功能，callRunners(context, applicationArguments) 可以在启动完成后执行自定义的run方法；有2中方式可以实现：</p>
+<ol>
+<li>实现 ApplicationRunner 接口</li>
+<li>实现 CommandLineRunner 接口</li>
+</ol>
+<p>接下来我们验证一把，为了方便代码可读性，我把这2种方式都放在同一个类里面</p>
+<pre><code class="language-java">package com.spring.init;
+ 
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+ 
+/**
+ * 自定义run方法的2种方式
+ */
+@Component
+public class MyRunner implements ApplicationRunner, CommandLineRunner {
+ 
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        System.out.println(&quot; 我是自定义的run方法1，实现 ApplicationRunner 接口既可运行&quot;        );
+    }
+ 
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println(&quot; 我是自定义的run方法2，实现 CommandLineRunner 接口既可运行&quot;        );
+    }
+}
+</code></pre>
+<p>启动springboot后就可以看到控制台打印的信息了<br>
+<img src="https://tinaxiawuhao.github.io/post-images/1661777169058.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[树形结构查询]]></title>
+        <id>https://tinaxiawuhao.github.io/post/0yWpE16Ha/</id>
+        <link href="https://tinaxiawuhao.github.io/post/0yWpE16Ha/">
+        </link>
+        <updated>2022-08-25T12:36:06.000Z</updated>
+        <content type="html"><![CDATA[<p>树型层级结构查询</p>
+<h3 id="数据sql">数据sql</h3>
+<pre><code class="language-sql">CREATE TABLE `sys_company` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `code` varchar(36) NOT NULL COMMENT '标识主键',
+  `company_name` varchar(255) NOT NULL COMMENT '组织名称',
+  `pid` int(10) DEFAULT NULL COMMENT '上级组织id',
+  `pname` varchar(255) DEFAULT NULL COMMENT '上级组织名称',
+  `sort` int(4) DEFAULT '0' COMMENT '排序',
+  `state` int(2) DEFAULT '0' COMMENT '是否可用，0可用，1禁用',
+  `create_by` varchar(50) DEFAULT NULL COMMENT '创建者',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` varchar(50) DEFAULT NULL COMMENT '修改者',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `code_index` (`code`) USING BTREE COMMENT '简单索引'
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='组织详情'
+</code></pre>
+<h3 id="dto">DTO</h3>
+<pre><code class="language-java">@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CompanyDTO {
+
+    @ApiModelProperty(value = &quot;主键&quot;)
+    private Integer id;
+
+    @ApiModelProperty(value = &quot;标识主键&quot;)
+    private String code;
+
+    @ApiModelProperty(value = &quot;组织名称&quot;)
+    private String companyName;
+
+    @ApiModelProperty(value = &quot;上级组织id&quot;)
+    private Integer pid;
+
+    @ApiModelProperty(value = &quot;上级组织名称&quot;)
+    private String pname;
+
+    @ApiModelProperty(value = &quot;排序&quot;)
+    private Integer sort;
+
+    @ApiModelProperty(value = &quot;是否可用，0可用，1禁用&quot;)
+    private Integer state;
+
+    @ApiModelProperty(value = &quot;创建者&quot;)
+    private String createBy;
+
+    @ApiModelProperty(value = &quot;创建时间&quot;)
+    private Date createTime;
+
+    @ApiModelProperty(value = &quot;修改者&quot;)
+    private String updateBy;
+
+    @ApiModelProperty(value = &quot;修改时间&quot;)
+    private Date updateTime;
+
+    @ApiModelProperty(value = &quot;子公司组织&quot;)
+    private List&lt;CompanyDTO&gt; children;
+
+    @ApiModelProperty(value = &quot;编辑删除操作权限标识 true:有 false:无&quot;)
+    private Boolean modAndDelFlag = false;
+    
+    private CompanyDTO CompanyDTO;
+}
+
+</code></pre>
+<h3 id="service">service</h3>
+<pre><code class="language-java">public List&lt;CompanyDTO&gt; getCompanyList(Integer companyId) {
+    CompanyDTO companyDTO = sysCompanyMapper.queryTopData(companyId);
+   
+    while (companyDTO.getCompanyDTO()!=null){
+        companyDTO = companyDTO.getCompanyDTO();
+    }
+    List&lt;CompanyDTO&gt; companyDTO = sysCompanyMapper.querySimpleTopData(companyDTO.getId());
+}
+</code></pre>
+<h3 id="xml">xml</h3>
+<pre><code class="language-xml">	&lt;resultMap id=&quot;BaseResultAllMap&quot; type=&quot;com.haier.dtosplat.entity.DTO.company.CompanyDTO&quot;&gt;
+        &lt;id column=&quot;id&quot; property=&quot;id&quot; /&gt;
+        &lt;result column=&quot;code&quot; property=&quot;code&quot; /&gt;
+        &lt;result column=&quot;company_name&quot; property=&quot;companyName&quot; /&gt;
+        &lt;result column=&quot;pid&quot; property=&quot;pid&quot; /&gt;
+        &lt;result column=&quot;pname&quot; property=&quot;pname&quot; /&gt;
+        &lt;result column=&quot;sort&quot; property=&quot;sort&quot; /&gt;
+        &lt;result column=&quot;state&quot; property=&quot;state&quot; /&gt;
+        &lt;result column=&quot;create_by&quot; property=&quot;createBy&quot; /&gt;
+        &lt;result column=&quot;create_time&quot; property=&quot;createTime&quot; /&gt;
+        &lt;result column=&quot;update_by&quot; property=&quot;updateBy&quot; /&gt;
+        &lt;result column=&quot;update_time&quot; property=&quot;updateTime&quot; /&gt;
+        &lt;association property=&quot;companyDTO&quot;
+                     column=&quot;{pid = pid}&quot;
+                     select=&quot;querySuper&quot;&gt;
+        &lt;/association&gt;
+    &lt;/resultMap&gt;
+
+	&lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;com.haier.dtosplat.entity.DTO.company.CompanyDTO&quot;&gt;
+        &lt;id column=&quot;id&quot; property=&quot;id&quot; /&gt;
+        &lt;result column=&quot;code&quot; property=&quot;code&quot; /&gt;
+        &lt;result column=&quot;company_name&quot; property=&quot;companyName&quot; /&gt;
+        &lt;result column=&quot;pid&quot; property=&quot;pid&quot; /&gt;
+        &lt;result column=&quot;pname&quot; property=&quot;pname&quot; /&gt;
+        &lt;result column=&quot;sort&quot; property=&quot;sort&quot; /&gt;
+        &lt;result column=&quot;state&quot; property=&quot;state&quot; /&gt;
+        &lt;result column=&quot;create_by&quot; property=&quot;createBy&quot; /&gt;
+        &lt;result column=&quot;create_time&quot; property=&quot;createTime&quot; /&gt;
+        &lt;result column=&quot;update_by&quot; property=&quot;updateBy&quot; /&gt;
+        &lt;result column=&quot;update_time&quot; property=&quot;updateTime&quot; /&gt;
+
+        &lt;collection property=&quot;children&quot; ofType=&quot;com.haier.dtosplat.entity.DTO.company.CompanyDTO&quot;
+                    column=&quot;{id = id}&quot; select=&quot;querySon&quot;&gt;
+        &lt;/collection&gt;
+    &lt;/resultMap&gt;
+
+
+    &lt;select id=&quot;queryTopData&quot; resultMap=&quot;BaseResultAllMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE id = #{companyId}
+    &lt;/select&gt;
+
+    &lt;select id=&quot;querySimpleTopData&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE id = #{companyId}
+    &lt;/select&gt;
+
+    &lt;select id=&quot;querySuper&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE id = #{pid}
+    &lt;/select&gt;
+
+    &lt;select id=&quot;querySon&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        SELECT * FROM sys_company
+        WHERE pid = #{id}
+    &lt;/select&gt;
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring使用ThreadLocal存储内存泄露风险]]></title>
+        <id>https://tinaxiawuhao.github.io/post/Y9SH6oPXI/</id>
+        <link href="https://tinaxiawuhao.github.io/post/Y9SH6oPXI/">
+        </link>
+        <updated>2022-08-23T12:34:58.000Z</updated>
+        <content type="html"><![CDATA[<p>Spring使用ThreadLocal存储内存泄露风险<br>
+Spring 中有时候我们需要存储一些和 Request 相关联的变量，例如用户的登陆有关信息等，它的生命周期和 Request 相同。</p>
+<p>一个容易想到的实现办法是使用ThreadLocal</p>
+<pre><code class="language-java">@Slf4j
+public class CurrentUserHelper {
+    //存储用户信息
+    private static final InheritableThreadLocal&lt;SysUser&gt; CURRENT_USER = new InheritableThreadLocal&lt;SysUser&gt;();
+
+    public static void setCurrentUser(SysUser currentUserInfo) {
+        CURRENT_USER.set(currentUserInfo);
+    }
+
+    public static SysUser getCurrentUser() {
+        return (SysUser)CURRENT_USER.get();
+    }
+
+    public static void clear() {
+        CURRENT_USER.remove();
+    }
+
+}
+</code></pre>
+<p>使用一个自定义的HandlerInterceptor将有关信息注入进去</p>
+<pre><code class="language-java">@Slf4j
+@Component
+public class RequestInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
+            Exception {
+        try {
+            CurrentUserHelper.setCurrentUser(retrieveUserInfo(request));
+        } catch (Exception ex) {
+            log.warn(&quot;读取请求信息失败&quot;, ex);
+        }
+        return true;
+    }
+    
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable
+            ModelAndView modelAndView) throws Exception {
+        CurrentUserHelper.clear();
+
+}
+</code></pre>
+<p>通过这样，我们就可以在 Controller 中直接使用这个 context，很方便的获取到有关用户的信息</p>
+<pre><code class="language-java">@Slf4j
+@RestController
+class Controller {
+  public Result get() {
+     SysUser user = CurrentUserHelper.get();
+     // ...
+  }
+
+}
+</code></pre>
+<p>这个方法也是很多博客中使用的。然而这个方法却存在着一个很隐蔽的坑： HandlerInterceptor 的 postHandle 并不总是会调用。</p>
+<p>当Controller中出现Exception</p>
+<pre><code class="language-java">@Slf4j
+@RestController
+class Controller {
+
+  public Result get() {
+      SysUser user = CurrentUserHelper.get();
+     // ...
+     throw new RuntimeException();
+  }
+}
+</code></pre>
+<p>或者在HandlerInterceptor的preHandle中出现Exception</p>
+<pre><code class="language-java">@Slf4j
+@Component
+public class RequestInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
+            Exception {
+        try {
+            CurrentUserHelper.setCurrentUser(retrieveUserInfo(request));
+        } catch (Exception ex) {
+            log.warn(&quot;读取请求信息失败&quot;, ex);
+        }
+    
+        // ...
+        throw new RuntimeException();
+        //...
+        return true;
+    }
+}
+</code></pre>
+<p>这些情况下， postHandle 并不会调用。这就导致了 ThreadLocal 变量不能被清理。</p>
+<p>在平常的 Java 环境中，ThreadLocal 变量随着 Thread 本身的销毁，是可以被销毁掉的。但 Spring 由于采用了线程池的设计，响应请求的线程可能会一直常驻，这就导致了变量一直不能被 GC 回收。更糟糕的是，这个没有被正确回收的变量，由于线程池对线程的复用，可能会串到别的 Request 当中，进而直接导致代码逻辑的错误。</p>
+<p>为了解决这个问题，我们可以使用 Spring 自带的 RequestContextHolder ，它背后的原理也是 ThreadLocal，不过它总会被更底层的 Servlet 的 Filter 清理掉，因此不存在泄露的问题。</p>
+<p>下面是一个使用RequestContextHolder重写的例子</p>
+<pre><code class="language-java">public class SecurityContextHolder {
+
+    private static final String SECURITY_CONTEXT_ATTRIBUTES = &quot;SECURITY_CONTEXT&quot;;
+    
+    public static void setContext(SysUser context) {
+        RequestContextHolder.currentRequestAttributes().setAttribute(
+                SECURITY_CONTEXT_ATTRIBUTES,
+                context,
+                RequestAttributes.SCOPE_REQUEST);
+    
+    }
+    
+    public static SecurityContext get() {
+        return (SysUser)RequestContextHolder.currentRequestAttributes()
+                .getAttribute(SECURITY_CONTEXT_ATTRIBUTES, RequestAttributes.SCOPE_REQUEST);
+    }
+}
+</code></pre>
+<p>项目中实现WebMvcConfigurer接口或者WebMvcConfigurationSupport接口实现跨域资源访问配置时，要重写addInterceptors方法</p>
+<pre><code class="language-java">@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        //配置允许跨域访问的路径
+        registry.addMapping(&quot;/**&quot;)
+                .allowedOrigins(&quot;*&quot;)
+                // 允许提交请求的方法，*表示全部允许
+                .allowedMethods(&quot;GET&quot;, &quot;POST&quot;, &quot;DELETE&quot;, &quot;PUT&quot;)
+                .allowedHeaders(&quot;*&quot;)
+                .exposedHeaders(&quot;Access-Control-Allow-Origin&quot;)
+                //是否允许证书 不再默认开启
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry interceptor) {
+        interceptor.addInterceptor(new RequestInterceptor()).addPathPatterns(&quot;/**&quot;);
+    }
+
+}
+</code></pre>
+<p>除了使用 RequestContextHolder 还可以使用 Request Scope 的 Bean，或者使用 ThreadLocalTargetSource ，原理上是类似的。</p>
+<p>需要时刻注意 ThreadLocal 相当于线程内部的 static 变量，是一个非常容易产生泄露的点，因此使用 ThreadLocal 应该额外小心。</p>
+<p>Threadlocal可能会产生内存泄露的问题及原理<br>
+刚遇到一个关于threadlocal的内存泄漏问题，刚好总结一下</p>
+<p>比较常用的这里先不提，直接提比较重要的部分</p>
+<p>为什么会产生内存泄露？</p>
+<pre><code class="language-java">public void set(T value) {
+
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null)
+        map.set(this, value);
+    else
+        createMap(t, value);
+}
+</code></pre>
+<p>set方法里面，先调用到当前线程thread，每个线程里都会有一个threadlocals成员变量，指向对应的ThreadLocalMap ，然后以new出来的引用作为key，和给定的value一块保存起来。</p>
+<p>当外部引用解除以后，对应的ThreadLocal对象由于被内部ThreadLocalMap 引用，不会GC，可能会导致内存泄露。</p>
+<p>JVM解决的办法</p>
+<pre><code class="language-java">static class Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt; {
+
+    /** The value associated with this ThreadLocal. */
+    Object value;
+    
+    Entry(ThreadLocal&lt;?&gt; k, Object v) {
+        super(k);
+        value = v;
+    }  
+}
+</code></pre>
+<p>继承了一个软引用，在系统进行gc的时候就可以回收</p>
+<p>但是回收以后，key变成null，value也无法被访问到，还是可能存在内存泄露。 因此一旦不用了，必须对里面的keyvalue对remove掉，否则就会有内存泄露；而且在threadlocal源码里面，在每次get或者set的时候会清楚里面key为value的记录</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[工具类]]></title>
         <id>https://tinaxiawuhao.github.io/post/uZBK7g699/</id>
@@ -5844,9 +6981,9 @@ public class SentinelExceptionHandler implements BlockExceptionHandler {
 <h4 id="1-ribbonfeignopenfeign三者的对比">1 ribbon,feign,openfeign三者的对比</h4>
 <p>我们现在工作中现在几乎都是直接使用openfeign，而我们很有必要了解一下，ribbon、feign、openfeign三者之间的关系！</p>
 <ul>
-<li><strong>ribbon：<strong>ribbon是netflix开源的客户端负载均衡组件，可以</strong>调用注册中心获取服务列表，并通过负载均衡算法挑选一台Server</strong>；</li>
-<li>**feign：**feign也是netflix开源的，<strong>是对ribbon的一层封装，通过接口的方式使用，更加优雅</strong>，不需要每次都去写restTemplate，只需要定义一个接口来使用；<strong>但是Feign不支持springmvc的注解；</strong></li>
-<li><strong>openfeign：<strong>是</strong>对feign的进一步封装，使其能够支持springmvc注解，如@GetMapping等</strong>，使用起来更加方便和优雅！</li>
+<li><strong>ribbon</strong>：ribbon是netflix开源的客户端负载均衡组件，可以调用注册中心获取服务列表，并通过负载均衡算法挑选一台Server；</li>
+<li><strong>feign</strong>：feign也是netflix开源的，<strong>是对ribbon的一层封装，通过接口的方式使用，更加优雅</strong>，不需要每次都去写restTemplate，只需要定义一个接口来使用；<strong>但是Feign不支持springmvc的注解；</strong></li>
+<li><strong>openfeign</strong>：是对feign的进一步封装，使其能够支持springmvc注解，如@GetMapping等，使用起来更加方便和优雅！</li>
 </ul>
 <h4 id="2-工作中都是如何使用openfeign">2 工作中都是如何使用openfeign</h4>
 <pre><code class="language-java">// 想要使用openfeign，必须要在启动类增加@EnableFeignClient注解，否则启动报错
@@ -6789,7 +7926,7 @@ public static ConfigService createConfigService(Properties properties) throws Na
     this.worker = new ClientWorker(this.agent, this.configFilterChainManager, properties);
 }
 </code></pre>
-<p>####<strong>3 NacosConfigService中的核心获取配置方法getConfig() ——&gt; getConfigInner()：</strong></p>
+<h4 id="3-nacosconfigservice中的核心获取配置方法getconfig-getconfiginner"><strong>3 NacosConfigService中的核心获取配置方法getConfig() ——&gt; getConfigInner()：</strong></h4>
 <ul>
 <li>客户端需要使用配置文件时，<strong>不是直接去调用远端Server获取，而是先尝试从本地Failover文件获取</strong>；</li>
 <li>如果<strong>本地文件不存在，则才会从远端Server获取</strong>；</li>
@@ -7739,10 +8876,10 @@ public class RaftCore implements Closeable {
 <h3 id="二-nacos的服务架构图">二 NACOS的服务架构图</h3>
 <figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1658665780310.png" alt="" loading="lazy"></figure>
 <ul>
-<li>**服务注册+服务心跳：**首先无论是“服务提供者”还是“服务消费者”都会将自己注册到nacos，并维持心跳。（每5秒发送一次心跳包）</li>
-<li>**服务健康检查：**服务端再启动后，会以Service为单位，开启ClientBeatCheckTask心跳检查任务。（每5秒检查一次，如果某个客户端最后一次心跳超过15秒，标记为不健康，超过30秒踢除）</li>
-<li><strong>服务发现：</strong>“服务消费者”会根据需要自己的自己所需的目标服务的namespace/group/serviceName/cluster只根据需要查询对应的服务注册表，保存在本地。（定时每10s去服务端更新一次）！</li>
-<li>**服务同步：**服务端集群之间会同步服务注册表，用来保证服务信息的一致性！（注意AP架构的集群中，即使配置了mysql，也不是用来存放注册表）</li>
+<li><strong>服务注册+服务心跳</strong>：首先无论是“服务提供者”还是“服务消费者”都会将自己注册到nacos，并维持心跳。（每5秒发送一次心跳包）</li>
+<li><strong>服务健康检查</strong>：服务端再启动后，会以Service为单位，开启ClientBeatCheckTask心跳检查任务。（每5秒检查一次，如果某个客户端最后一次心跳超过15秒，标记为不健康，超过30秒踢除）</li>
+<li><strong>服务发现</strong>：“服务消费者”会根据需要自己的自己所需的目标服务的namespace/group/serviceName/cluster只根据需要查询对应的服务注册表，保存在本地。（定时每10s去服务端更新一次）！</li>
+<li><strong>服务同步</strong>：服务端集群之间会同步服务注册表，用来保证服务信息的一致性！（注意AP架构的集群中，即使配置了mysql，也不是用来存放注册表）</li>
 </ul>
 <hr>
 <h3 id="三-nacos的核心注册表结构双层concurrenthashmap">三 Nacos的核心注册表结构（双层ConcurrentHashMap）</h3>
@@ -17054,10 +18191,10 @@ public class SpringConfiguration {
         <link href="https://tinaxiawuhao.github.io/post/olBu0Tj_j/">
         </link>
         <updated>2022-04-01T12:19:14.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="思维导图">思维导图：</h1>
+        <content type="html"><![CDATA[<p>思维导图：</p>
 <figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1657628837809.png" alt="" loading="lazy"></figure>
-<h1 id="1-消息队列">1. 消息队列</h1>
-<h2 id="11-消息队列模式">1.1 消息队列模式</h2>
+<h2 id="1-消息队列">1. 消息队列</h2>
+<h3 id="11-消息队列模式">1.1 消息队列模式</h3>
 <p>消息队列目前主要 2 种模式，分别为“点对点模式”和“发布/订阅模式”。</p>
 <h4 id="111-点对点模式">1.1.1 点对点模式</h4>
 <p>一个具体的消息只能由一个消费者消费，多个生产者可以向同一个消息队列发送消息，但是一个消息在被一个消息者处理的时候，这个消息在队列上会被锁住或者被移除并且其他消费者无法处理该消息。</p>
@@ -17070,7 +18207,7 @@ public class SpringConfiguration {
 <li><strong>持久（durable）订阅</strong>：这种订阅会一直存在，除非主动去删除。消费者退出后，消息系统会继续维护该订阅，并且后续消息可以被继续处理。</li>
 </ul>
 <figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1657628852760.png" alt="" loading="lazy"></figure>
-<h2 id="12-衡量标准">1.2 衡量标准</h2>
+<h3 id="12-衡量标准">1.2 衡量标准</h3>
 <p>对消息队列进行技术选型时，需要通过以下指标衡量你所选择的消息队列，是否可以满足你的需求：</p>
 <ul>
 <li><strong>消息顺序</strong>：发送到队列的消息，消费时是否可以保证消费的顺序，比如A先下单，B后下单，应该是A先去扣库存，B再去扣，顺序不能反。</li>
@@ -17082,9 +18219,9 @@ public class SpringConfiguration {
 <li><strong>伸缩</strong>：当消息队列性能有问题，比如消费太慢，是否可以快速支持库容；当消费队列过多，浪费系统资源，是否可以支持缩容。</li>
 <li><strong>吞吐量</strong>：支持的最高并发数。</li>
 </ul>
-<h1 id="2-rabbitmq-原理初探">2. RabbitMQ 原理初探</h1>
+<h2 id="2-rabbitmq-原理初探">2. RabbitMQ 原理初探</h2>
 <p>RabbitMQ 2007 年发布，是使用 Erlang 语言开发的开源消息队列系统，基于 AMQP 协议来实现。</p>
-<h2 id="21-基本概念">2.1 基本概念</h2>
+<h3 id="21-基本概念">2.1 基本概念</h3>
 <p>提到RabbitMQ，就不得不提AMQP协议。AMQP协议是具有现代特征的二进制协议。是一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计。</p>
 <p>先了解一下AMQP协议中间的几个重要概念：</p>
 <ul>
@@ -17098,7 +18235,7 @@ public class SpringConfiguration {
 <li>RoutingKey：路由键，生产者将消息发送给交换器的时候，会发送一个RoutingKey，用来指定路由规则，这样交换器就知道把消息发送到哪个队列。路由键通常为一个“.”分割的字符串，例如“com.rabbitmq”。</li>
 <li>Queue：消息队列，用来保存消息，供消费者消费。</li>
 </ul>
-<h2 id="22-工作原理">2.2 工作原理</h2>
+<h3 id="22-工作原理">2.2 工作原理</h3>
 <p>AMQP 协议模型由三部分组成：生产者、消费者和服务端，执行流程如下：</p>
 <ol>
 <li>生产者是连接到 Server，建立一个连接，开启一个信道。</li>
@@ -17109,7 +18246,7 @@ public class SpringConfiguration {
 <li>订阅了消息队列的消费者就可以获取到消息，进行消费。</li>
 </ol>
 <figure data-type="image" tabindex="4"><img src="https://tinaxiawuhao.github.io/post-images/1657628882128.png" alt="" loading="lazy"></figure>
-<h2 id="23-常用交换器">2.3 常用交换器</h2>
+<h3 id="23-常用交换器">2.3 常用交换器</h3>
 <p>RabbitMQ常用的交换器类型有direct、topic、fanout、headers四种：</p>
 <ul>
 <li>Direct Exchange：见文知意，直连交换机意思是此交换机需要绑定一个队列，要求该消息与一个特定的路由键完全匹配。简单点说就是一对一的，点对点的发送。</li>
@@ -17135,7 +18272,7 @@ public class SpringConfiguration {
 <li>Headers Exchange：这种交换机用的相对没这么多。它跟上面三种有点区别，它的路由不是用routingKey进行路由匹配，而是在匹配请求头中所带的键值进行路由。创建队列需要设置绑定的头部信息，有两种模式：全部匹配和部分匹配。如上图所示，交换机会根据生产者发送过来的头部信息携带的键值去匹配队列绑定的键值，路由到对应的队列。</li>
 </ul>
 <figure data-type="image" tabindex="8"><img src="https://tinaxiawuhao.github.io/post-images/1657628934149.png" alt="" loading="lazy"></figure>
-<h2 id="24-消费原理">2.4 消费原理</h2>
+<h3 id="24-消费原理">2.4 消费原理</h3>
 <p>我们先看几个基本概念：</p>
 <ul>
 <li>broker：每个节点运行的服务程序，功能为维护该节点的队列的增删以及转发队列操作请求。</li>
@@ -17152,7 +18289,7 @@ public class SpringConfiguration {
 <blockquote>
 <p>所以，到这里小伙伴们就可以看到 RabbitMQ的不足：由于master queue单节点，导致性能瓶颈，吞吐量受限。虽然为了提高性能，内部使用了Erlang这个语言实现，但是终究摆脱不了架构设计上的致命缺陷。</p>
 </blockquote>
-<h2 id="25-高级特性">2.5 高级特性</h2>
+<h3 id="25-高级特性">2.5 高级特性</h3>
 <h4 id="251-过期时间">2.5.1 过期时间</h4>
 <p>Time To Live，也就是生存时间，是一条消息在队列中的最大存活时间，单位是毫秒，下面看看RabbitMQ过期时间特性：</p>
 <ul>
@@ -17188,7 +18325,7 @@ public class SpringConfiguration {
 <p>一般的队列，消息一旦进入队列就会被消费者立即消费。延迟队列就是进入该队列的消息会被消费者延迟消费，延迟队列中存储的对象是的延迟消息，“延迟消息”是指当消息被发送以后，等待特定的时间后，消费者才能拿到这个消息进行消费。</p>
 <p>延迟队列用于需要延迟工作的场景。最常见的使用场景：淘宝或者天猫我们都使用过，用户在下单之后通常有30分钟的时间进行支付，如果这30分钟之内没有支付成功，那么订单就会自动取消。</p>
 <p>除了延迟消费，延迟队列的典型应用场景还有延迟重试。比如消费者从队列里面消费消息失败了，可以延迟一段时间以后进行重试。</p>
-<h2 id="26-特性分析">2.6 特性分析</h2>
+<h3 id="26-特性分析">2.6 特性分析</h3>
 <p>这里才是内容的重点，不仅需要知道Rabbit的特性，还需要知道支持这些特性的原因：</p>
 <ul>
 <li><strong>消息路由（支持）</strong>：RabbitMQ可以通过不同的交换器支持不同种类的消息路由；</li>
@@ -17200,7 +18337,7 @@ public class SpringConfiguration {
 <li><strong>消息回溯（不支持）</strong>：因为消息不支持永久保存，所以自然就不支持回溯。</li>
 <li><strong>高吞吐（中等）</strong>：因为所有的请求的执行，最后都是在master queue，它的这个设计，导致单机性能达不到十万级的标准。</li>
 </ul>
-<h1 id="3-rabbitmq环境搭建">3. RabbitMQ环境搭建</h1>
+<h2 id="3-rabbitmq环境搭建">3. RabbitMQ环境搭建</h2>
 <p>因为我用的是Mac，所以直接可以参考官网：</p>
 <blockquote>
 <p>https://www.rabbitmq.com/install-homebrew.html</p>
@@ -17231,8 +18368,8 @@ rabbitmq-server
 <p>会出现RabbitMQ后台管理界面（用户名和密码都为guest）：</p>
 <figure data-type="image" tabindex="14"><img src="https://tinaxiawuhao.github.io/post-images/1657629021755.png" alt="" loading="lazy"></figure>
 <p>通过brew安装，一行命令搞定，真香！</p>
-<h1 id="4-rabbitmq测试">4. RabbitMQ测试</h1>
-<h2 id="41-添加账号">4.1 添加账号</h2>
+<h2 id="4-rabbitmq测试">4. RabbitMQ测试</h2>
+<h3 id="41-添加账号">4.1 添加账号</h3>
 <p>首先得启动mq</p>
 <pre><code class="language-java">## 添加账号
 ./rabbitmqctl add_user admin admin
@@ -17241,7 +18378,7 @@ rabbitmq-server
 ## 设置超级权限
 ./rabbitmqctl set_user_tags admin administrator
 </code></pre>
-<h2 id="42-编码实测">4.2 编码实测</h2>
+<h3 id="42-编码实测">4.2 编码实测</h3>
 <p>因为代码中引入了java 8的特性，pom引入依赖：</p>
 <pre><code class="language-java">&lt;dependency&gt;
     &lt;groupId&gt;com.rabbitmq&lt;/groupId&gt;
@@ -17333,8 +18470,8 @@ rabbitmq-server
 <blockquote>
 <p>示例中的代码讲解，可以直接参考官网：https://www.rabbitmq.com/tutorials/tutorial-one-java.html</p>
 </blockquote>
-<h1 id="5-基本使用姿势">5. 基本使用姿势</h1>
-<h2 id="51-公共代码封装">5.1 公共代码封装</h2>
+<h2 id="5-基本使用姿势">5. 基本使用姿势</h2>
+<h3 id="51-公共代码封装">5.1 公共代码封装</h3>
 <p>封装工厂类：</p>
 <pre><code class="language-java">public class RabbitUtil {
     public static ConnectionFactory getConnectionFactory() {
@@ -17400,7 +18537,7 @@ rabbitmq-server
     }
 }
 </code></pre>
-<h2 id="52-direct方式">5.2 Direct方式</h2>
+<h3 id="52-direct方式">5.2 Direct方式</h3>
 <figure data-type="image" tabindex="17"><img src="https://tinaxiawuhao.github.io/post-images/1657629073366.png" alt="" loading="lazy"></figure>
 <h4 id="521-direct示例">5.2.1 Direct示例</h4>
 <p>生产者：</p>
@@ -17508,7 +18645,7 @@ rabbitmq-server
 <blockquote>
 <p>思考：不执行消费者，看不到这个Queres中信息，我其实可以把这个界面理解为消费者信息界面。不过感觉还是怪怪的，这个queues如果是消费者信息，就不应该叫queues，我理解queues应该是RabbitMQ中实际存放数据的queues，难道是我理解错了？</p>
 </blockquote>
-<h2 id="53-fanout方式指定队列">5.3 Fanout方式（指定队列）</h2>
+<h3 id="53-fanout方式指定队列">5.3 Fanout方式（指定队列）</h3>
 <figure data-type="image" tabindex="23"><img src="https://tinaxiawuhao.github.io/post-images/1657629161615.png" alt="" loading="lazy"></figure>
 <p>生产者封装：</p>
 <pre><code class="language-java">public class FanoutProducer {
@@ -17562,7 +18699,7 @@ rabbitmq-server
 <blockquote>
 <p>注意：往队列塞数据时，可能通过界面看不到消息个数的增加，可能是你之前已经开启了消费进程，导致增加的消息马上被消费了。</p>
 </blockquote>
-<h2 id="54-fanout方式随机获取队列">5.4 Fanout方式（随机获取队列）</h2>
+<h3 id="54-fanout方式随机获取队列">5.4 Fanout方式（随机获取队列）</h3>
 <p>上面我们是指定了队列，这个方式其实很不友好，比如对于Fanout，我其实根本无需关心队列的名字，如果还指定对应队列进行消费，感觉这个很冗余，所以我们这里就采用随机获取队列名字的方式，下面代码直接Copy官网。</p>
 <p>生成者封装：</p>
 <pre><code class="language-java">public static void publishMsgV2(String exchange, BuiltinExchangeType exchangeType, String message) throws IOException, TimeoutException {
@@ -17645,15 +18782,15 @@ rabbitmq-server
 <figure data-type="image" tabindex="26"><img src="https://tinaxiawuhao.github.io/post-images/1657629216023.png" alt="" loading="lazy"></figure>
 <figure data-type="image" tabindex="27"><img src="https://tinaxiawuhao.github.io/post-images/1657629228908.png" alt="" loading="lazy"></figure>
 <figure data-type="image" tabindex="28"><img src="https://tinaxiawuhao.github.io/post-images/1657629242632.png" alt="" loading="lazy"></figure>
-<h2 id="55-topic方式">5.5 Topic方式</h2>
+<h3 id="55-topic方式">5.5 Topic方式</h3>
 <figure data-type="image" tabindex="29"><img src="https://tinaxiawuhao.github.io/post-images/1657629257404.png" alt="" loading="lazy"></figure>
 <p>代码详见官网：https://www.rabbitmq.com/tutorials/tutorial-five-java.html</p>
 <blockquote>
 <p>更多方式，请直接查看官网：https://www.rabbitmq.com/getstarted.html</p>
 </blockquote>
 <figure data-type="image" tabindex="30"><img src="https://tinaxiawuhao.github.io/post-images/1657629270305.png" alt="" loading="lazy"></figure>
-<h1 id="6-rabbitmq-进阶">6. RabbitMQ 进阶</h1>
-<h2 id="61-durable-和-autodeleted">6.1 durable 和 autoDeleted</h2>
+<h2 id="6-rabbitmq-进阶">6. RabbitMQ 进阶</h2>
+<h3 id="61-durable-和-autodeleted">6.1 durable 和 autoDeleted</h3>
 <p>在定义Queue时，可以指定这两个参数：</p>
 <pre><code class="language-java">/**
  * Declare an exchange.
@@ -32919,421 +34056,6 @@ public void demo(Integer id, String name){
 }
 </code></pre>
 <figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1623908192461.png" alt="" loading="lazy"></figure>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[SpringBoot  JWT实现]]></title>
-        <id>https://tinaxiawuhao.github.io/post/ZsckGVdlz/</id>
-        <link href="https://tinaxiawuhao.github.io/post/ZsckGVdlz/">
-        </link>
-        <updated>2021-06-06T08:50:36.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="springboot-jwt实现">SpringBoot  JWT实现</h3>
-<p>（只是实现了jwt,没有生成证书,安全性得不到保障,证书安全验证查看<a href="https://tinaxiawuhao.github.io/post/wWtT_Oc9B/">Spring security JWT</a>）</p>
-<pre><code class="language-java">&lt;dependency&gt;
-    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
-    &lt;artifactId&gt;jjwt&lt;/artifactId&gt;
-    &lt;version&gt;0.6.0&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<pre><code class="language-java">import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
-import java.util.Date;
-
-public class CreateJwtTest3 {
-    public static void main(String[] args) {
-        //为了方便测试，我们将过期时间设置为1分钟
-        long now = System.currentTimeMillis();//当前时间
-        long exp = now + 1000 * 60;//过期时间为1分钟
-        JwtBuilder builder = Jwts.builder().setId(&quot;888&quot;)
-                .setSubject(&quot;小白&quot;)
-                .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS256, &quot;itcast&quot;)
-                .setExpiration(new Date(exp))
-                .claim(&quot;roles&quot;, &quot;admin&quot;) //自定义claims存储数据
-                .claim(&quot;logo&quot;, &quot;logo.png&quot;);
-        System.out.println(builder.compact());
-    }
-}
-</code></pre>
-<pre><code class="language-java">import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import org.apache.commons.lang3.time.DateFormatUtils;
-
-import java.util.Date;
-
-public class ParseJwtTest {
-    public static void main(String[] args) {
-        String token = &quot;eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4ODgiLCJzdWIiOiLlsI_nmb0iLCJpYXQiOjE1NjExMDE3MzIsImV4cCI6MTU2MTEwMTc5MSwicm9sZXMiOiJhZG1pbiIsImxvZ28iOiJsb2dvLnBuZyJ9.5iVVdTw747L3ScHeCqle-bwj3cezK8NnE7VilQWOr8Y&quot;;
-        Claims claims = Jwts.parser().setSigningKey(&quot;itcast&quot;).parseClaimsJws(token).getBody();
-        System.out.println(&quot;id:&quot; + claims.getId());
-        System.out.println(&quot;subject:&quot; + claims.getSubject());
-        System.out.println(&quot;roles:&quot; + claims.get(&quot;roles&quot;));
-        System.out.println(&quot;logo:&quot; + claims.get(&quot;logo&quot;));
-        System.out.println(&quot;签发时间:&quot;+ DateFormatUtils.format(claims.getIssuedAt(),&quot;yyyy-MM-dd hh:mm:ss&quot;));
-        System.out.println(&quot;过期时间:&quot;+DateFormatUtils.format(claims.getExpiration(),&quot;yyyy-MM-dd hh:mm:ss&quot;));
-        System.out.println(&quot;当前时间:&quot;+DateFormatUtils.format(new Date(),&quot;yyyy-MM-dd hh:mm:ss&quot;));
-    }
-}
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[JWT介绍]]></title>
-        <id>https://tinaxiawuhao.github.io/post/wWtT_Oc9B/</id>
-        <link href="https://tinaxiawuhao.github.io/post/wWtT_Oc9B/">
-        </link>
-        <updated>2021-06-05T08:45:38.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="jwt介绍">JWT介绍</h2>
-<p>在介绍JWT之前先看一下传统校验令牌的方法，如下图：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1623401311518.png" alt="" loading="lazy"></figure>
-<p>资源服务器授权流程如上图，客户端先去授权服务器申请令牌，申请令牌后，携带令牌访问资源服务器，资源服务器访问授权服务校验令牌的合法性，授权服务会返回校验结果，如果校验成功会返回用户信息给资源服务器，资源服务器如果接收到的校验结果通过了，则返回资源给客户端</p>
-<p><strong>问题：</strong></p>
-<p>传统授权方法的问题是用户每次请求资源服务，资源服务都需要携带令牌访问认证服务去校验令牌的合法性，并根据令牌获取用户的相关信息，性能低下。</p>
-<p><strong>解决：</strong></p>
-<p>使用JWT的思路是，用户认证通过会得到一个JWT令牌，JWT令牌中已经包括了用户相关的信息，客户端只需要携带JWT访问资源服务，资源服务根据事先约定的算法自行完成令牌校验，无需每次都请求认证服务完成授权。</p>
-<p>JWT令牌授权过程如下图：</p>
-<figure data-type="image" tabindex="2"><img src="https://tinaxiawuhao.github.io/post-images/1623401320289.png" alt="" loading="lazy"></figure>
-<h3 id="什么是jwt">什么是JWT？</h3>
-<p>JSON Web Token（JWT）是一个开放的行业标准（RFC 7519），它定义了一种简介的、自包含的协议格式，用于在通信双方传递json对象，传递的信息经过数字签名可以被验证和信任。JWT可以使用HMAC算法或使用RSA的公钥/私钥对来签名，防止被篡改。</p>
-<blockquote>
-<p>官网：https://jwt.io/</p>
-<p>标准：https://tools.ietf.org/html/rfc7519</p>
-</blockquote>
-<h4 id="优点">优点：</h4>
-<ol>
-<li>
-<p>jwt基于json，非常方便解析。</p>
-</li>
-<li>
-<p>可以在令牌中自定义丰富的内容，易扩展。</p>
-</li>
-<li>
-<p>通过非对称加密算法及数字签名技术，JWT防止篡改，安全性高。</p>
-</li>
-<li>
-<p>资源服务使用JWT可不依赖认证服务即可完成授权。</p>
-</li>
-</ol>
-<h4 id="缺点">缺点：</h4>
-<ol>
-<li>JWT令牌较长，占存储空间比较大。</li>
-</ol>
-<h4 id="令牌结构">令牌结构</h4>
-<p>通过学习JWT令牌结构为自定义jwt令牌打好基础。</p>
-<p>JWT令牌由三部分组成，每部分中间使用点（.）分隔，比如：xxxxx.yyyyy.zzzzz</p>
-<p><strong>Header</strong></p>
-<p>头部包括令牌的类型（即JWT）及使用的哈希算法（如HMAC SHA256或RSA）</p>
-<p>一个例子如下：</p>
-<p>下边是Header部分的内容</p>
-<pre><code class="language-json">{
-    &quot;alg&quot;: &quot;HS256&quot;,
-    &quot;typ&quot;: &quot;JWT&quot;
-}
-</code></pre>
-<p>将上边的内容使用Base64Url编码，得到一个字符串就是JWT令牌的第一部分。</p>
-<p><strong>Payload</strong></p>
-<p>第二部分是负载，内容也是一个json对象，它是存放有效信息的地方，它可以存放jwt提供的现成字段，比如：iss（签发者）,exp（过期时间戳）, sub（面向的用户）等，也可自定义字段。</p>
-<p>此部分不建议存放敏感信息，因为此部分可以解码还原原始内容。</p>
-<p>最后将第二部分负载使用Base64Url编码，得到一个字符串就是JWT令牌的第二部分。</p>
-<pre><code class="language-json"> {
-    &quot;sub&quot;: &quot;1234567890&quot;,
-    &quot;name&quot;: &quot;456&quot;,
-    &quot;admin&quot;: true
-}
-</code></pre>
-<p><strong>Signature</strong></p>
-<p>第三部分是签名，此部分用于防止jwt内容被篡改。这个部分使用base64url将前两部分进行编码，编码后使用点（.）连接组成字符串，最后使用header中声明签名算法进行签名。</p>
-<pre><code class="language-java">HMACSHA256(base64UrlEncode(header) + &quot;.&quot; +base64UrlEncode(payload),secret)
-</code></pre>
-<p><code>base64UrlEncode(header)</code>：jwt令牌的第一部分。</p>
-<p><code>base64UrlEncode(payload)</code>：jwt令牌的第二部分。</p>
-<p><code>secret</code>：签名所使用的密钥。</p>
-<h3 id="jwt入门">JWT入门</h3>
-<p>Spring Security 提供对JWT的支持，本节我们使用Spring Security 提供的JwtHelper来创建JWT令牌，校验JWT令牌等操作。</p>
-<h3 id="生成私钥和公钥">生成私钥和公钥</h3>
-<p>JWT令牌生成采用非对称加密算法</p>
-<ol>
-<li>
-<p>生成密钥证书</p>
-<p>下边命令生成密钥证书，采用RSA 算法每个证书包含公钥和私钥</p>
-<pre><code class="language-java">keytool -genkeypair -alias xckey -keyalg RSA -keypass xuecheng -keystore xc.keystore -storepass xuechengkeystore
-</code></pre>
-<blockquote>
-<p>Keytool 是一个java提供的证书管理工具</p>
-<p>-alias：密钥的别名</p>
-<p>-keyalg：使用的hash算法</p>
-<p>-keypass：密钥的访问密码</p>
-<p>-keystore：密钥库文件名，xc.keystore保存了生成的证书</p>
-<p>-storepass：密钥库的访问密码</p>
-</blockquote>
-<p><strong>查询证书信息</strong></p>
-<pre><code class="language-java">keytool -list -keystore xc.keystore
-</code></pre>
-<p><strong>删除别名</strong></p>
-<pre><code class="language-java">keytool -delete -alias xckey -keystore xc.keystore
-</code></pre>
-</li>
-<li>
-<p>导出公钥</p>
-<p>openssl是一个加解密工具包，这里使用openssl来导出公钥信息。安装 openssl：http://slproweb.com/products/Win32OpenSSL.html</p>
-<p>配置openssl的path环境变量，本文配置在<code>D:\OpenSSL-Win64\bin</code>  <code>cmd</code>进入<code>xc.keystore</code>文件所在目录执行如下命令：</p>
-<pre><code class="language-java">keytool ‐list ‐rfc ‐‐keystore xc.keystore | openssl x509 ‐inform pem ‐pubkey
-</code></pre>
-<p>输入密钥库密码：</p>
-<figure data-type="image" tabindex="3"><img src="https://tinaxiawuhao.github.io/post-images/1623908661423.png" alt="" loading="lazy"></figure>
-<p>下边这一段就是公钥内容：</p>
-<pre><code class="language-java">-----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAijyxMdq4S6L1Af1rtB8SjCZHNgsQG8JTfGy55eYvzG0B/E4AudR2prSRBvF7NYPL47scRCNPgLnvbQczBHbBug6uOr78qnWsYxHlW6Aa5dI5NsmOD4DLtSw8eX0hFyK5Fj6ScYOSFBz9cd1nNTvx2+oIv0lJDcpQdQhsfgsEr1ntvWterZt/8r7xNN83gHYuZ6TM5MYvjQNBc5qC7Krs9wM7UoQuL+s0X6RlOib7/mcLn/lFLsLDdYQAZkSDx/6+t+1oHdMarChIPYT1sx9Dwj2j2mvFNDTKKKKAq0cv14Vrhz67Vjmz2yMJePDqUi0JYS2r0iIo7n8vN7s83v5uOQIDAQAB 
------END PUBLIC KEY-----
-</code></pre>
-<p>将上边的公钥拷贝到文本文件中，合并为一行。</p>
-</li>
-</ol>
-<h3 id="生成jwt令牌">生成jwt令牌</h3>
-<p>在认证工程创建测试类，测试jwt令牌的生成与验证。</p>
-<pre><code class="language-java">@Test
-public void testCreateJwt(){
-//证书文件
-String key_location = &quot;xc.keystore&quot;;
-//密钥库密码
-String keystore_password = &quot;xuechengkeystore&quot;;
-//访问证书路径
-ClassPathResource resource = new ClassPathResource(key_location);
-//密钥工厂
-KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(resource,
-keystore_password.toCharArray());
-//密钥的密码，此密码和别名要匹配
-
-String keypassword = &quot;xuecheng&quot;;
-//密钥别名
-String alias = &quot;xckey&quot;;
-//密钥对（密钥和公钥）
-KeyPair keyPair = keyStoreKeyFactory.getKeyPair(alias,keypassword.toCharArray());
-//私钥
-RSAPrivateKey aPrivate = (RSAPrivateKey) keyPair.getPrivate();
-//定义payload信息
-Map&lt;String, Object&gt; tokenMap = new HashMap&lt;&gt;();
-tokenMap.put(&quot;id&quot;, &quot;123&quot;);
-tokenMap.put(&quot;name&quot;, &quot;mrt&quot;);
-tokenMap.put(&quot;roles&quot;, &quot;r01,r02&quot;);
-tokenMap.put(&quot;ext&quot;, &quot;1&quot;);
-//生成jwt令牌
-Jwt jwt = JwtHelper.encode(JSON.toJSONString(tokenMap), new RsaSigner(aPrivate));
-//取出jwt令牌
-String token = jwt.getEncoded();
-System.out.println(&quot;token=&quot;+token);
-} //资源服务使用公钥验证jwt的合法性，并对jwt解码
-</code></pre>
-<h3 id="验证jwt令牌">验证jwt令牌</h3>
-<pre><code class="language-java">@Test
-public void testVerify(){
-//jwt令牌
-String token
-=&quot;eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHQiOiIxIiwicm9sZXMiOiJyMDEscjAyIiwibmFtZSI6Im1ydCIsImlkIjoiMTIzIn0.KK7_67N5d1Dthd1PgDHMsbi0UlmjGRcm_XJUUwseJ2eZyJJWoPP2IcEZgAU3tUaaKEHUf9wSRwaDgwhrwfyIcSHbs8oy3zOQEL8j5AOjzBBs7vnRmB7DbSaQD7eJiQVJOXO1QpdmEFgjhc_IBCVTJCVWgZw60IEW1_Lg5tqaLvCiIl26K48pJB5fle2zgYMzqR1L2LyTFkq39rG57VOqqSCi3dapsZQd4ctq95SJCXgGdrUDWtD52rp5o6_0uq‐mrbRdRxkrQfsa1j8C5IW2‐T4eUmiN3f9wF9JxUK1__XC1OQkOn‐ZTBCdqwWIygDFbU7sf6KzfHJTm5vfjp6NIA&quot;;
-//公钥
-String publickey = &quot;‐‐‐‐‐BEGIN PUBLIC KEY‐‐‐‐‐
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAijyxMdq4S6L1Af1rtB8SjCZHNgsQG8JTfGy55eYvzG0B/E4AudR2prSRBvF7NYPL47scRCNPgLnvbQczBHbBug6uOr78qnWsYxHlW6Aa5dI5NsmOD4DLtSw8eX0hFyK5Fj6ScYOSFBz9cd1nNTvx2+oIv0lJDcpQdQhsfgsEr1ntvWterZt/8r7xNN83gHYuZ6TM5MYvjQNBc5qC7Krs9wM7UoQuL+s0X6RlOib7/mcLn/lFLsLDdYQAZkSDx/6+t+1oHdMarChIPYT1sx9Dwj2j2mvFNDTKKKKAq0cv14Vrhz67Vjmz2yMJePDqUi0JYS2r0iIo7n8vN7s83v5u
-OQIDAQAB
-‐‐‐‐‐END PUBLIC KEY‐‐‐‐‐&quot;;
-
-//校验jwt
-Jwt jwt = JwtHelper.decodeAndVerify(token, new RsaVerifier(publickey));
-//获取jwt原始内容
-String claims = jwt.getClaims();
-//jwt令牌
-String encoded = jwt.getEncoded();
-System.out.println(encoded);
-}
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[zookeeper概述]]></title>
-        <id>https://tinaxiawuhao.github.io/post/DOckY7njv/</id>
-        <link href="https://tinaxiawuhao.github.io/post/DOckY7njv/">
-        </link>
-        <updated>2021-06-04T06:27:35.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="zookeeper是什么">zookeeper是什么</h2>
-<p>Zookeeper 分布式服务框架是Apache Hadoop 的一个子项目，它主要是用来解决分布式应用中经常遇到的一些数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。</p>
-<p>简单的说，zookeeper=文件系统+通知机制。</p>
-<h2 id="zookeeper提供了什么">zookeeper提供了什么</h2>
-<h3 id="1-文件系统">1、 文件系统</h3>
-<p>Zookeeper维护一个类似文件系统的数据结构：</p>
-<p>​                            <img src="https://tinaxiawuhao.github.io/post-images/1622442641935.png" alt="" loading="lazy"></p>
-<p>​    每个子目录项如 NameService 都被称作为 znode，和文件系统一样，我们能够自由的增加、删除znode，在一个znode下增加、删除子znode，唯一的不同在于znode是可以存储数据的。</p>
-<p>有四种类型的znode：</p>
-<ol>
-<li>
-<p>PERSISTENT-持久化目录节点</p>
-<p>客户端与zookeeper断开连接后，该节点依旧存在</p>
-</li>
-<li>
-<p>PERSISTENT_SEQUENTIAL-持久化顺序编号目录节点</p>
-<p>客户端与zookeeper断开连接后，该节点依旧存在，只是Zookeeper给该节点名称进行顺序编号</p>
-</li>
-<li>
-<p>EPHEMERAL-临时目录节点</p>
-<p>客户端与zookeeper断开连接后，该节点被删除</p>
-</li>
-<li>
-<p>EPHEMERAL_SEQUENTIAL-临时顺序编号目录节点</p>
-<p>客户端与zookeeper断开连接后，该节点被删除，只是Zookeeper给该节点名称进行顺序编号</p>
-</li>
-</ol>
-<h3 id="2-通知机制">2、 通知机制</h3>
-<p>​    客户端注册监听它关心的目录节点，当目录节点发生变化（数据改变、被删除、子目录节点增加删除）时，zookeeper会通知客户端。</p>
-<h2 id="我们能用zookeeper做什么">我们能用zookeeper做什么</h2>
-<h3 id="1-命名服务">1、 命名服务</h3>
-<p>​    这个似乎最简单，在zookeeper的文件系统里创建一个目录，即有唯一的path。在我们使用tborg无法确定上游程序的部署机器时即可与下游程序约定好path，通过path即能互相探索发现，不见不散了。</p>
-<h3 id="2-配置管理">2、 配置管理</h3>
-<p>​    程序总是需要配置的，如果程序分散部署在多台机器上，要逐个改变配置就变得困难。好吧，现在把这些配置全部放到zookeeper上去，保存在 Zookeeper 的某个目录节点中，然后所有相关应用程序对这个目录节点进行监听，一旦配置信息发生变化，每个应用程序就会收到 Zookeeper 的通知，然后从 Zookeeper 获取新的配置信息应用到系统中就好。</p>
-<p>​                     <img src="https://tinaxiawuhao.github.io/post-images/1622442667808.png" alt="" loading="lazy"></p>
-<h3 id="3-集群管理">3、 集群管理</h3>
-<p>所谓集群管理无在乎两点：是否有机器退出和加入、选举master。</p>
-<p>​    对于第一点，所有机器约定在父目录GroupMembers下创建临时目录节点，然后监听父目录节点的子节点变化消息。一旦有机器挂掉，该机器与 zookeeper的连接断开，其所创建的临时目录节点被删除，所有其他机器都收到通知：某个兄弟目录被删除，于是，所有人都知道：它下船了。新机器加入 也是类似，所有机器收到通知：新兄弟目录加入。</p>
-<p>​    对于第二点，我们稍微改变一下，所有机器创建临时顺序编号目录节点，每次选取编号最小的机器作为master就好。</p>
-<p>​                 <img src="https://tinaxiawuhao.github.io/post-images/1622442682095.png" alt="" loading="lazy"></p>
-<h3 id="4-分布式锁">4、 分布式锁</h3>
-<p>​    有了zookeeper的一致性文件系统，锁的问题变得容易。锁服务可以分为两类，一个是保持独占，另一个是控制时序。</p>
-<p>​    对于第一类，我们将zookeeper上的一个znode看作是一把锁，通过createznode的方式来实现。所有客户端都去创建 /distribute_lock 节点，最终成功创建的那个客户端也即拥有了这把锁。厕所有言：来也冲冲，去也冲冲，用完删除掉自己创建的distribute_lock 节点就释放出锁。</p>
-<p>​    对于第二类， /distribute_lock 已经预先存在，所有客户端在它下面创建临时顺序编号目录节点，和选master一样，编号最小的获得锁，用完删除，依次方便。</p>
-<p>​                     <img src="https://tinaxiawuhao.github.io/post-images/1622442696117.png" alt="" loading="lazy"></p>
-<h3 id="5-队列管理">5、队列管理</h3>
-<p>两种类型的队列：</p>
-<ol>
-<li>
-<p>同步队列，当一个队列的成员都聚齐时，这个队列才可用，否则一直等待所有成员到达。</p>
-</li>
-<li>
-<p>队列按照 FIFO 方式进行入队和出队操作。</p>
-<p>第一类，在约定目录下创建临时目录节点，监听节点数目是否是我们要求的数目。</p>
-<p>第二类，和分布式锁服务中的控制时序场景基本原理一致，入列有编号，出列按编号。</p>
-</li>
-</ol>
-<p>​     终于了解完我们能用zookeeper做什么了，可是作为一个程序员，我们总是想狂热了解zookeeper是如何做到这一点的，单点维护一个文件系统没有什么难度，可是如果是一个集群维护一个文件系统保持数据的一致性就非常困难了。</p>
-<h3 id="6-分布式与数据复制">6、分布式与数据复制</h3>
-<p>Zookeeper作为一个集群提供一致的数据服务，自然，它要在所有机器间做数据复制。数据复制的好处：</p>
-<ol>
-<li>
-<p>容错<br>
-一个节点出错，不致于让整个系统停止工作，别的节点可以接管它的工作；</p>
-</li>
-<li>
-<p>提高系统的扩展能力<br>
-把负载分布到多个节点上，或者增加节点来提高系统的负载能力；</p>
-</li>
-<li>
-<p>提高性能<br>
-让客户端本地访问就近的节点，提高用户访问速度。</p>
-</li>
-</ol>
-<p>从客户端读写访问的透明度来看，数据复制集群系统分下面两种：</p>
-<ol>
-<li>
-<p>写主(WriteMaster)<br>
-对数据的修改提交给指定的节点。读无此限制，可以读取任何一个节点。这种情况下客户端需要对读与写进行区别，俗称读写分离；</p>
-</li>
-<li>
-<p>写任意(Write Any)<br>
-对数据的修改可提交给任意的节点，跟读一样。这种情况下，客户端对集群节点的角色与变化透明。</p>
-</li>
-</ol>
-<p>​    对zookeeper来说，它采用的方式是写任意。通过增加机器，它的读吞吐能力和响应能力扩展性非常好，而写，随着机器的增多吞吐能力肯定下降（这 也是它建立observer的原因），而响应能力则取决于具体实现方式，是延迟复制保持最终一致性，还是立即复制快速响应。</p>
-<p>我们关注的重点还是在如何保证数据在集群所有机器的一致性，这就涉及到paxos算法。</p>
-<h3 id="7-数据一致性与paxos算法">7、数据一致性与paxos算法</h3>
-<p>​    据说Paxos算法的难理解与算法的知名度一样令人敬仰，所以我们先看如何保持数据的一致性，这里有个原则就是：</p>
-<blockquote>
-<p>在一个分布式数据库系统中，如果各节点的初始状态一致，每个节点都执行相同的操作序列，那么他们最后能得到一个一致的状态。</p>
-</blockquote>
-<p>​    Paxos算法解决的什么问题呢，解决的就是保证每个节点执行相同的操作序列。好吧，这还不简单，master维护一个全局写队列，所有写操作都必须 放入这个队列编号，那么无论我们写多少个节点，只要写操作是按编号来的，就能保证一致性。没错，就是这样，可是如果master挂了呢。</p>
-<p>​    Paxos算法通过投票来对写操作进行全局编号，同一时刻，只有一个写操作被批准，同时并发的写操作要去争取选票，只有获得过半数选票的写操作才会被 批准（所以永远只会有一个写操作得到批准），其他的写操作竞争失败只好再发起一轮投票，就这样，在日复一日年复一年的投票中，所有写操作都被严格编号排 序。编号严格递增，当一个节点接受了一个编号为100的写操作，之后又接受到编号为99的写操作（因为网络延迟等很多不可预见原因），它马上能意识到自己 数据不一致了，自动停止对外服务并重启同步过程。任何一个节点挂掉都不会影响整个集群的数据一致性（总2n+1台，除非挂掉大于n台）。</p>
-<p><strong>总结</strong></p>
-<p>​    Zookeeper 作为 Hadoop 项目中的一个子项目，是 Hadoop 集群管理的一个必不可少的模块，它主要用来控制集群中的数据，如它管理 Hadoop 集群中的 NameNode，还有 Hbase 中 Master Election、Server 之间状态同步等。</p>
-<h1 id="zookeeper工作原理">Zookeeper工作原理</h1>
-<p>​    ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，它包含一个简单的原语集，分布式应用程序可以基于它实现同步服务，配置维护和 命名服务等。Zookeeper是hadoop的一个子项目，其发展历程无需赘述。在分布式应用中，由于工程师不能很好地使用锁机制，以及基于消息的协调 机制不适合在某些应用中使用，因此需要有一种可靠的、可扩展的、分布式的、可配置的协调机制来统一系统的状态。Zookeeper的目的就在于此。</p>
-<h2 id="zookeeper的基本概念">Zookeeper的基本概念</h2>
-<h3 id="11-角色">1.1 角色</h3>
-<p>Zookeeper中的角色主要有以下三类，如下表所示：</p>
-<p>​             <img src="https://tinaxiawuhao.github.io/post-images/1622442715591.png" alt="" loading="lazy"></p>
-<p>系统模型如图所示：</p>
-<p>​            <img src="https://tinaxiawuhao.github.io/post-images/1622442726565.jpg" alt="" loading="lazy"></p>
-<h3 id="12-设计目的">1.2 设计目的</h3>
-<ol>
-<li>
-<p>最终一致性：client不论连接到哪个Server，展示给它都是同一个视图，这是zookeeper最重要的性能。</p>
-</li>
-<li>
-<p>可靠性：具有简单、健壮、良好的性能，如果消息m被一台服务器接受，那么它将被所有的服务器接受。</p>
-</li>
-<li>
-<p>实时性：Zookeeper保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。但由于网络延时等原因，Zookeeper不能保证两个客户端能同时得到刚更新的数据，如果需要最新数据，应该在读数据之前调用sync()接口。</p>
-</li>
-<li>
-<p>等待无关（wait-free）：慢的或者失效的client不得干预快速的client的请求，使得每个client都能有效的等待。</p>
-</li>
-<li>
-<p>原子性：更新只能成功或者失败，没有中间状态。</p>
-</li>
-<li>
-<p>顺序性：包括全局有序和偏序两种：全局有序是指如果在一台服务器上消息a在消息b前发布，则在所有Server上消息a都将在消息b前被发布；偏序是指如果一个消息b在消息a后被同一个发送者发布，a必将排在b前面。</p>
-</li>
-</ol>
-<h2 id="zookeeper的流程设计">ZooKeeper的流程设计</h2>
-<p>​    Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做Zab协议。Zab协议有两种模式，它们分 别是恢复模式（选主）和广播模式（同步）。当服务启动或者在领导者崩溃后，Zab就进入了恢复模式，当领导者被选举出来，且大多数Server完成了和 leader的状态同步以后，恢复模式就结束了。状态同步保证了leader和Server具有相同的系统状态。</p>
-<p>​    为了保证事务的顺序一致性，zookeeper采用了递增的事务id号（zxid）来标识事务。所有的提议（proposal）都在被提出的时候加上 了zxid。实现中zxid是一个64位的数字，它高32位是epoch用来标识leader关系是否改变，每次一个leader被选出来，它都会有一个 新的epoch，标识当前属于那个leader的统治时期。低32位用于递增计数。</p>
-<p>每个Server在工作过程中有三种状态：</p>
-<ul>
-<li>LOOKING：当前Server不知道leader是谁，正在搜寻</li>
-<li>LEADING：当前Server即为选举出来的leader</li>
-<li>FOLLOWING：leader已经选举出来，当前Server与之同步</li>
-</ul>
-<h3 id="21-选主流程">2.1 选主流程</h3>
-<p>当leader崩溃或者leader失去大多数的follower，这时候zk进入恢复模式，恢复模式需要重新选举出一个新的leader，让所有的 Server都恢复到一个正确的状态。Zk的选举算法有两种：一种是基于basic paxos实现的，另外一种是基于fast paxos算法实现的。系统默认的选举算法为fast paxos。先介绍basic paxos流程：</p>
-<p>​    1 .选举线程由当前Server发起选举的线程担任，其主要功能是对投票结果进行统计，并选出推荐的Server；</p>
-<p>​    2 .选举线程首先向所有Server发起一次询问(包括自己)；</p>
-<p>​    3 .选举线程收到回复后，验证是否是自己发起的询问(验证zxid是否一致)，然后获取对方的id(myid)，并存储到当前询问对象列表中，最后获取对方提议的leader相关信息(    id,zxid)，并将这些信息存储到当次选举的投票记录表中；</p>
-<p>​    4.  收到所有Server回复以后，就计算出zxid最大的那个Server，并将这个Server相关信息设置成下一次要投票的Server；</p>
-<p>​    5.  线程将当前zxid最大的Server设置为当前Server要推荐的Leader，如果此时获胜的Server获得n/2 + 1的Server票数， 设置当前推荐的leader为获胜的Server，将根据获胜的Server相关信息设置自己的状态，否则，继续这个过程，直到leader被选举出来。</p>
-<p>通过流程分析我们可以得出：要使Leader获得多数Server的支持，则Server总数必须是奇数2n+1，且存活的Server的数目不得少于n+1.</p>
-<p>每个Server启动后都会重复以上流程。在恢复模式下，如果是刚从崩溃状态恢复的或者刚启动的server还会从磁盘快照中恢复数据和会话信息，zk会记录事务日志并定期进行快照，方便在恢复时进行状态恢复。选主的具体流程图如下所示：</p>
-<p>​                     <img src="https://tinaxiawuhao.github.io/post-images/1622442743429.png" alt="" loading="lazy"></p>
-<p>fast paxos流程是在选举过程中，某Server首先向所有Server提议自己要成为leader，当其它Server收到提议以后，解决epoch和 zxid的冲突，并接受对方的提议，然后向对方发送接受提议完成的消息，重复这个流程，最后一定能选举出Leader。其流程图如下所示：</p>
-<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1622442753556.png" alt="" loading="lazy"></figure>
-<h3 id="22-同步流程">2.2 同步流程</h3>
-<p>选完leader以后，zk就进入状态同步过程。</p>
-<p>​    1. leader等待server连接；</p>
-<p>​    2 .Follower连接leader，将最大的zxid发送给leader；</p>
-<p>​    3 .Leader根据follower的zxid确定同步点；</p>
-<p>​    4 .完成同步后通知follower 已经成为uptodate状态；</p>
-<p>​    5 .Follower收到uptodate消息后，又可以重新接受client的请求进行服务了。</p>
-<p>流程图如下所示：</p>
-<p>​                 <img src="https://tinaxiawuhao.github.io/post-images/1622442765596.jpg" alt="" loading="lazy"></p>
-<h3 id="23-工作流程">2.3 工作流程</h3>
-<h4 id="231-leader工作流程">2.3.1 Leader工作流程</h4>
-<p>Leader主要有三个功能：</p>
-<p>​    1 .恢复数据；</p>
-<p>​    2 .维持与Learner的心跳，接收Learner请求并判断Learner的请求消息类型；</p>
-<p>​    3 .Learner的消息类型主要有PING消息、REQUEST消息、ACK消息、REVALIDATE消息，根据不同的消息类型，进行不同的处理。</p>
-<p>​    PING消息是指Learner的心跳信息；REQUEST消息是Follower发送的提议信息，包括写请求及同步请求；ACK消息是 Follower的对提议的回复，超过半数的Follower通过，则commit该提议；REVALIDATE消息是用来延长SESSION有效时间。<br>
-Leader的工作流程简图如下所示，在实际实现中，流程要比下图复杂得多，启动了三个线程来实现功能。</p>
-<p>​                <img src="https://tinaxiawuhao.github.io/post-images/1622442776052.png" alt="" loading="lazy"></p>
-<h4 id="232-follower工作流程">2.3.2 Follower工作流程</h4>
-<p>Follower主要有四个功能：</p>
-<p>​    1. 向Leader发送请求（PING消息、REQUEST消息、ACK消息、REVALIDATE消息）；</p>
-<p>​    2 .接收Leader消息并进行处理；</p>
-<p>​    3 .接收Client的请求，如果为写请求，发送给Leader进行投票；</p>
-<p>​    4 .返回Client结果。</p>
-<p>Follower的消息循环处理如下几种来自Leader的消息：</p>
-<p>​    1 .PING消息： 心跳消息；</p>
-<p>​    2 .PROPOSAL消息：Leader发起的提案，要求Follower投票；</p>
-<p>​    3 .COMMIT消息：服务器端最新一次提案的信息；</p>
-<p>​    4 .UPTODATE消息：表明同步完成；</p>
-<p>​    5 .REVALIDATE消息：根据Leader的REVALIDATE结果，关闭待revalidate的session还是允许其接受消息；</p>
-<p>​    6 .SYNC消息：返回SYNC结果到客户端，这个消息最初由客户端发起，用来强制得到最新的更新。</p>
-<p>Follower的工作流程简图如下所示，在实际实现中，Follower是通过5个线程来实现功能的。</p>
-<p>​             <img src="https://tinaxiawuhao.github.io/post-images/1622442788398.png" alt="" loading="lazy"></p>
-<p>对于observer的流程不再叙述，observer流程和Follower的唯一不同的地方就是observer不会参加leader发起的投票。</p>
 ]]></content>
     </entry>
 </feed>
