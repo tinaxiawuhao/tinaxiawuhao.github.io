@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>gitlab使用runner完成CI | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="gitlab使用runner完成CI | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="gitlab使用runner完成CI" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/0SH2PgZRJ/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1663068709855"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1663068709855"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/68OvpWeci/" class="tag">git</a>
+                
+              </span>
+              <h1>gitlab使用runner完成CI</h1>
+              <span class="meta">
+                Posted on
+                2022-09-08，4 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/0SH2PgZRJ.png" alt="封面图">
+          </img>
+          
+          <h3 id="gitlab安装">gitlab安装</h3>
+<h4 id="docker下载镜像">docker下载镜像</h4>
+<pre><code class="language-shell">docker pull gitlab/gitlab-ce:latest
+</code></pre>
+<h4 id="gitlab容器部署">gitlab容器部署</h4>
+<pre><code class="language-shell">docker run -d -p 8443:443 -p 80:80 -p 8022:22 --restart always --name gitlab -v C:\installation\gitlab\config:/etc/gitlab -v C:\installation\gitlab\logs:/var/log/gitlab -v C:\installation\gitlab\data:/var/opt/gitlab
+</code></pre>
+<h4 id="修改配置">修改配置</h4>
+<pre><code class="language-shell">vi /etc/gitlab/gitlab.rb
+-------------------------------------------------
+# gitlab访问地址，可以写域名。如果端口不写的话默认为80端口
+external_url 'http://gitlab.test'
+# ssh主机ip
+gitlab_rails['gitlab_ssh_host'] = 'gitlab.test'
+# ssh连接端口
+gitlab_rails['gitlab_shell_ssh_port'] = 8022
+
+
+# 是否启用
+gitlab_rails['smtp_enable'] = true
+# SMTP服务的地址
+gitlab_rails['smtp_address'] = &quot;smtp.qq.com&quot;
+# 端口
+gitlab_rails['smtp_port'] = 465
+# 你的QQ邮箱（发送账号）
+gitlab_rails['smtp_user_name'] = &quot;*******@qq.com&quot;
+# 授权码
+gitlab_rails['smtp_password'] = &quot;********&quot;
+# 域名
+gitlab_rails['smtp_domain'] = &quot;smtp.qq.com&quot;
+# 登录验证
+gitlab_rails['smtp_authentication'] = &quot;login&quot;
+ 
+# 使用了465端口，就需要配置下面三项
+gitlab_rails['smtp_enable_starttls_auto'] = true
+gitlab_rails['smtp_tls'] = true
+gitlab_rails['smtp_openssl_verify_mode'] = 'none'
+ 
+# 你的QQ邮箱（发送账号）
+gitlab_rails['gitlab_email_from'] = '********@qq.com'
+</code></pre>
+<pre><code class="language-shell"># 修改http和ssh配置
+vi /opt/gitlab/embedded/service/gitlab-rails/config/gitlab.yml
+--------------------------------------------------------------
+gitlab:
+  host: gitlab.test
+  port: 80 
+  https: false
+</code></pre>
+<pre><code class="language-shell">#修改hosts
+c:\windows\system32\drivers\etc
+127.0.0.1 gitlab.test
+</code></pre>
+<h3 id="gitlab-runner安装">gitlab-runner安装</h3>
+<p>url和token通过gitlab的CI/CD菜单项查看</p>
+<pre><code class="language-shell">docker exec -it gitlab-runner gitlab-runner register -n --url http://172.17.0.2/  --registration-token GR1348941smuNaFuN-Cf68ne2X-tP --executor docker  --description &quot;Docker Runner&quot; --docker-image=maven:latest --tag-list=&quot;dev-release&quot;
+</code></pre>
+<h3 id="注册runner">注册runner</h3>
+<pre><code class="language-shell">docker exec -it gitlab-runner gitlab-runner register -n --url http://172.17.0.2/  --registration-token GR1348941smuNaFuN-Cf68ne2X-tP --executor docker  --description &quot;Docker Runner&quot; --docker-image=maven:latest --tag-list=&quot;allen-devolop-tag&quot; 
+</code></pre>
+<h3 id="项目添加gitlab-ciyml文件">项目添加.gitlab-ci.yml文件</h3>
+<pre><code class="language-java"># runner使用doker时指定镜像
+image: maven:3.6.3-jdk-8
+
+# 定义缓存
+# 如果gitlab runner是shell或者docker，此缓存功能没有问题
+# 如果是k8s环境，要确保已经设置了分布式文件服务作为缓存
+cache:
+  key: minio
+  paths:
+    - .m2/repository/
+    - minio/target/*.jar
+
+# 本次构建的阶段：build package
+stages:
+  - package
+  - build
+
+# 生产jar的job
+make_jar:
+  tags:
+    - dev-release
+  only:
+    - dev-release
+  image: maven:3.6.3-jdk-8
+  stage: package
+  script:
+    - echo &quot;=============== 开始编译源码，在target目录生成jar文件 ===============&quot;
+    - mvn clean &amp;&amp; mvn package -Dmaven.test.skip=true
+    - echo &quot;target文件夹&quot; `ls minio/target/`
+
+# 生产镜像的job
+make_image:
+  tags:
+    - dev-release
+  only:
+    - dev-release
+  image: docker:latest
+  stage: build
+  script:
+    - VERSION=`date +%Y%m%d%H%M`
+    - echo &quot;VERSION=$VERSION&quot; &gt; .version
+    - echo $VERSION
+    - echo &quot;从缓存中恢复的target文件夹&quot; `ls minio/target/`
+    - echo &quot;=============== 登录Harbor  ===============&quot;
+    - cd minio
+    - docker login -u user -p password https://harbor.com
+    - echo &quot;=============== 打包Docker镜像 ： &quot; harbor.com/test/minio-connect:$VERSION &quot;===============&quot;
+    - docker build -t harbor.com/test/minio-connect:$VERSION .
+    - echo &quot;=============== 推送到镜像仓库  ===============&quot;
+    - docker push harbor.com/test/minio-connect:$VERSION
+    - echo &quot;=============== 登出  ===============&quot;
+    - docker logout
+    - echo &quot;清理掉本次构建的jar文件&quot;
+    - rm -rf target/*.jar
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#gitlab%E5%AE%89%E8%A3%85">gitlab安装</a>
+<ul>
+<li><a href="#docker%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F">docker下载镜像</a></li>
+<li><a href="#gitlab%E5%AE%B9%E5%99%A8%E9%83%A8%E7%BD%B2">gitlab容器部署</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE">修改配置</a></li>
+</ul>
+</li>
+<li><a href="#gitlab-runner%E5%AE%89%E8%A3%85">gitlab-runner安装</a></li>
+<li><a href="#%E6%B3%A8%E5%86%8Crunner">注册runner</a></li>
+<li><a href="#%E9%A1%B9%E7%9B%AE%E6%B7%BB%E5%8A%A0gitlab-ciyml%E6%96%87%E4%BB%B6">项目添加.gitlab-ci.yml文件</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+              <hr />
+            
+          
+            
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/Tm9S6oyiS/">
+                  <span class="post-title">
+                    springboot启动流程&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+            
+           <p class="prev-post">下一篇：
+                 <a href="https://tinaxiawuhao.github.io/post/E_iSRsJL1/">
+                   <span class="post-title">
+                     spring启动流程&rarr;
+                   </span>
+                 </a>
+               </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

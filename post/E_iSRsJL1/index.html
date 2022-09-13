@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[tianxia]的个人博客">
+<meta name="author" content="kveln">
+<title>spring启动流程 | tianxia</title>
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
+<link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="spring启动流程 | tianxia » Feed"
+  href="https://tinaxiawuhao.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
+<link href="https://tinaxiawuhao.github.io/styles/main.css" rel="stylesheet">
+<script src="https://tinaxiawuhao.github.io/resource/jquery.min.js"></script>
+
+<script src="https://tinaxiawuhao.github.io/resource/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="spring启动流程" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/E_iSRsJL1/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="tianxia" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1663068709855"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://tinaxiawuhao.github.io">tianxia</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">归档</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1663068709855"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://tinaxiawuhao.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://tinaxiawuhao.github.io/tag/RvlbUayk-/" class="tag">spring</a>
+                
+              </span>
+              <h1>spring启动流程</h1>
+              <span class="meta">
+                Posted on
+                2022-09-13，10 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/E_iSRsJL1.png" alt="封面图">
+          </img>
+          
+          <p>Spring的启动流程可以归纳为三个步骤：</p>
+<ul>
+<li>
+<p>1、初始化Spring容器，注册内置BeanPostProcessor的BeanDefinition到容器中</p>
+</li>
+<li>
+<p>2、将配置类的BeanDefinition注册到容器中</p>
+</li>
+<li>
+<p>3、调用refresh()方法刷新容器</p>
+</li>
+</ul>
+<p>因为是基于 java-config 技术分析源码，所以这里的入口是 AnnotationConfigApplicationContext ，如果是使用 xml 分析，那么入口即为 ClassPathXmlApplicationContext ，它们俩的共同特征便是都继承了 AbstractApplicationContext 类，而大名鼎鼎的 refresh()便是在这个类中定义的。我们接着分析 AnnotationConfigApplicationContext 类，源码如下：</p>
+<pre><code class="language-java">// 初始化容器
+public AnnotationConfigApplicationContext(Class&lt;?&gt;... annotatedClasses) {
+    // 注册 Spring 内置后置处理器的 BeanDefinition 到容器
+    this();
+    // 注册配置类 BeanDefinition 到容器
+    register(annotatedClasses);
+    // 加载或者刷新容器中的Bean
+    refresh();
+}
+</code></pre>
+<p>所以整个Spring容器的启动流程可以绘制成如下流程图：</p>
+<figure data-type="image" tabindex="1"><img src="https://tinaxiawuhao.github.io/post-images/1663068697343.png" alt="" loading="lazy"></figure>
+<p>接着我们主要从这三个入口详细分析一下Spring的启动流程：</p>
+<h3 id="一-初始化流程">一、初始化流程：</h3>
+<p><strong>1、spring容器的初始化时，通过this()调用了无参构造函数，主要做了以下三个事情：</strong></p>
+<p>（1）实例化BeanFactory【DefaultListableBeanFactory】工厂，用于生成Bean对象<br>
+（2）实例化BeanDefinitionReader注解配置读取器，用于对特定注解（如@Service、@Repository）的类进行读取转化成  BeanDefinition 对象，（BeanDefinition 是 Spring 中极其重要的一个概念，它存储了 bean 对象的所有特征信息，如是否单例，是否懒加载，factoryBeanName 等）<br>
+（3）实例化ClassPathBeanDefinitionScanner路径扫描器，用于对指定的包目录进行扫描查找 bean 对象<br>
+<strong>2、核心代码剖析：</strong></p>
+<p>（1）向容器添加内置组件：org.springframework.context.annotation.AnnotationConfigUtils#registerAnnotationConfigProcessors：</p>
+<p>根据上图分析，代码运行到这里时候，Spring 容器已经构造完毕，那么就可以为容器添加一些内置组件了，其中最主要的组件便是 ConfigurationClassPostProcessor 和 AutowiredAnnotationBeanPostProcessor ，前者是一个 beanFactory 后置处理器，用来完成 bean 的扫描与注入工作，后者是一个 bean 后置处理器，用来完成 @AutoWired 自动注入。</p>
+<h3 id="二-注册springconfig配置类到容器中">二、注册SpringConfig配置类到容器中：</h3>
+<p>1、将SpringConfig注册到容器中：org.springframework.context.annotation.AnnotatedBeanDefinitionReader#doRegisterBean：</p>
+<p>这个步骤主要是用来解析用户传入的 Spring 配置类，解析成一个 BeanDefinition 然后注册到容器中，主要源码如下：</p>
+<pre><code class="language-java">&lt;T&gt; void doRegisterBean(Class&lt;T&gt; annotatedClass, @Nullable Supplier&lt;T&gt; instanceSupplier, @Nullable String name,
+		@Nullable Class&lt;? extends Annotation&gt;[] qualifiers, BeanDefinitionCustomizer... definitionCustomizers) {
+	// 解析传入的配置类，实际上这个方法既可以解析配置类，也可以解析 Spring bean 对象
+	AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
+	// 判断是否需要跳过，判断依据是此类上有没有 @Conditional 注解
+	if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
+		return;
+	}
+
+	abd.setInstanceSupplier(instanceSupplier);
+	ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
+	abd.setScope(scopeMetadata.getScopeName());
+	String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
+	// 处理类上的通用注解
+	AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+	if (qualifiers != null) {
+		for (Class&lt;? extends Annotation&gt; qualifier : qualifiers) {
+			if (Primary.class == qualifier) {
+				abd.setPrimary(true);
+			}
+			else if (Lazy.class == qualifier) {
+				abd.setLazyInit(true);
+			}
+			else {
+				abd.addQualifier(new AutowireCandidateQualifier(qualifier));
+			}
+		}
+	}
+	// 封装成一个 BeanDefinitionHolder
+	for (BeanDefinitionCustomizer customizer : definitionCustomizers) {
+		customizer.customize(abd);
+	}
+	BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
+	// 处理 scopedProxyMode
+	definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+	 
+	// 把 BeanDefinitionHolder 注册到 registry
+	BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
+
+}
+</code></pre>
+<h3 id="三-refresh容器刷新流程">三、refresh()容器刷新流程：</h3>
+<p>refresh()主要用于容器的刷新，Spring 中的每一个容器都会调用 refresh() 方法进行刷新，无论是 Spring 的父子容器，还是 Spring Cloud Feign 中的 feign 隔离容器，每一个容器都会调用这个方法完成初始化。refresh()可划分为12个步骤，其中比较重要的步骤下面会有详细说明。</p>
+<p><strong>1、refresh()方法的源码：org.springframework.context.support.AbstractApplicationContext#refresh：</strong></p>
+<pre><code class="language-java">public void refresh() throws BeansException, IllegalStateException {
+	synchronized (this.startupShutdownMonitor) {
+		// 1. 刷新前的预处理
+		prepareRefresh();
+
+		// 2. 获取 beanFactory，即前面创建的【DefaultListableBeanFactory】
+		ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+	 
+		// 3. 预处理 beanFactory，向容器中添加一些组件
+		prepareBeanFactory(beanFactory);
+	 
+		try {
+			// 4. 子类通过重写这个方法可以在 BeanFactory 创建并与准备完成以后做进一步的设置
+			postProcessBeanFactory(beanFactory);
+	 
+			// 5. 执行 BeanFactoryPostProcessor 方法，beanFactory 后置处理器
+			invokeBeanFactoryPostProcessors(beanFactory);
+	 
+			// 6. 注册 BeanPostProcessors，bean 后置处理器
+			registerBeanPostProcessors(beanFactory);
+	 
+			// 7. 初始化 MessageSource 组件（做国际化功能；消息绑定，消息解析）
+			initMessageSource();
+	 
+			// 8. 初始化事件派发器，在注册监听器时会用到
+			initApplicationEventMulticaster();
+	 
+			// 9. 留给子容器（子类），子类重写这个方法，在容器刷新的时候可以自定义逻辑，web 场景下会使用
+			onRefresh();
+	 
+			// 10. 注册监听器，派发之前步骤产生的一些事件（可能没有）
+			registerListeners();
+	 
+			// 11. 初始化所有的非单实例 bean
+			finishBeanFactoryInitialization(beanFactory);
+	 
+			// 12. 发布容器刷新完成事件
+			finishRefresh();
+		}
+		...
+	}
+
+}
+</code></pre>
+<p>我们总结一下refresh()方法每一步主要的功能</p>
+<h4 id="1preparerefresh刷新前的预处理">1,prepareRefresh()刷新前的预处理：</h4>
+<p>（1）initPropertySources()：初始化一些属性设置，子类自定义个性化的属性设置方法；<br>
+（2）getEnvironment().validateRequiredProperties()：检验属性的合法性<br>
+（3）earlyApplicationEvents = new LinkedHashSet<ApplicationEvent>()：保存容器中的一些早期的事件；</p>
+<h4 id="2obtainfreshbeanfactory获取在容器初始化时创建的beanfactory">2,obtainFreshBeanFactory()：获取在容器初始化时创建的BeanFactory：</h4>
+<p>（1）refreshBeanFactory()：刷新BeanFactory，设置序列化ID；<br>
+（2）getBeanFactory()：返回初始化中的GenericApplicationContext创建的BeanFactory对象，即【DefaultListableBeanFactory】类型</p>
+<h4 id="3preparebeanfactorybeanfactorybeanfactory的预处理工作向容器中添加一些组件">3,prepareBeanFactory(beanFactory)：BeanFactory的预处理工作，向容器中添加一些组件：</h4>
+<p>（1）设置BeanFactory的类加载器、设置表达式解析器等等<br>
+（2）添加BeanPostProcessor【ApplicationContextAwareProcessor】<br>
+（3）设置忽略自动装配的接口：EnvironmentAware、EmbeddedValueResolverAware、ResourceLoaderAware、ApplicationEventPublisherAware、MessageSourceAware、ApplicationContextAware；<br>
+（4）注册可以解析的自动装配类，即可以在任意组件中通过注解自动注入：BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext<br>
+（5）添加BeanPostProcessor【ApplicationListenerDetector】<br>
+（6）添加编译时的AspectJ；<br>
+（7）给BeanFactory中注册的3个组件：environment【ConfigurableEnvironment】、systemProperties【Map&lt;String, Object&gt;】、systemEnvironment【Map&lt;String, Object&gt;】</p>
+<h4 id="4postprocessbeanfactorybeanfactory子类重写该方法可以实现在beanfactory创建并预处理完成以后做进一步的设置">4,postProcessBeanFactory(beanFactory)：子类重写该方法，可以实现在BeanFactory创建并预处理完成以后做进一步的设置</h4>
+<h4 id="5invokebeanfactorypostprocessorsbeanfactory在beanfactory标准初始化之后执行beanfactorypostprocessor的方法即beanfactory的后置处理器">5,invokeBeanFactoryPostProcessors(beanFactory)：在BeanFactory标准初始化之后执行BeanFactoryPostProcessor的方法，即BeanFactory的后置处理器：</h4>
+<p>（1）先执行BeanDefinitionRegistryPostProcessor： postProcessor.postProcessBeanDefinitionRegistry(registry)</p>
+<p>① 获取所有的实现了BeanDefinitionRegistryPostProcessor接口类型的集合<br>
+② 先执行实现了PriorityOrdered优先级接口的BeanDefinitionRegistryPostProcessor<br>
+③ 再执行实现了Ordered顺序接口的BeanDefinitionRegistryPostProcessor<br>
+④ 最后执行没有实现任何优先级或者是顺序接口的BeanDefinitionRegistryPostProcessors<br>
+（2）再执行BeanFactoryPostProcessor的方法：postProcessor.postProcessBeanFactory(beanFactory)</p>
+<p>① 获取所有的实现了BeanFactoryPostProcessor接口类型的集合<br>
+② 先执行实现了PriorityOrdered优先级接口的BeanFactoryPostProcessor<br>
+③ 再执行实现了Ordered顺序接口的BeanFactoryPostProcessor<br>
+④ 最后执行没有实现任何优先级或者是顺序接口的BeanFactoryPostProcessor</p>
+<h4 id="6registerbeanpostprocessorsbeanfactory向容器中注册bean的后置处理器beanpostprocessor它的主要作用是干预spring初始化bean的流程从而完成代理-自动注入-循环依赖等功能">6,registerBeanPostProcessors(beanFactory)：向容器中注册Bean的后置处理器BeanPostProcessor，它的主要作用是干预Spring初始化bean的流程，从而完成代理、自动注入、循环依赖等功能</h4>
+<p>（1）获取所有实现了BeanPostProcessor接口类型的集合：<br>
+（2）先注册实现了PriorityOrdered优先级接口的BeanPostProcessor；<br>
+（3）再注册实现了Ordered优先级接口的BeanPostProcessor；<br>
+（4）最后注册没有实现任何优先级接口的BeanPostProcessor；<br>
+（5）最r终注册MergedBeanDefinitionPostProcessor类型的BeanPostProcessor：beanFactory.addBeanPostProcessor(postProcessor);<br>
+（6）给容器注册一个ApplicationListenerDetector：用于在Bean创建完成后检查是否是ApplicationListener，如果是，就把Bean放到容器中保存起来：applicationContext.addApplicationListener((ApplicationListener&lt;?&gt;) bean);<br>
+此时容器中默认有6个默认的BeanProcessor(无任何代理模式下)：【ApplicationContextAwareProcessor】、【ConfigurationClassPostProcessorsAwareBeanPostProcessor】、【PostProcessorRegistrationDelegate】、【CommonAnnotationBeanPostProcessor】、【AutowiredAnnotationBeanPostProcessor】、【ApplicationListenerDetector】</p>
+<h4 id="7initmessagesource初始化messagesource组件主要用于做国际化功能消息绑定与消息解析">7,initMessageSource()：初始化MessageSource组件，主要用于做国际化功能，消息绑定与消息解析：</h4>
+<p>（1）看BeanFactory容器中是否有id为messageSource 并且类型是MessageSource的组件：如果有，直接赋值给messageSource；如果没有，则创建一个DelegatingMessageSource；<br>
+（2）把创建好的MessageSource注册在容器中，以后获取国际化配置文件的值的时候，可以自动注入MessageSource；</p>
+<h4 id="8initapplicationeventmulticaster初始化事件派发器在注册监听器时会用到">8,initApplicationEventMulticaster()：初始化事件派发器，在注册监听器时会用到：</h4>
+<p>（1）看BeanFactory容器中是否存在自定义的ApplicationEventMulticaster：如果有，直接从容器中获取；如果没有，则创建一个SimpleApplicationEventMulticaster<br>
+（2）将创建的ApplicationEventMulticaster添加到BeanFactory中，以后其他组件就可以直接自动注入</p>
+<h4 id="9onrefresh留给子容器-子类重写这个方法在容器刷新的时候可以自定义逻辑">9,onRefresh()：留给子容器、子类重写这个方法，在容器刷新的时候可以自定义逻辑</h4>
+<h4 id="10registerlisteners注册监听器将容器中所有的applicationlistener注册到事件派发器中并派发之前步骤产生的事件">10,registerListeners()：注册监听器：将容器中所有的ApplicationListener注册到事件派发器中，并派发之前步骤产生的事件：</h4>
+<p>（1）从容器中拿到所有的ApplicationListener<br>
+（2）将每个监听器添加到事件派发器中：getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);<br>
+（3）派发之前步骤产生的事件applicationEvents：getApplicationEventMulticaster().multicastEvent(earlyEvent);</p>
+<h4 id="11finishbeanfactoryinitializationbeanfactory初始化所有剩下的非单实例bean核心方法是preinstantiatesingletons会调用getbean方法创建对象">11,finishBeanFactoryInitialization(beanFactory)：初始化所有剩下的非单实例bean，核心方法是preInstantiateSingletons()，会调用getBean()方法创建对象；</h4>
+<p>（1）获取容器中的所有beanDefinitionName，依次进行初始化和创建对象<br>
+（2）获取Bean的定义信息RootBeanDefinition，它表示自己的BeanDefinition和可能存在父类的BeanDefinition合并后的对象<br>
+（3）如果Bean满足这三个条件：非抽象的，单实例，非懒加载，则执行单例Bean创建流程：<br>
+（4）所有Bean都利用getBean()创建完成以后，检查所有的Bean是否为SmartInitializingSingleton接口的，如果是；就执行afterSingletonsInstantiated()；</p>
+<h4 id="12finishrefresh发布beanfactory容器刷新完成事件">12,finishRefresh()：发布BeanFactory容器刷新完成事件：</h4>
+<p>（1）initLifecycleProcessor()：初始化和生命周期有关的后置处理器：默认从容器中找是否有lifecycleProcessor的组件【LifecycleProcessor】，如果没有，则创建一个DefaultLifecycleProcessor()加入到容器；<br>
+（2）getLifecycleProcessor().onRefresh()：拿到前面定义的生命周期处理器（LifecycleProcessor）回调onRefresh()方法<br>
+（3）publishEvent(new ContextRefreshedEvent(this))：发布容器刷新完成事件；<br>
+（4）liveBeansView.registerApplicationContext(this);</p>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%B5%81%E7%A8%8B">一、初始化流程：</a></li>
+<li><a href="#%E4%BA%8C-%E6%B3%A8%E5%86%8Cspringconfig%E9%85%8D%E7%BD%AE%E7%B1%BB%E5%88%B0%E5%AE%B9%E5%99%A8%E4%B8%AD">二、注册SpringConfig配置类到容器中：</a></li>
+<li><a href="#%E4%B8%89-refresh%E5%AE%B9%E5%99%A8%E5%88%B7%E6%96%B0%E6%B5%81%E7%A8%8B">三、refresh()容器刷新流程：</a>
+<ul>
+<li><a href="#1preparerefresh%E5%88%B7%E6%96%B0%E5%89%8D%E7%9A%84%E9%A2%84%E5%A4%84%E7%90%86">1,prepareRefresh()刷新前的预处理：</a></li>
+<li><a href="#2obtainfreshbeanfactory%E8%8E%B7%E5%8F%96%E5%9C%A8%E5%AE%B9%E5%99%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6%E5%88%9B%E5%BB%BA%E7%9A%84beanfactory">2,obtainFreshBeanFactory()：获取在容器初始化时创建的BeanFactory：</a></li>
+<li><a href="#3preparebeanfactorybeanfactorybeanfactory%E7%9A%84%E9%A2%84%E5%A4%84%E7%90%86%E5%B7%A5%E4%BD%9C%E5%90%91%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%BA%9B%E7%BB%84%E4%BB%B6">3,prepareBeanFactory(beanFactory)：BeanFactory的预处理工作，向容器中添加一些组件：</a></li>
+<li><a href="#4postprocessbeanfactorybeanfactory%E5%AD%90%E7%B1%BB%E9%87%8D%E5%86%99%E8%AF%A5%E6%96%B9%E6%B3%95%E5%8F%AF%E4%BB%A5%E5%AE%9E%E7%8E%B0%E5%9C%A8beanfactory%E5%88%9B%E5%BB%BA%E5%B9%B6%E9%A2%84%E5%A4%84%E7%90%86%E5%AE%8C%E6%88%90%E4%BB%A5%E5%90%8E%E5%81%9A%E8%BF%9B%E4%B8%80%E6%AD%A5%E7%9A%84%E8%AE%BE%E7%BD%AE">4,postProcessBeanFactory(beanFactory)：子类重写该方法，可以实现在BeanFactory创建并预处理完成以后做进一步的设置</a></li>
+<li><a href="#5invokebeanfactorypostprocessorsbeanfactory%E5%9C%A8beanfactory%E6%A0%87%E5%87%86%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B9%8B%E5%90%8E%E6%89%A7%E8%A1%8Cbeanfactorypostprocessor%E7%9A%84%E6%96%B9%E6%B3%95%E5%8D%B3beanfactory%E7%9A%84%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86%E5%99%A8">5,invokeBeanFactoryPostProcessors(beanFactory)：在BeanFactory标准初始化之后执行BeanFactoryPostProcessor的方法，即BeanFactory的后置处理器：</a></li>
+<li><a href="#6registerbeanpostprocessorsbeanfactory%E5%90%91%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%B3%A8%E5%86%8Cbean%E7%9A%84%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86%E5%99%A8beanpostprocessor%E5%AE%83%E7%9A%84%E4%B8%BB%E8%A6%81%E4%BD%9C%E7%94%A8%E6%98%AF%E5%B9%B2%E9%A2%84spring%E5%88%9D%E5%A7%8B%E5%8C%96bean%E7%9A%84%E6%B5%81%E7%A8%8B%E4%BB%8E%E8%80%8C%E5%AE%8C%E6%88%90%E4%BB%A3%E7%90%86-%E8%87%AA%E5%8A%A8%E6%B3%A8%E5%85%A5-%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E7%AD%89%E5%8A%9F%E8%83%BD">6,registerBeanPostProcessors(beanFactory)：向容器中注册Bean的后置处理器BeanPostProcessor，它的主要作用是干预Spring初始化bean的流程，从而完成代理、自动注入、循环依赖等功能</a></li>
+<li><a href="#7initmessagesource%E5%88%9D%E5%A7%8B%E5%8C%96messagesource%E7%BB%84%E4%BB%B6%E4%B8%BB%E8%A6%81%E7%94%A8%E4%BA%8E%E5%81%9A%E5%9B%BD%E9%99%85%E5%8C%96%E5%8A%9F%E8%83%BD%E6%B6%88%E6%81%AF%E7%BB%91%E5%AE%9A%E4%B8%8E%E6%B6%88%E6%81%AF%E8%A7%A3%E6%9E%90">7,initMessageSource()：初始化MessageSource组件，主要用于做国际化功能，消息绑定与消息解析：</a></li>
+<li><a href="#8initapplicationeventmulticaster%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BA%8B%E4%BB%B6%E6%B4%BE%E5%8F%91%E5%99%A8%E5%9C%A8%E6%B3%A8%E5%86%8C%E7%9B%91%E5%90%AC%E5%99%A8%E6%97%B6%E4%BC%9A%E7%94%A8%E5%88%B0">8,initApplicationEventMulticaster()：初始化事件派发器，在注册监听器时会用到：</a></li>
+<li><a href="#9onrefresh%E7%95%99%E7%BB%99%E5%AD%90%E5%AE%B9%E5%99%A8-%E5%AD%90%E7%B1%BB%E9%87%8D%E5%86%99%E8%BF%99%E4%B8%AA%E6%96%B9%E6%B3%95%E5%9C%A8%E5%AE%B9%E5%99%A8%E5%88%B7%E6%96%B0%E7%9A%84%E6%97%B6%E5%80%99%E5%8F%AF%E4%BB%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%BB%E8%BE%91">9,onRefresh()：留给子容器、子类重写这个方法，在容器刷新的时候可以自定义逻辑</a></li>
+<li><a href="#10registerlisteners%E6%B3%A8%E5%86%8C%E7%9B%91%E5%90%AC%E5%99%A8%E5%B0%86%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%89%80%E6%9C%89%E7%9A%84applicationlistener%E6%B3%A8%E5%86%8C%E5%88%B0%E4%BA%8B%E4%BB%B6%E6%B4%BE%E5%8F%91%E5%99%A8%E4%B8%AD%E5%B9%B6%E6%B4%BE%E5%8F%91%E4%B9%8B%E5%89%8D%E6%AD%A5%E9%AA%A4%E4%BA%A7%E7%94%9F%E7%9A%84%E4%BA%8B%E4%BB%B6">10,registerListeners()：注册监听器：将容器中所有的ApplicationListener注册到事件派发器中，并派发之前步骤产生的事件：</a></li>
+<li><a href="#11finishbeanfactoryinitializationbeanfactory%E5%88%9D%E5%A7%8B%E5%8C%96%E6%89%80%E6%9C%89%E5%89%A9%E4%B8%8B%E7%9A%84%E9%9D%9E%E5%8D%95%E5%AE%9E%E4%BE%8Bbean%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95%E6%98%AFpreinstantiatesingletons%E4%BC%9A%E8%B0%83%E7%94%A8getbean%E6%96%B9%E6%B3%95%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1">11,finishBeanFactoryInitialization(beanFactory)：初始化所有剩下的非单实例bean，核心方法是preInstantiateSingletons()，会调用getBean()方法创建对象；</a></li>
+<li><a href="#12finishrefresh%E5%8F%91%E5%B8%83beanfactory%E5%AE%B9%E5%99%A8%E5%88%B7%E6%96%B0%E5%AE%8C%E6%88%90%E4%BA%8B%E4%BB%B6">12,finishRefresh()：发布BeanFactory容器刷新完成事件：</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+          
+          
+            
+                <hr />
+              
+            <p class="next-post">上一篇：
+                <a href="https://tinaxiawuhao.github.io/post/0SH2PgZRJ/">
+                  <span class="post-title">
+                    gitlab使用runner完成CI&rarr;
+                  </span>
+                </a>
+              </p>
+            
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+            <li class="list-inline-item">
+              <a href="https://github.com/tinaxiawuhao" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://tinaxiawuhao.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>tianxia</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://tinaxiawuhao.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://tinaxiawuhao.github.io/media/live2d/assets/tororo.model.json");
+        });
+
+        var home_Path = "https://tinaxiawuhao.github.io/";
+        addScript("https://tinaxiawuhao.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://tinaxiawuhao.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>
