@@ -10,10 +10,10 @@
 <meta name="keywords" content="">
 <meta name="description" content="欢迎访问[tianxia]的个人博客">
 <meta name="author" content="kveln">
-<title>HashMap负载因子为什么是0.75，链表转红黑树阈值为什么是8 | tianxia</title>
+<title>minio新版搭建和数据迁移 | tianxia</title>
 <link rel="stylesheet" href="https://tinaxiawuhao.github.io/resource/bootstrap.min.css">
 <link href="https://tinaxiawuhao.github.io/resource/all.min.css" rel="stylesheet">
-<link rel="alternate" type="application/rss+xml" title="HashMap负载因子为什么是0.75，链表转红黑树阈值为什么是8 | tianxia » Feed"
+<link rel="alternate" type="application/rss+xml" title="minio新版搭建和数据迁移 | tianxia » Feed"
   href="https://tinaxiawuhao.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://tinaxiawuhao.github.io/resource/androidstudio.min.css">
@@ -26,8 +26,8 @@
 
 <script>hljs.initHighlightingOnLoad();</script>
 
-  <meta property="og:description" content="HashMap负载因子为什么是0.75，链表转红黑树阈值为什么是8" />
-  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/mdZO-HjSu/" />
+  <meta property="og:description" content="minio新版搭建和数据迁移" />
+  <meta property="og:url" content="https://tinaxiawuhao.github.io/post/SznSzjoX7/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="tianxia" />
@@ -147,13 +147,13 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://tinaxiawuhao.github.io/tag/gvtXj5hZZ/" class="tag">java</a>
+                <a href="https://tinaxiawuhao.github.io/tag/kmb1w6CHq/" class="tag">对象存储</a>
                 
               </span>
-              <h1>HashMap负载因子为什么是0.75，链表转红黑树阈值为什么是8</h1>
+              <h1>minio新版搭建和数据迁移</h1>
               <span class="meta">
                 Posted on
-                2021-05-02，3 min read
+                2022-09-17，7 min read
               </span>
             </div>
           
@@ -168,61 +168,164 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/mdZO-HjSu.png" alt="封面图">
+          <img class="post-feature-header-image" src="https://tinaxiawuhao.github.io/post-images/SznSzjoX7.png" alt="封面图">
           </img>
           
-          <h3 id="1hashmap负载因子为什么是075">1.HashMap负载因子为什么是0.75</h3>
-<p>这是时间与空间成本上的折中。</p>
-<h4 id="11时间成本">1.1时间成本</h4>
-<p>假设负载因子是1时，虽然空间利用率高了，但是随之提高的是哈希碰撞的概率。<br>
-而Hashmap中哈希碰撞的解决方法采用的拉链法，哈希冲突高了会导致链表越来越长（虽然后面会转换成红黑树），我们知道链表的查询效率是比较低的，所以负载因子太高会导致时间成本上升。</p>
-<h4 id="12空间成本">1.2空间成本</h4>
-<p>那么为了减少哈希冲突，提高查询效率，负载因子是不是越低越好呢？答案显然是否定的。<br>
-假设负载因子为0.5时，那么空间利用率只有50%。例如大小为64时，至少有32没有被利用，大小为1024时，就有512没有被利用。扩容后的空间越大，空出的空间也就越大。<br>
-所以Java开发人员经过权衡，负载因子不能太大也不能太小，折中选择为0.75。</p>
-<h3 id="2链表转红黑树阈值为什么是8">2.链表转红黑树阈值为什么是8</h3>
-<p>当负载因子是0.75的情况下，哈希碰撞的概率遵循参数约为0.5的泊松分布<br>
-这是概率论的范畴，不知道的同学只需要记住当负载因子是0.75的情况下，我们能够计算出哈希碰撞的概率</p>
-<pre><code class="language-java">Because TreeNodes are about twice the size of regular nodes, we
-use them only when bins contain enough nodes to warrant use
-(see TREEIFY_THRESHOLD). And when they become too small (due to
-removal or resizing) they are converted back to plain bins.  In
-usages with well-distributed user hashCodes, tree bins are
-rarely used.  Ideally, under random hashCodes, the frequency of
-nodes in bins follows a Poisson distribution
-(http://en.wikipedia.org/wiki/Poisson_distribution) with a
-parameter of about 0.5 on average for the default resizing
-threshold of 0.75, although with a large variance because of
-resizing granularity. Ignoring variance, the expected
-occurrences of list size k are (exp(-0.5)*pow(0.5, k)/factorial(k)). 
-The first values are:
-0:    0.60653066
-1:    0.30326533
-2:    0.07581633
-3:    0.01263606
-4:    0.00157952
-5:    0.00015795
-6:    0.00001316
-7:    0.00000094
-8:    0.00000006
-more: less than 1 in ten million
+          <p>MinIO 是一个基于Apache License v2.0开源协议的对象存储服务，是一个非常轻量级的服务，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等</p>
+<h3 id="minio搭建">minio搭建</h3>
+<p>获取最新版本minio</p>
+<pre><code class="language-shell">docker pull minio/minio 
 </code></pre>
-<p>在HashMap源码中，给出了计算出的哈希碰撞的概率。<br>
-我们看到碰撞8次(链表长度达到8)的概率为0.00000006,几乎是一个不可能事件。<br>
-所以Java开发人员将链表转红黑树阈值默认设为8，是为了避免链表转红黑树这种耗时操作的事件发生。</p>
+<p>启动minio</p>
+<pre><code class="language-shell">docker run --name minio -p 9000:9000 -p 9090:9090 -d --restart=always -e &quot;MINIO_ROOT_USER=admin&quot; -e &quot;MINIO_ROOT_PASSWORD=admin123&quot; -v C:\installation\minio\data:/data  -v C:\installation\minio\config:/root/.minio minio/minio server /data --console-address &quot;:9000&quot; --address &quot;:9090&quot;
+</code></pre>
+<h3 id="数据迁移">数据迁移</h3>
+<h4 id="rclone">Rclone</h4>
+<p>Rclone 是一个命令行程序，用于管理云存储上的文件。它是云供应商 Web 存储接口的功能丰富的替代品。超过 40 种云存储产品支持 rclone，包括 S3 对象存储、商业和消费者文件存储服务以及标准传输协议。</p>
+<p>Rclone 广泛用于 Linux、Windows 和 Mac。第三方开发人员使用 rclone 命令行或 API 创建创新的备份、恢复、GUI 和业务流程解决方案。</p>
+<ul>
+<li>将文件备份（和加密）到云存储</li>
+<li>从云存储恢复（和解密）文件</li>
+<li>将云数据镜像到其他云服务或本地</li>
+<li>将数据迁移到云端，或在云存储供应商之间迁移</li>
+<li>将多个、加密、缓存或多样化的云存储挂载为磁盘</li>
+<li>使用lsf、ljson、size、ncdu分析和说明云存储中保存的数据</li>
+<li>将文件系统联合在一起以将多个本地和/或云文件系统呈现为一个</li>
+</ul>
+<h4 id="安装rclone">安装Rclone</h4>
+<pre><code class="language-shell">curl https://rclone.org/install.sh | sudo bash
+</code></pre>
+<p>如果网络不好建议先下载到本地，然后上传到服务器</p>
+<pre><code class="language-shell"># 下载文件
+wget https://downloads.rclone.org/v1.57.0/rclone-v1.57.0-linux-amd64.zip
+# 解压文件
+unzip rclone-v1.57.0-linux-amd64.zip
+# 给一下权限
+chmod 0755 ./rclone-v1.57.0-linux-amd64/rclone
+# 拷贝到 /usr/bin/ 可以直接使用 rclone命令
+cp ./rclone-v1.57.0-linux-amd64p/rclone /usr/bin/
+# 删除源文件
+rm -rf ./rclone-v1.56.0-linux-amd64.zip
+</code></pre>
+<p>windows下载</p>
+<pre><code class="language-shell">#官网下载：
+http://rclone.org/downloads/
+
+#GitHub下载：
+http://github.com/rclone/rclone
+</code></pre>
+<h4 id="配置">配置</h4>
+<pre><code class="language-shell">rclone config - 进入交互式配置选项，进行添加、删除、管理网盘等操作。
+rclone config file - 显示配置文件的路径，一般配置文件在 ~/.config/rclone/rclone.conf，更换服务器可直接copy该文件。
+rclone config show - 显示配置文件信息
+</code></pre>
+<pre><code class="language-shell">cat ~/.config/rclone/rclone.conf
+</code></pre>
+<pre><code># 备注：可以在一个配置文件中配置多份，使用[name]来区分
+[oldminio]
+type = s3
+provider = Minio
+env_auth = false
+access_key_id = minio
+secret_access_key = 123
+region = cn-east-1
+endpoint = http://IP:PORT
+location_constraint =
+server_side_encryption =
+
+[newminio]
+type = s3
+provider = Minio
+env_auth = false
+access_key_id = minio
+secret_access_key = 123
+region = cn-east-1
+endpoint = http://IP:PORT
+location_constraint =
+server_side_encryption =
+</code></pre>
+<pre><code>rclone sync oldminio:model-file-bucket newminio:model-file-bucket
+</code></pre>
+<h4 id="常用功能">常用功能</h4>
+<pre><code class="language-shell"># 将阿里云minio的数据迁移到腾讯的cos上
+# aliyun 配置文件的名称
+# wechat-root-files 存储桶名称
+# files 要传输的文件
+# -P 显示实时传输进度
+# --transfers=N - 并行文件数，默认为 4。在比较小的内存的 VPS 上建议调小这个参数，比如 128M 的小鸡上使用建议设置为 1
+./rclone sync aliyun:wechat-root-files/files tencent:sj-data-testwechat-1307267266/files -P --transfers=200
+# 删除文件
+./rclone delete tencent:sj-data-testwechat-1307267266/wechat-root-files -P --transfers=100
+</code></pre>
+<h4 id="常用功能选项">常用功能选项</h4>
+<pre><code class="language-shell">rclone copy - 复制
+rclone move - 移动，如果要在移动后删除空源目录，请加上 --delete-empty-src-dirs 参数
+rclone sync - 同步：将源目录同步到目标目录，只更改目标目录。
+rclone delete - 删除路径下的文件内容。
+rclone purge - 删除路径及其所有文件内容。
+rclone mkdir - 创建目录。
+rclone rmdir - 删除目录。
+rclone rmdirs - 删除指定灵境下的空目录。如果加上 --leave-root 参数，则不会删除根目录。
+rclone check - 检查源和目的地址数据是否匹配。
+rclone ls - 列出指定路径下的所有的文件以及文件大小和路径。
+rclone lsl - 比上面多一个显示上传时间。
+rclone lsd 列出指定路径下的目录
+rclone lsf - 列出指定路径下的目录和文件
+
+# 日志
+# rclone 有 4 个级别的日志记录，ERROR，NOTICE，INFO 和 DEBUG。
+# 默认情况下，rclone 将生成 ERROR 和 NOTICE 级别消息。
+</code></pre>
+<h4 id="常用参数">常用参数</h4>
+<pre><code class="language-shell">-n = --dry-run - 测试运行，用来查看 rclone 在实际运行中会进行哪些操作。
+-P = --progress - 显示实时传输进度。
+--cache-chunk-size SizeSuffi - 块的大小，默认 5M，理论上是越大上传速度越快，同时占用内存也越多。如果设置得太大，可能会导致进程中断。
+--cache-chunk-total-size SizeSuffix - 块可以在本地磁盘上占用的总大小，默认 10G。
+--transfers=N - 并行文件数，默认为 4。在比较小的内存的 VPS 上建议调小这个参数，比如 128M 的小鸡上使用建议设置为 1。
+--config string - 指定配置文件路径，string 为配置文件路径。比如在使用宝塔面板输入命令操作时可能会遇到找不到配置文件的问题，这时就需要指定配置文件路径。
+</code></pre>
+<h4 id="日志">日志</h4>
+<pre><code class="language-shell"># rclone 有 4 个级别的日志记录，ERROR，NOTICE，INFO 和 DEBUG。
+# 默认情况下，rclone 将生成 ERROR 和 NOTICE 级别消息。
+
+# -q rclone 将仅生成 ERROR 消息。
+# -v rclone 将生成 ERROR，NOTICE 和 INFO 消息，推荐此项。
+# -vv rclone 将生成 ERROR，NOTICE，INFO 和 DEBUG 消息。
+# --log-level LEVEL 标志控制日志级别。
+
+# 输出日志到文件
+# 使用 --log-file=FILE 选项，rclone 会将 Error，Info 和 Debug 消息以及标准错误重定向到 FILE，这里的 FILE 是你指定的日志文件路径。
+
+# 另一种方法是使用系统的指向命令，比如
+# rclone sync -v Onedrive:/DRIVEX Gdrive:/DRIVEX &gt; &quot;~/DRIVEX.log&quot; 2&gt;&amp;1
+
+# 文件过滤
+# --exclude 排除文件或目录。比如 --exclude *.bak，排除所有 bak 文件。
+# --include 包含文件或目录。比如 --include *.{png,jpg} ，包含所有 png 和 jpg 文件，排除其他文件。
+# --delete-excluded 删除排除的文件。需配合过滤参数使用，否则无效。
+
+# 目录过滤
+# --exclude .git/ 排除所有目录下的 .git 目录。
+# --exclude /.git/ 只排除根目录下的 .git 目录。
+</code></pre>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
 <li>
 <ul>
-<li><a href="#1hashmap%E8%B4%9F%E8%BD%BD%E5%9B%A0%E5%AD%90%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF075">1.HashMap负载因子为什么是0.75</a>
+<li><a href="#minio%E6%90%AD%E5%BB%BA">minio搭建</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB">数据迁移</a>
 <ul>
-<li><a href="#11%E6%97%B6%E9%97%B4%E6%88%90%E6%9C%AC">1.1时间成本</a></li>
-<li><a href="#12%E7%A9%BA%E9%97%B4%E6%88%90%E6%9C%AC">1.2空间成本</a></li>
+<li><a href="#rclone">Rclone</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85rclone">安装Rclone</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE">配置</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD">常用功能</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD%E9%80%89%E9%A1%B9">常用功能选项</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0">常用参数</a></li>
+<li><a href="#%E6%97%A5%E5%BF%97">日志</a></li>
 </ul>
 </li>
-<li><a href="#2%E9%93%BE%E8%A1%A8%E8%BD%AC%E7%BA%A2%E9%BB%91%E6%A0%91%E9%98%88%E5%80%BC%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF8">2.链表转红黑树阈值为什么是8</a></li>
 </ul>
 </li>
 </ul>
@@ -230,27 +333,18 @@ more: less than 1 in ten million
 </ul>
 </div>
           
-              <hr />
-            
           
             
+                <hr />
+              
             <p class="next-post">上一篇：
-                <a href="https://tinaxiawuhao.github.io/post/8H8sHTUTf/">
+                <a href="https://tinaxiawuhao.github.io/post/E_iSRsJL1/">
                   <span class="post-title">
-                    java中静态代码块，非静态代码块，构造函数之间的执行顺序&rarr;
+                    spring启动流程&rarr;
                   </span>
                 </a>
               </p>
             
-          
-            
-           <p class="prev-post">下一篇：
-                 <a href="https://tinaxiawuhao.github.io/post/cQAJ3QFSZ/">
-                   <span class="post-title">
-                     ThreadLocal是什么&rarr;
-                   </span>
-                 </a>
-               </p>
           
           <div class="comment" style="text-align: center;">
             
